@@ -40,7 +40,7 @@ const expectedOptions = {
         name: 'Follow redirect',
         type: 'boolean',
         default: true,
-        description: 'Boolean denoting whether to redirect a request'
+        description: 'Boolean denoting whether or not to automatically follow redirect'
     },
     requestBodyTrim: {
         name: 'Body trim',
@@ -50,7 +50,7 @@ const expectedOptions = {
     }};
 
 fs.readdirSync('./codegens').forEach((file) => {
-    if (file !== '.DS_Store' && file !== 'DS_STORE') {
+    if (file !== '.DS_Store' && file !== 'DS_STORE' && file !== '.gitkeep') {
         codegens.push(file);
     }
 });

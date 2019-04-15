@@ -20,8 +20,7 @@
   "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
   "homepage": "https://bitbucket.org/postmanlabs/code-gen#readme",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "async": "2.5.0",
     "browserify": "14.4.0",
