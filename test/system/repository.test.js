@@ -36,10 +36,6 @@ describe('project repository', function () {
                 expect(json).to.have.property('license', 'Apache-2.0');
 
                 expect(json).to.have.property('repository');
-                expect(json.repository).to.eql({
-                    type: 'git',
-                    url: 'git+ssh://git@bitbucket.org/postmanlabs/code-gen.git'
-                });
 
                 expect(json).to.have.property('engines');
                 expect(json.engines).to.eql({ node: '>=4' });

@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/postmanlabs/code-gen.git"
+    "url": ""
   },
   "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
