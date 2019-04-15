@@ -118,8 +118,6 @@ describe('project repository', function () {
 
     describe('.ignore files', function () {
         var gitignorePath = '.gitignore',
-            npmignorePath = '.npmignore',
-            npmignore = parseIgnore(npmignorePath),
             gitignore = parseIgnore(gitignorePath);
 
         describe(gitignorePath, function () {
@@ -132,19 +130,6 @@ describe('project repository', function () {
             });
         });
 
-        describe(npmignorePath, function () {
-            it('must exist', function (done) {
-                fs.stat(npmignorePath, done);
-            });
-
-            it('must have valid content', function () {
-                expect(_.isEmpty(npmignore)).to.not.be.ok;
-            });
-        });
-
-        it('.gitignore coverage must be a subset of .npmignore coverage', function () {
-            expect(_.intersection(gitignore, npmignore)).to.eql(gitignore);
-        });
     });
 
     describe('.eslintrc', function () {

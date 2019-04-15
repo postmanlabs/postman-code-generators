@@ -3,11 +3,7 @@
   "version": "0.0.0",
   "description": "Generates code snippets for a postman collection",
   "main": "index.js",
-  "bin": {
-    "code-gen": "./bin/code-gen.js"
-  },
   "directories": {
-    "lib": "lib",
     "test": "test"
   },
   "scripts": {
@@ -25,11 +21,6 @@
   "license": "Apache-2.0",
   "homepage": "https://bitbucket.org/postmanlabs/code-gen#readme",
   "dependencies": {
-    "async": "2.6.0",
-    "commander": "2.15.1",
-    "lodash": "4.17.4",
-    "postman-collection": "3.0.7",
-    "postman-runtime": "7.1.3"
   },
   "devDependencies": {
     "async": "2.5.0",
