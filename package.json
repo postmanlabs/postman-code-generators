@@ -7,11 +7,11 @@
     "test": "test"
   },
   "scripts": {
-    "test": "node npm/test.js",
-    "test-lint": "node npm/test-lint.js",
-    "test-unit": "node npm/test-unit.js",
-    "package": "npm/package/fat.sh",
-    "test-system": "node npm/test-system.js"
+    "test": "npm/test.sh",
+    "package": "npm/package.sh",
+    "zip": "npm/zip.sh",
+    "postinstall": "npm/deepinstall.sh",
+    "deepinstall": "npm/deepinstall.sh"
   },
   "repository": {
     "type": "git",
