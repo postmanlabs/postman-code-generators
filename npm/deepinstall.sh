@@ -2,7 +2,7 @@
 set -e; # stop on error
 if [ -n "$1" ]; 
 then
-    CODEGEN="codegen-"$1 # Code gen where npm install is desired to run , first input argument
+    CODEGEN=$1 # Code gen where npm install is desired to run , first input argument
     if [ ! -d "./codegens/$CODEGEN" ]; 
     then
         echo "Codegen $CODEGEN doesn't exist, please enter valid name";
@@ -19,7 +19,7 @@ else
     for directory in *; do
         if [ -d ${directory} ]; 
         then
-            codegen_name=${directory:8}
+            codegen_name=${directory}
             echo "$codegen_name : npm install "
             pushd $directory &>/dev/null;
             npm install;

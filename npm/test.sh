@@ -2,7 +2,7 @@
 set -e;
 if [ -n "$1" ]
 then
-    CODEGEN="codegen-"$1;
+    CODEGEN=$1;
     if [ ! -d "./codegens/$CODEGEN" ]; 
     then
         echo "Codegen $CODEGEN doesn't exist, please enter valid name";
@@ -27,7 +27,7 @@ else
     for directory in codegens/*; do
         if [ -d ${directory} ]; 
         then
-            codegen_name=${directory:17}
+            codegen_name=${directory:9} # directory contains codegens/js-jquery, we need to pass js-jquery
             echo "$codegen_name : codegen-structure test";
             mocha ./test/codegen/structure.test.js $codegen_name;
             echo "$codegen_name : npm test";
@@ -39,5 +39,5 @@ else
             exit 0;
         fi
     done
-    popd &>/dev/null;
+
 fi

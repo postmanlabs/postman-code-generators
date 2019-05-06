@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e;
-CODEGEN="codegen-"$1;
+CODEGEN=$1;
 if [ ! -d "./codegens/$CODEGEN" ]; 
 then
     echo "Codegen $CODEGEN doesn't exist, please enter valid name";

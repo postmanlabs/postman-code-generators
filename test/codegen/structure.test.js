@@ -7,50 +7,49 @@ var _ = require('lodash'),
     codegen = args[1];
 // Keep adding new options
 const expectedOptions = {
-    multiLine: {
-        name: 'MultiLine Curl Request',
-        type: 'boolean',
-        default: true,
-        description: 'denoting whether to get the request in single or multiple lines'
-    },
-    longFormat: {
-        name: 'Long Format',
-        type: 'boolean',
-        default: true,
-        description: 'denoting whether to get the request in short form or long form'
-    },
-    indentCount: {
-        name: 'Indent Count',
-        type: 'integer',
-        default: 0,
-        description: 'Integer denoting count of indentation required'
-    },
-    indentType: {
-        name: 'Indent type',
-        type: 'String',
-        default: 'tab',
-        description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
-    },
-    requestTimeout: {
-        name: 'Request Timeout',
-        type: 'integer',
-        default: 0,
-        description: 'Integer denoting time after which the request will bail out in milliseconds'
-    },
-    followRedirect: {
-        name: 'Follow redirect',
-        type: 'boolean',
-        default: true,
-        description: 'Boolean denoting whether or not to automatically follow redirects'
-    },
-    requestBodyTrim: {
-        name: 'Body trim',
-        type: 'boolean',
-        default: true,
-        description: 'Boolean denoting whether to trim request body fields'
-    }};
-codegen = 'codegen-'+codegen;
-const CODEGEN_ABS_PATH = `./codegens/${codegen}`;
+        multiLine: {
+            name: 'MultiLine Curl Request',
+            type: 'boolean',
+            default: true,
+            description: 'denoting whether to get the request in single or multiple lines'
+        },
+        longFormat: {
+            name: 'Long Format',
+            type: 'boolean',
+            default: true,
+            description: 'denoting whether to get the request in short form or long form'
+        },
+        indentCount: {
+            name: 'Indent Count',
+            type: 'integer',
+            default: 0,
+            description: 'Integer denoting count of indentation required'
+        },
+        indentType: {
+            name: 'Indent type',
+            type: 'String',
+            default: 'tab',
+            description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
+        },
+        requestTimeout: {
+            name: 'Request Timeout',
+            type: 'integer',
+            default: 0,
+            description: 'Integer denoting time after which the request will bail out in milliseconds'
+        },
+        followRedirect: {
+            name: 'Follow redirect',
+            type: 'boolean',
+            default: true,
+            description: 'Boolean denoting whether or not to automatically follow redirects'
+        },
+        requestBodyTrim: {
+            name: 'Body trim',
+            type: 'boolean',
+            default: true,
+            description: 'Boolean denoting whether to trim request body fields'
+        }},
+    CODEGEN_ABS_PATH = `./codegens/${codegen}`;
 describe('Code-gen repository ' + codegen, function () {
     var content,
         json;
@@ -75,7 +74,7 @@ describe('Code-gen repository ' + codegen, function () {
 
         describe('package.json JSON data', function () {
             it('must have valid name, description and author', function () {
-                expect(json).to.have.property('name', '@postman/' + codegen);
+                expect(json).to.have.property('name', '@postman/codegen-' + codegen);
                 expect(json).to.have.property('author', 'Postman Labs <help@getpostman.com>');
                 expect(json).to.have.property('license', 'Apache-2.0');
                 expect(json).to.have.property('com_postman_plugin');
@@ -190,36 +189,25 @@ describe('Code-gen repository ' + codegen, function () {
         });
     });
 
-    // describe('.ignore files', function () {
-    //     var gitIgnorePath = '.gitignore',
-    //         gitIgnore = parseIgnore(gitIgnorePath);
-    //     describe(gitIgnorePath, function () {
-    //         it('must exist', function (done) {
-    //             fs.stat(gitIgnorePath, done);
-    //         });
+    describe('.ignore files', function () {
+        var gitIgnorePath = `${CODEGEN_ABS_PATH}/.gitignore`,
+            gitIgnore = parseIgnore(fs.readFileSync(gitIgnorePath));
+        describe(gitIgnorePath, function () {
+            it('must exist', function (done) {
+                fs.stat(gitIgnorePath, done);
+            });
+            console.log(gitIgnore);
+            it('must have valid content', function () {
+                expect(_.isEmpty(gitIgnore)).to.not.be.ok;
+                expect(gitIgnore).to.include('.DS_Store');
+                expect(gitIgnore).to.include('*.log');
+                expect(gitIgnore).to.include('.coverage/');
+                expect(gitIgnore).to.include('node_modules/');
+                expect(gitIgnore).to.include('out/');
+                expect(gitIgnore).to.include('.npm');
+                expect(gitIgnore).to.include('logs');
 
-    //         it('must have valid content', function () {
-    //             expect(_.isEmpty(gitIgnore)).to.not.be.ok;
-    //             expect(gitIgnore).to.include('.DS_Store');
-    //             expect(gitIgnore).to.include('*.log');
-    //             expect(gitIgnore).to.include('.coverage/**');
-    //             expect(gitIgnore).to.include('node_modules/**');
-    //             expect(gitIgnore).to.include('out/**');
-    //             expect(gitIgnore).to.include('.npm');
-    //             expect(gitIgnore).to.include('.npm/**');
-    //             expect(gitIgnore).to.include('logs');
-
-    //         });
-    //     });
-    // });
-
-    describe('LICENSE.md', function () {
-        it('must exist', function (done) {
-            fs.stat(`${CODEGEN_ABS_PATH}/LICENSE.md`, done);
-        });
-
-        it('must have readable content', function () {
-            expect(fs.readFileSync(`${CODEGEN_ABS_PATH}/LICENSE.md`).toString()).to.be.ok;
+            });
         });
     });
 

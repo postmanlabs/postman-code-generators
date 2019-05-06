@@ -7,7 +7,7 @@ require_clean_work_tree "create package";
 
 if [ -n "$1" ];
 then
-    CODEGEN="codegen-"$1 # Code gen where npm install is desired to run , first input argument
+    CODEGEN=$1 # Code gen where npm install is desired to run , first input argument
     if [ ! -d "./codegens/$CODEGEN" ]; 
     then
         echo "Codegen $CODEGEN doesn't exist, please enter valid name";
@@ -23,7 +23,7 @@ else
     for directory in codegens/*; do
         if [ -d ${directory} ]; 
         then
-            codegen_name=${directory:17} # directory contains codegen/codegen-js-jquery, we need to pass js-jquery
+            codegen_name=${directory:9} # directory contains codegens/js-jquery, we need to pass js-jquery
             echo "Creating package for $codegen_name";
             npm run deepinstall $codegen_name; 
             npm run test $codegen_name;
