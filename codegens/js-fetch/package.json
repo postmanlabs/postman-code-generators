@@ -1,0 +1,54 @@
+{
+  "name": "@postman/codegen-js-fetch",
+  "version": "0.1.1",
+  "description": "Converts postman request to js fetch",
+  "com_postman_plugin": {
+    "type": "code_generator",
+    "lang": "JavaScript",
+    "variant": "Fetch",
+    "syntax_mode": "javascript"
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "node npm/test.js",
+    "test-lint": "node npm/test-lint.js",
+    "test-unit": "node npm/test-unit.js",
+    "test-system": "node npm/test-system.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Postman Labs <help@getpostman.com>",
+  "license": "Apache-2.0",
+  "dependencies": {},
+  "devDependencies": {
+    "async": "2.6.0",
+    "chai": "4.1.2",
+    "chalk": "2.3.2",
+    "dependency-check": "3.1.0",
+    "eslint": "4.19.0",
+    "eslint-plugin-jsdoc": "3.5.0",
+    "eslint-plugin-lodash": "2.7.0",
+    "eslint-plugin-mocha": "4.12.1",
+    "eslint-plugin-security": "1.4.0",
+    "form-data": "2.3.2",
+    "lodash": "4.17.5",
+    "mocha": "5.0.4",
+    "newman": "3.9.3",
+    "node-fetch": "2.1.1",
+    "nyc": "11.6.0",
+    "parse-gitignore": "0.4.0",
+    "postman-collection": "3.0.7",
+    "pretty-ms": "3.1.0",
+    "recursive-readdir": "2.2.2",
+    "shelljs": "0.8.1"
+  },
+  "engines": {
+    "node": ">=8"
+  }
+}
