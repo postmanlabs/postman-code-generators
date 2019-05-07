@@ -65,7 +65,7 @@ function runSnippet (codeSnippet, collection, done) {
             expect(result[0].trim()).to.include(result[1].trim());
         }
         else {
-            const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime'],
+            const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'clientIPAddress'],
                 headersTodelete = [
                     'accept-encoding',
                     'user-agent',
@@ -79,7 +79,8 @@ function runSnippet (codeSnippet, collection, done) {
                     'accept',
                     'total-route-time',
                     'cookie',
-                    'kong-cloud-request-id'
+                    'kong-cloud-request-id',
+                    'x-real-ip'
                 ];
             if (result[0]) {
                 propertiesTodelete.forEach(function (property) {
