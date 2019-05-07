@@ -196,7 +196,6 @@ describe('Code-gen repository ' + codegen, function () {
             it('must exist', function (done) {
                 fs.stat(gitIgnorePath, done);
             });
-            console.log(gitIgnore);
             it('must have valid content', function () {
                 expect(_.isEmpty(gitIgnore)).to.not.be.ok;
                 expect(gitIgnore).to.include('.DS_Store');
