@@ -21,11 +21,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@bitbucket.org:postmanlabs/codegen-js-fetch.git"
+    "url": ""
   },
   "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
-  "homepage": "https://bitbucket.org/postmanlabs/codegen-js-fetch#readme",
   "dependencies": {},
   "devDependencies": {
     "async": "2.6.0",
