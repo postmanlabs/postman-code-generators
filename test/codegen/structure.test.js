@@ -200,7 +200,7 @@ describe('Code-gen repository ' + codegen, function () {
                 expect(_.isEmpty(gitIgnore)).to.not.be.ok;
                 expect(gitIgnore).to.include('.DS_Store');
                 expect(gitIgnore).to.include('*.log');
-                expect(gitIgnore).to.include('.coverage/');
+                expect(gitIgnore).to.include('.coverage');
                 expect(gitIgnore).to.include('node_modules/');
                 expect(gitIgnore).to.include('out/');
                 expect(gitIgnore).to.include('.npm');
