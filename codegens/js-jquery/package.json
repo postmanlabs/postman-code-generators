@@ -1,17 +1,22 @@
 {
-  "name": "code-gen",
-  "version": "0.0.0",
+  "name": "@postman/codegen-js-jquery",
+  "version": "0.1.4",
   "description": "Generates code snippets for a postman collection",
+  "com_postman_plugin": {
+    "type": "code_generator",
+    "lang": "javascript",
+    "variant": "jquery",
+    "syntax_mode": "javascript"
+  },
   "main": "index.js",
   "directories": {
+    "lib": "lib",
     "test": "test"
   },
   "scripts": {
-    "test": "npm/test.sh",
-    "package": "npm/package.sh",
-    "zip": "npm/zip.sh",
-    "postinstall": "npm/deepinstall.sh",
-    "deepinstall": "npm/deepinstall.sh"
+    "test": "node npm/test.js",
+    "test-lint": "node npm/test-lint.js",
+    "test-unit": "node npm/test-unit.js"
   },
   "repository": {
     "type": "git",
@@ -36,17 +41,18 @@
     "js-yaml": "3.10.0",
     "jsdoc": "3.5.5",
     "jsdoc-to-markdown": "3.0.0",
-    "lodash": "4.17.4",
+    "lodash": "4.17.5",
     "mocha": "4.0.1",
     "nsp": "2.8.1",
     "nyc": "11.0.3",
-    "parse-gitignore": "1.0.1",
+    "parse-gitignore": "0.3.1",
+    "postman-collection": "3.0.10",
     "pretty-ms": "3.0.1",
     "recursive-readdir": "2.1.0",
     "shelljs": "0.7.8",
     "watchify": "3.9.0"
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=8"
   }
 }
