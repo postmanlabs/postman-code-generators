@@ -8,12 +8,13 @@ var expect = require('chai').expect,
 
 /* global describe, it */
 describe('jQuery converter', function () {
-    before(function () {
+    before(function (done) {
         fs.readFile('./test/unit/fixtures/snippetFixtures.json', function (err, data) {
             if (err) {
                 throw err;
             }
             snippetFixture = JSON.parse(data.toString());
+            done();
         });
     });
 
