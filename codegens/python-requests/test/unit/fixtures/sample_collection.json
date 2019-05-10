@@ -1,11 +1,67 @@
 {
 	"info": {
-		"_postman_id": "649f93dc-3882-4233-80c4-3e5b0c7cee9d",
-		"name": "Code-Gen Test Cases copy!",
+		"name": "Code-Gen Test Cases copy! copy",
+		"_postman_id": "3af85f5f-17df-46de-ac8f-63185eeeff68",
 		"description": "This collection contains requests that will be used to test validity of plugin created to convert postman request into code snippet of particular language.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "Request Headers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var responseJSON;",
+							"try {",
+							"    tests[\"Body contains headers\"] = responseBody.has(\"headers\");",
+							"    responseJSON = JSON.parse(responseBody);",
+							"    tests[\"Header contains host\"] = \"host\" in responseJSON.headers;",
+							"    tests[\"Header contains test parameter sent as part of request header\"] = \"my-sample-header\" in responseJSON.headers;",
+							"}",
+							"catch (e) { }",
+							"",
+							"",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "my-sample-header",
+						"value": "Lorem ipsum dolor sit amet"
+					},
+					{
+						"key": "testing",
+						"value": "'singlequotes'"
+					},
+					{
+						"key": "TEST",
+						"value": "\"doublequotes\""
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "https://postman-echo.com/headers",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"headers"
+					]
+				},
+				"description": "A `GET` request to this endpoint returns the list of all request headers as part of the response JSON.\nIn Postman, sending your own set of headers through the [Headers tab](https://www.getpostman.com/docs/requests#headers?source=echo-collection-app-onboarding) will reveal the headers as part of the response."
+			},
+			"response": []
+		},
 		{
 			"name": "Request Headers (With special Characters)",
 			"event": [
@@ -43,13 +99,10 @@
 					},
 					{
 						"key": "more",
-						"value": ",./';[]}{\":?><|\\\\"
+						"value": ",./';[]}{\":?><|"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
+				"body": {},
 				"url": {
 					"raw": "https://postman-echo.com/headers",
 					"protocol": "https",
@@ -106,10 +159,7 @@
 						"disabled": true
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
+				"body": {},
 				"url": {
 					"raw": "https://postman-echo.com/headers",
 					"protocol": "https",
@@ -157,10 +207,7 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
+				"body": {},
 				"url": {
 					"raw": "https://postman-echo.com/get?test=123&anotherone=232",
 					"protocol": "https",
@@ -174,15 +221,18 @@
 					"query": [
 						{
 							"key": "test",
-							"value": "123"
+							"value": "123",
+							"equals": true
 						},
 						{
 							"key": "anotherone",
-							"value": "232"
+							"value": "232",
+							"equals": true
 						},
 						{
 							"key": "anotheroneone",
 							"value": "sdfsdf",
+							"equals": true,
 							"disabled": true
 						}
 					]
@@ -279,14 +329,61 @@
 			"response": []
 		},
 		{
-			"name": "Resolve URL (Quotes + Special Characters) Copy",
+			"name": "POST form data with empty form data body",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var responseJSON;",
+							"",
+							"try { ",
+							"    responseJSON = JSON.parse(responseBody); ",
+							"    tests['response is valid JSON'] = true;",
+							"}",
+							"catch (e) { ",
+							"    responseJSON = {}; ",
+							"    tests['response is valid JSON'] = false;",
+							"}",
+							"",
+							"",
+							"tests['response has post data'] = _.has(responseJSON, 'data');",
+							"tests['response matches the data posted'] = (responseJSON.data && responseJSON.data.length === 256);",
+							"",
+							"tests[\"content-type equals text/plain\"] = responseJSON && responseJSON.headers && (responseJSON.headers[\"content-type\"] === 'text/plain');"
+						]
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": ""
+					"mode": "formdata",
+					"formdata": ""
 				},
+				"url": {
+					"raw": "https://postman-echo.com/post",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"post"
+					]
+				},
+				"description": "The HTTP `POST` request method is meant to transfer data to a server \n(and elicit a response). What data is returned depends on the implementation\nof the server.\n\nA `POST` request can pass parameters to the server using \"Query String \nParameters\", as well as the Request Body. For example, in the following request,\n\n> POST /hi/there?hand=wave\n>\n> <request-body>\n\nThe parameter \"hand\" has the value \"wave\". The request body can be in multiple\nformats. These formats are defined by the MIME type of the request. The MIME \nType can be set using the ``Content-Type`` HTTP header. The most commonly used \nMIME types are:\n\n* `multipart/form-data`\n* `application/x-www-form-urlencoded`\n* `application/json`\n\nThis endpoint echoes the HTTP headers, request parameters, the contents of\nthe request body and the complete URI requested."
+			},
+			"response": []
+		},
+		{
+			"name": "Resolve URL (Quotes + Special Characters) Copy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {},
 				"url": {
 					"raw": "https://postman-echo.com/:action?a=!@$^*()_-`%26&b=,./';[]}{\":/?><||",
 					"protocol": "https",
@@ -300,11 +397,13 @@
 					"query": [
 						{
 							"key": "a",
-							"value": "!@$^*()_-`%26"
+							"value": "!@$^*()_-`%26",
+							"equals": true
 						},
 						{
 							"key": "b",
-							"value": ",./';[]}{\":/?><||"
+							"value": ",./';[]}{\":/?><||",
+							"equals": true
 						}
 					],
 					"variable": [
@@ -313,7 +412,8 @@
 							"value": "post"
 						}
 					]
-				}
+				},
+				"description": null
 			},
 			"response": []
 		},
@@ -355,7 +455,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat.!@#$%^&*()+POL:},'';,[;[;"
+					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
 				},
 				"url": {
 					"raw": "https://postman-echo.com/post",
@@ -414,38 +514,95 @@
 						{
 							"key": "1",
 							"value": "'a'",
+							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "2",
 							"value": "\"b\"",
+							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "'3'",
 							"value": "c",
-							"type": "text",
-							"disabled": true
+							"description": "",
+							"type": "text"
 						},
 						{
 							"key": "\"4\"",
 							"value": "d",
-							"type": "text",
-							"disabled": true
+							"description": "",
+							"type": "text"
 						},
 						{
 							"key": "Special",
-							"value": "!@#$%&*()^_=`~              ",
-							"type": "text",
-							"disabled": true
+							"value": "!@#$%&*()^_=`~",
+							"description": "",
+							"type": "text"
 						},
 						{
 							"key": "more",
-							"value": ",./';[]}{\":?><|\\\\    ",
-							"type": "text",
-							"disabled": true
+							"value": ",./';[]}{\":?><|\\\\",
+							"description": "",
+							"type": "text"
 						}
 					]
+				},
+				"url": {
+					"raw": "https://postman-echo.com/post",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"post"
+					]
+				},
+				"description": "The HTTP `POST` request method is meant to transfer data to a server \n(and elicit a response). What data is returned depends on the implementation\nof the server.\n\nA `POST` request can pass parameters to the server using \"Query String \nParameters\", as well as the Request Body. For example, in the following request,\n\n> POST /hi/there?hand=wave\n>\n> <request-body>\n\nThe parameter \"hand\" has the value \"wave\". The request body can be in multiple\nformats. These formats are defined by the MIME type of the request. The MIME \nType can be set using the ``Content-Type`` HTTP header. The most commonly used \nMIME types are:\n\n* `multipart/form-data`\n* `application/x-www-form-urlencoded`\n* `application/json`\n\nThis endpoint echoes the HTTP headers, request parameters, the contents of\nthe request body and the complete URI requested."
+			},
+			"response": []
+		},
+		{
+			"name": "POST urlencoded data with empty urlencoded body",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var responseJSON;",
+							"",
+							"try { ",
+							"    responseJSON = JSON.parse(responseBody); ",
+							"    tests['response is valid JSON'] = true;",
+							"}",
+							"catch (e) { ",
+							"    responseJSON = {}; ",
+							"    tests['response is valid JSON'] = false;",
+							"}",
+							"",
+							"",
+							"tests['response has post data'] = _.has(responseJSON, 'data');",
+							"tests['response matches the data posted'] = (responseJSON.data && responseJSON.data.length === 256);",
+							"",
+							"tests[\"content-type equals text/plain\"] = responseJSON && responseJSON.headers && (responseJSON.headers[\"content-type\"] === 'text/plain');"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": ""
 				},
 				"url": {
 					"raw": "https://postman-echo.com/post",
@@ -500,7 +657,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"json\": \"Test-Test!@#$%^&*()+POL:},'';,[;[;:>\"\n}"
+					"raw": "{\n  \"json\": \"Test-Test\"\n}"
 				},
 				"url": {
 					"raw": "https://postman-echo.com/post",
@@ -517,7 +674,7 @@
 			},
 			"response": [
 				{
-					"id": "ebbf9e3d-a8c1-4221-958e-9a50aa558068",
+					"id": "adf222ad-853d-4aa4-9fa4-c824379c05cb",
 					"name": "POST json with raw",
 					"originalRequest": {
 						"method": "POST",
@@ -634,7 +791,7 @@
 					],
 					"cookie": [
 						{
-							"expires": "Invalid Date",
+							"expires": "Tue Jan 19 2038 08:44:07 GMT+0530 (IST)",
 							"httpOnly": true,
 							"domain": "postman-echo.com",
 							"path": "/",
@@ -643,6 +800,7 @@
 							"key": "sails.sid"
 						}
 					],
+					"responseTime": null,
 					"body": "{\"args\":{},\"data\":\"{\\n  \\\"json\\\": \\\"Test-Test\\\"\\n}\",\"files\":{},\"form\":{},\"headers\":{\"host\":\"postman-echo.com\",\"content-length\":\"25\",\"accept\":\"*/*\",\"accept-encoding\":\"gzip, deflate\",\"cache-control\":\"no-cache\",\"content-type\":\"text/plain\",\"cookie\":\"sails.sid=s%3AkOgtF1XmXtVFx-Eg3S7-37BKKaMqMDPe.hnwldNwyvsaASUiRR0Y0vcowadkMXO4HMegTeVIPgqo\",\"postman-token\":\"2ced782f-a141-428e-8af6-04ce954a77d5\",\"user-agent\":\"PostmanRuntime/7.1.1\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"},\"json\":null,\"url\":\"https://postman-echo.com/post\"}"
 				}
 			]
@@ -740,7 +898,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "<xml>\n\tTest Test!@#$%^&*()+POL:},'';,[;[;\n</xml>"
+					"raw": "<xml>\n\tTest Test\n</xml>"
 				},
 				"url": {
 					"raw": "https://postman-echo.com/post",
@@ -795,7 +953,62 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "<html>\n  Test Test !@#$%^&*()+POL:},'';,[;[;\n</html>"
+					"raw": "<html>\n  Test Test\n</html>"
+				},
+				"url": {
+					"raw": "https://postman-echo.com/post",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"post"
+					]
+				},
+				"description": "The HTTP `POST` request method is meant to transfer data to a server \n(and elicit a response). What data is returned depends on the implementation\nof the server.\n\nA `POST` request can pass parameters to the server using \"Query String \nParameters\", as well as the Request Body. For example, in the following request,\n\n> POST /hi/there?hand=wave\n>\n> <request-body>\n\nThe parameter \"hand\" has the value \"wave\". The request body can be in multiple\nformats. These formats are defined by the MIME type of the request. The MIME \nType can be set using the ``Content-Type`` HTTP header. The most commonly used \nMIME types are:\n\n* `multipart/form-data`\n* `application/x-www-form-urlencoded`\n* `application/json`\n\nThis endpoint echoes the HTTP headers, request parameters, the contents of\nthe request body and the complete URI requested."
+			},
+			"response": []
+		},
+		{
+			"name": "POST raw with empty raw body",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var responseJSON;",
+							"",
+							"try { ",
+							"    responseJSON = JSON.parse(responseBody); ",
+							"    tests['response is valid JSON'] = true;",
+							"}",
+							"catch (e) { ",
+							"    responseJSON = {}; ",
+							"    tests['response is valid JSON'] = false;",
+							"}",
+							"",
+							"",
+							"tests['response has post data'] = _.has(responseJSON, 'data');",
+							"tests['response matches the data posted'] = (responseJSON.data && responseJSON.data.length === 256);",
+							"",
+							"tests[\"content-type equals text/plain\"] = responseJSON && responseJSON.headers && (responseJSON.headers[\"content-type\"] === 'text/plain');"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/plain"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
 				},
 				"url": {
 					"raw": "https://postman-echo.com/post",
@@ -817,10 +1030,7 @@
 			"request": {
 				"method": "POST",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
+				"body": {},
 				"url": {
 					"raw": "https://postman-echo.com/:action?a=''&b=\"\"",
 					"protocol": "https",
@@ -834,15 +1044,18 @@
 					"query": [
 						{
 							"key": "a",
-							"value": "''"
+							"value": "''",
+							"equals": true
 						},
 						{
 							"key": "b",
-							"value": "\"\""
+							"value": "\"\"",
+							"equals": true
 						},
 						{
 							"key": "more",
 							"value": "",
+							"equals": true,
 							"disabled": true
 						}
 					],
@@ -852,7 +1065,8 @@
 							"value": "post"
 						}
 					]
-				}
+				},
+				"description": null
 			},
 			"response": []
 		},
@@ -1088,16 +1302,15 @@
 					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
 				},
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://www.google.com",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
-					],
-					"path": [
-						"request"
+						"www",
+						"google",
+						"com"
 					]
-				}
+				},
+				"description": null
 			},
 			"response": []
 		},
@@ -1116,16 +1329,15 @@
 					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
 				},
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://www.google.com",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
-					],
-					"path": [
-						"request"
+						"www",
+						"google",
+						"com"
 					]
-				}
+				},
+				"description": null
 			},
 			"response": []
 		},
@@ -1144,16 +1356,15 @@
 					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
 				},
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://www.google.com",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
-					],
-					"path": [
-						"request"
+						"www",
+						"google",
+						"com"
 					]
-				}
+				},
+				"description": null
 			},
 			"response": []
 		},
@@ -1162,26 +1373,22 @@
 			"request": {
 				"method": "UNLOCK",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
+				"body": {},
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://www.google.com",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
-					],
-					"path": [
-						"request"
+						"www",
+						"google",
+						"com"
 					]
-				}
+				},
+				"description": null
 			},
 			"response": []
 		},
 		{
-			"name": "PROFIND request",
+			"name": "PROPFIND request",
 			"request": {
 				"method": "PROPFIND",
 				"header": [
@@ -1195,16 +1402,15 @@
 					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
 				},
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://www.google.com",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
-					],
-					"path": [
-						"request"
+						"www",
+						"google",
+						"com"
 					]
-				}
+				},
+				"description": null
 			},
 			"response": []
 		},
@@ -1232,7 +1438,8 @@
 					"path": [
 						"request"
 					]
-				}
+				},
+				"description": null
 			},
 			"response": []
 		},
@@ -1241,10 +1448,7 @@
 			"request": {
 				"method": "PURGE",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
+				"body": {},
 				"url": {
 					"raw": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io",
 					"protocol": "https",
@@ -1254,7 +1458,8 @@
 						"pstmn",
 						"io"
 					]
-				}
+				},
+				"description": ""
 			},
 			"response": []
 		},
@@ -1263,10 +1468,7 @@
 			"request": {
 				"method": "COPY",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
+				"body": {},
 				"url": {
 					"raw": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io",
 					"protocol": "https",
@@ -1276,19 +1478,17 @@
 						"pstmn",
 						"io"
 					]
-				}
+				},
+				"description": ""
 			},
 			"response": [
 				{
-					"id": "922b9ebe-811b-4cf1-b72c-fb6f8da5ad62",
+					"id": "3129046c-67ec-4c31-9ab4-5a667ca128fc",
 					"name": "COPY Request",
 					"originalRequest": {
 						"method": "COPY",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"url": {
 							"raw": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io",
 							"protocol": "https",
@@ -1303,6 +1503,7 @@
 					"status": "OK",
 					"code": 200,
 					"_postman_previewlanguage": "json",
+					"_postman_previewtype": "text",
 					"header": [
 						{
 							"key": "Access-Control-Allow-Credentials",
@@ -1384,6 +1585,7 @@
 						}
 					],
 					"cookie": [],
+					"responseTime": 378,
 					"body": "{\n    \"status\": 200,\n    \"method\": \"COPY\"\n}"
 				}
 			]
