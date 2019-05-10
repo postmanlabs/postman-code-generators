@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e; # stop on error
-if [ -n "$1" ]; 
+if [ -n $CI ]; 
+then
+  echo "CI flag is set"
+fi
+
+if [ -n "$1" ];
 then
     CODEGEN=$1 # Code gen where npm install is desired to run , first input argument
     if [ ! -d "./codegens/$CODEGEN" ]; 
