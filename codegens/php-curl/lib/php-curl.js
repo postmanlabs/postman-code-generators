@@ -1,0 +1,91 @@
+var _ = require('./lodash'),
+    parseBody = require('./util/parseBody'),
+    sanitize = require('./util/sanitize').sanitize;
+
+/**
+ * Used to parse the request headers
+ *
+ * @param  {Object} request - postman SDK-request object
+ * @param  {String} indentation - used for indenting snippet's structure
+ * @returns {String} - request headers in the desired format
+ */
+function getHeaders (request, indentation) {
+    var headerObject = request.getHeaders({enabled: true}),
+        headerMap;
+
+    if (!_.isEmpty(headerObject)) {
+        headerMap = _.map(Object.keys(headerObject), function (key) {
+            return `${indentation.repeat(2)}"${sanitize(key, 'header')}: ` +
+            `${sanitize(headerObject[key], 'header')}"`;
+        });
+        return `${indentation}CURLOPT_HTTPHEADER => array(\n${headerMap.join(',\n')}\n${indentation}),\n`;
+    }
+    return '';
+}
+
+module.exports = {
+    /**
+     * Used to return options which are specific to a particular plugin
+     *
+     * @returns {Array}
+     */
+    getOptions: function () {
+        return [];
+    },
+
+    /**
+    * Used to convert the postman sdk-request object in php-curl request snippet
+    *
+    * @param  {Object} request - postman SDK-request object
+    * @param  {Object} options
+    * @param  {String} options.indentType - type of indentation eg: space / tab (default: space)
+    * @param  {Number} options.indentCount - frequency of indent (default: 4 for indentType: space,
+                                                                    default: 1 for indentType: tab)
+    * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
+                                                (default: 0 -> never bail out)
+    * @param {Boolean} options.requestBodyTrim : whether to trim request body fields (default: false)
+    * @param {Boolean} options.followRedirect : whether to allow redirects of a request
+    * @param  {Function} callback - function with parameters (error, snippet)
+    */
+    convert: function (request, options, callback) {
+        var snippet = '',
+            indentation = '',
+            identity = '',
+            finalUrl;
+
+        if (_.isFunction(options)) {
+            callback = options;
+            options = null;
+        }
+        else if (!_.isFunction(callback)) {
+            throw new Error('Php-Curl~convert: Callback is not a function');
+        }
+
+        identity = options.indentType === 'tab' ? '\t' : ' ';
+        indentation = identity.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+        // concatenation and making up the final string
+        finalUrl = request.url.toString();
+        if (finalUrl !== encodeURI(finalUrl)) {
+            // needs to be encoded
+            finalUrl = encodeURI(finalUrl);
+        }
+        snippet = '<?php\n\n$curl = curl_init();\n\n';
+        snippet += 'curl_setopt_array($curl, array(\n';
+        snippet += `${indentation}CURLOPT_URL => "${sanitize(finalUrl, 'url')}",\n`;
+        snippet += `${indentation}CURLOPT_RETURNTRANSFER => true,\n`;
+        snippet += `${indentation}CURLOPT_ENCODING => "",\n`;
+        snippet += `${indentation}CURLOPT_MAXREDIRS => 10,\n`;
+        snippet += `${indentation}CURLOPT_TIMEOUT => ${options.requestTimeout || 0},\n`;
+        snippet += `${indentation}CURLOPT_FOLLOWLOCATION => ${options.followRedirect || false},\n`;
+        snippet += `${indentation}CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,\n`;
+        snippet += `${indentation}CURLOPT_CUSTOMREQUEST => "${request.method}",\n`;
+        snippet += `${parseBody(request.toJSON(), options.requestBodyTrim, indentation)}`;
+        snippet += `${getHeaders(request, indentation)}`;
+        snippet += '));\n\n';
+        snippet += '$response = curl_exec($curl);\n\n';
+        snippet += 'curl_close($curl);\n';
+        snippet += 'echo $response;\n';
+
+        return callback(null, snippet);
+    }
+};
