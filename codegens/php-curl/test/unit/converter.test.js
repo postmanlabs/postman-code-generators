@@ -9,7 +9,7 @@ var expect = require('chai').expect,
     mainCollection = require('../unit/fixtures/sample_collection.json');
 
     // properties and headers to delete from newman reponse and cli response
-const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime'],
+const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'clientIPAddress'],
     headersTodelete = [
         'accept-encoding',
         'user-agent',
@@ -24,7 +24,8 @@ const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime'],
         'accept',
         'cookie',
         'total-route-time',
-        'kong-cloud-request-id'
+        'kong-cloud-request-id',
+        'x-real-ip'
     ];
 
 /**

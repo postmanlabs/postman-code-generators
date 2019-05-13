@@ -1415,35 +1415,6 @@
 			"response": []
 		},
 		{
-			"name": "VIEW request",
-			"request": {
-				"method": "VIEW",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "text/plain"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
-				},
-				"url": {
-					"raw": "https://www.google.com",
-					"protocol": "https",
-					"host": [
-						"mockbin",
-						"org"
-					],
-					"path": [
-						"request"
-					]
-				},
-				"description": null
-			},
-			"response": []
-		},
-		{
 			"name": "PURGE Request",
 			"request": {
 				"method": "PURGE",
