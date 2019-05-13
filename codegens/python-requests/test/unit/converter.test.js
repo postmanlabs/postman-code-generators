@@ -6,28 +6,43 @@ var expect = require('chai').expect,
     parallel = require('async').parallel,
 
     convert = require('../../lib/index').convert,
-    mainCollection = require('./fixtures/testcollection/collection.json');
+    mainCollection = require('../unit/fixtures/sample_collection.json');
+
+    // properties and headers to delete from newman reponse and cli response
+const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'json', 'data', 'clientIPAddress'],
+    headersTodelete = [
+        'accept-encoding',
+        'user-agent',
+        'cf-ray',
+        'x-request-id',
+        'x-request-start',
+        'connect-time',
+        'x-forwarded-for',
+        'content-type',
+        'content-length',
+        'accept',
+        'cookie',
+        'total-route-time',
+        'kong-cloud-request-id',
+        'x-real-ip'
+    ];
 
 /**
- * compiles and runs codesnippet then compare it with newman output
+ * Executes codesnippet and compares output with newman response
  * 
- * @param {String} codeSnippet - code snippet that needed to run using java
- * @param {Object} collection - collection which will be run using newman
- * @param {Function} done - callback for async call from mocha
+ * @param {String} codeSnippet - code snippet from convert function
+ * @param {Object} collection - sample collection
+ * @param {Function} done - callback for async calls
  */
 function runSnippet (codeSnippet, collection, done) {
-    fs.writeFile('run.js', codeSnippet, function (err) {
+    fs.writeFile('test/unit/fixtures/codesnippet.py', codeSnippet, function (err) {
         if (err) {
-            expect.fail(null, null, err);
-            return done();
+            console.error(err);
+            return;
         }
-
-        var run = 'node run.js';
-
-        //  step by step process for compile, run code snippet, then comparing its output with newman
         parallel([
             function (callback) {
-                exec(run, function (err, stdout, stderr) {
+                exec('python test/unit/fixtures/codesnippet.py', function (err, stdout, stderr) {
                     if (err) {
                         return callback(err);
                     }
@@ -41,7 +56,7 @@ function runSnippet (codeSnippet, collection, done) {
                     catch (e) {
                         console.error(e);
                     }
-                    return callback(null, stdout);
+                    callback(null, stdout);
                 });
             },
             function (callback) {
@@ -59,36 +74,18 @@ function runSnippet (codeSnippet, collection, done) {
                     catch (e) {
                         console.error(e);
                     }
-                    return callback(null, stdout);
+                    callback(null, stdout);
                 });
             }
         ], function (err, result) {
             if (err) {
-                console.error(err);
+                console.log(err);
                 expect.fail(null, null, err);
             }
-            else if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
+            else if (typeof result[1] !== 'object' && typeof result[0] !== 'object') {
                 expect(result[0].trim()).to.equal(result[1].trim());
             }
             else {
-                const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'clientIPAddress'],
-                    headersTodelete = [
-                        'accept-encoding',
-                        'user-agent',
-                        'cf-ray',
-                        'x-request-id',
-                        'x-request-start',
-                        'kong-request-id',
-                        'connect-time',
-                        'x-forwarded-for',
-                        'content-type',
-                        'content-length',
-                        'accept',
-                        'total-route-time',
-                        'cookie',
-                        'kong-cloud-request-id',
-                        'x-real-ip'
-                    ];
                 if (result[0]) {
                     propertiesTodelete.forEach(function (property) {
                         delete result[0][property];
@@ -97,6 +94,9 @@ function runSnippet (codeSnippet, collection, done) {
                         headersTodelete.forEach(function (property) {
                             delete result[0].headers[property];
                         });
+                    }
+                    if (result[0].url) {
+                        result[0].url = unescape(result[0].url);
                     }
                 }
                 if (result[1]) {
@@ -108,15 +108,19 @@ function runSnippet (codeSnippet, collection, done) {
                             delete result[1].headers[property];
                         });
                     }
+                    if (result[1].url) {
+                        result[1].url = unescape(result[1].url);
+                    }
                 }
+
                 expect(result[0]).deep.equal(result[1]);
             }
-            return done();
+            done();
         });
     });
 }
 
-describe('nodejs-native convert function', function () {
+describe('Python- Requests converter', function () {
     mainCollection.item.forEach(function (item) {
         it(item.name, function (done) {
             var request = new sdk.Request(item.request),
@@ -127,16 +131,24 @@ describe('nodejs-native convert function', function () {
                         }
                     ]
                 };
-            convert(request, {indentCount: 2, indentType: 'space'}, function (error, snippet) {
-                if (error) {
-                    expect.fail(null, null, error);
-                    return;
+            convert(request, {indentType: 'space',
+                indentCount: 4,
+                requestTimeout: 0,
+                requestBodyTrim: false,
+                addCacheHeader: false,
+                followRedirect: true}, function (err, snippet) {
+                if (err) {
+                    console.error(err);
                 }
-                //  disabling eslint for test file
-                snippet = '/* eslint-disable */\n' + snippet;
-
                 runSnippet(snippet, collection, done);
             });
+
         });
     });
+
+    it('should throw an error when callback is not function', function () {
+        expect(function () { convert({}, {}); })
+            .to.throw('Python-Requests~convert: Callback is not a function');
+    });
+
 });
