@@ -1,4 +1,7 @@
 # code-generators
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/postmanlabs/code-generators.svg)](https://greenkeeper.io/)
+
 Common codegen repo for postman app
 
 ## Getting Started
