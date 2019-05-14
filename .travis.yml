@@ -4,5 +4,5 @@ node_js:
 - '8'
 
 before_install: 
-  CI=1
-  echo "CI flag is set to run pre/post install scripts of codegens"
+- CI=1
+- echo "CI flag is set to run pre/post install scripts of codegens"

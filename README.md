@@ -1,3 +1,6 @@
+
+[![Build Status](https://travis-ci.com/postmanlabs/code-generators.svg?branch=master)](https://travis-ci.com/postmanlabs/code-generators)
+
 # code-generators
 Common codegen repo for postman app
 
