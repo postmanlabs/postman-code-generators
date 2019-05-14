@@ -1,0 +1,18 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "codegens/curl/package.json",
+        "codegens/golang/package.json",
+        "codegens/js-fetch/package.json",
+        "codegens/js-jquery/package.json",
+        "codegens/nodejs-native/package.json",
+        "codegens/php-curl/package.json",
+        "codegens/powershell-restmethod/package.json",
+        "codegens/python-requests/package.json",
+        "codegens/ruby/package.json",
+        "package.json"
+      ]
+    }
+  }
+}
