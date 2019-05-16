@@ -25,7 +25,7 @@
   },
   "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
-  "homepage": "https://bitbucket.org/postmanlabs/codegen-swift#readme",
+  "homepage": "",
   "dependencies": {},
   "devDependencies": {
     "async": "2.6.0",
