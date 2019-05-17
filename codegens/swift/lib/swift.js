@@ -169,7 +169,7 @@ module.exports = {
                 id: 'requestTimeout',
                 type: 'integer',
                 default: 0,
-                description: 'Integer denoting time after which the request will bail out in milli-seconds'
+                description: 'Integer denoting time after which the request will bail out in milliseconds'
             },
             {
                 name: 'Body trim',
