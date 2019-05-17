@@ -12,5 +12,5 @@ if [ $CI ];
     sudo wget https://swift.org/builds/swift-4.2.1-release/ubuntu1404/swift-4.2.1-RELEASE/swift-4.2.1-RELEASE-ubuntu14.04.tar.gz
     sudo tar xzf swift-4.2.1-RELEASE-ubuntu14.04.tar.gz
     sudo echo "export PATH=swift-4.2.1-RELEASE-ubuntu14.04/usr/bin:$PATH" >> ~/.bashrc
-    sudo source  ~/.bashrc
+    source  ~/.bashrc
 fi
