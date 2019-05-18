@@ -13,5 +13,6 @@ if [ $CI ];
     sudo tar xzf swift-4.2.1-RELEASE-ubuntu14.04.tar.gz
     sudo echo "export PATH=$HOME/swift-4.2.1-RELEASE-ubuntu14.04/usr/bin:$PATH" >> ~/.bashrc
     source  ~/.bashrc
+    sudo cat ~/.bashrc
     swift --version
 fi
