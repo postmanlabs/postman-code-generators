@@ -4,7 +4,7 @@ if [ $CI ];
   then
     echo "Installing additional dependencies"
     sudo apt-get update -y
-    sudo apt-get install clang libicu-dev git -y
+    sudo apt-get install libicu-dev git -y
     sudo apt-get install clang-3.6 -y
     sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-3.6 100
     sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-3.6 100
