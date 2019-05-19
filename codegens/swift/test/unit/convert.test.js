@@ -18,7 +18,7 @@ var expect = require('chai').expect,
  */
 function runSnippet (codeSnippet, collection, done) {
     fs.writeFileSync('snippet.swift', codeSnippet);
-    var run = 'swift snippet.swift';
+    var run = 'swift-4.2.1-RELEASE-ubuntu14.04/usr/bin/./swift snippet.swift';
     //  step by step process for compile and run code snippet of swift, then comparing its output with newman
     parallel([
         function (callback) {
