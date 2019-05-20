@@ -56,7 +56,7 @@ function runSnippet (codeSnippet, collection, done) {
                         catch (e) {
                             console.error();
                         }
-
+                        console.log(stdout);
                         return callback(null, stdout);
                     });
                 });
@@ -98,12 +98,14 @@ function runSnippet (codeSnippet, collection, done) {
                         'x-request-start',
                         'connect-time',
                         'x-forwarded-for',
+                        'cache-control',
                         'content-type',
                         'content-length',
                         'accept',
                         'accept-language',
                         'total-route-time',
-                        'cookie'
+                        'cookie',
+                        'postman-token'
                     ];
                 if (result[0]) {
                     propertiesTodelete.forEach(function (property) {
