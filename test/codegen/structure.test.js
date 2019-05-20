@@ -19,6 +19,12 @@ const expectedOptions = {
             default: true,
             description: 'denoting whether to get the request in short form or long form'
         },
+        includeBoilerplate: {
+            name: 'Include Boilerplate',
+            type: 'boolean',
+            default: false,
+            description: 'Boolean denoting whether to include class definition and import statements in code snippet'
+        },
         indentCount: {
             name: 'Indent Count',
             type: 'integer',
