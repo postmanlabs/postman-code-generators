@@ -50,7 +50,7 @@ module.exports = {
                 id: 'includeBoilerplate',
                 type: 'boolean',
                 default: false,
-                description: 'Boolean denoting whether to include class definition and import statements in code snippet'
+                description: 'Boolean denoting whether to include class definition and import statements in snippet'
             },
             {
                 name: 'Indent Count',

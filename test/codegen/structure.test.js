@@ -23,7 +23,7 @@ const expectedOptions = {
             name: 'Include Boilerplate',
             type: 'boolean',
             default: false,
-            description: 'Boolean denoting whether to include class definition and import statements in code snippet'
+            description: 'Boolean denoting whether to include class definition and import statements in snippet'
         },
         indentCount: {
             name: 'Indent Count',
