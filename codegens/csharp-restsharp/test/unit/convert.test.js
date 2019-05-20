@@ -37,6 +37,9 @@ function runSnippet (codeSnippet, collection, done) {
         parallel([
             function (callback) {
                 exec(compile, function (err, stdout, stderr) {
+                    console.log('err\n', err);
+                    console.log('stderr\n', stderr);
+                    console.log('stdout\n', stdout);
                     if (err) {
                         return callback(err);
                     }
@@ -44,6 +47,9 @@ function runSnippet (codeSnippet, collection, done) {
                         return callback(stderr);
                     }
                     return exec(run, function (err, stdout, stderr) {
+                        console.log('exec ', 'err\n', err);
+                        console.log('exec ', 'stderr\n', stderr);
+                        console.log('exec ', 'stdout\n', stdout);
                         if (err) {
                             return callback(err);
                         }
