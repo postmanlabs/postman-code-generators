@@ -80,7 +80,9 @@ function runSnippet (codeSnippet, collection, done) {
                     'accept',
                     'accept-language',
                     'total-route-time',
-                    'cookie'
+                    'cookie',
+                    'cache-control',
+                    'postman-token'
                 ];
             if (result[0]) {
                 propertiesTodelete.forEach(function (property) {

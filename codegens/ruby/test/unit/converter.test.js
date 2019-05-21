@@ -25,7 +25,9 @@ const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'client
         'cookie',
         'kong-request-id',
         'total-route-time',
-        'kong-cloud-request-id'
+        'kong-cloud-request-id',
+        'cache-control',
+        'postman-token'
     ];
 
 /**
