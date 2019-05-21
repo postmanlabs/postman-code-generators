@@ -39,18 +39,18 @@
     "eslint-plugin-lodash": "2.4.5",
     "eslint-plugin-mocha": "4.11.0",
     "eslint-plugin-security": "1.4.0",
-    "js-yaml": "3.10.0",
-    "jsdoc": "3.5.5",
-    "jsdoc-to-markdown": "3.0.0",
-    "lodash": "4.17.4",
+    "js-yaml": "3.13.1",
+    "jsdoc": "3.6.2",
+    "jsdoc-to-markdown": "5.0.0",
+    "lodash": "4.17.11",
     "mocha": "4.0.1",
-    "nyc": "11.0.3",
+    "newman": "4.5.0",
+    "nyc": "14.1.1",
     "parse-gitignore": "0.3.1",
     "pretty-ms": "3.0.1",
     "recursive-readdir": "2.1.0",
     "shelljs": "0.7.8",
-    "watchify": "3.9.0",
-    "newman": "3.9.3"
+    "watchify": "3.11.1"
   },
   "engines": {
     "node": ">=8"
