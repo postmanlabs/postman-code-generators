@@ -1,0 +1,21 @@
+{
+  "bash": "bash",
+  "curl": "cURL",
+  "javascript": "JS",
+  "http": "HTTP",
+  "python": "Python",
+  "ruby": "Ruby",
+  "java": "Java",
+  "c": "C",
+  "php": "PHP",
+  "objective-c": "Objective-C",
+  "perl": "Perl",
+  "golang": "Go",
+  "swift": "Swift",
+  "typescript": "TypeScript",
+  "powershell": "Powershell",
+  "csharp": "C#",
+  "nodejs": "NodeJs",
+  "ocaml": "OCaml",
+  "shell": "Shell"
+}
