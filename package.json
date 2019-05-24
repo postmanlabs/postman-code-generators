@@ -20,7 +20,9 @@
   "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/postmanlabs/code-generators/blob/master/README.md",
-  "dependencies": {},
+  "dependencies": {
+    "postman-collection": "3.4.8"
+  },
   "devDependencies": {
     "async": "2.5.0",
     "browserify": "14.4.0",
@@ -40,7 +42,6 @@
     "mocha": "4.0.1",
     "nyc": "14.1.1",
     "parse-gitignore": "1.0.1",
-    "postman-collection": "3.4.8",
     "pretty-ms": "3.0.1",
     "recursive-readdir": "2.1.0",
     "shelljs": "0.7.8",
