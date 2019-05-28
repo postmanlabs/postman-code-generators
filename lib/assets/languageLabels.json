@@ -1,7 +1,7 @@
 {
   "bash": "bash",
   "curl": "cURL",
-  "javascript": "JS",
+  "javascript": "JavaScript",
   "http": "HTTP",
   "python": "Python",
   "ruby": "Ruby",
@@ -10,7 +10,7 @@
   "php": "PHP",
   "objective-c": "Objective-C",
   "perl": "Perl",
-  "golang": "Go",
+  "go": "Go",
   "swift": "Swift",
   "typescript": "TypeScript",
   "powershell": "Powershell",
