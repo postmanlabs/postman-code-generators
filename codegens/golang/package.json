@@ -7,7 +7,7 @@
     "type": "code_generator",
     "lang": "go",
     "variant": "native",
-    "syntax_mode": "go"
+    "syntax_mode": "golang"
   },
   "directories": {
     "lib": "lib",

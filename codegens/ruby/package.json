@@ -5,7 +5,8 @@
   "com_postman_plugin": {
     "type": "code_generator",
     "lang": "Ruby",
-    "variant": "net/http"
+    "variant": "net/http",
+    "syntax_mode": "ruby"
   },
   "main": "index.js",
   "directories": {

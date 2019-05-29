@@ -6,7 +6,7 @@
     "type": "code_generator",
     "lang": "powershell",
     "variant": "restmethod",
-    "syntax_mode": "bash"
+    "syntax_mode": "powershell"
   },
   "directories": {
     "lib": "lib",

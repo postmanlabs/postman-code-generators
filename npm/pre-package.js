@@ -29,8 +29,10 @@ if (codegens.length === 0) {
 codegens.forEach((codegen) => {
   const content = readFile(`${codegen}/package.json`).toString(),
     json = JSON.parse(content);
-  json.com_postman_plugin.main = `.${codegen}/${json.main}`;
+  json.com_postman_plugin.main = `<<<require('../.${codegen}/${json.main}')>>>`;
   codegenList.push(json.com_postman_plugin);
 });
 
-fs.writeFileSync(PATH_TO_UTIL_FOLDER + '/languages.json', JSON.stringify(codegenList), 'utf8');
+fs.writeFileSync(PATH_TO_UTIL_FOLDER + '/languages.js',
+  `var codegenList = ${JSON.stringify(codegenList, null, 2).replace(/"<<</g, '').replace(/>>>"/g, '')
+    .replace(/"/g, '\'')};\nmodule.exports = codegenList;\n`, 'utf8');
