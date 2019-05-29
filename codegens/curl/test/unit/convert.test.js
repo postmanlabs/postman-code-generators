@@ -81,7 +81,9 @@ function runSnippet (codeSnippet, collection, done) {
                     'accept',
                     'total-route-time',
                     'cookie',
-                    'kong-cloud-request-id'
+                    'kong-cloud-request-id',
+                    'cache-control',
+                    'postman-token'
                 ];
             if (result[0]) {
                 propertiesTodelete.forEach(function (property) {

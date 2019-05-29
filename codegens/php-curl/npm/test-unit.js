@@ -44,6 +44,7 @@ module.exports = function (exit) {
         mocha.run(function (runError) {
             runError && console.error(runError.stack || runError);
 
+            nyc.reset();
             nyc.writeCoverageFile();
             nyc.report();
             exit(runError ? 1 : 0);
