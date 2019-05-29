@@ -8,7 +8,8 @@ var expect = require('chai').expect,
     convert = require('../../lib/index').convert,
     mainCollection = require('./fixtures/testcollection/collection.json'),
     testCollection = require('./fixtures/testcollection/collectionForEdge.json'),
-    getOptions = require('../../lib/index').getOptions;
+    getOptions = require('../../lib/index').getOptions,
+    testResponse = require('./fixtures/testresponse.json');
 
 /**
  * compiles and runs codesnippet then compare it with newman output
@@ -135,7 +136,7 @@ function runSnippet (codeSnippet, collection, done) {
 }
 
 describe('csharp restsharp function', function () {
-    describe('convert for different request types', function () {
+    describe.skip('convert for different request types', function () {
         var headerSnippet = 'using System;\n' +
                             'using RestSharp;\n' +
                             'namespace HelloWorldApplication {\n' +
@@ -169,6 +170,27 @@ describe('csharp restsharp function', function () {
                 });
             });
             return false;
+        });
+    });
+
+    describe('csharp-restsharp convert function', function () {
+        it('should return expected snippet', function () {
+            var request = new sdk.Request(mainCollection.item[4].request),
+                options = {
+                    indentCount: 1,
+                    indentType: 'tab',
+                    requestTimeout: 2000,
+                    followRedirect: true,
+                    trimRequestBody: true
+                };
+
+            convert(request, options, function (error, snippet) {
+                if (error) {
+                    expect.fail(null, null, error);
+                    return;
+                }
+                expect(snippet).deep.equal(testResponse.result);
+            });
         });
     });
 
