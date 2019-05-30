@@ -23,13 +23,23 @@ else
     mocha ./test/system/repository.test.js;
     
     # Common structure and npm test for each codegen.
-    echo -e "Running tests on all the codegens";
+    echo -e "Running codegen-structure tests on all the codegens";
     for directory in codegens/*; do
         if [ -d ${directory} ]; 
         then
             codegen_name=${directory:9} # directory contains codegens/js-jquery, we need to pass js-jquery
             echo "$codegen_name : codegen-structure test";
             mocha ./test/codegen/structure.test.js $codegen_name;
+        else
+            echo "No Code gen folders present";
+            exit 0;
+        fi
+    done
+    echo -e "Running npm test on all the codegens";
+    for directory in codegens/*; do
+        if [ -d ${directory} ]; 
+        then
+            codegen_name=${directory:9} # directory contains codegens/js-jquery, we need to pass js-jquery
             echo "$codegen_name : npm test";
             pushd $directory &>/dev/null;
             npm test;
