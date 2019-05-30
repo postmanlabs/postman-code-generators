@@ -1,7 +1,5 @@
-dist: 'trusty'
-language: generic
-node_js:
-- '8'
+dist: 'xenial'
+language: 'node_js'
 
 before_install: 
 - CI=1
