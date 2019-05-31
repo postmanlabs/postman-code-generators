@@ -86,7 +86,7 @@ function runSnippet (codeSnippet, collection, done) {
                 expect(result[0].trim()).to.equal(result[1].trim());
             }
             else {
-                const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime'],
+                const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'clientIPAddress'],
                     headersTodelete = [
                         'accept-encoding',
                         'user-agent',
@@ -102,7 +102,6 @@ function runSnippet (codeSnippet, collection, done) {
                         'cookie',
                         'cache-control',
                         'postman-token',
-                        'clientIPAddress',
                         'x-real-ip'
                     ];
                 if (result[0]) {

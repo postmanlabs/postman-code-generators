@@ -98,7 +98,6 @@ function runSnippet (codeSnippet, collection, done) {
                     'cookie',
                     'cache-control',
                     'postman-token',
-                    'clientIPAddress',
                     'x-real-ip'
                 ];
             if (result[0]) {
