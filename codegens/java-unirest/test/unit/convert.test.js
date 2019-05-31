@@ -101,7 +101,9 @@ function runSnippet (codeSnippet, collection, done) {
                         'total-route-time',
                         'cookie',
                         'cache-control',
-                        'postman-token'
+                        'postman-token',
+                        'clientIPAddress',
+                        'x-real-ip'
                     ];
                 if (result[0]) {
                     propertiesTodelete.forEach(function (property) {
