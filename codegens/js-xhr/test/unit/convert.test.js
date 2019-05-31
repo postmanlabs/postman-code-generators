@@ -112,7 +112,7 @@ function runSnippet (codeSnippet, collection, done) {
     });
 }
 
-describe('curl convert function', function () {
+describe('js-xhr convert function', function () {
     describe('convert for different request types', function () {
         var boilerplateCode = 'var XMLHttpRequest = require(\'xmlhttprequest\').XMLHttpRequest;\n';
         boilerplateCode += 'var FormData = require(\'form-data\');\n\n';

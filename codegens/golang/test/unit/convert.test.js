@@ -109,7 +109,7 @@ function runSnippet (codeSnippet, collection, done) {
     });
 }
 
-describe('curl convert function', function () {
+describe('Golang convert function', function () {
     describe('convert for different request types', function () {
 
         mainCollection.item.forEach(function (item) {
