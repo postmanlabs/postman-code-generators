@@ -1,31 +1,30 @@
 {
   "name": "@postman/codegen-http",
   "version": "0.1.1",
-  "description": "Generates http messages for a Postman collection",
+  "description": "Generates http messages for a Postman request",
   "main": "index.js",
   "com_postman_plugin": {
     "type": "code_generator",
     "lang": "http",
-    "variant": "raw",
+    "variant": "http",
     "syntax_mode": "text"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/postmanlabs/codegen-http.git"
+    "url": ""
   },
   "keywords": [
     "codegen",
     "http"
   ],
-  "author": "Naresh Peshwe",
-  "license": "ISC",
-  "homepage": "https://bitbucket.org/np18/codegen-http#readme",
+  "author": "Postman Labs <help@getpostman.com>",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/http",
   "dependencies": {},
   "scripts": {
     "test": "node npm/test.js",
     "test-lint": "node npm/test-lint.js",
-    "test-unit": "node npm/test-unit.js",
-    "test-system": "node npm/test-system.js"
+    "test-unit": "node npm/test-unit.js"
   },
   "devDependencies": {
     "async": "2.5.0",
