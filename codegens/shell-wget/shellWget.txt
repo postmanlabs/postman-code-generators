@@ -1,0 +1,36 @@
+{
+  "startedDateTime": "2018-04-28T08:57:01.379Z",
+  "clientIPAddress": "116.75.85.55",
+  "method": "PROPFIND",
+  "url": "https://mockbin.org/request",
+  "httpVersion": "HTTP/1.1",
+  "cookies": {},
+  "headers": {
+    "host": "mockbin.org",
+    "connection": "close",
+    "accept-encoding": "gzip",
+    "x-forwarded-for": "116.75.85.55, 172.68.144.135",
+    "cf-ray": "412851a5db04318c-SIN",
+    "x-forwarded-proto": "http",
+    "cf-visitor": "{\"scheme\":\"https\"}",
+    "user-agent": "Wget/1.18 (darwin15.5.0)",
+    "accept": "*/*",
+    "content-type": "text/plain",
+    "cf-connecting-ip": "116.75.85.55",
+    "x-request-id": "3bf310dd-d7fd-4029-9a0b-57070b6eeca7",
+    "x-forwarded-port": "80",
+    "via": "1.1 vegur",
+    "connect-time": "0",
+    "x-request-start": "1524905821337",
+    "total-route-time": "0",
+    "content-length": "256"
+  },
+  "queryString": {},
+  "postData": {
+    "mimeType": "text/plain",
+    "text": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat.",
+    "params": []
+  },
+  "headersSize": 531,
+  "bodySize": 256
+}
