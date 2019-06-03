@@ -1,5 +1,5 @@
 {
-  "name": "code-gen",
+  "name": "@postman/code-generators",
   "version": "0.0.0",
   "description": "Generates code snippets for a postman collection",
   "main": "index.js",
@@ -10,7 +10,7 @@
     "test": "npm/test.sh",
     "package": "npm/package.sh",
     "zip": "npm/zip.sh",
-    "prepublishOnly": "node npm/pre-package.js",
+    "prepack": "node npm/pre-package.js",
     "postinstall": "npm/deepinstall.sh",
     "deepinstall": "npm/deepinstall.sh"
   },
@@ -20,7 +20,7 @@
   },
   "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/postmanlabs/code-generators/blob/master/README.md",
+  "homepage": "https://github.com/postmanlabs/code-generators",
   "dependencies": {
     "postman-collection": "3.4.8"
   },

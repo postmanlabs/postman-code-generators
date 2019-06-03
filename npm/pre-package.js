@@ -29,6 +29,8 @@ if (codegens.length === 0) {
 codegens.forEach((codegen) => {
   const content = readFile(`${codegen}/package.json`).toString(),
     json = JSON.parse(content);
+  json.com_postman_plugin.author = json.author;
+  json.com_postman_plugin.homepage = json.homepage;
   json.com_postman_plugin.main = `<<<require('../.${codegen}/${json.main}')>>>`;
   codegenList.push(json.com_postman_plugin);
 });

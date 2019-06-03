@@ -1,5 +1,10 @@
 #!/bin/bash
 set -e; # stop on error
+
+echo "Running pre-package script"
+node npm/pre-package.js
+echo "Run successful languages.js saved in lib/assets"
+
 if [ -n "$1" ];
 then
     CODEGEN=$1 # Code gen where npm install is desired to run , first input argument
