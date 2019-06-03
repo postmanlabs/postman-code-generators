@@ -20,7 +20,7 @@
   },
   "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
-  "homepage": "",
+  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/curl",
   "dependencies": {},
   "devDependencies": {
     "async": "2.6.0",

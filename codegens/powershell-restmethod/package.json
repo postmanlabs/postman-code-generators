@@ -4,9 +4,9 @@
   "description": "Converts postman request to powershell rest method",
   "com_postman_plugin": {
     "type": "code_generator",
-    "lang": "bash",
-    "variant": "powershell - rest method",
-    "syntax_mode": "bash"
+    "lang": "powershell",
+    "variant": "restmethod",
+    "syntax_mode": "powershell"
   },
   "directories": {
     "lib": "lib",
@@ -24,7 +24,7 @@
   },
   "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
-  "homepage": "",
+  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/powershell-restmethod",
   "dependencies": {},
   "devDependencies": {
     "async": "2.6.0",

@@ -24,6 +24,7 @@
   },
   "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
+  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/nodejs-native",
   "dependencies": {},
   "devDependencies": {
     "async": "2.5.0",
