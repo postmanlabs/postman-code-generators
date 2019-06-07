@@ -31,14 +31,14 @@ describe('project repository', function () {
 
         describe('package.json JSON data', function () {
             it('must have valid name, description and author', function () {
-                expect(json).to.have.property('name', '@postman/code-generators');
+                expect(json).to.have.property('name', 'postman-code-generators');
                 expect(json).to.have.property('author', 'Postman Labs <help@getpostman.com>');
                 expect(json).to.have.property('license', 'Apache-2.0');
 
                 expect(json).to.have.property('repository');
 
                 expect(json).to.have.property('engines');
-                expect(json.engines).to.eql({ node: '>=4' });
+                expect(json.engines).to.eql({ node: '>=6' });
             });
 
             it('must have a valid version string in form of <major>.<minor>.<revision>', function () {
