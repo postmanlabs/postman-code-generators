@@ -1,14 +1,14 @@
 #!/bin/bash
 set -e; # stop on error
 
-echo "Running pre-package script"
+echo "Running pre-package script" 
 node npm/pre-package.js
 echo "Run successful languages.js saved in lib/assets"
 
 if [ "$1" != "dev" ]
 then
     echo "No dev flag detected, setting production flag for npm install"
-    PROD_ENV="--production";
+    PROD_ENV="--production --no-audit";
 else
     echo "Dev flag detected, both dependency and devDependency will be updated."
 fi

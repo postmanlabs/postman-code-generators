@@ -25,9 +25,9 @@ To install dependencies of a single codegen
 ```bash
 $ npm run deepinstall <codegen-name>; 
 ```
-To install dependencies for all codegens run 
+To install dependencies for all codegens run: 
 ```bash
-$ npm run deepinstall dev>; 
+$ npm run deepinstall dev; 
 ```
 To run common repo test as well as tests (common structure test + individual codegen tests) for all the codegens
 ```bash
