@@ -1,6 +1,6 @@
 {
-  "name": "@postman/code-generators",
-  "version": "0.0.0",
+  "name": "postman-code-generators",
+  "version": "0.0.1",
   "description": "Generates code snippets for a postman collection",
   "main": "index.js",
   "directories": {
@@ -49,6 +49,6 @@
     "watchify": "3.11.1"
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=6"
   }
 }
