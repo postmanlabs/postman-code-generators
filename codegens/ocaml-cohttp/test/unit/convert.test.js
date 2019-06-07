@@ -222,7 +222,7 @@ describe('Ocaml convert function', function () {
         it('should return all the valid options', function () {
             expect(getOptions()[0]).to.have.property('id', 'indentCount');
             expect(getOptions()[1]).to.have.property('id', 'indentType');
-            expect(getOptions()[2]).to.have.property('id', 'requestBodyTrim');
+            expect(getOptions()[2]).to.have.property('id', 'trimRequestBody');
         });
     });
 

@@ -27,10 +27,10 @@ function getHeaders (request, indent) {
      * Used to get the form-data
      *
      * @param  {Object} request - postman SDK-request object
-     * @param  {String} requestBodyTrim - whether to trim request body fields
+     * @param  {String} trimRequestBody - whether to trim request body fields
      * @returns {String} - form-data in the desired format
      */
-function createForm (request, requestBodyTrim) {
+function createForm (request, trimRequestBody) {
     var form = '',
         enabledFormList,
         formMap;
@@ -39,8 +39,8 @@ function createForm (request, requestBodyTrim) {
     enabledFormList = _.reject(request.body[request.body.mode], 'disabled');
     if (!_.isEmpty(enabledFormList)) {
         formMap = _.map(enabledFormList, function (value) {
-            return (`form.append("${sanitize(value.key, request.body.mode, requestBodyTrim)}", "` +
-                    `${sanitize(value.value || value.src, request.body.mode, requestBodyTrim)}");`);
+            return (`form.append("${sanitize(value.key, request.body.mode, trimRequestBody)}", "` +
+                    `${sanitize(value.value || value.src, request.body.mode, trimRequestBody)}");`);
         });
         form += `${formMap.join('\n')}\n\n`;
     }
@@ -54,7 +54,35 @@ module.exports = {
      * @returns {Array}
      */
     getOptions: function () {
-        return [];
+        return [{
+            name: 'Indent Count',
+            id: 'indentCount',
+            type: 'integer',
+            default: 0,
+            description: 'Integer denoting count of indentation required'
+        },
+        {
+            name: 'Indent type',
+            id: 'indentType',
+            type: 'enum',
+            availableOptions: ['tab', 'space'],
+            default: 'tab',
+            description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
+        },
+        {
+            name: 'Request Timeout',
+            id: 'requestTimeout',
+            type: 'integer',
+            default: 0,
+            description: 'Integer denoting time after which the request will bail out in milliseconds'
+        },
+        {
+            name: 'Body trim',
+            id: 'trimRequestBody',
+            type: 'boolean',
+            default: true,
+            description: 'Boolean denoting whether to trim request body fields'
+        }];
     },
 
     /**
@@ -67,7 +95,7 @@ module.exports = {
                                                                     default: 1 for indentType: tab)
     * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
                                                 (default: 0 -> never bail out)
-    * @param {Boolean} options.requestBodyTrim : whether to trim request body fields (default: false)
+    * @param {Boolean} options.trimRequestBody : whether to trim request body fields (default: false)
     * @param  {Function} callback - function with parameters (error, snippet)
     */
     convert: function (request, options, callback) {
@@ -89,14 +117,14 @@ module.exports = {
         options.requestTimeout = options.requestTimeout || 0;
 
         if (request.body && request.body.mode === 'formdata') {
-            jQueryCode = createForm(request.toJSON(), options.requestBodyTrim);
+            jQueryCode = createForm(request.toJSON(), options.trimRequestBody);
         }
         jQueryCode += 'var settings = {\n';
         jQueryCode += `${indent}"url": "${sanitize(request.url.toString(), 'url')}",\n`;
         jQueryCode += `${indent}"method": "${request.method}",\n`;
         jQueryCode += `${indent}"timeout": ${options.requestTimeout},\n`;
         jQueryCode += `${getHeaders(request, indent)}`;
-        jQueryCode += `${parseBody(request.toJSON(), options.requestBodyTrim, indent)}};\n\n`;
+        jQueryCode += `${parseBody(request.toJSON(), options.trimRequestBody, indent)}};\n\n`;
         jQueryCode += `$.ajax(settings).done(function (response) {\n${indent}console.log(response);\n});`;
 
         return callback(null, jQueryCode);

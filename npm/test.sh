@@ -1,5 +1,18 @@
 #!/bin/bash
 set -e;
+
+echo "Checking if languages.js file is present"
+
+pushd ./lib/assets &>/dev/null
+if [ -e languages.js ];
+then
+    echo "languages.js present"
+else
+    echo "Please run 'node npm/pre-package.js' to get the file languages.js"
+    exit 1;
+fi
+popd &>/dev/null
+
 if [ -n "$1" ]
 then
     CODEGEN=$1;

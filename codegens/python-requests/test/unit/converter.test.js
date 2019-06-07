@@ -136,7 +136,7 @@ describe('Python- Requests converter', function () {
             convert(request, {indentType: 'space',
                 indentCount: 4,
                 requestTimeout: 0,
-                requestBodyTrim: false,
+                trimRequestBody: false,
                 addCacheHeader: false,
                 followRedirect: true}, function (err, snippet) {
                 if (err) {

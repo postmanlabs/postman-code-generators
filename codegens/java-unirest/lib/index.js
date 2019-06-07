@@ -16,7 +16,8 @@ function getOptions () {
         {
             name: 'Indent type',
             id: 'indentType',
-            type: 'String',
+            type: 'enum',
+            availableOptions: ['tab', 'space'],
             default: 'tab',
             description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
         },
@@ -36,7 +37,7 @@ function getOptions () {
         },
         {
             name: 'Body trim',
-            id: 'requestBodyTrim',
+            id: 'trimRequestBody',
             type: 'boolean',
             default: true,
             description: 'Boolean denoting whether to trim request body fields'
@@ -46,7 +47,7 @@ function getOptions () {
             id: 'includeBoilerplate',
             type: 'boolean',
             default: false,
-            description: 'Whether to include class definition and import statements in code snippet'
+            description: 'Boolean denoting whether to include class definition and import statements in snippet'
         }
     ];
 }

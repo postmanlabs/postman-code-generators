@@ -248,7 +248,7 @@ describe('okhttp convert function', function () {
             expect(getOptions()[2]).to.have.property('id', 'indentType');
             expect(getOptions()[3]).to.have.property('id', 'requestTimeout');
             expect(getOptions()[4]).to.have.property('id', 'followRedirect');
-            expect(getOptions()[5]).to.have.property('id', 'requestBodyTrim');
+            expect(getOptions()[5]).to.have.property('id', 'trimRequestBody');
         });
     });
 

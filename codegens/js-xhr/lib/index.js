@@ -125,7 +125,8 @@ function getOptions () {
         {
             name: 'Indent type',
             id: 'indentType',
-            type: 'String',
+            type: 'enum',
+            availableOptions: ['tab', 'space'],
             default: 'tab',
             description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
         },
@@ -138,7 +139,7 @@ function getOptions () {
         },
         {
             name: 'Body trim',
-            id: 'requestBodyTrim',
+            id: 'trimRequestBody',
             type: 'boolean',
             default: true,
             description: 'Boolean denoting whether to trim request body fields'

@@ -30,7 +30,42 @@ module.exports = {
      * @returns {Array}
      */
     getOptions: function () {
-        return [];
+        return [{
+            name: 'Indent Count',
+            id: 'indentCount',
+            type: 'integer',
+            default: 0,
+            description: 'Integer denoting count of indentation required'
+        },
+        {
+            name: 'Indent type',
+            id: 'indentType',
+            type: 'enum',
+            availableOptions: ['tab', 'space'],
+            default: 'tab',
+            description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
+        },
+        {
+            name: 'Request Timeout',
+            id: 'requestTimeout',
+            type: 'integer',
+            default: 0,
+            description: 'Integer denoting time after which the request will bail out in milliseconds'
+        },
+        {
+            name: 'Follow redirect',
+            id: 'followRedirect',
+            type: 'boolean',
+            default: true,
+            description: 'Boolean denoting whether or not to automatically follow redirects'
+        },
+        {
+            name: 'Body trim',
+            id: 'trimRequestBody',
+            type: 'boolean',
+            default: true,
+            description: 'Boolean denoting whether to trim request body fields'
+        }];
     },
 
     /**
@@ -43,7 +78,7 @@ module.exports = {
                                                                     default: 1 for indentType: tab)
     * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
                                                 (default: 0 -> never bail out)
-    * @param {Boolean} options.requestBodyTrim : whether to trim request body fields (default: false)
+    * @param {Boolean} options.trimRequestBody : whether to trim request body fields (default: false)
     * @param {Boolean} options.followRedirect : whether to allow redirects of a request
     * @param  {Function} callback - function with parameters (error, snippet)
     */
@@ -79,7 +114,7 @@ module.exports = {
         snippet += `${indentation}CURLOPT_FOLLOWLOCATION => ${options.followRedirect || false},\n`;
         snippet += `${indentation}CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,\n`;
         snippet += `${indentation}CURLOPT_CUSTOMREQUEST => "${request.method}",\n`;
-        snippet += `${parseBody(request.toJSON(), options.requestBodyTrim, indentation)}`;
+        snippet += `${parseBody(request.toJSON(), options.trimRequestBody, indentation)}`;
         snippet += `${getHeaders(request, indentation)}`;
         snippet += '));\n\n';
         snippet += '$response = curl_exec($curl);\n\n';

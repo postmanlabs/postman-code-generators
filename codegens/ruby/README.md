@@ -24,7 +24,7 @@ It requires 3 mandatory parameters `request`, `callback` and `options`
 
     * `indentCount` : Integer denoting the number of tabs/spaces required for indentation, range 0-8 (default : for indentType tab : 2, for indentType space : 4)
 
-    * `requestBodyTrim` : Boolean denoting whether to trim request body fields (default: false)
+    * `trimRequestBody` : Boolean denoting whether to trim request body fields (default: false)
 
     These plugin options will be used if no options are passed to the convert function.
 
@@ -35,7 +35,7 @@ It requires 3 mandatory parameters `request`, `callback` and `options`
 sdk = require('postman-collection');
 
 var request = sdk.Request('http://www.google.com'),
-    options = {indentType: 'tab', indentCount: 4, requestBodyTrim: true};
+    options = {indentType: 'tab', indentCount: 4, trimRequestBody: true};
 
 convert(request, options, function (err, snippet) {
     if (err) {

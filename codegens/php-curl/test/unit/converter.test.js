@@ -134,7 +134,7 @@ describe('Curl converter', function () {
             convert(request, {indentType: 'space',
                 indentCount: 4,
                 requestTimeout: 100,
-                requestBodyTrim: false,
+                trimRequestBody: false,
                 addCacheHeader: false,
                 followRedirect: true}, function (err, snippet) {
                 if (err) {

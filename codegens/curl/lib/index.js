@@ -109,6 +109,34 @@ module.exports = {
                 type: 'string',
                 default: '\\',
                 description: 'denoting the line continuation character for generated codegen'
+            },
+            {
+                name: 'Request Timeout',
+                id: 'requestTimeout',
+                type: 'integer',
+                default: 0,
+                description: 'Integer denoting time after which the request will bail out in milliseconds'
+            },
+            {
+                name: 'Follow redirect',
+                id: 'followRedirect',
+                type: 'boolean',
+                default: true,
+                description: 'Boolean denoting whether or not to automatically follow redirects'
+            },
+            {
+                name: 'Body trim',
+                id: 'trimRequestBody',
+                type: 'boolean',
+                default: true,
+                description: 'Boolean denoting whether to trim request body fields'
+            },
+            {
+                name: 'Silent',
+                id: 'silent',
+                type: 'boolean',
+                default: false,
+                description: 'Boolean denoting whether to make request in silent or quiet mode.'
             }
         ];
     }

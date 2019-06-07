@@ -16,7 +16,7 @@ Convert function takes three parameters
 * `options` - options is an object which hsa following properties
     * `indentType` - String denoting type of indentation for code snippet. eg: 'space', 'tab'
     * `indentCount` - Integer denoting count of indentation required
-    * `requestBodyTrim` - Boolean denoting whether to trim request body fields
+    * `trimRequestBody` - Boolean denoting whether to trim request body fields
     * `followRedirect` - Boolean denoting whether to redirect a request
     * `requestTimeout` - Integer denoting time after which the request will bail out in milli-seconds
     * `multiLine` - Boolean denoting whether to output code snippet with multi line breaks
@@ -31,7 +31,7 @@ var request = new sdk.Request('www.google.com'),  //using postman sdk to create 
         indentCount: 3,
         indentType: 'space',
         requestTimeout: 200,
-        requestBodyTrim: true,
+        trimRequestBody: true,
         multiLine: true,
         followRedirect: true,
         longFormat: true

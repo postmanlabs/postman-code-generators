@@ -303,7 +303,7 @@ describe('java unirest convert function for test collection', function () {
             expect(getOptions()[1]).to.have.property('id', 'indentType');
             expect(getOptions()[2]).to.have.property('id', 'requestTimeout');
             expect(getOptions()[3]).to.have.property('id', 'followRedirect');
-            expect(getOptions()[4]).to.have.property('id', 'requestBodyTrim');
+            expect(getOptions()[4]).to.have.property('id', 'trimRequestBody');
             expect(getOptions()[5]).to.have.property('id', 'includeBoilerplate');
         });
     });
