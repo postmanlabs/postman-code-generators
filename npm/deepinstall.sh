@@ -5,7 +5,15 @@ echo "Running pre-package script"
 node npm/pre-package.js
 echo "Run successful languages.js saved in lib/assets"
 
-if [ -n "$1" ];
+if [ "$1" != "dev" ]
+then
+    echo "No dev flag detected, setting production flag for npm install"
+    PROD_ENV="--production";
+else
+    echo "Dev flag detected, both dependency and devDependency will be updated."
+fi
+
+if [ -n "$1" ] && [ "$1" != "dev" ];
 then
     CODEGEN=$1 # Code gen where npm install is desired to run , first input argument
     if [ ! -d "./codegens/$CODEGEN" ]; 
@@ -25,9 +33,9 @@ else
         if [ -d ${directory} ]; 
         then
             codegen_name=${directory}
-            echo "$codegen_name : npm install "
+            echo "$codegen_name : npm install $PROD_ENV"
             pushd $directory &>/dev/null;
-            npm install;
+            npm install $PROD_ENV;
             popd &>/dev/null;
         else
             echo "No Code gen folders present";
