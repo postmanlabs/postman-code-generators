@@ -5,11 +5,11 @@ var _ = require('../lodash'),
  * Used to parse the body of the postman SDK-request and return in the desired format
  * 
  * @param  {Object} request - postman SDK-request object
- * @param  {Boolean} requestBodyTrim - whether to trim request body fields 
+ * @param  {Boolean} trimRequestBody - whether to trim request body fields 
  * @param  {String} indentation - used for indenting snippet's structure
  * @returns {String} - request body
  */
-module.exports = function (request, requestBodyTrim, indentation) {
+module.exports = function (request, trimRequestBody, indentation) {
     // used to check whether body is present in the request and return accordingly
     if (request.body) {
         var requestBody = '',
@@ -20,15 +20,15 @@ module.exports = function (request, requestBodyTrim, indentation) {
             case 'raw':
                 if (!_.isEmpty(request.body[request.body.mode])) {
                     requestBody += `${indentation}CURLOPT_POSTFIELDS =>` +
-                        `${sanitize(request.body[request.body.mode], request.body.mode, requestBodyTrim)},\n`;
+                        `${sanitize(request.body[request.body.mode], request.body.mode, trimRequestBody)},\n`;
                 }
                 return requestBody;
             case 'urlencoded':
                 enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
                 if (!_.isEmpty(enabledBodyList)) {
                     bodyMap = _.map(enabledBodyList, function (value) {
-                        return `${sanitize(value.key, request.body.mode, requestBodyTrim)}=` +
-                            `${sanitize(value.value, request.body.mode, requestBodyTrim)}`;
+                        return `${sanitize(value.key, request.body.mode, trimRequestBody)}=` +
+                            `${sanitize(value.value, request.body.mode, trimRequestBody)}`;
                     });
                     requestBody = `${indentation}CURLOPT_POSTFIELDS => "${bodyMap.join('&')}",\n`;
                 }
@@ -38,12 +38,12 @@ module.exports = function (request, requestBodyTrim, indentation) {
                 if (!_.isEmpty(enabledBodyList)) {
                     bodyMap = _.map(enabledBodyList, function (value) {
                         if (value.type === 'text') {
-                            return (`'${sanitize(value.key, request.body.mode, requestBodyTrim)}' => '` +
-                                `${sanitize(value.value, request.body.mode, requestBodyTrim)}'`);
+                            return (`'${sanitize(value.key, request.body.mode, trimRequestBody)}' => '` +
+                                `${sanitize(value.value, request.body.mode, trimRequestBody)}'`);
                         }
                         else if (value.type === 'file') {
-                            return `'${sanitize(value.key, request.body.mode, requestBodyTrim)}'=> ` +
-                            `new CURLFILE('${sanitize(value.src, request.body.mode, requestBodyTrim)}')`;
+                            return `'${sanitize(value.key, request.body.mode, trimRequestBody)}'=> ` +
+                            `new CURLFILE('${sanitize(value.src, request.body.mode, trimRequestBody)}')`;
                         }
                     });
                     requestBody = `${indentation}CURLOPT_POSTFIELDS => array(${bodyMap.join(',')}),\n`;
@@ -52,7 +52,7 @@ module.exports = function (request, requestBodyTrim, indentation) {
             case 'file':
                 requestBody = `${indentation}CURLOPT_POSTFIELDS => array('file' => '@'`;
                 requestBody += `${sanitize(request.body[request.body.mode].src,
-                    request.body.mode, requestBodyTrim)}'),\n`;
+                    request.body.mode, trimRequestBody)}'),\n`;
                 return requestBody;
             default:
                 return requestBody;

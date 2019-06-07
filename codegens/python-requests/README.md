@@ -24,7 +24,7 @@ It requires 3 mandatory parameters `request`, `callback` and `options`
     
     * `requestTimeout` : Integer denoting time after which the request will bail out in milli-seconds (default: 0 -> never bail out)
 
-    * `requestBodyTrim` : Boolean denoting whether to trim request body fields (default: false)
+    * `trimRequestBody` : Boolean denoting whether to trim request body fields (default: false)
 
     * `followRedirect` : Boolean denoting whether to redirect a request (default: true)
 
@@ -37,7 +37,7 @@ It requires 3 mandatory parameters `request`, `callback` and `options`
 sdk = require('postman-collection');
 
 var request = sdk.Request('https://www.google.com'),
-    options = {indentType: 'tab', indentCount: 4, followRediredirect: false, requestBodyTrim: true, requestTimeout: 0};
+    options = {indentType: 'tab', indentCount: 4, followRediredirect: false, trimRequestBody: true, requestTimeout: 0};
 
 convert(request, options, function (err, snippet) {
     if (err) {

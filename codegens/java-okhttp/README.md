@@ -28,7 +28,7 @@ Convert function will take three parameters
     * `indentCount`- integer representing count of indentation required.
     * `includeBoilerplate`- boolean representing whether to include class definition in code snippet 
     * `requestTimeout` : Integer denoting time after which the request will bail out in milli-seconds
-    * `requestBodyTrim` : Boolean denoting whether to trim request body fields
+    * `trimRequestBody` : Boolean denoting whether to trim request body fields
     * `followRedirect` : Boolean denoting whether to redirect a request
 
 * `callback`- callback function with first parameter as error and second parameter as string for code snippet

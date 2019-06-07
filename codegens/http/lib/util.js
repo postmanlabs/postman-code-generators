@@ -29,16 +29,16 @@ function getMembersOfPropertyList (propertyList, includeDisabled = false) {
  * @param {Object} propertyList propertyList
  * @param {String} joinUsing specify string that should be used to join the list of properties
  * @param {Boolean} includeDisabled indicated whether or not to include disabled properties
- * @param {Boolean} requestBodyTrim indicates whether or not to trin request body
+ * @param {Boolean} trimRequestBody indicates whether or not to trin request body
  * @returns {String} Stringified property List
  */
-function convertPropertyListToString (propertyList, joinUsing, includeDisabled = false, requestBodyTrim = false) {
+function convertPropertyListToString (propertyList, joinUsing, includeDisabled = false, trimRequestBody = false) {
   let properties;
 
   properties = getMembersOfPropertyList(propertyList, includeDisabled);
 
   return _.join(_.map(properties, (prop) => {
-    return (requestBodyTrim ? prop.toString().trim() : prop.toString());
+    return (trimRequestBody ? prop.toString().trim() : prop.toString());
   }), joinUsing);
 }
 
@@ -106,10 +106,10 @@ function getHeaders (request) {
  * Returns the request body as a string
  * 
  * @param {Object} request - Postman SDK request 
- * @param {Boolean} requestBodyTrim - Determines whether to trim the body
+ * @param {Boolean} trimRequestBody - Determines whether to trim the body
  * @returns {String} returns Body of the request
  */
-function getBody (request, requestBodyTrim) {
+function getBody (request, trimRequestBody) {
   let requestBody = '';
   /* istanbul ignore else */
   if (request.body) {
@@ -118,14 +118,14 @@ function getBody (request, requestBodyTrim) {
         if (!_.isEmpty(request.body[request.body.mode])) {
           requestBody += request.body[request.body.mode].toString();
         }
-        return requestBodyTrim ? requestBody.trim() : requestBody;
+        return trimRequestBody ? requestBody.trim() : requestBody;
 
       case URL_ENCODED:
         /* istanbul ignore else */
         if (!_.isEmpty(request.body[request.body.mode])) {
-          requestBody += convertPropertyListToString(request.body[request.body.mode], '&', false, requestBodyTrim);
+          requestBody += convertPropertyListToString(request.body[request.body.mode], '&', false, trimRequestBody);
         }
-        return requestBodyTrim ? requestBody.trim() : requestBody;
+        return trimRequestBody ? requestBody.trim() : requestBody;
 
       case FORM_DATA:
         requestBody += `${FORM_DATA_BOUNDARY}\n`;
@@ -136,18 +136,18 @@ function getBody (request, requestBodyTrim) {
             /* istanbul ignore else */
             if (property.type === 'text') {
               requestBody += 'Content-Disposition: form-data; name="';
-              requestBody += `${(requestBodyTrim ? property.key.trim() : property.key)}"\n`;
-              requestBody += `\n${(requestBodyTrim ? property.value.trim() : property.value)}\n`;
+              requestBody += `${(trimRequestBody ? property.key.trim() : property.key)}"\n`;
+              requestBody += `\n${(trimRequestBody ? property.value.trim() : property.value)}\n`;
             }
             else if (property.type === 'file') {
               requestBody += 'Content-Disposition: form-data; name="';
-              requestBody += `${(requestBodyTrim ? property.key.trim() : property.key)}"; filename="<FILE_NAME >"`;
-              requestBody += `\n${(requestBodyTrim ? property.value.trim() : property.value)}\n`;
+              requestBody += `${(trimRequestBody ? property.key.trim() : property.key)}"; filename="<FILE_NAME >"`;
+              requestBody += `\n${(trimRequestBody ? property.value.trim() : property.value)}\n`;
             }
             requestBody += `${FORM_DATA_BOUNDARY}\n`;
           });
         }
-        return requestBodyTrim ? requestBody.trim() : requestBody;
+        return trimRequestBody ? requestBody.trim() : requestBody;
 
       case FILE:
         return JSON.stringify(request.body[request.body.mode]);

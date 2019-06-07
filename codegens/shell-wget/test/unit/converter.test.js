@@ -128,7 +128,7 @@ describe('Shell-Wget converter', function () {
             convert(request, {indentType: 'space',
                 indentCount: 4,
                 requestTimeout: 0,
-                requestBodyTrim: false,
+                trimRequestBody: false,
                 addCacheHeader: false,
                 followRedirect: true}, function (err, snippet) {
                 if (err) {
@@ -214,7 +214,7 @@ describe('Shell-Wget converter', function () {
             expect(getOptions()[1]).to.have.property('id', 'indentType');
             expect(getOptions()[2]).to.have.property('id', 'requestTimeout');
             expect(getOptions()[3]).to.have.property('id', 'followRedirect');
-            expect(getOptions()[4]).to.have.property('id', 'requestBodyTrim');
+            expect(getOptions()[4]).to.have.property('id', 'trimRequestBody');
         });
     });
 

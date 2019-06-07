@@ -14,7 +14,7 @@ Convert function takes three parameters
 * `request` - Postman-SDK Request Object
 
 * `options` - options is an object which hsa following properties
-    * `requestBodyTrim` - Boolean denoting whether to trim request body fields
+    * `trimRequestBody` - Boolean denoting whether to trim request body fields
     * `followRedirect` - Boolean denoting whether to redirect a request
     * `requestTimeout` - Integer denoting time after which the request will bail out in milli-seconds
 
@@ -25,7 +25,7 @@ Convert function takes three parameters
 var request = new sdk.Request('www.google.com'),  //using postman sdk to create request  
     options = {
         requestTimeout: 200,
-        requestBodyTrim: true,
+        trimRequestBody: true,
         followRedirect: true
     };
 convert(request, options, function(error, snippet) {

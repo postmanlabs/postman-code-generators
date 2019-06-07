@@ -278,7 +278,7 @@ describe('Powershell-restmethod converter', function () {
         it('should return all the valid options', function () {
             expect(getOptions()[0]).to.have.property('id', 'requestTimeout');
             expect(getOptions()[1]).to.have.property('id', 'followRedirect');
-            expect(getOptions()[2]).to.have.property('id', 'requestBodyTrim');
+            expect(getOptions()[2]).to.have.property('id', 'trimRequestBody');
         });
     });
 

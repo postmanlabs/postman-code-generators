@@ -22,7 +22,7 @@ describe('Converter test', function () {
   });
 });
 
-describe('Converter test using options.requestBodyTrim', function () {
+describe('Converter test using options.trimRequestBody', function () {
   let requestModeRaw = requests[6], // request.body.mode: raw
     requestModeFormData = requests[4], // request.body.mode: formdata
     requestModeUrlEncoded = requests[7], // request.body.mode: urlencoded
@@ -30,32 +30,32 @@ describe('Converter test using options.requestBodyTrim', function () {
     testRequestModeFormData = new Request(requestModeFormData.request),
     testRequestModeUrlEncoded = new Request(requestModeUrlEncoded.request);
 
-  convert(testRequestModeRaw, { requestBodyTrim: true}, function (err, snippet) {
+  convert(testRequestModeRaw, { trimRequestBody: true}, function (err, snippet) {
     if (err) {
       console.log('Something went wrong while converting the request');
     }
 
-    it(`should generate appropriate http message using options.requestBodyTrim: true, for: ${requestModeRaw.name}`,
+    it(`should generate appropriate http message using options.trimRequestBody: true, for: ${requestModeRaw.name}`,
       function () {
         expect(snippet).to.equal(expectedResults.trimmedResult[0]);
       });
   });
-  convert(testRequestModeFormData, { requestBodyTrim: true}, function (err, snippet) {
+  convert(testRequestModeFormData, { trimRequestBody: true}, function (err, snippet) {
     if (err) {
       console.log('Something went wrong while converting the request');
     }
 
-    it(`should generate appropriate http message using options.requestBodyTrim: true, for: ${requestModeFormData.name}`,
+    it(`should generate appropriate http message using options.trimRequestBody: true, for: ${requestModeFormData.name}`,
       function () {
         expect(snippet).to.equal(expectedResults.trimmedResult[1]);
       });
   });
-  convert(testRequestModeUrlEncoded, { requestBodyTrim: true}, function (err, snippet) {
+  convert(testRequestModeUrlEncoded, { trimRequestBody: true}, function (err, snippet) {
     if (err) {
       console.log('Something went wrong while converting the request');
     }
 
-    it('should generate appropriate http message using options.requestBodyTrim: true, for:' +
+    it('should generate appropriate http message using options.trimRequestBody: true, for:' +
       `${requestModeUrlEncoded.name}`,
     function () {
       expect(snippet).to.equal(expectedResults.trimmedResult[2]);

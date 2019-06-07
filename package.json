@@ -11,7 +11,7 @@
     "package": "npm/package.sh",
     "zip": "npm/zip.sh",
     "prepack": "node npm/pre-package.js",
-    "postinstall": "npm/deepinstall.sh",
+    "postinstall": "npm/post-install.sh",
     "deepinstall": "npm/deepinstall.sh"
   },
   "repository": {

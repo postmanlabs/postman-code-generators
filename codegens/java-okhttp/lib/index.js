@@ -15,7 +15,7 @@ module.exports = {
                 id: 'includeBoilerplate',
                 type: 'boolean',
                 default: false,
-                description: 'whether to include class definition and import statements in code snippet'
+                description: 'Boolean denoting whether to include class definition and import statements in snippet'
             },
             {
                 name: 'Indent Count',
@@ -27,7 +27,8 @@ module.exports = {
             {
                 name: 'Indent type',
                 id: 'indentType',
-                type: 'String',
+                type: 'enum',
+                availableOptions: ['tab', 'space'],
                 default: 'tab',
                 description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
             },
@@ -47,7 +48,7 @@ module.exports = {
             },
             {
                 name: 'Body trim',
-                id: 'requestBodyTrim',
+                id: 'trimRequestBody',
                 type: 'boolean',
                 default: true,
                 description: 'Boolean denoting whether to trim request body fields'

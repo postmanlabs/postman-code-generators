@@ -160,7 +160,8 @@ module.exports = {
             {
                 name: 'Indent type',
                 id: 'indentType',
-                type: 'String',
+                type: 'enum',
+                availableOptions: ['tab', 'space'],
                 default: 'tab',
                 description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
             },
@@ -173,10 +174,17 @@ module.exports = {
             },
             {
                 name: 'Body trim',
-                id: 'requestBodyTrim',
+                id: 'trimRequestBody',
                 type: 'boolean',
                 default: true,
                 description: 'Boolean denoting whether to trim request body fields'
+            },
+            {
+                name: 'Follow redirect',
+                id: 'followRedirect',
+                type: 'boolean',
+                default: true,
+                description: 'Boolean denoting whether or not to automatically follow redirects'
             }
         ];
     },
@@ -193,7 +201,7 @@ module.exports = {
                                                                      default: 1 for indentType: tab)
      * @param {Number} options.requestTimeout - time in milli-seconds after which request will bail out
                                                  (default: 0 -> never bail out)
-     * @param {Boolean} options.requestBodyTrim - whether to trim request body fields (default: false)
+     * @param {Boolean} options.trimRequestBody - whether to trim request body fields (default: false)
      * @param {Boolean} options.followRedirect - whether to allow redirects of a request
      * @param  {Function} callback - Callback function with parameters (error, snippet)
      * @returns {String} Generated swift snippet via callback

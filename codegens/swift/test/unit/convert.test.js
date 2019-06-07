@@ -190,7 +190,7 @@ describe('Swift Converter', function () {
             expect(getOptions()[0]).to.have.property('id', 'indentCount');
             expect(getOptions()[1]).to.have.property('id', 'indentType');
             expect(getOptions()[2]).to.have.property('id', 'requestTimeout');
-            expect(getOptions()[3]).to.have.property('id', 'requestBodyTrim');
+            expect(getOptions()[3]).to.have.property('id', 'trimRequestBody');
         });
     });
 

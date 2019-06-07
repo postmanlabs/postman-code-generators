@@ -151,7 +151,7 @@ function getOptions () {
         },
         {
             name: 'Body trim',
-            id: 'requestBodyTrim',
+            id: 'trimRequestBody',
             type: 'boolean',
             default: true,
             description: 'Boolean denoting whether to trim request body fields'
@@ -201,8 +201,9 @@ function convert (request, options, callback) {
     }
     if (options.requestTimeout > 0) {
         // Powershell rest method accepts timeout in seconds
-        options.requestTimeout /= 1000;
-        codeSnippet += ` -TimeoutSec ${options.requestTimeout}`;
+        let requestTimeout = options.requestTimeout;
+        requestTimeout /= 1000;
+        codeSnippet += ` -TimeoutSec ${requestTimeout}`;
     }
     if (!options.followRedirect) {
         codeSnippet += ' -MaximumRedirection 0';
