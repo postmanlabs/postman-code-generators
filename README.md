@@ -7,7 +7,7 @@ Common codegen repo for postman app
 ## Getting Started
 To get a copy on your local machine
 ```bash
-$ git clone https://github.com/umeshp7/code-generators.git
+$ git clone https://github.com/postmanlabs/code-generators.git
 ```
 #### Prerequisites
 To run any of the Code-Gen, ensure that you have NodeJS >= v8. A copy of the NodeJS installable can be downloaded from https://nodejs.org/en/download/package-manager.
