@@ -12,6 +12,9 @@ pids
 *.seed
 *.pid.lock
 
+# temporarily generated file
+run.js
+
 # Prevent IDE stuff
 .idea
 .vscode

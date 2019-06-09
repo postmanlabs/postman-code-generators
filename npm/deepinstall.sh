@@ -24,6 +24,7 @@ then
     echo "$1 : npm install";
     pushd ./codegens/$CODEGEN &>/dev/null;
     npm install;
+    npm shrinkwrap; # this is run inside each indiv. codegen during packaging
     popd &>/dev/null;
     exit 0;
 else
