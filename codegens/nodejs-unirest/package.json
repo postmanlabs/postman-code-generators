@@ -26,7 +26,9 @@
   "license": "Apache-2.0",
   "homepage": "https://bitbucket.org/postmanlabs/codegen-nodejs-unirest#readme",
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "unirest": "0.6.0"
+  },
   "engines": {
     "node": ">=8"
   }
