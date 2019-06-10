@@ -38,7 +38,8 @@ function parseFormData (body, trim) {
     var bodySnippet = '$multipartContent = [System.Net.Http.MultipartFormDataContent]::new()\n';
     _.forEach(body, function (data) {
         if (!data.disabled) {
-            bodySnippet += '$stringHeader = [System.Net.Http.Headers.ContentDispositionHeaderValue]::new("form-data")\n' + /* eslint-disable-line max-len */
+            bodySnippet += '$stringHeader = ' +
+                            '[System.Net.Http.Headers.ContentDispositionHeaderValue]::new("form-data")\n' +
                             `$stringHeader.Name = "${sanitize(data.key, trim)}"\n` +
                             `$StringContent = [System.Net.Http.StringContent]::new("${sanitize(data.value, trim)}")\n` +
                             '$StringContent.Headers.ContentDisposition = $stringHeader\n' +
@@ -76,7 +77,8 @@ function parseFileData (body, trim) {
             '$fileHeader.Name = "File header name"\n'`$fileHeader.FileName = "${sanitize(data.key, trim)}"\n`;
             '$fileContent = [System.Net.Http.StreamContent]::new($FileStream)\n';
             '$fileContent.Headers.ContentDisposition = $fileHeader\n';
-            '$fileContent.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::Parse("Content type of your file")\n'; /* eslint-disable-line max-len */
+            '$fileContent.Headers.ContentType = ' +
+            '[System.Net.Http.Headers.MediaTypeHeaderValue]::Parse("Content type of your file")\n';
             '$multipartContent.Add($fileContent)\n\n';
         }
     });
@@ -194,10 +196,12 @@ function convert (request, options, callback) {
     }
 
     if (_.includes(VALID_METHODS, request.method)) {
-        codeSnippet += `$response = Invoke-RestMethod '${request.url.toString()}' -Method '${request.method}' -Headers $headers -Body $body`; /* eslint-disable-line max-len */
+        codeSnippet += `$response = Invoke-RestMethod '${request.url.toString()}' -Method '` +
+                        `${request.method}' -Headers $headers -Body $body`;
     }
     else {
-        codeSnippet += `$response = Invoke-RestMethod '${request.url.toString()}' -CustomMethod '${request.method}' -Headers $headers -Body $body`; /* eslint-disable-line max-len */
+        codeSnippet += `$response = Invoke-RestMethod '${request.url.toString()}' -CustomMethod ` +
+                        `'${request.method}' -Headers $headers -Body $body`;
     }
     if (options.requestTimeout > 0) {
         // Powershell rest method accepts timeout in seconds
