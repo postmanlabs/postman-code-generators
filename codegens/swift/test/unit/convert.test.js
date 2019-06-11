@@ -146,8 +146,8 @@ describe('Swift Converter', function () {
         var request = new sdk.Request(mainCollection.item[0].request),
             snippetArray;
 
-        const SINGLE_SPACE = ' '; // default indent type with indent count of 4
-
+        const SINGLE_SPACE = ' ', // default indent type with indent count of 1
+            SINGLE_TAB = '\t';
         it('should generate snippet with default options given no options', function () {
             convert(request, function (error, snippet) {
                 if (error) {
@@ -157,15 +157,15 @@ describe('Swift Converter', function () {
                 snippetArray = snippet.split('\n');
                 for (var i = 0; i < snippetArray.length; i++) {
                     if (snippetArray[i].startsWith('let task = URLSession.shared.dataTask')) {
-                        expect(snippetArray[i + 1].substr(0, 4)).to.equal(SINGLE_SPACE.repeat(4));
-                        expect(snippetArray[i + 1].charAt(4)).to.not.equal(SINGLE_SPACE);
+                        expect(snippetArray[i + 1].charAt(0)).to.equal(SINGLE_TAB);
+                        expect(snippetArray[i + 1].charAt(1)).to.not.equal(SINGLE_TAB);
                     }
                 }
             });
         });
 
-        it('should generate snippet with tab as an indent type with default indent count', function () {
-            convert(request, { indentType: 'tab' }, function (error, snippet) {
+        it('should generate snippet with space as an indent type with default indent count', function () {
+            convert(request, { indentType: 'space' }, function (error, snippet) {
                 if (error) {
                     expect.fail(null, null, error);
                     return;
@@ -173,8 +173,8 @@ describe('Swift Converter', function () {
                 snippetArray = snippet.split('\n');
                 for (var i = 0; i < snippetArray.length; i++) {
                     if (snippetArray[i].startsWith('let task = URLSession.shared.dataTask')) {
-                        expect(snippetArray[i + 1].charAt(0)).to.equal('\t');
-                        expect(snippetArray[i + 1].charAt(1)).to.not.equal('\t');
+                        expect(snippetArray[i + 1].charAt(0)).to.equal(SINGLE_SPACE);
+                        expect(snippetArray[i + 1].charAt(1)).to.not.equal(SINGLE_SPACE);
                     }
                 }
             });
