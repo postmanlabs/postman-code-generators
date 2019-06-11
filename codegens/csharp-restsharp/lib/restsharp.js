@@ -56,7 +56,7 @@ module.exports = {
                 name: 'Indent Count',
                 id: 'indentCount',
                 type: 'integer',
-                default: 0,
+                default: 1,
                 description: 'Integer denoting count of indentation required'
             },
             {
@@ -97,7 +97,7 @@ module.exports = {
      * @module convert
      *
      * @param {Object} request - Postman-SDK request object
-     * @param {Object} options - Options to tweak code snippet generated in C# 
+     * @param {Object} options - Options to tweak code snippet generated in C#
      * @param {String} options.indentType - type for indentation eg: space, tab (default: space)
      * @param {String} options.indentCount - number of spaces or tabs for indentation. (default: 4 for indentType:
                                                                          space, default: 1 for indentType: tab)
