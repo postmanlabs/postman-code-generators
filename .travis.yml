@@ -1,8 +1,8 @@
 dist: 'trusty'
 language: node_js
 node_js:
-- '8'
-
+  - '8'
+env:
+  - DEVMODE=1 
 before_install: 
-- CI=1
-- echo "CI flag is set to run pre/post install scripts of codegens"
+  - echo "DEVMODE flag is set to run pre/post install scripts of codegens"
