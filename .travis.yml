@@ -5,5 +5,4 @@ node_js:
 env:
   - DEVMODE=1 
 before_install: 
-  - DEVMODE=1
-  - echo "CI flag is set to run pre/post install scripts of codegens"
+  - echo "DEVMODE flag is set to run pre/post install scripts of codegens"
