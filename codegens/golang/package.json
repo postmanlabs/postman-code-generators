@@ -16,8 +16,7 @@
   "scripts": {
     "test": "node npm/test.js",
     "test-lint": "node npm/test-lint.js",
-    "test-unit": "node npm/test-unit.js",
-    "postinstall": "npm/post-install.sh"
+    "test-unit": "node npm/test-unit.js"
   },
   "repository": {
     "type": "git",

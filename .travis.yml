@@ -6,3 +6,5 @@ env:
   - DEVMODE=1 
 before_install: 
   - echo "DEVMODE flag is set to run pre/post install scripts of codegens"
+  - echo "Installing additional dependencies required for running tests on travis"
+  - npm run cirequirements
