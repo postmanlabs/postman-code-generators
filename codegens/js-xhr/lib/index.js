@@ -162,7 +162,11 @@ function convert (request, options, callback) {
     if (!_.isFunction(callback)) {
         throw new Error('JS-XHR-Converter: callback is not valid function');
     }
-
+    getOptions().forEach((option) => {
+        if (_.isUndefined(options[option.id])) {
+            options[option.id] = option.default;
+        }
+    });
     var indent, trim, headerSnippet,
         codeSnippet = '',
         bodySnippet = '';

@@ -175,6 +175,11 @@ function convert (request, options, callback) {
     if (!_.isFunction(callback)) {
         throw new Error('Powershell RestMethod Converter callback is not a valid function');
     }
+    getOptions().forEach((option) => {
+        if (_.isUndefined(options[option.id])) {
+            options[option.id] = option.default;
+        }
+    });
 
     var trim = options.trimRequestBody,
         headers, body,

@@ -1,6 +1,7 @@
 var _ = require('./lodash'),
     parseBody = require('./util/parseBody'),
-    sanitize = require('./util/sanitize').sanitize;
+    sanitize = require('./util/sanitize').sanitize,
+    self;
 
 /**
  * Used to parse the request headers
@@ -23,7 +24,7 @@ function getheaders (request, indentation) {
     return 'headers= {}\n';
 }
 
-module.exports = {
+self = module.exports = {
     /**
      * Used to return options which are specific to a particular plugin
      * 
@@ -94,9 +95,14 @@ module.exports = {
         else if (!_.isFunction(callback)) {
             throw new Error('Python-Requests~convert: Callback is not a function');
         }
+        self.getOptions().forEach((option) => {
+            if (_.isUndefined(options[option.id])) {
+                options[option.id] = option.default;
+            }
+        });
 
         identity = options.indentType === 'tab' ? '\t' : ' ';
-        indentation = identity.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+        indentation = identity.repeat(options.indentCount);
         snippet += 'import requests\n\n';
         snippet += `url = "${sanitize(request.url.toString(), 'url')}"\n\n`;
         snippet += `${parseBody(request.toJSON(), indentation, options.trimRequestBody)}`;

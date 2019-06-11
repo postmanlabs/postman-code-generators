@@ -1,6 +1,7 @@
 var _ = require('./lodash'),
     sanitize = require('./util').sanitize,
-    isFile = false;
+    isFile = false,
+    self;
 
 /**
  * Parses Raw data to fetch syntax
@@ -122,12 +123,17 @@ function parseHeaders (headers, indent) {
     return headerSnippet;
 }
 
-module.exports = {
+self = module.exports = {
     convert: function (request, options, callback) {
 
         if (!_.isFunction(callback)) {
             throw new Error('GoLang-Converter: callback is not valid function');
         }
+        self.getOptions().forEach((option) => {
+            if (_.isUndefined(options[option.id])) {
+                options[option.id] = option.default;
+            }
+        });
 
         var codeSnippet, indent, trim, timeout, followRedirect,
             bodySnippet = '',
@@ -135,7 +141,7 @@ module.exports = {
             headerSnippet = '';
 
         indent = options.indentType === 'tab' ? '\t' : ' ';
-        indent = indent.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+        indent = indent.repeat(options.indentCount);
         timeout = options.requestTimeout;
         followRedirect = options.followRedirect;
         trim = options.trimRequestBody;

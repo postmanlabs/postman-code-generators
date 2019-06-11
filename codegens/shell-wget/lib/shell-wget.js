@@ -1,11 +1,12 @@
 var _ = require('./lodash'),
     parseBody = require('./util/parseBody'),
-    sanitize = require('./util/sanitize').sanitize;
+    sanitize = require('./util/sanitize').sanitize,
+    self;
 
 /**
  * Used to parse the request headers
- * 
- * @param  {Object} request - postman SDK-request object 
+ *
+ * @param  {Object} request - postman SDK-request object
  * @param  {String} indentation - used for indenting snippet's structure
  * @returns {String} - request headers in the desired format
  */
@@ -23,12 +24,12 @@ function getHeaders (request, indentation) {
     return `${indentation}--header '' \\`;
 }
 
-module.exports = {
+self = module.exports = {
     /**
      * Used to return options which are specific to a particular plugin
-     * 
+     *
      * @module getOptions
-     * 
+     *
      * @returns {Array}
      */
     getOptions: function () {
@@ -75,14 +76,14 @@ module.exports = {
     },
 
     /**
-    * Used to convert the postman sdk-request object in php-curl reuqest snippet 
-    * 
+    * Used to convert the postman sdk-request object in php-curl reuqest snippet
+    *
     * @module convert
-    * 
+    *
     * @param  {Object} request - postman SDK-request object
     * @param  {Object} options
     * @param  {String} options.indentType - type of indentation eg: space / tab (default: space)
-    * @param  {Number} options.indentCount - frequency of indent (default: 4 for indentType: space, 
+    * @param  {Number} options.indentCount - frequency of indent (default: 4 for indentType: space,
                                                                     default: 1 for indentType: tab)
     * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
                                                 (default: 0 -> never bail out)
@@ -102,9 +103,14 @@ module.exports = {
         else if (!_.isFunction(callback)) {
             throw new Error('Shell-wget~convert: Callback is not a function');
         }
+        self.getOptions().forEach((option) => {
+            if (_.isUndefined(options[option.id])) {
+                options[option.id] = option.default;
+            }
+        });
 
         identity = options.indentType === 'tab' ? '\t' : ' ';
-        indentation = identity.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+        indentation = identity.repeat(options.indentCount);
         // concatenation and making up the final string
 
         snippet = 'wget --no-check-certificate --quiet \\\n';

@@ -1,21 +1,27 @@
 var sanitize = require('./util').sanitize,
     form = require('./util').form,
-    _ = require('./lodash');
+    _ = require('./lodash'),
+    self;
 
-module.exports = {
+self = module.exports = {
     convert: function (request, options, callback) {
 
         if (!_.isFunction(callback)) {
             throw new Error('Curl-Converter: callback is not valid function');
         }
+        self.getOptions().forEach((option) => {
+            if (_.isUndefined(options[option.id])) {
+                options[option.id] = option.default;
+            }
+        });
 
         var indent, trim, headersData, body, text, redirect, timeout, multiLine, format, snippet, silent;
-        redirect = options.followRedirect || _.isUndefined(options.followRedirect);
-        timeout = options.requestTimeout ? options.requestTimeout : 0;
-        multiLine = options.multiLine || _.isUndefined(options.multiLine);
-        format = options.longFormat || _.isUndefined(options.longFormat);
-        trim = options.trimRequestBody ? options.trimRequestBody : false;
-        silent = options.silent ? options.silent : false;
+        redirect = options.followRedirect;
+        timeout = options.requestTimeout;
+        multiLine = options.multiLine;
+        format = options.longFormat;
+        trim = options.trimRequestBody;
+        silent = options.silent;
 
         snippet = silent ? `curl ${form('-s', format)}` : 'curl';
         if (redirect) {
@@ -26,7 +32,7 @@ module.exports = {
         }
         if (multiLine) {
             indent = options.indentType === 'tab' ? '\t' : ' ';
-            indent = ' ' + options.lineContinuationCharacter + '\n' + indent.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4)); // eslint-disable-line max-len
+            indent = ' ' + options.lineContinuationCharacter + '\n' + indent.repeat(options.indentCount); // eslint-disable-line max-len
         }
         else {
             indent = ' ';

@@ -1,5 +1,6 @@
 var _ = require('./lodash'),
-    sanitize = require('./util').sanitize;
+    sanitize = require('./util').sanitize,
+    self;
 
 /**
  * Parses Raw data from request to fetch syntax
@@ -192,7 +193,7 @@ function getMethodArg (method) {
     return methodArg;
 }
 
-module.exports = {
+self = module.exports = {
     /**
      * Used in order to get options for generation of OCaml code snippet
      *
@@ -267,6 +268,11 @@ module.exports = {
         else if (!_.isFunction(callback)) {
             throw new Error('OCaml-Cohttp-Converter: callback is not valid function');
         }
+        self.getOptions().forEach((option) => {
+            if (_.isUndefined(options[option.id])) {
+                options[option.id] = option.default;
+            }
+        });
 
         var codeSnippet, indent, trim, finalUrl, methodArg, // timeout, followRedirect,
             bodySnippet = '',
@@ -275,7 +281,7 @@ module.exports = {
             requestBodyMode = (request.body ? request.body.mode : 'raw');
 
         indent = options.indentType === 'tab' ? '\t' : ' ';
-        indent = indent.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+        indent = indent.repeat(options.indentCount);
         // timeout = options.requestTimeout;
         // followRedirect = options.followRedirect;
         trim = options.trimRequestBody;

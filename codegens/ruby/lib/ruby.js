@@ -1,6 +1,7 @@
 var _ = require('./lodash'),
     parseBody = require('./util/parseBody'),
-    sanitize = require('./util/sanitize').sanitize;
+    sanitize = require('./util/sanitize').sanitize,
+    self;
 
 /**
  * Used to parse the request headers
@@ -18,7 +19,7 @@ function parseHeaders (headers) {
     return headerSnippet;
 }
 
-module.exports = {
+self = module.exports = {
     /**
      * Used to return options which are specific to a particular plugin
      *
@@ -92,9 +93,14 @@ module.exports = {
         else if (!_.isFunction(callback)) {
             throw new Error('Ruby~convert: Callback is not a function');
         }
+        self.getOptions().forEach((option) => {
+            if (_.isUndefined(options[option.id])) {
+                options[option.id] = option.default;
+            }
+        });
 
         identity = options.indentType === 'tab' ? '\t' : ' ';
-        indentation = identity.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+        indentation = identity.repeat(options.indentCount);
         // concatenation and making up the final string
         snippet = 'require "uri"\n';
         snippet += 'require "net/http"\n\n';

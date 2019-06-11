@@ -1,7 +1,8 @@
 var _ = require('./lodash'),
 
     parseRequest = require('./parseRequest'),
-    sanitize = require('./util').sanitize;
+    sanitize = require('./util').sanitize,
+    self;
 
 /**
  * Generates snippet in csharp-restsharp by parsing data from Postman-SDK request object
@@ -35,7 +36,7 @@ function makeSnippet (request, options) {
     return snippet;
 }
 
-module.exports = {
+self = module.exports = {
     /**
      * Used in order to get additional options for generation of C# code snippet (i.e. Include Boilerplate code)
      *
@@ -97,7 +98,7 @@ module.exports = {
      * @module convert
      *
      * @param {Object} request - Postman-SDK request object
-     * @param {Object} options - Options to tweak code snippet generated in C# 
+     * @param {Object} options - Options to tweak code snippet generated in C#
      * @param {String} options.indentType - type for indentation eg: space, tab (default: space)
      * @param {String} options.indentCount - number of spaces or tabs for indentation. (default: 4 for indentType:
                                                                          space, default: 1 for indentType: tab)
@@ -124,9 +125,14 @@ module.exports = {
 
             //  snippet to create request in csharp-restsharp
             snippet = '';
+        self.getOptions().forEach((option) => {
+            if (_.isUndefined(options[option.id])) {
+                options[option.id] = option.default;
+            }
+        });
 
         indentString = options.indentType === 'tab' ? '\t' : ' ';
-        indentString = indentString.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+        indentString = indentString.repeat(options.indentCount);
 
         if (options.includeBoilerplate) {
             headerSnippet = 'using System;\n' +

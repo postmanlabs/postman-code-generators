@@ -1,6 +1,7 @@
 const _ = require('./lodash'),
 
     parseRequest = require('./parseRequest');
+var self;
 
 /**
  * retuns snippet of nodejs(native) by parsing data from Postman-SDK request object
@@ -113,7 +114,7 @@ function makeSnippet (request, indentString, options) {
  * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
  * @param {Function} callback - callback function with parameters (error, snippet)
  */
-module.exports = {
+self = module.exports = {
     /**
      * Used to return options which are specific to a particular plugin
      *
@@ -162,12 +163,17 @@ module.exports = {
         if (!_.isFunction(callback)) {
             throw new Error('NodeJS-Request-Converter: callback is not valid function');
         }
+        self.getOptions().forEach((option) => {
+            if (_.isUndefined(options[option.id])) {
+                options[option.id] = option.default;
+            }
+        });
 
         //  String representing value of indentation required
         var indentString;
 
         indentString = options.indentType === 'tab' ? '\t' : ' ';
-        indentString = indentString.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+        indentString = indentString.repeat(options.indentCount);
 
         return callback(null, makeSnippet(request, indentString, options));
     }

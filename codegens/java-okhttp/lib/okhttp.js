@@ -8,11 +8,11 @@ const METHODS_WITHOUT_BODY = ['GET', 'HEAD', 'COPY', 'UNLOCK', 'UNLINK', 'PURGE'
 
 /**
  * retuns snippet of java okhttp by parsing data from Postman-SDK request object
- * 
+ *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required for code snippet
  * @param {Object} options - Options to tweak code snippet
- * @returns {String} - java okhttp code snippet for given request object 
+ * @returns {String} - java okhttp code snippet for given request object
  */
 function makeSnippet (request, indentString, options) {
 
@@ -50,11 +50,66 @@ function makeSnippet (request, indentString, options) {
 }
 
 /**
+ * Used in order to get options for generation of Java okhattp code snippet (i.e. Include Boilerplate code)
+ *
+ * @module getOptions
+ *
+ * @returns {Array} Options specific to generation of Java okhattp code snippet
+ */
+function getOptions () {
+    return [
+        {
+            name: 'Include Boilerplate',
+            id: 'includeBoilerplate',
+            type: 'boolean',
+            default: false,
+            description: 'Boolean denoting whether to include class definition and import statements in snippet'
+        },
+        {
+            name: 'Indent Count',
+            id: 'indentCount',
+            type: 'integer',
+            default: 0,
+            description: 'Integer denoting count of indentation required'
+        },
+        {
+            name: 'Indent type',
+            id: 'indentType',
+            type: 'enum',
+            availableOptions: ['tab', 'space'],
+            default: 'tab',
+            description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
+        },
+        {
+            name: 'Request Timeout',
+            id: 'requestTimeout',
+            type: 'integer',
+            default: 0,
+            description: 'Integer denoting time after which the request will bail out in milliseconds'
+        },
+        {
+            name: 'Follow redirect',
+            id: 'followRedirect',
+            type: 'boolean',
+            default: true,
+            description: 'Boolean denoting whether or not to automatically follow redirects'
+        },
+        {
+            name: 'Body trim',
+            id: 'trimRequestBody',
+            type: 'boolean',
+            default: true,
+            description: 'Boolean denoting whether to trim request body fields'
+        }
+    ];
+}
+
+/**
  * Converts Postman sdk request object to java okhttp code snippet
  *
  * @module convert
  *
- * @param {Object} request - postman-SDK request object 
+ * @param {Object} request - postman-SDK request object
  * @param {Object} options - Options to tweak code snippet generated in Java-OkHttp
  * @param {String} options.indentType - type for indentation eg: space, tab
  * @param {String} options.indentCount - number of spaces or tabs for indentation.
@@ -64,7 +119,7 @@ function makeSnippet (request, indentString, options) {
  * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
  * @param {Function} callback - callback function with parameters (error, snippet)
  */
-module.exports = function (request, options, callback) {
+function convert (request, options, callback) {
 
     if (_.isFunction(options)) {
         callback = options;
@@ -73,7 +128,11 @@ module.exports = function (request, options, callback) {
     else if (!_.isFunction(callback)) {
         throw new Error('Java-OkHttp-Converter: callback is not valid function');
     }
-
+    getOptions().forEach((option) => {
+        if (_.isUndefined(options[option.id])) {
+            options[option.id] = option.default;
+        }
+    });
     //  String representing value of indentation required
     var indentString,
 
@@ -85,7 +144,7 @@ module.exports = function (request, options, callback) {
         snippet = '';
 
     indentString = options.indentType === 'tab' ? '\t' : ' ';
-    indentString = indentString.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+    indentString = indentString.repeat(options.indentCount);
 
     if (options.includeBoilerplate) {
         headerSnippet = 'import java.io.*;\n' +
@@ -103,4 +162,8 @@ module.exports = function (request, options, callback) {
     (snippet = indentString.repeat(2) + snippet.split('\n').join('\n' + indentString.repeat(2)) + '\n');
 
     return callback(null, headerSnippet + snippet + footerSnippet);
+}
+module.exports = {
+    convert: convert,
+    getOptions: getOptions
 };

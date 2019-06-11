@@ -1,6 +1,7 @@
 var _ = require('./lodash'),
     parseBody = require('./util/parseBody'),
-    sanitize = require('./util/sanitize').sanitize;
+    sanitize = require('./util/sanitize').sanitize,
+    self;
 
 /**
  * Used to parse the request headers
@@ -23,7 +24,7 @@ function getHeaders (request, indentation) {
     return '';
 }
 
-module.exports = {
+self = module.exports = {
     /**
      * Used to return options which are specific to a particular plugin
      *
@@ -95,9 +96,14 @@ module.exports = {
         else if (!_.isFunction(callback)) {
             throw new Error('Php-Curl~convert: Callback is not a function');
         }
+        self.getOptions().forEach((option) => {
+            if (_.isUndefined(options[option.id])) {
+                options[option.id] = option.default;
+            }
+        });
 
         identity = options.indentType === 'tab' ? '\t' : ' ';
-        indentation = identity.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+        indentation = identity.repeat(options.indentCount);
         // concatenation and making up the final string
         finalUrl = request.url.toString();
         if (finalUrl !== encodeURI(finalUrl)) {
@@ -110,8 +116,8 @@ module.exports = {
         snippet += `${indentation}CURLOPT_RETURNTRANSFER => true,\n`;
         snippet += `${indentation}CURLOPT_ENCODING => "",\n`;
         snippet += `${indentation}CURLOPT_MAXREDIRS => 10,\n`;
-        snippet += `${indentation}CURLOPT_TIMEOUT => ${options.requestTimeout || 0},\n`;
-        snippet += `${indentation}CURLOPT_FOLLOWLOCATION => ${options.followRedirect || false},\n`;
+        snippet += `${indentation}CURLOPT_TIMEOUT => ${options.requestTimeout},\n`;
+        snippet += `${indentation}CURLOPT_FOLLOWLOCATION => ${options.followRedirect},\n`;
         snippet += `${indentation}CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,\n`;
         snippet += `${indentation}CURLOPT_CUSTOMREQUEST => "${request.method}",\n`;
         snippet += `${parseBody(request.toJSON(), options.trimRequestBody, indentation)}`;
