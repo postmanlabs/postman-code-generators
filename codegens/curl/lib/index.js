@@ -112,7 +112,7 @@ self = module.exports = {
                 name: 'Line Continuation Character',
                 id: 'lineContinuationCharacter',
                 availableOptions: ['\\', '^'],
-                type: 'string',
+                type: 'enum',
                 default: '\\',
                 description: 'denoting the line continuation character for generated codegen'
             },
@@ -134,7 +134,7 @@ self = module.exports = {
                 name: 'Body trim',
                 id: 'trimRequestBody',
                 type: 'boolean',
-                default: true,
+                default: false,
                 description: 'Boolean denoting whether to trim request body fields'
             },
             {

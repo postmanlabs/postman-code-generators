@@ -1,6 +1,6 @@
 {
   "name": "postman-code-generators",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Generates code snippets for a postman collection",
   "main": "index.js",
   "directories": {
@@ -12,7 +12,8 @@
     "zip": "npm/zip.sh",
     "prepack": "node npm/pre-package.js",
     "postinstall": "npm/post-install.sh",
-    "deepinstall": "npm/deepinstall.sh"
+    "deepinstall": "npm/deepinstall.sh",
+    "cirequirements": "npm/ci-requirements.sh"
   },
   "repository": {
     "type": "git",
