@@ -2,7 +2,10 @@ dist: 'trusty'
 language: node_js
 node_js:
   - '8'
-env:
-  - DEVMODE=1 
 before_install: 
   - echo "DEVMODE flag is set to run pre/post install scripts of codegens"
+  - echo "Installing additional dependencies required for running tests on travis"
+  - npm run cirequirements
+before_script:
+  - echo "Installing dev dependencies required of all codegens"
+  - npm run deepinstall dev
