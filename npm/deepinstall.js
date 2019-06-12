@@ -37,12 +37,11 @@ async.series([
   function (next) {
     var codegens = getSubfolders(PATH_TO_CODEGENS_FOLDER);
     codegens.forEach((codegen) => {
-      var cdOutput = shell.cd(codegen.path),
-        commandOut;
-      if (cdOutput.code !== 0) {
-        console.error('Failed to move into codegen ' + codegen.name);
-        return next(cdOutput.code);
-      }
+
+      shell.cd(codegen.path);
+
+      var commandOut;
+
       console.log(codegen.name + ': npm install ' + PRODUCTION_FLAG);
       commandOut = shell.exec('npm install ' + PRODUCTION_FLAG, { silent: true });
 
