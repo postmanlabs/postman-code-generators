@@ -6,7 +6,7 @@
   "com_postman_plugin": {
     "type": "code_generator",
     "lang": "ocaml",
-    "variant": "cohttp",
+    "variant": "Cohttp",
     "syntax_mode": "ocaml"
   },
   "directories": {

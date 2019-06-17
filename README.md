@@ -21,10 +21,6 @@ To install the dependencies of common repo as well as dependencies of all the in
 ```bash
 $ npm install;
 ```
-To install dependencies of a single codegen
-```bash
-$ npm run deepinstall <codegen-name>; 
-```
 To install dependencies for all codegens run: 
 ```bash
 $ npm run deepinstall dev; 
