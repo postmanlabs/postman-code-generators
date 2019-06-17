@@ -6,7 +6,7 @@
   "com_postman_plugin": {
     "type": "code_generator",
     "lang": "http",
-    "variant": "http",
+    "variant": "HTTP",
     "syntax_mode": "text"
   },
   "repository": {
