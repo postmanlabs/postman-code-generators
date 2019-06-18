@@ -70,6 +70,10 @@ function getEndPoint (request) {
  * @returns {String} host
  */
 function getHost (request) {
+  if (!request.url.host) {
+    return '';
+  }
+
   let host = _.join(request.url.host, '.');
   if (request.url.port) {
     host += `:${request.url.port}`;

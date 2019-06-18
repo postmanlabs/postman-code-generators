@@ -116,7 +116,7 @@ function parseHeader (request, indentString) {
  * @returns {String} - code snippet of nodejs native to add hostname 
  */
 function parseHost (request, indentString) {
-    var hostArray = _.get(request, 'url.host'),
+    var hostArray = _.get(request, 'url.host', []),
         hostSnippet = indentString + '\'hostname\': \'';
 
     if (hostArray.length) {
