@@ -4,8 +4,8 @@ var _ = require('./lodash'),
 
 /**
  * Used to parse the request headers
- * 
- * @param  {Object} request - postman SDK-request object 
+ *
+ * @param  {Object} request - postman SDK-request object
  * @param  {String} indentation - used for indenting snippet's structure
  * @returns {String} - request headers in the desired format
  */
@@ -33,7 +33,7 @@ function getheaders (request, indentation) {
 
 /**
  * Generates URL's path with query string
- * 
+ *
  * @param {Object} requestUrl - Postman Sdk Request's Url object
  * @returns {String} - Url path with query (no host)
  */
@@ -52,7 +52,7 @@ function getUrlPathWithQuery (requestUrl) {
 module.exports = {
     /**
      * Used to return options which are specific to a particular plugin
-     * 
+     *
      * @module getOptions
      *
      * @returns {Array}
@@ -69,8 +69,9 @@ module.exports = {
             {
                 name: 'Indent type',
                 id: 'indentType',
-                type: 'String',
+                type: 'enum',
                 default: 'tab',
+                availableOptions: ['tab', 'space'],
                 description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
             },
             {
@@ -78,18 +79,18 @@ module.exports = {
                 id: 'requestTimeout',
                 type: 'integer',
                 default: 0,
-                description: 'Integer denoting time after which the request will bail out in milli-seconds'
+                description: 'Integer denoting time after which the request will bail out in milliseconds'
             },
             {
                 name: 'Follow redirect',
                 id: 'followRedirect',
                 type: 'boolean',
                 default: true,
-                description: 'Boolean denoting whether to redirect a request'
+                description: 'Boolean denoting whether or not to automatically follow redirects'
             },
             {
                 name: 'Body trim',
-                id: 'requestBodyTrim',
+                id: 'trimRequestBody',
                 type: 'boolean',
                 default: true,
                 description: 'Boolean denoting whether to trim request body fields'
@@ -98,14 +99,14 @@ module.exports = {
     },
 
     /**
-    * Used to convert the postman sdk-request object in python-httpclient reuqest snippet 
+    * Used to convert the postman sdk-request object in python-httpclient reuqest snippet
     *
     * @module convert
     *
     * @param  {Object} request - postman SDK-request object
     * @param  {Object} options - Options to tweak code snippet generated in Python
     * @param  {String} options.indentType - type of indentation eg: space / tab (default: space)
-    * @param  {Number} options.indentCount - frequency of indent (default: 4 for indentType: space, 
+    * @param  {Number} options.indentCount - frequency of indent (default: 4 for indentType: space,
                                                                     default: 1 for indentType: tab)
     * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
                                                 (default: 0 -> never bail out)
