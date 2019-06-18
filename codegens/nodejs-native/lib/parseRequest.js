@@ -123,8 +123,10 @@ function parseHost (request, indentString) {
         hostSnippet += _.reduce(hostArray, function (accumalator, key) {
             accumalator.push(`${sanitize(key)}`);
             return accumalator;
-        }, []).join('.') + '\'';
+        }, []).join('.');
     }
+
+    hostSnippet += '\'';
 
     return hostSnippet;
 }
