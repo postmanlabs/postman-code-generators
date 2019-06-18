@@ -1,6 +1,6 @@
 {
   "name": "postman-code-generators",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Generates code snippets for a postman collection",
   "main": "index.js",
   "directories": {
