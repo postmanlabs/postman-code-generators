@@ -50,8 +50,8 @@ function makeSnippet (request, indentString, options) {
     optionsArray.push(parseRequest.parseHeader(request, indentString));
 
     if (options.followRedirect) {
-        optionsArray.push(indentString + '\'maxRedirects\': 21 // sets the maximum number of allowed ' +
-            'redirect; default 21');
+        optionsArray.push(indentString + '\'maxRedirects\': 20 // sets the maximum number of allowed ' +
+            'redirect; default 20');
     }
 
     snippet += optionsArray.join(',\n') + '\n';
