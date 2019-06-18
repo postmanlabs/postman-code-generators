@@ -26,12 +26,14 @@ const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'json',
         'accept',
         'cookie',
         'total-route-time',
-        'kong-cloud-request-id'
+        'kong-cloud-request-id',
+        'cache-control',
+        'postman-token'
     ];
 
 /**
  * Executes codesnippet and compares output with newman response
- * 
+ *
  * @param {String} codeSnippet - code snippet from convert function
  * @param {Object} collection - sample collection
  * @param {Function} done - callback for async calls
@@ -246,7 +248,7 @@ describe('Python- Requests converter', function () {
             expect(getOptions()[1]).to.have.property('id', 'indentType');
             expect(getOptions()[2]).to.have.property('id', 'requestTimeout');
             expect(getOptions()[3]).to.have.property('id', 'followRedirect');
-            expect(getOptions()[4]).to.have.property('id', 'requestBodyTrim');
+            expect(getOptions()[4]).to.have.property('id', 'trimRequestBody');
         });
     });
 
