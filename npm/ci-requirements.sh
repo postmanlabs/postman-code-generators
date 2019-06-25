@@ -13,9 +13,12 @@ echo "Installing dependencies required for tests in codegens/php-curl"
 
 sudo apt-get install -y php5 php5-cli php5-curl
 
-echo "Installing dependencies required for tests in codegens/python-requests"
+echo "Installing dependencies required for tests in codegens/python-requests and shell-httpie"
 sudo apt-get -y install python-pip
 pip install requests
+
+echo "Installing dependencies required for tests in codegens/shell-httpie"
+pip install --upgrade httpie
 
 echo "Installing dependencies required for tests in codegens/swift"
 pushd ./codegens/swift &>/dev/null;
