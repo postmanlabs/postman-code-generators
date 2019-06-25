@@ -18,7 +18,7 @@ sudo apt-get -y install python-pip
 pip install requests
 
 echo "Installing dependencies required for tests in codegens/shell-httpie"
-pip install --upgrade httpie
+sudo pip install --upgrade httpie
 
 echo "Installing dependencies required for tests in codegens/swift"
 pushd ./codegens/swift &>/dev/null;
