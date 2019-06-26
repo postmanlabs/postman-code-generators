@@ -141,7 +141,8 @@ function parseHost (request, indentString) {
 function parsePath (request, indentString) {
     var pathArray = _.get(request, 'url.path'),
         queryArray = _.get(request.toJSON(), 'url.query'),
-        pathSnippet = indentString + '\'path\': \'/';
+        pathSnippet = indentString + '\'path\': \'/',
+        querySnippet = '';
 
     if (pathArray && pathArray.length) {
         pathSnippet += _.reduce(pathArray, function (accumalator, key) {
@@ -153,28 +154,23 @@ function parsePath (request, indentString) {
             }
             return accumalator;
         }, []).join('/');
+    }
 
-        if (queryArray && queryArray.length) {
-            const queryExists = !(_.every(queryArray, function (element) {
-                return element.disabled && element.disabled === false;
-            }));
+    if (queryArray && queryArray.length) {
+        const queryExists = !(_.every(queryArray, function (element) {
+            return element.disabled && element.disabled === false;
+        }));
 
-            if (queryExists) {
-                pathSnippet += '?' + _.reduce(queryArray, function (accumalator, queryElement) {
-                    if (!queryElement.disabled || _.get(queryElement, 'disabled') === false) {
-                        accumalator.push(`${queryElement.key}=${encodeURIComponent(sanitize(queryElement.value))}`);
-                    }
-                    return accumalator;
-                }, []).join('&');
-            }
+        if (queryExists) {
+            querySnippet += '?' + _.reduce(queryArray, function (accumalator, queryElement) {
+                if (!queryElement.disabled || _.get(queryElement, 'disabled') === false) {
+                    accumalator.push(`${queryElement.key}=${encodeURIComponent(sanitize(queryElement.value))}`);
+                }
+                return accumalator;
+            }, []).join('&');
         }
-
-        pathSnippet += '\'';
     }
-    else {
-        pathSnippet += '\'';
-    }
-
+    pathSnippet += querySnippet + '\'';
     return pathSnippet;
 }
 
