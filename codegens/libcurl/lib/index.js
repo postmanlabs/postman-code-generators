@@ -27,7 +27,7 @@ module.exports = {
       indent = newline + indent.repeat(options.indentCount);
     }
     snippet = '#include <stdio.h>' + newline + '#include <string.h>' + newline +
-    '#include <curl/curl.h>' + newline + 'int main(int argc, char *argv[]){';
+    '#include <curl/curl.h>' + newline + 'int main(int argc, char *argv[]){\n';
     snippet += 'CURL *curl;';
     snippet += newline + 'CURLcode res;';
     snippet += newline + 'curl = curl_easy_init();';

@@ -27,31 +27,32 @@ function runSnippet (codeSnippet, collection, done) {
     //  step by step process for compile, run code snippet, then comparing its output with newman
     parallel([
       function (callback) {
-        exec('gcc testFile.c $(curl-config --cflags) $(curl-config --libs)', function (err, stdout, stderr) {
-          if (err) {
-            return callback(err);
-          }
-          if (stderr) {
-            return callback(stderr);
-          }
-
-          return exec('./a.out', function (err, stdout, stderr) {
+        exec('`curl-config --cc --cflags` -o executableFile testFile.c `curl-config --libs`',
+          function (err, stdout, stderr) {
             if (err) {
               return callback(err);
             }
             if (stderr) {
               return callback(stderr);
             }
-            try {
-              stdout = JSON.parse(stdout);
-            }
-            catch (e) {
-              console.error(e);
-            }
 
-            return callback(null, stdout);
+            return exec('./executableFile', function (err, stdout, stderr) {
+              if (err) {
+                return callback(err);
+              }
+              if (stderr) {
+                return callback(stderr);
+              }
+              try {
+                stdout = JSON.parse(stdout);
+              }
+              catch (e) {
+                console.error(e);
+              }
+
+              return callback(null, stdout);
+            });
           });
-        });
       },
       function (callback) {
         newman.run({
@@ -159,7 +160,7 @@ describe('curl convert function', function () {
                 console.log('Unable to delete testFile.c');
               }
             });
-            fs.unlinkSync('./a.out', (err) => {
+            fs.unlinkSync('./executableFile', (err) => {
               if (err) {
                 console.log('Unable to deleted executable file');
               }

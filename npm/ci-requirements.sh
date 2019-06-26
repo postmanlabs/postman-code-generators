@@ -17,9 +17,6 @@ echo "Installing dependencies required for tests in codegens/python-requests"
 sudo apt-get -y install python-pip
 pip install requests
 
-echo "Installing dependencies for c libcurl"
-sudo apt-get -y install libcurl4-openssl-dev
-
 echo "Installing dependencies required for tests in codegens/swift"
 pushd ./codegens/swift &>/dev/null;
   sudo apt-get install libicu-dev git -y
