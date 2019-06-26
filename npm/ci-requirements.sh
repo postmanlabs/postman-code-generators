@@ -18,7 +18,7 @@ sudo apt-get -y install python-pip
 pip install requests
 
 echo "Installing dependencies for c libcurl"
-apt-get -y install libcurl4-openssl-dev
+sudo apt-get -y install libcurl4-openssl-dev
 
 echo "Installing dependencies required for tests in codegens/swift"
 pushd ./codegens/swift &>/dev/null;
