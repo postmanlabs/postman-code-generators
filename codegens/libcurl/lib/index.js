@@ -1,0 +1,154 @@
+var sanitize = require('./util').sanitize,
+  _ = require('./lodash');
+
+module.exports = {
+  convert: function (request, options, callback) {
+
+    if (!_.isFunction(callback)) {
+      throw new Error('Curl-Converter: callback is not valid function');
+    }
+
+    var indent = '',
+      trim, headersData, body, text,
+      multiLine,
+      snippet,
+      newline = ' ',
+      formCheck,
+      protocol,
+      responseCode;
+
+    multiLine = options.multiLine || _.isUndefined(options.multiLine);
+    trim = options.trimRequestBody ? options.trimRequestBody : false;
+    protocol = options.protocol ? options.protocol : 'https';
+
+    if (multiLine) {
+      newline = '\n';
+      indent = options.indentType === 'tab' ? '\t' : ' ';
+      indent = newline + indent.repeat(options.indentCount);
+    }
+    snippet = '#include <stdio.h>' + newline + '#include <string.h>' + newline +
+    '#include <curl/curl.h>' + newline + 'int main(int argc, char *argv[]){';
+    snippet += 'CURL *curl;';
+    snippet += newline + 'CURLcode res;';
+    snippet += newline + 'curl = curl_easy_init();';
+    snippet += newline + 'if(curl) {';
+    snippet += indent + `curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "${request.method}");`;
+    snippet += indent + `curl_easy_setopt(curl, CURLOPT_URL, "${encodeURI(request.url.toString())}");`;
+    snippet += indent + `curl_easy_setopt(curl, CURLOPT_DEFAULT_PROTOCOL, "${protocol}");`;
+    snippet += indent + 'struct curl_slist *headers = NULL;';
+    headersData = request.getHeaders({ enabled: true });
+    _.forEach(headersData, function (value, key) {
+      snippet += indent + `headers = curl_slist_append(headers, "${key}: ${value}");`;
+    });
+    snippet += indent + 'curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);';
+    //request body
+    if (request.method === 'HEAD') {
+      snippet += indent + 'curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);';
+    }
+    body = request.body.toJSON();
+    if (!_.isEmpty(body)) {
+      switch (body.mode) {
+        case 'urlencoded':
+          text = [];
+          _.forEach(body.urlencoded, function (data) {
+            if (!data.disabled) {
+              text.push(`${escape(data.key)}=${escape(data.value)}`);
+            }
+          });
+          snippet += indent + `const char *data = "${text.join('&')}";`;
+          snippet += indent + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);';
+          break;
+        case 'raw':
+          snippet += indent + `const char *data = "${sanitize(body.raw.toString(), trim)}";`;
+          snippet += indent + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);';
+          break;
+        case 'formdata':
+          snippet += indent + 'curl_mime *mime;';
+          snippet += indent + 'curl_mimepart *part;';
+          snippet += indent + 'mime = curl_mime_init(curl);';
+          snippet += indent + 'part = curl_mime_addpart(mime);';
+          formCheck = false;
+
+          _.forEach(body.formdata, function (data) {
+            if (!(data.disabled)) {
+              if (formCheck) {
+                snippet += indent + 'part = curl_mime_addpart(mime);';
+              }
+              else {
+                formCheck = true;
+              }
+              if (data.type === 'file') {
+                snippet += indent + `curl_mime_name(part, "${sanitize(data.key, trim)}");`;
+                snippet += indent + `curl_mime_filedata(part, "${sanitize(data.src, trim)}");`;
+              }
+              else {
+                snippet += indent + `curl_mime_name(part, "${sanitize(data.key, trim)}");`;
+                snippet += indent + `curl_mime_data(part, "${sanitize(data.value, trim)}", CURL_ZERO_TERMINATED);`;
+              }
+            }
+          });
+          snippet += indent + 'curl_easy_setopt(curl, CURLOPT_MIMEPOST, mime);';
+          break;
+        case 'file':
+          snippet += indent + `const char *data = "${sanitize(body.key, trim)}=@${sanitize(body.value, trim)}";`;
+          snippet += indent + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);';
+          break;
+        default:
+          snippet = String(snippet);
+      }
+    }
+
+    snippet += indent + 'res = curl_easy_perform(curl);';
+    responseCode = ['if(res == CURLE_OK) {', 'long response_code;',
+      'curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);',
+      'if(!res && response_code) printf("%03ld", response_code);', '}'];
+
+    snippet += indent + responseCode.join(indent);
+    if (body.mode === 'formdata') {
+      snippet += indent + 'curl_mime_free(mime);';
+    }
+    snippet += newline + '}';
+    snippet += newline + 'curl_easy_cleanup(curl);' + newline + 'return (int)res;' + newline + '}';
+    callback(null, snippet);
+  },
+  getOptions: function () {
+    return [
+      {
+        name: 'MultiLine Curl Request',
+        id: 'multiLine',
+        type: 'boolean',
+        default: true,
+        description: 'denoting whether to get the request in single or multiple lines'
+      },
+      {
+        name: 'Curl Request`s Protocol',
+        id: 'protocol',
+        type: 'string',
+        default: 'https',
+        description: 'denoting the protocol type used in the request'
+      },
+      {
+        name: 'Indent Count',
+        id: 'indentCount',
+        type: 'integer',
+        default: 1,
+        description: 'Integer denoting count of indentation required'
+      },
+      {
+        name: 'Indent type',
+        id: 'indentType',
+        type: 'enum',
+        availableOptions: ['tab', 'space'],
+        default: 'tab',
+        description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
+      },
+      {
+        name: 'Body trim',
+        id: 'trimRequestBody',
+        type: 'boolean',
+        default: true,
+        description: 'Boolean denoting whether to trim request body fields'
+      }
+    ];
+  }
+};
