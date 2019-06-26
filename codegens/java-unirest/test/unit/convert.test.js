@@ -12,7 +12,7 @@ var expect = require('chai').expect,
 
 /**
  * compiles and runs codesnippet then compare it with newman output
- * 
+ *
  * @param {String} codeSnippet - code snippet that needed to run using java
  * @param {Object} collection - collection which will be run using newman
  * @param {Function} done - callback for async calls
@@ -24,7 +24,7 @@ function runSnippet (codeSnippet, collection, done) {
             return done();
         }
 
-        //  classpath of external libararies for java to compile 
+        //  classpath of external libararies for java to compile
         var classpath = 'dependencies/*',
 
             //  bash command string for compiling java
@@ -210,10 +210,10 @@ describe('java unirest convert function for test collection', function () {
         });
 
         it('should return snippet with disableRedirectHandling function for' +
-            'follor redirect option', function () {
+            'follow redirect option set to false', function () {
             request = new sdk.Request(mainCollection.item[0].request);
             options = {
-                followRedirect: true
+                followRedirect: false
             };
             convert(request, options, function (error, snippet) {
                 if (error) {
@@ -299,12 +299,12 @@ describe('java unirest convert function for test collection', function () {
         });
 
         it('should return all the valid options', function () {
-            expect(getOptions()[0]).to.have.property('id', 'indentCount');
-            expect(getOptions()[1]).to.have.property('id', 'indentType');
-            expect(getOptions()[2]).to.have.property('id', 'requestTimeout');
-            expect(getOptions()[3]).to.have.property('id', 'followRedirect');
-            expect(getOptions()[4]).to.have.property('id', 'trimRequestBody');
-            expect(getOptions()[5]).to.have.property('id', 'includeBoilerplate');
+            expect(getOptions()[0]).to.have.property('id', 'includeBoilerplate');
+            expect(getOptions()[1]).to.have.property('id', 'indentCount');
+            expect(getOptions()[2]).to.have.property('id', 'indentType');
+            expect(getOptions()[3]).to.have.property('id', 'requestTimeout');
+            expect(getOptions()[4]).to.have.property('id', 'followRedirect');
+            expect(getOptions()[5]).to.have.property('id', 'trimRequestBody');
         });
     });
 
