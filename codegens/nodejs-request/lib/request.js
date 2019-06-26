@@ -5,11 +5,11 @@ var _ = require('./lodash'),
 
 /**
  * retuns snippet of nodejs(request) by parsing data from Postman-SDK request object
- * 
+ *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required for code snippet
  * @param {Object} options
- * @returns {String} - nodejs(request) code snippet for given request object 
+ * @returns {String} - nodejs(request) code snippet for given request object
  */
 function makeSnippet (request, indentString, options) {
     var snippet = 'var request = require(\'request\');\n',
@@ -18,15 +18,15 @@ function makeSnippet (request, indentString, options) {
     snippet += 'var fs = require(\'fs\')\n';
     snippet += 'var options = {\n';
 
-    /** 
+    /**
      * creating string to represent options object using optionArray.join()
      * example:
      *  options: {
      *      method: 'GET',
      *      url: 'www.google.com',
-     *      timeout: 1000   
+     *      timeout: 1000
      *  }
-     */ 
+     */
     optionsArray.push(indentString + `'method': '${request.method}'`);
     optionsArray.push(indentString + `'url': '${sanitize(request.url.toString())}'`);
 
@@ -65,7 +65,7 @@ function getOptions () {
             name: 'Indent Count',
             id: 'indentCount',
             type: 'integer',
-            default: 0,
+            default: 2,
             description: 'Integer denoting count of indentation required'
         },
         {
@@ -73,7 +73,7 @@ function getOptions () {
             id: 'indentType',
             type: 'enum',
             availableOptions: ['tab', 'space'],
-            default: 'tab',
+            default: 'space',
             description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
         },
         {
@@ -102,8 +102,8 @@ function getOptions () {
 
 /**
  * Converts Postman sdk request object to nodejs request code snippet
- * 
- * @param {Object} request - postman-SDK request object 
+ *
+ * @param {Object} request - postman-SDK request object
  * @param {Object} options
  * @param {String} options.indentType - type for indentation eg: space, tab
  * @param {String} options.indentCount - number of spaces or tabs for indentation.
