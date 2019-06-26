@@ -15,8 +15,8 @@ Convert function takes three parameters
 
 * `options` - options is an object which hsa following properties
     * `indentType` - String denoting type of indentation for code snippet. eg: 'space', 'tab'
-    * `indentCount` - Integer denoting count of indentation required
-    * `trimRequestBody` - Boolean denoting whether to trim request body fields
+    * `indentCount` - Number of indentation characters to add per code level
+    * `trimRequestBody` - Trim request body fields
     * `followRedirect` - Boolean denoting whether to redirect a request
     * `requestTimeout` - Integer denoting time after which the request will bail out in milli-seconds
 

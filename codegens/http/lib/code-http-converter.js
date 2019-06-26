@@ -27,7 +27,7 @@ module.exports = {
       id: 'trimRequestBody',
       type: 'boolean',
       default: true,
-      description: 'Boolean denoting whether to trim request body fields'
+      description: 'Trim request body fields'
     }];
   },
 

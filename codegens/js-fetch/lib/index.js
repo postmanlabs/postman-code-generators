@@ -125,11 +125,11 @@ function parseHeaders (headers) {
 function getOptions () {
     return [
         {
-            name: 'Indent Count',
+            name: 'Indent count',
             id: 'indentCount',
             type: 'integer',
             default: 0,
-            description: 'Integer denoting count of indentation required'
+            description: 'Number of indentation characters to add per code level'
         },
         {
             name: 'Indent type',
@@ -137,28 +137,28 @@ function getOptions () {
             type: 'enum',
             availableOptions: ['tab', 'space'],
             default: 'tab',
-            description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
+            description: 'Character used for indentation'
         },
         {
-            name: 'Request Timeout',
+            name: 'Request timeout',
             id: 'requestTimeout',
             type: 'integer',
             default: 0,
-            description: 'Integer denoting time after which the request will bail out in milliseconds'
+            description: 'How long the request should wait for a response before timing out (milliseconds)'
         },
         {
             name: 'Follow redirect',
             id: 'followRedirect',
             type: 'boolean',
             default: true,
-            description: 'Boolean denoting whether or not to automatically follow redirects'
+            description: 'Automatically follow HTTP redirects'
         },
         {
             name: 'Body trim',
             id: 'trimRequestBody',
             type: 'boolean',
             default: true,
-            description: 'Boolean denoting whether to trim request body fields'
+            description: 'Trim request body fields'
         }
     ];
 }
@@ -223,7 +223,7 @@ function convert (request, options, callback) {
         timeoutSnippet += `.then(response => response.text()),\n${indent}`;
         timeoutSnippet += `new Promise((resolve, reject) =>\n${indent}${indent}`;
         timeoutSnippet += `setTimeout(() => reject(new Error('Timeout')), ${options.requestTimeout})\n${indent}`;
-        timeoutSnippet += ')\n])\n';
+        timeoutSnippet += ')\n]);\n\n';
         timeoutSnippet += 'promise.then(result => console.log(result)),\n';
         timeoutSnippet += 'promise.catch(error => console.log(error));';
         codeSnippet += timeoutSnippet;

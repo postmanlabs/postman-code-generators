@@ -4,8 +4,8 @@ var _ = require('./lodash'),
 
 /**
  * Used to parse the request headers
- * 
- * @param  {Object} request - postman SDK-request object 
+ *
+ * @param  {Object} request - postman SDK-request object
  * @param  {String} indentation - used for indenting snippet's structure
  * @returns {String} - request headers in the desired format
  */
@@ -26,9 +26,9 @@ function getHeaders (request, indentation) {
 module.exports = {
     /**
      * Used to return options which are specific to a particular plugin
-     * 
+     *
      * @module getOptions
-     * 
+     *
      * @returns {Array}
      */
     getOptions: function () {
@@ -36,11 +36,11 @@ module.exports = {
         // Also, place where to log the output if required.
         return [
             {
-                name: 'Indent Count',
+                name: 'Indent count',
                 id: 'indentCount',
                 type: 'integer',
                 default: 4,
-                description: 'Integer denoting count of indentation required'
+                description: 'Number of indentation characters to add per code level'
             },
             {
                 name: 'Indent type',
@@ -48,41 +48,41 @@ module.exports = {
                 type: 'enum',
                 availableOptions: ['tab', 'space'],
                 default: 'space',
-                description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
+                description: 'Character used for indentation'
             },
             {
-                name: 'Request Timeout',
+                name: 'Request timeout',
                 id: 'requestTimeout',
                 type: 'integer',
                 default: 0,
-                description: 'Integer denoting time after which the request will bail out in milliseconds'
+                description: 'How long the request should wait for a response before timing out (milliseconds)'
             },
             {
                 name: 'Follow redirect',
                 id: 'followRedirect',
                 type: 'boolean',
                 default: true,
-                description: 'Boolean denoting whether or not to automatically follow redirects'
+                description: 'Automatically follow HTTP redirects'
             },
             {
                 name: 'Body trim',
                 id: 'trimRequestBody',
                 type: 'boolean',
                 default: false,
-                description: 'Boolean denoting whether to trim request body fields'
+                description: 'Trim request body fields'
             }
         ];
     },
 
     /**
-    * Used to convert the postman sdk-request object in php-curl reuqest snippet 
-    * 
+    * Used to convert the postman sdk-request object in php-curl reuqest snippet
+    *
     * @module convert
-    * 
+    *
     * @param  {Object} request - postman SDK-request object
     * @param  {Object} options
     * @param  {String} options.indentType - type of indentation eg: space / tab (default: space)
-    * @param  {Number} options.indentCount - frequency of indent (default: 4 for indentType: space, 
+    * @param  {Number} options.indentCount - frequency of indent (default: 4 for indentType: space,
                                                                     default: 1 for indentType: tab)
     * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
                                                 (default: 0 -> never bail out)

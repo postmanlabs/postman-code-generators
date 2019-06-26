@@ -55,11 +55,11 @@ module.exports = {
      */
     getOptions: function () {
         return [{
-            name: 'Indent Count',
+            name: 'Indent count',
             id: 'indentCount',
             type: 'integer',
             default: 1,
-            description: 'Integer denoting count of indentation required'
+            description: 'Number of indentation characters to add per code level'
         },
         {
             name: 'Indent type',
@@ -67,21 +67,21 @@ module.exports = {
             type: 'enum',
             availableOptions: ['tab', 'space'],
             default: 'tab',
-            description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
+            description: 'Character used for indentation'
         },
         {
-            name: 'Request Timeout',
+            name: 'Request timeout',
             id: 'requestTimeout',
             type: 'integer',
             default: 0,
-            description: 'Integer denoting time after which the request will bail out in milliseconds'
+            description: 'How long the request should wait for a response before timing out (milliseconds)'
         },
         {
             name: 'Body trim',
             id: 'trimRequestBody',
             type: 'boolean',
             default: true,
-            description: 'Boolean denoting whether to trim request body fields'
+            description: 'Trim request body fields'
         }];
     },
 
