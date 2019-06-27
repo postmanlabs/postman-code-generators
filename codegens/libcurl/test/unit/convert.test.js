@@ -84,7 +84,7 @@ function runSnippet (codeSnippet, collection, done) {
         expect(result[0].toString().trim()).to.include(result[1].toString().trim());
       }
       else {
-        const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime'],
+        const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'clientIPAddress'],
           headersTodelete = [
             'accept-encoding',
             'user-agent',
@@ -100,7 +100,8 @@ function runSnippet (codeSnippet, collection, done) {
             'total-route-time',
             'cookie',
             'cache-control',
-            'postman-token'
+            'postman-token',
+            'x-real-ip'
           ];
 
         if (result[0]) {
