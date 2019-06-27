@@ -43,7 +43,7 @@ module.exports = {
       snippet += indent + `headers = curl_slist_append(headers, "${key}: ${value}");`;
     });
     body = request.body.toJSON();
-    if (body.mode && body.mode === 'formdata' && !options.useMimeFormat) {
+    if (body.mode && body.mode === 'formdata' && !options.useMimeType) {
       snippet += indent + 'headers = curl_slist_append(headers, "content-type:' +
                 ` multipart/form-data; boundary=${BOUNDARY}");`;
     }
@@ -69,7 +69,7 @@ module.exports = {
           snippet += indent + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);';
           break;
         case 'formdata':
-          if (options.useMimeFormat) {
+          if (options.useMimeType) {
             snippet += indent + 'curl_mime *mime;';
             snippet += indent + 'curl_mimepart *part;';
             snippet += indent + 'mime = curl_mime_init(curl);';
@@ -123,7 +123,7 @@ module.exports = {
       'if(!res && response_code) printf("%03ld", response_code);', '}'];
 
     snippet += indent + responseCode.join(indent);
-    if (body.mode === 'formdata' && options.useMimeFormat) {
+    if (body.mode === 'formdata' && options.useMimeType) {
       snippet += indent + 'curl_mime_free(mime);';
     }
     snippet += newline + '}';
@@ -170,7 +170,7 @@ module.exports = {
       },
       {
         name: 'Use Mime Format',
-        id: 'useMimeFormat',
+        id: 'useMimeType',
         type: 'boolean',
         default: true,
         description: 'Use the mime format to send formdata requests'
