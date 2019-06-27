@@ -2,7 +2,14 @@
 set -ev; # stop on error
 echo "Updating curl package required for libcurl tests"
 sudo apt-get update
-sudo apt-get install curl
+sudo apt-get install wget
+wget https://curl.haxx.se/download/curl-7.65.1.tar.gz
+tar -xvf curl-7.52.1.tar.gz
+cd curl-7*
+./configure
+make
+sudo make install
+
 
 # # Additional dependencies required to run tests on travis, these will be only installed on the CI pipeline. 
 
