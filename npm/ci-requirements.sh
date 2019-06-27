@@ -1,6 +1,7 @@
 #!/bin/bash
 set -ev; # stop on error
 echo "Installing dependencies required for tests in for shell-httpie"
+sudo apt-get update
 sudo apt-get install httpie
 
 # # Additional dependencies required to run tests on travis, these will be only installed on the CI pipeline. 
