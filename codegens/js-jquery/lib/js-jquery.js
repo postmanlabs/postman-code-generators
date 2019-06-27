@@ -58,7 +58,7 @@ module.exports = {
             name: 'Indent Count',
             id: 'indentCount',
             type: 'integer',
-            default: 1,
+            default: 2,
             description: 'Integer denoting count of indentation required'
         },
         {
@@ -66,7 +66,7 @@ module.exports = {
             id: 'indentType',
             type: 'enum',
             availableOptions: ['tab', 'space'],
-            default: 'tab',
+            default: 'space',
             description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
         },
         {

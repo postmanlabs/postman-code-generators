@@ -595,11 +595,11 @@ describe('Request Snippet', function () {
         it('should return an array of specific options', function () {
             expect(options).to.be.an('array');
         });
-        it('should have 0 as default indent count ', function () {
-            expect(options[0].default).to.equal(0);
+        it('should have 2 as default indent count ', function () {
+            expect(options[0].default).to.equal(2);
         });
-        it('should have tab as default indent type ', function () {
-            expect(options[1].default).to.equal('tab');
+        it('should have space as default indent type ', function () {
+            expect(options[1].default).to.equal('space');
         });
         it('should have 0 as default request timeout ', function () {
             expect(options[2].default).to.equal(0);
