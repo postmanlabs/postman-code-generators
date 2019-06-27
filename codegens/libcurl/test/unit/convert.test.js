@@ -36,13 +36,15 @@ function runSnippet (codeSnippet, collection, done) {
               return callback(stderr);
             }
 
-            return exec('./executableFile', function (err, stdout, stderr) {
+            exec('./executableFile', function (err, stdout, stderr) {
               if (err) {
                 return callback(err);
               }
               if (stderr) {
                 return callback(stderr);
               }
+              // this because libcurl's stdout returns a 200(response code) at the end of response body
+              stdout = stdout.substring(0, stdout.length - 3);
               try {
                 stdout = JSON.parse(stdout);
               }
@@ -96,7 +98,9 @@ function runSnippet (codeSnippet, collection, done) {
             'content-length',
             'accept',
             'total-route-time',
-            'cookie'
+            'cookie',
+            'cache-control',
+            'postman-token'
           ];
 
         if (result[0]) {
@@ -128,7 +132,7 @@ function runSnippet (codeSnippet, collection, done) {
   });
 }
 
-describe('curl convert function', function () {
+describe('libcurl convert function', function () {
   describe('convert for different request types', function () {
 
     mainCollection.item.forEach(function (item) {
