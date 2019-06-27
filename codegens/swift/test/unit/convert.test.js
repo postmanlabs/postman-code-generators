@@ -112,7 +112,7 @@ function runSnippet (codeSnippet, collection, done) {
 }
 
 describe('Swift Converter', function () {
-    describe.skip('convert for different request types', function () {
+    describe('convert for different request types', function () {
 
         mainCollection.item.forEach(function (item) {
             it(item.name, function (done) {
