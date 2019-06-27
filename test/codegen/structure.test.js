@@ -74,7 +74,8 @@ const expectedOptions = {
     'includeBoilerplate',
     'followRedirect',
     'lineContinuationCharacter',
-    'protocol'
+    'protocol',
+    'useMimeFormat'
   ],
   CODEGEN_ABS_PATH = `./codegens/${codegen}`;
 describe('Code-gen repository ' + codegen, function () {

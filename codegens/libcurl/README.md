@@ -18,7 +18,8 @@ Convert function takes three parameters
     * `indentCount` - Integer denoting count of indentation required
     * `trimRequestBody` - Boolean denoting whether to trim request body fields
     * `protocol` - String denoting the protocol type used in the request
-    *  `multiLine` - Boolean denoting whether to get the request in single or multiple lines
+    * `multiLine` - Boolean denoting whether to get the request in single or multiple lines
+    * `useMimeType` - Boolean denoting whether to use mime type format to post formdata    
 
 * `callback` - callback function with first parameter as error and second parameter as string for code snippet
 
@@ -30,7 +31,8 @@ var request = new sdk.Request('www.google.com'),  //using postman sdk to create 
         indentType: 'space',
         trimRequestBody: true,
         protocol: 'https',
-        multiLine: true
+        multiLine: true,
+        useMimeType: true
     };
 convert(request, options, function(error, snippet) {
     if (error) {

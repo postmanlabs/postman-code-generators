@@ -14,7 +14,9 @@ module.exports = {
       snippet,
       newline = ' ',
       formCheck,
+      formdataString = '',
       protocol,
+      BOUNDARY = '----WebKitFormBoundary7MA4YWxkTrZu0gW',
       responseCode;
 
     multiLine = options.multiLine || _.isUndefined(options.multiLine);
@@ -40,12 +42,16 @@ module.exports = {
     _.forEach(headersData, function (value, key) {
       snippet += indent + `headers = curl_slist_append(headers, "${key}: ${value}");`;
     });
+    body = request.body.toJSON();
+    if (body.mode && body.mode === 'formdata' && !options.useMimeFormat) {
+      snippet += indent + 'headers = curl_slist_append(headers, "content-type:' +
+                ` multipart/form-data; boundary=${BOUNDARY}");`;
+    }
     snippet += indent + 'curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);';
     //request body
     if (request.method === 'HEAD') {
       snippet += indent + 'curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);';
     }
-    body = request.body.toJSON();
     if (!_.isEmpty(body)) {
       switch (body.mode) {
         case 'urlencoded':
@@ -63,31 +69,44 @@ module.exports = {
           snippet += indent + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);';
           break;
         case 'formdata':
-          snippet += indent + 'curl_mime *mime;';
-          snippet += indent + 'curl_mimepart *part;';
-          snippet += indent + 'mime = curl_mime_init(curl);';
-          snippet += indent + 'part = curl_mime_addpart(mime);';
-          formCheck = false;
+          if (options.useMimeFormat) {
+            snippet += indent + 'curl_mime *mime;';
+            snippet += indent + 'curl_mimepart *part;';
+            snippet += indent + 'mime = curl_mime_init(curl);';
+            snippet += indent + 'part = curl_mime_addpart(mime);';
+            formCheck = false;
 
-          _.forEach(body.formdata, function (data) {
-            if (!(data.disabled)) {
-              if (formCheck) {
-                snippet += indent + 'part = curl_mime_addpart(mime);';
+            _.forEach(body.formdata, function (data) {
+              if (!(data.disabled)) {
+                if (formCheck) {
+                  snippet += indent + 'part = curl_mime_addpart(mime);';
+                }
+                else {
+                  formCheck = true;
+                }
+                if (data.type === 'file') {
+                  snippet += indent + `curl_mime_name(part, "${sanitize(data.key, trim)}");`;
+                  snippet += indent + `curl_mime_filedata(part, "${sanitize(data.src, trim)}");`;
+                }
+                else {
+                  snippet += indent + `curl_mime_name(part, "${sanitize(data.key, trim)}");`;
+                  snippet += indent + `curl_mime_data(part, "${sanitize(data.value, trim)}", CURL_ZERO_TERMINATED);`;
+                }
               }
-              else {
-                formCheck = true;
+            });
+            snippet += indent + 'curl_easy_setopt(curl, CURLOPT_MIMEPOST, mime);';
+          }
+          else {
+            BOUNDARY = '--' + BOUNDARY;
+            _.forEach(body.formdata, function (data) {
+              if (!data.disabled) {
+                formdataString += BOUNDARY + '\\r\\nContent-Disposition: form-data; name=' +
+                 `\\"${sanitize(data.key)}\\"\\r\\n\\r\\n${sanitize(data.value)}\\r\\n`;
               }
-              if (data.type === 'file') {
-                snippet += indent + `curl_mime_name(part, "${sanitize(data.key, trim)}");`;
-                snippet += indent + `curl_mime_filedata(part, "${sanitize(data.src, trim)}");`;
-              }
-              else {
-                snippet += indent + `curl_mime_name(part, "${sanitize(data.key, trim)}");`;
-                snippet += indent + `curl_mime_data(part, "${sanitize(data.value, trim)}", CURL_ZERO_TERMINATED);`;
-              }
-            }
-          });
-          snippet += indent + 'curl_easy_setopt(curl, CURLOPT_MIMEPOST, mime);';
+            });
+            formdataString += BOUNDARY + '--';
+            snippet += indent + `curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "${formdataString}");`;
+          }
           break;
         case 'file':
           snippet += indent + `const char *data = "${sanitize(body.key, trim)}=@${sanitize(body.value, trim)}";`;
@@ -104,7 +123,7 @@ module.exports = {
       'if(!res && response_code) printf("%03ld", response_code);', '}'];
 
     snippet += indent + responseCode.join(indent);
-    if (body.mode === 'formdata') {
+    if (body.mode === 'formdata' && options.useMimeFormat) {
       snippet += indent + 'curl_mime_free(mime);';
     }
     snippet += newline + '}';
@@ -148,6 +167,13 @@ module.exports = {
         type: 'boolean',
         default: true,
         description: 'Boolean denoting whether to trim request body fields'
+      },
+      {
+        name: 'Use Mime Format',
+        id: 'useMimeFormat',
+        type: 'boolean',
+        default: true,
+        description: 'Use the mime format to send formdata requests'
       }
     ];
   }

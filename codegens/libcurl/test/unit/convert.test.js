@@ -43,7 +43,7 @@ function runSnippet (codeSnippet, collection, done) {
               if (stderr) {
                 return callback(stderr);
               }
-              // this because libcurl's stdout returns a 200(response code) at the end of response body
+              // this because response also display response code at the end of response body
               stdout = stdout.substring(0, stdout.length - 3);
               try {
                 stdout = JSON.parse(stdout);
@@ -150,7 +150,8 @@ describe('libcurl convert function', function () {
             indentCount: 1,
             indentType: 'tab',
             requestTimeout: 200,
-            multiLine: true
+            multiLine: true,
+            useMimeType: false
           };
 
         convert(request, options, function (error, snippet) {
@@ -203,6 +204,7 @@ describe('libcurl convert function', function () {
       expect(options[2]).to.have.property('id', 'indentCount');
       expect(options[3]).to.have.property('id', 'indentType');
       expect(options[4]).to.have.property('id', 'trimRequestBody');
+      expect(options[5]).to.have.property('id', 'useMimeType');
     });
   });
 
