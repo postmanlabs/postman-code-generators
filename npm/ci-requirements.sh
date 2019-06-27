@@ -1,5 +1,8 @@
-# #!/bin/bash
-# set -ev; # stop on error
+#!/bin/bash
+set -ev; # stop on error
+echo "Updating curl package required for libcurl tests"
+sudo apt-get update
+sudo apt-get install curl
 
 # # Additional dependencies required to run tests on travis, these will be only installed on the CI pipeline. 
 
