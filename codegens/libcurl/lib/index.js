@@ -133,47 +133,48 @@ module.exports = {
   getOptions: function () {
     return [
       {
-        name: 'MultiLine Curl Request',
-        id: 'multiLine',
-        type: 'boolean',
-        default: true,
-        description: 'denoting whether to get the request in single or multiple lines'
+          name: 'Multiline snippet',
+          id: 'multiLine',
+          type: 'boolean',
+          default: true,
+          description: 'Split code across multiple lines'
       },
       {
-        name: 'Curl Request`s Protocol',
-        id: 'protocol',
-        type: 'string',
-        default: 'https',
-        description: 'denoting the protocol type used in the request'
+          name: 'Protocol',
+          id: 'protocol',
+          type: 'enum',
+          availableOptions: ['http', 'https'],
+          default: 'https',
+          description: 'The protocol to be used to make the request'
       },
       {
-        name: 'Indent Count',
-        id: 'indentCount',
-        type: 'integer',
-        default: 1,
-        description: 'Integer denoting count of indentation required'
+          name: 'Indent count',
+          id: 'indentCount',
+          type: 'integer',
+          default: 2,
+          description: 'Number of indentation characters to add per code level'
       },
       {
-        name: 'Indent type',
-        id: 'indentType',
-        type: 'enum',
-        availableOptions: ['tab', 'space'],
-        default: 'tab',
-        description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
+          name: 'Indent type',
+          id: 'indentType',
+          type: 'enum',
+          availableOptions: ['tab', 'space'],
+          default: 'space',
+          description: 'Character used for indentation'
       },
       {
-        name: 'Body trim',
-        id: 'trimRequestBody',
-        type: 'boolean',
-        default: true,
-        description: 'Boolean denoting whether to trim request body fields'
+          name: 'Body trim',
+          id: 'trimRequestBody',
+          type: 'boolean',
+          default: true,
+          description: 'Trim request body fields'
       },
       {
-        name: 'Use Mime Format',
-        id: 'useMimeType',
-        type: 'boolean',
-        default: true,
-        description: 'Use the mime format to send formdata requests'
+          name: 'Use Mime Format',
+          id: 'useMimeType',
+          type: 'boolean',
+          default: true,
+          description: 'Use curl_mime to send multipart/form-data requests'
       }
     ];
   }
