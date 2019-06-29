@@ -208,7 +208,7 @@ module.exports = {
             name: 'Indent count',
             id: 'indentCount',
             type: 'integer',
-            default: 1,
+            default: 2,
             description: 'Number of indentation characters to add per code level'
         },
         {
@@ -216,7 +216,7 @@ module.exports = {
             id: 'indentType',
             type: 'enum',
             availableOptions: ['tab', 'space'],
-            default: 'tab',
+            default: 'space',
             description: 'Character used for indentation'
         },
         {

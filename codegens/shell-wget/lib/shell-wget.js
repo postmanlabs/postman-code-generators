@@ -39,7 +39,7 @@ module.exports = {
                 name: 'Indent count',
                 id: 'indentCount',
                 type: 'integer',
-                default: 4,
+                default: 2,
                 description: 'Number of indentation characters to add per code level'
             },
             {

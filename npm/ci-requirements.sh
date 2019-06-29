@@ -1,6 +1,7 @@
 #!/bin/bash
 set -ev; # stop on error
 
+
 # Additional dependencies required to run tests on travis, these will be only installed on the CI pipeline. 
 
 echo "Installing dependencies required for tests in codegens/golang"

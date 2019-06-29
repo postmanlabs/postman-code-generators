@@ -130,6 +130,66 @@
       "response": []
     },
     {
+      "name": "GET Request with no path and has query params",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "var responseJSON;",
+              "",
+              "try { ",
+              "    responseJSON = JSON.parse(responseBody); ",
+              "    tests['response is valid JSON'] = true;",
+              "}",
+              "catch (e) { ",
+              "    responseJSON = {}; ",
+              "    tests['response is valid JSON'] = false;",
+              "}",
+              "",
+              "tests['response json contains headers'] = _.has(responseJSON, 'headers');",
+              "tests['response json contains args'] = _.has(responseJSON, 'args');",
+              "tests['response json contains url'] = _.has(responseJSON, 'url');",
+              "",
+              "tests['args key contains argument passed as url parameter'] = ('test' in responseJSON.args);",
+              "tests['args passed via request url params has value \"123\"'] = (_.get(responseJSON, 'args.test') === \"123\");"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {},
+        "url": {
+          "raw": "https://89c918b1-f4f8-4812-8e6c-69ecbeeb8409.mock.pstmn.io?query1=1&query2=2",
+          "protocol": "https",
+          "host": [
+            "89c918b1-f4f8-4812-8e6c-69ecbeeb8409",
+            "mock",
+            "pstmn",
+            "io"
+          ],
+          "path": [],
+          "query": [
+            {
+              "key": "query1",
+              "value": "1",
+              "equals": true
+            },
+            {
+              "key": "query2",
+              "value": "2",
+              "equals": true
+            }
+          ]
+        },
+        "description": "The HTTP `GET` request method is meant to retrieve data from a server. The data\nis identified by a unique URI (Uniform Resource Identifier). \n\nA `GET` request can pass parameters to the server using \"Query String \nParameters\". For example, in the following request,\n\n> http://example.com/hi/there?hand=wave\n\nThe parameter \"hand\" has the value \"wave\".\n\nThis endpoint echoes the HTTP headers, request parameters and the complete\nURI requested."
+      },
+      "response": []
+    },
+    {
       "name": "POST Raw Text",
       "event": [
         {

@@ -4,11 +4,11 @@ var _ = require('./lodash'),
 
 /**
  * retuns snippet of nodejs(unirest) by parsing data from Postman-SDK request object
- * 
+ *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required for code snippet
  * @param {Object} options
- * @returns {String} - nodejs(unirest) code snippet for given request object 
+ * @returns {String} - nodejs(unirest) code snippet for given request object
  */
 function makeSnippet (request, indentString, options) {
     var snippet = 'var unirest = require(\'unirest\');\n';
@@ -46,7 +46,7 @@ function getOptions () {
             name: 'Indent count',
             id: 'indentCount',
             type: 'integer',
-            default: 0,
+            default: 2,
             description: 'Number of indentation characters to add per code level'
         },
         {
@@ -54,7 +54,7 @@ function getOptions () {
             id: 'indentType',
             type: 'enum',
             availableOptions: ['tab', 'space'],
-            default: 'tab',
+            default: 'space',
             description: 'Character used for indentation'
         },
         {
@@ -83,8 +83,8 @@ function getOptions () {
 
 /**
  * Converts Postman sdk request object to nodejs(unirest) code snippet
- * 
- * @param {Object} request - postman-SDK request object 
+ *
+ * @param {Object} request - postman-SDK request object
  * @param {Object} options
  * @param {String} options.indentType - type for indentation eg: space, tab
  * @param {String} options.indentCount - number of spaces or tabs for indentation.

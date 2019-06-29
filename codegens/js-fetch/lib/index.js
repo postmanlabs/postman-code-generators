@@ -128,7 +128,7 @@ function getOptions () {
             name: 'Indent count',
             id: 'indentCount',
             type: 'integer',
-            default: 0,
+            default: 2,
             description: 'Number of indentation characters to add per code level'
         },
         {
@@ -136,7 +136,7 @@ function getOptions () {
             id: 'indentType',
             type: 'enum',
             availableOptions: ['tab', 'space'],
-            default: 'tab',
+            default: 'space',
             description: 'Character used for indentation'
         },
         {

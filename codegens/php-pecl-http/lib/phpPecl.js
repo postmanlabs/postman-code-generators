@@ -34,14 +34,14 @@ module.exports = {
                 name: 'Indent count',
                 id: 'indentCount',
                 type: 'integer',
-                default: 0,
+                default: 2,
                 description: 'Number of indentation characters to add per code level'
             },
             {
                 name: 'Indent type',
                 id: 'indentType',
                 type: 'enum',
-                default: 'tab',
+                default: 'space',
                 availableOptions: ['tab', 'space'],
                 description: 'Character used for indentation'
             },
