@@ -1,19 +1,35 @@
 var _ = require('./lodash'),
-  Helpers = require('./util/helpers');
+  Helpers = require('./util/helpers'),
+  self;
 
 const GAP = ' ',
   URLENCODED = 'urlencoded',
   FORM_DATA = 'formdata',
   RAW = 'raw';
 
-module.exports = {
+self = module.exports = {
   /**
    * Used to return options which are specific to a particular plugin
    * 
    * @returns {Array}
    */
   getOptions: function () {
-    return [];
+    return [
+      {
+        name: 'Request Timeout',
+        id: 'requestTimeout',
+        type: 'integer',
+        default: 0,
+        description: 'Integer denoting time after which the request will bail out in milliseconds'
+      },
+      {
+        name: 'Follow redirect',
+        id: 'followRedirect',
+        type: 'boolean',
+        default: true,
+        description: 'Boolean denoting whether or not to automatically follow redirects'
+      }
+    ];
   },
 
   /**
@@ -45,9 +61,15 @@ module.exports = {
       throw new Error('Shell-Httpie~convert: Callback not a function');
     }
 
+    self.getOptions().forEach((option) => {
+      if (_.isUndefined(options[option.id])) {
+        options[option.id] = option.default;
+      }
+    });
+
     Helpers.parseURLVariable(request);
     url = Helpers.addHost(request) + Helpers.addPathandQuery(request);
-    timeout = options.requestTimeout || '';
+    timeout = options.requestTimeout;
     parsedHeaders = Helpers.addHeaders(request);
 
     // snippet construction based on the request body

@@ -1,6 +1,7 @@
 var _ = require('./lodash'),
     parseBody = require('./util/parseBody'),
-    sanitize = require('./util/sanitize').sanitize;
+    sanitize = require('./util/sanitize').sanitize,
+    self;
 
 /**
  * Used to get the headers and put them in the desired form of the language
@@ -24,7 +25,7 @@ function getHeaders (request, indentation) {
 }
 
 
-module.exports = {
+self = module.exports = {
     /**
      * @returns {Array} plugin specific options
      */
@@ -92,6 +93,11 @@ module.exports = {
         else if (!_.isFunction(callback)) {
             throw new Error('Php-Pecl(HTTP)~convert: Callback is not a function');
         }
+        self.getOptions().forEach((option) => {
+            if (_.isUndefined(options[option.id])) {
+                options[option.id] = option.default;
+            }
+        });
 
         identity = options.indentType === 'tab' ? '\t' : ' ';
         indentation = identity.repeat(options.indentCount);

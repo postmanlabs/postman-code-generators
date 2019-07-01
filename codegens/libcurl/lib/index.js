@@ -1,12 +1,18 @@
 var sanitize = require('./util').sanitize,
-  _ = require('./lodash');
+  _ = require('./lodash'),
+  self;
 
-module.exports = {
+self = module.exports = {
   convert: function (request, options, callback) {
 
     if (!_.isFunction(callback)) {
       throw new Error('Curl-Converter: callback is not valid function');
     }
+    self.getOptions().forEach((option) => {
+      if (_.isUndefined(options[option.id])) {
+        options[option.id] = option.default;
+      }
+    });
 
     var indent = '',
       trim, headersData, body, text,
@@ -19,9 +25,9 @@ module.exports = {
       BOUNDARY = '----WebKitFormBoundary7MA4YWxkTrZu0gW',
       responseCode;
 
-    multiLine = options.multiLine || _.isUndefined(options.multiLine);
-    trim = options.trimRequestBody ? options.trimRequestBody : false;
-    protocol = options.protocol ? options.protocol : 'https';
+    multiLine = options.multiLine;
+    trim = options.trimRequestBody;
+    protocol = options.protocol;
 
     if (multiLine) {
       newline = '\n';

@@ -1,6 +1,7 @@
 var _ = require('./lodash'),
     sanitize = require('./util/sanitize').sanitize,
-    parseBody = require('./util/parseBody');
+    parseBody = require('./util/parseBody'),
+    self;
 
 /**
  * Used to parse the request headers
@@ -49,7 +50,7 @@ function getUrlPathWithQuery (requestUrl) {
     return urlPathWithQuery;
 }
 
-module.exports = {
+self = module.exports = {
     /**
      * Used to return options which are specific to a particular plugin
      *
@@ -126,9 +127,14 @@ module.exports = {
         else if (!_.isFunction(callback)) {
             throw new Error('Python-Http.Client~convert: Callback is not a function');
         }
+        self.getOptions().forEach((option) => {
+            if (_.isUndefined(options[option.id])) {
+                options[option.id] = option.default;
+            }
+        });
 
         identity = options.indentType === 'tab' ? '\t' : ' ';
-        indentation = identity.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+        indentation = identity.repeat(options.indentCount);
 
         snippet += 'import http.client\n';
         snippet += `conn = http.client.HTTPSConnection("${request.url.host.join('.')}"`;
