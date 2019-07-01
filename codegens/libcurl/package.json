@@ -1,0 +1,25 @@
+{
+  "name": "@postman/codegen-libcurl",
+  "version": "0.1.0",
+  "description": "Converter plugin to convert from postman sdk request to C-LibCurl code snippet",
+  "com_postman_plugin": {
+    "type": "code_generator",
+    "lang": "libcurl",
+    "variant": "libcurl",
+    "syntax_mode": "c_cpp"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "node npm/test.js",
+    "test-lint": "node npm/test-lint.js",
+    "test-unit": "node npm/test-unit.js"
+  },
+  "author": "Postman Labs <help@getpostman.com>",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/libcurl",
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=8"
+  }
+}

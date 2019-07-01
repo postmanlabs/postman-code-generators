@@ -1,8 +1,8 @@
 
-[![Build Status](https://travis-ci.com/postmanlabs/code-generators.svg?branch=master)](https://travis-ci.com/postmanlabs/code-generators)
+[![Build Status](https://travis-ci.com/postmanlabs/postman-code-generators.svg?branch=master)](https://travis-ci.com/postmanlabs/code-generators)
 
 # postman-code-generators
-Common codegen repo for postman app
+Common codegen repo for the Postman app
 
 ## Getting Started
 To get a copy on your local machine
@@ -10,20 +10,16 @@ To get a copy on your local machine
 $ git clone https://github.com/postmanlabs/code-generators.git
 ```
 #### Prerequisites
-To run any of the Code-Gen, ensure that you have NodeJS >= v8. A copy of the NodeJS installable can be downloaded from https://nodejs.org/en/download/package-manager.
+To run any of the code-generators, ensure that you have NodeJS >= v8. A copy of the NodeJS installable can be downloaded from https://nodejs.org/en/download/package-manager.
 
 #### Usage
-* Remove .git folder from each codegen.
+* Remove the `.git` folder from each codegen.
 * Place individual codegen inside `codegens` folder.
 
 #### Installing dependencies
 To install the dependencies of common repo as well as dependencies of all the individual codegens
 ```bash
 $ npm install;
-```
-To install dependencies of a single codegen
-```bash
-$ npm run deepinstall <codegen-name>; 
 ```
 To install dependencies for all codegens run: 
 ```bash

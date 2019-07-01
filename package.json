@@ -1,6 +1,6 @@
 {
   "name": "postman-code-generators",
-  "version": "0.0.5",
+  "version": "0.0.8",
   "description": "Generates code snippets for a postman collection",
   "main": "index.js",
   "directories": {
@@ -11,8 +11,8 @@
     "package": "npm/package.sh",
     "zip": "npm/zip.sh",
     "prepack": "node npm/pre-package.js",
-    "postinstall": "npm/post-install.sh",
-    "deepinstall": "npm/deepinstall.sh",
+    "postinstall": "node npm/deepinstall.js",
+    "deepinstall": "node npm/deepinstall.js",
     "cirequirements": "npm/ci-requirements.sh"
   },
   "repository": {
@@ -23,10 +23,12 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/postmanlabs/code-generators",
   "dependencies": {
-    "postman-collection": "3.4.8"
+    "async": "2.5.0",
+    "path": "0.12.7",
+    "postman-collection": "3.4.8",
+    "shelljs": "0.7.8"
   },
   "devDependencies": {
-    "async": "2.5.0",
     "browserify": "14.4.0",
     "chai": "4.1.2",
     "chalk": "2.1.0",
@@ -37,6 +39,7 @@
     "eslint-plugin-lodash": "2.4.5",
     "eslint-plugin-mocha": "4.11.0",
     "eslint-plugin-security": "1.4.0",
+    "istanbul": "0.4.5",
     "js-yaml": "3.13.1",
     "jsdoc": "3.6.2",
     "jsdoc-to-markdown": "5.0.0",
@@ -48,7 +51,6 @@
     "postman-collection": "3.4.8",
     "pretty-ms": "3.0.1",
     "recursive-readdir": "2.1.0",
-    "shelljs": "0.7.8",
     "watchify": "3.11.1"
   },
   "engines": {

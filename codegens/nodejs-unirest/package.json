@@ -5,7 +5,7 @@
   "com_postman_plugin": {
     "type": "code_generator",
     "lang": "nodejs",
-    "variant": "unirest",
+    "variant": "Unirest",
     "syntax_mode": "javascript"
   },
   "main": "index.js",

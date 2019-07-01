@@ -46,7 +46,7 @@ function getOptions () {
             name: 'Indent Count',
             id: 'indentCount',
             type: 'integer',
-            default: 0,
+            default: 2,
             description: 'Integer denoting count of indentation required'
         },
         {
@@ -54,7 +54,7 @@ function getOptions () {
             id: 'indentType',
             type: 'enum',
             availableOptions: ['tab', 'space'],
-            default: 'tab',
+            default: 'space',
             description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
         },
         {

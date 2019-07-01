@@ -6,7 +6,7 @@
   "com_postman_plugin": {
     "type": "code_generator",
     "lang": "python",
-    "variant": "requests",
+    "variant": "Requests",
     "syntax_mode": "python"
   },
   "directories": {
