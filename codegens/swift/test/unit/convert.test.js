@@ -146,8 +146,7 @@ describe('Swift Converter', function () {
         var request = new sdk.Request(mainCollection.item[0].request),
             snippetArray;
 
-        const SINGLE_SPACE = ' ', // default indent type with indent count of 1
-            SINGLE_TAB = '\t';
+        const SINGLE_SPACE = ' '; // default indent type with indent count of 2
         it('should generate snippet with default options given no options', function () {
             convert(request, function (error, snippet) {
                 if (error) {
@@ -157,8 +156,8 @@ describe('Swift Converter', function () {
                 snippetArray = snippet.split('\n');
                 for (var i = 0; i < snippetArray.length; i++) {
                     if (snippetArray[i].startsWith('let task = URLSession.shared.dataTask')) {
-                        expect(snippetArray[i + 1].charAt(0)).to.equal(SINGLE_TAB);
-                        expect(snippetArray[i + 1].charAt(1)).to.not.equal(SINGLE_TAB);
+                        expect(snippetArray[i + 1].charAt(0)).to.equal(SINGLE_SPACE);
+                        expect(snippetArray[i + 1].charAt(1)).to.equal(SINGLE_SPACE);
                     }
                 }
             });
@@ -174,7 +173,7 @@ describe('Swift Converter', function () {
                 for (var i = 0; i < snippetArray.length; i++) {
                     if (snippetArray[i].startsWith('let task = URLSession.shared.dataTask')) {
                         expect(snippetArray[i + 1].charAt(0)).to.equal(SINGLE_SPACE);
-                        expect(snippetArray[i + 1].charAt(1)).to.not.equal(SINGLE_SPACE);
+                        expect(snippetArray[i + 1].charAt(1)).to.equal(SINGLE_SPACE);
                     }
                 }
             });

@@ -32,7 +32,7 @@ const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'json',
 
 /**
  * Executes codesnippet and compares output with newman response
- * 
+ *
  * @param {String} codeSnippet - code snippet from convert function
  * @param {Object} collection - sample collection
  * @param {Function} done - callback for async calls
@@ -180,7 +180,7 @@ describe('Shell-Wget converter', function () {
                 snippetArray = snippet.split('\n');
                 for (var i = 0; i < snippetArray.length; i++) {
                     if (snippetArray[i].startsWith('wget --no-check-certificate --quiet')) {
-                        expect(snippetArray[i + 1].substr(0, 4)).to.equal(SINGLE_SPACE.repeat(4));
+                        expect(snippetArray[i + 1].substr(0, 2)).to.equal(SINGLE_SPACE.repeat(2));
                         expect(snippetArray[i + 1].charAt(4)).to.not.equal(SINGLE_SPACE);
                     }
                 }

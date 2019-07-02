@@ -13,7 +13,7 @@ var expect = require('chai').expect,
 
 /**
  * compiles and runs codesnippet then compare it with newman output
- * 
+ *
  * @param {String} codeSnippet - code snippet that needed to run using java
  * @param {Object} collection - collection which will be run using newman
  * @param {Function} done - callback for async call from mocha
@@ -218,7 +218,7 @@ describe('nodejs-request convert function', function () {
                     return;
                 }
                 expect(snippet).to.be.a('string');
-                expect(snippet).to.include('\'headers\': {\n}');
+                expect(snippet).to.include('\'headers\': {\n  }');
             });
         });
 
