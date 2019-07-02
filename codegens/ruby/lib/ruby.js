@@ -107,9 +107,11 @@ module.exports = {
         }
         snippet += `url = URI("${sanitize(request.url.toString(), 'url')}")\n\n`;
         if (sanitize(request.url.toString(), 'url').startsWith('https')) {
-            snippet += 'https = Net::HTTP.new(url.host, url.port' +
-                `${options.requestTimeout ? (`, :read_timeout => ${options.requestTimeout / 1000}`) : ''})\n`;
+            snippet += 'https = Net::HTTP.new(url.host, url.port);\n';
             snippet += 'https.use_ssl = true\n\n';
+            if (options.requestTimeout) {
+                snippet += `https.read_timeout = ${Math.ceil(options.requestTimeout / 1000)}\n`;
+            }
             snippet += `request = Net::HTTP::${_.capitalize(request.method)}.new(url)\n`;
             headerSnippet = parseHeaders(request.getHeaders({enabled: true}));
             if (headerSnippet !== '') {
@@ -121,8 +123,10 @@ module.exports = {
             snippet += 'puts response.read_body\n';
         }
         else {
-            snippet += 'http = Net::HTTP.new(url.host, url.port' +
-            `${options.requestTimeout ? (`, :read_timeout => ${options.requestTimeout / 1000}`) : ''})\n\n`;
+            snippet += 'http = Net::HTTP.new(url.host, url.port);\n';
+            if (options.requestTimeout) {
+                snippet += `http.read_timeout = ${Math.ceil(options.requestTimeout / 1000)}\n`;
+            }
             snippet += `request = Net::HTTP::${_.capitalize(request.method)}.new(url)\n`;
             headerSnippet = parseHeaders(request.getHeaders({enabled: true}));
 

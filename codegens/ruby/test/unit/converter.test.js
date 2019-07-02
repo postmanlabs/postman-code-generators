@@ -135,7 +135,7 @@ describe('Ruby converter', function () {
                 };
             convert(request, {indentType: 'space',
                 indentCount: 4,
-                requestTimeout: 100,
+                requestTimeout: 1000,
                 trimRequestBody: false,
                 addCacheHeader: false,
                 followRedirect: true}, function (err, snippet) {
@@ -172,7 +172,7 @@ describe('Ruby converter', function () {
                 expect.fail(null, null, error);
             }
             expect(snippet).to.be.a('string');
-            expect(snippet).to.include(':read_timeout => 3');
+            expect(snippet).to.include('http.read_timeout = 3');
         });
     });
 
