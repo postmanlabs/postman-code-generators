@@ -6,11 +6,11 @@ var _ = require('./lodash'),
 const SUPPORTED_METHODS = ['GET', 'POST', 'PUT', 'HEAD', 'PATCH', 'DELETE', 'OPTIONS'];
 
 /**
- * parses request and returns java unirest code snippet 
- * 
- * @param {Object} request - Postman SDK Request Object 
+ * parses request and returns java unirest code snippet
+ *
+ * @param {Object} request - Postman SDK Request Object
  * @param {String} indentString - indentation required for code snippet
- * @param {Object} options 
+ * @param {Object} options
  * @return {String} - java unirest code snippet
  */
 function makeSnippet (request, indentString, options) {
@@ -18,7 +18,10 @@ function makeSnippet (request, indentString, options) {
         urlString = encodeURI(request.url.toString());
 
     if (options.requestTimeout > 0) {
-        snippet += `Unirest.setTimeouts(${options.requestTimeout}, 0);\n`;
+        snippet += `Unirest.setTimeouts(0, ${options.requestTimeout});\n`;
+    }
+    else {
+        snippet += 'Unirest.setTimeouts(0, 0);\n';
     }
 
     if (options.followRedirect) {
@@ -46,11 +49,11 @@ function makeSnippet (request, indentString, options) {
 
 /**
  * Converts postman sdk request object into http snippet for java unirest
- * 
+ *
  * @param {Object} request - postman-SDK request object
  * @param {Object} options
  * @param {String} options.indentType - type for indentation eg: space, tab
- * @param {String} options.indentCount - number of spaces or tabs for indentation. 
+ * @param {String} options.indentCount - number of spaces or tabs for indentation.
  * @param {Boolean} [options.includeBoilerplate] - indicates whether to include class defination in java
  * @param {Boolean} options.followRedirect - whether to enable followredirect
  * @param {Boolean} options.trimRequestBody - whether to trim fields in request body or not

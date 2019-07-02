@@ -125,7 +125,7 @@ describe('Golang convert function', function () {
                     options = {
                         indentCount: 1,
                         indentType: 'tab',
-                        requestTimeout: 2000,
+                        requestTimeout: 5000,
                         followRedirect: true,
                         trimRequestBody: false
                     };
@@ -199,6 +199,31 @@ describe('Golang convert function', function () {
                 expect(snippet).to.be.a('string');
                 expect(snippet).to.include('req.Header.Add("foo", "W/\\"1234\\"")');
                 expect(snippet).to.include('req.Header.Add("foz", "W/\'qw\'")');
+            });
+        });
+
+        it('should add time converted to seconds when input is taken in milliseconds ', function () {
+            request = new sdk.Request({
+                'method': 'GET',
+                'header': [],
+                'url': {
+                    'raw': 'https://google.com',
+                    'protocol': 'https',
+                    'host': [
+                        'google',
+                        'com'
+                    ]
+                }
+            });
+            options = {
+                requestTimeout: 3
+            };
+            convert(request, options, function (error, snippet) {
+                if (error) {
+                    expect.fail(null, null, error);
+                }
+                expect(snippet).to.be.a('string');
+                expect(snippet).to.include('timeout := time.Duration(0.003 * time.Second)');
             });
         });
     });

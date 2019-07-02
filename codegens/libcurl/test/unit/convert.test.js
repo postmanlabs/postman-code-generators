@@ -192,6 +192,19 @@ describe('libcurl convert function', function () {
 
       expect(function () { convert(request, options, callback); }).to.throw(Error);
     });
+
+    it('should set CURLOPT_TIMEOUT_MS parameter when requestTimeout is set to non zero value', function () {
+      var request = new sdk.Request(mainCollection.item[0].request),
+        options = { requestTimeout: 3000 };
+
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 3000L);');
+      });
+    });
   });
 
   describe('getOptions function', function () {

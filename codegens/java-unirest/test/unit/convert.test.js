@@ -12,7 +12,7 @@ var expect = require('chai').expect,
 
 /**
  * compiles and runs codesnippet then compare it with newman output
- * 
+ *
  * @param {String} codeSnippet - code snippet that needed to run using java
  * @param {Object} collection - collection which will be run using newman
  * @param {Function} done - callback for async calls
@@ -24,7 +24,7 @@ function runSnippet (codeSnippet, collection, done) {
             return done();
         }
 
-        //  classpath of external libararies for java to compile 
+        //  classpath of external libararies for java to compile
         var classpath = 'dependencies/*',
 
             //  bash command string for compiling java
@@ -205,7 +205,23 @@ describe('java unirest convert function for test collection', function () {
                     return;
                 }
                 expect(snippet).to.be.a('string');
-                expect(snippet).to.include('.setTimeouts(1000, 0)');
+                expect(snippet).to.include('.setTimeouts(0, 1000)');
+            });
+        });
+
+        it('should return snippet with setTimeouts function setting both ' +
+            'connection and socket timeout to 0 when requestTimeout is set to 0', function () {
+            request = new sdk.Request(mainCollection.item[0].request);
+            options = {
+                requestTimeout: 0
+            };
+            convert(request, options, function (error, snippet) {
+                if (error) {
+                    expect.fail(null, null, error);
+                    return;
+                }
+                expect(snippet).to.be.a('string');
+                expect(snippet).to.include('.setTimeouts(0, 0)');
             });
         });
 
