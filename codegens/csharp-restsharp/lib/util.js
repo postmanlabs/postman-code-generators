@@ -1,6 +1,6 @@
 /**
  * sanitizes input string by handling escape characters eg: converts '''' to '\'\'' and trim input if required
- * 
+ *
  * @param {String} inputString - Input String to sanitize
  * @param {Boolean} [trim] - Indicates whether to trim string or not
  * @returns {String} Sanitized String handling escape characters
@@ -8,12 +8,69 @@
 function sanitize (inputString, trim) {
     /* istanbul ignore next */
     if (typeof inputString !== 'string') {
-        throw new Error(`Csharp-Restsharp-Converter:function expects input to be string, found ${typeof inputString}`);
+        return '';
     }
     inputString = inputString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
     return trim ? inputString.trim() : inputString;
 }
 
+/**
+ * sanitize input options
+ *
+ * @param {Object} options - Options provided by the user
+ * @param {Object} expectedOptions - Expected options built from getOptions
+ */
+function sanitizeOptions (options, expectedOptions) {
+    var result = {},
+        id;
+
+    for (id in options) {
+        if (options.hasOwnProperty(id)) {
+            if (expectedOptions[id] === undefined) {
+                continue;
+            }
+            switch (expectedOptions[id].type) {
+                case 'boolean':
+                    if (typeof options[id] !== 'boolean') {
+                        result[id] = expectedOptions[id].default;
+                    }
+                    else {
+                        result[id] = options[id];
+                    }
+                    break;
+                case 'integer':
+                    if (typeof options[id] !== 'number' || options[id] < 0) {
+                        result[id] = expectedOptions[id].default;
+                    }
+                    else {
+                        result[id] = options[id];
+                    }
+                    break;
+                case 'enum':
+                    if (!expectedOptions[id].availableOptions.includes(options[id])) {
+                        result[id] = expectedOptions[id].default;
+                    }
+                    else {
+                        result[id] = options[id];
+                    }
+                    break;
+                default:
+                    result[id] = options[id];
+            }
+        }
+    }
+
+    for (id in expectedOptions) {
+        if (expectedOptions.hasOwnProperty(id)) {
+            if (result[id] === undefined) {
+                result[id] = expectedOptions[id].default;
+            }
+        }
+    }
+    return result;
+}
+
 module.exports = {
-    sanitize: sanitize
+    sanitize: sanitize,
+    sanitizeOptions: sanitizeOptions
 };

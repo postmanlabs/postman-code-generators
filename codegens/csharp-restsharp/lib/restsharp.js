@@ -2,6 +2,7 @@ var _ = require('./lodash'),
 
     parseRequest = require('./parseRequest'),
     sanitize = require('./util').sanitize,
+    sanitizeOptions = require('./util').sanitizeOptions,
     self;
 
 /**
@@ -118,6 +119,7 @@ self = module.exports = {
 
         //  String representing value of indentation required
         var indentString,
+            expectedOptions = {},
 
             //  snippets to include C# class definition according to options
             headerSnippet = '',
@@ -125,11 +127,17 @@ self = module.exports = {
 
             //  snippet to create request in csharp-restsharp
             snippet = '';
+
         self.getOptions().forEach((option) => {
-            if (_.isUndefined(options[option.id])) {
-                options[option.id] = option.default;
+            expectedOptions[option.id] = {
+                default: option.default,
+                type: option.type
+            };
+            if (option.type === 'enum') {
+                expectedOptions[option.id].availableOptions = option.availableOptions;
             }
         });
+        options = sanitizeOptions(options, expectedOptions);
 
         indentString = options.indentType === 'tab' ? '\t' : ' ';
         indentString = indentString.repeat(options.indentCount);
