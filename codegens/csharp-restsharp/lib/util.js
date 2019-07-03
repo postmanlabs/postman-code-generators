@@ -18,21 +18,21 @@ function sanitize (inputString, trim) {
  * sanitize input options
  *
  * @param {Object} options - Options provided by the user
- * @param {Object} expectedOptions - Expected options built from getOptions
+ * @param {Object} defaultOptions - default options object built from getOptions array
  */
-function sanitizeOptions (options, expectedOptions) {
+function sanitizeOptions (options, defaultOptions) {
     var result = {},
         id;
 
     for (id in options) {
         if (options.hasOwnProperty(id)) {
-            if (expectedOptions[id] === undefined) {
+            if (defaultOptions[id] === undefined) {
                 continue;
             }
-            switch (expectedOptions[id].type) {
+            switch (defaultOptions[id].type) {
                 case 'boolean':
                     if (typeof options[id] !== 'boolean') {
-                        result[id] = expectedOptions[id].default;
+                        result[id] = defaultOptions[id].default;
                     }
                     else {
                         result[id] = options[id];
@@ -40,15 +40,15 @@ function sanitizeOptions (options, expectedOptions) {
                     break;
                 case 'integer':
                     if (typeof options[id] !== 'number' || options[id] < 0) {
-                        result[id] = expectedOptions[id].default;
+                        result[id] = defaultOptions[id].default;
                     }
                     else {
                         result[id] = options[id];
                     }
                     break;
                 case 'enum':
-                    if (!expectedOptions[id].availableOptions.includes(options[id])) {
-                        result[id] = expectedOptions[id].default;
+                    if (!defaultOptions[id].availableOptions.includes(options[id])) {
+                        result[id] = defaultOptions[id].default;
                     }
                     else {
                         result[id] = options[id];
@@ -60,10 +60,10 @@ function sanitizeOptions (options, expectedOptions) {
         }
     }
 
-    for (id in expectedOptions) {
-        if (expectedOptions.hasOwnProperty(id)) {
+    for (id in defaultOptions) {
+        if (defaultOptions.hasOwnProperty(id)) {
             if (result[id] === undefined) {
-                result[id] = expectedOptions[id].default;
+                result[id] = defaultOptions[id].default;
             }
         }
     }

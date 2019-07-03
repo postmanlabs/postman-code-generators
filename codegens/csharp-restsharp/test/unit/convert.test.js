@@ -264,23 +264,23 @@ describe('csharp restsharp function', function () {
     });
 
     describe('sanitizeOptions function', function () {
-        var expectedOptions = {},
+        var defaultOptions = {},
             testOptions = {},
             sanitizedOptions;
 
         getOptions().forEach((option) => {
-            expectedOptions[option.id] = {
+            defaultOptions[option.id] = {
                 default: option.default,
                 type: option.type
             };
             if (option.type === 'enum') {
-                expectedOptions[option.id].availableOptions = option.availableOptions;
+                defaultOptions[option.id].availableOptions = option.availableOptions;
             }
         });
 
         it('should remove option not supported by module', function () {
             testOptions.randomName = 'random value';
-            sanitizedOptions = sanitizeOptions(testOptions, expectedOptions);
+            sanitizedOptions = sanitizeOptions(testOptions, defaultOptions);
             expect(sanitizedOptions).to.not.have.property('randomName');
         });
 
@@ -289,10 +289,10 @@ describe('csharp restsharp function', function () {
             testOptions.indentCount = '5';
             testOptions.trimRequestBody = 'true';
             testOptions.indentType = 'tabSpace';
-            sanitizedOptions = sanitizeOptions(testOptions, expectedOptions);
-            expect(sanitizedOptions.indentCount).to.equal(expectedOptions.indentCount.default);
-            expect(sanitizedOptions.indentType).to.equal(expectedOptions.indentType.default);
-            expect(sanitizedOptions.trimRequestBody).to.equal(expectedOptions.trimRequestBody.default);
+            sanitizedOptions = sanitizeOptions(testOptions, defaultOptions);
+            expect(sanitizedOptions.indentCount).to.equal(defaultOptions.indentCount.default);
+            expect(sanitizedOptions.indentType).to.equal(defaultOptions.indentType.default);
+            expect(sanitizedOptions.trimRequestBody).to.equal(defaultOptions.trimRequestBody.default);
         });
 
         it('should use defaults when option type is valid but value is invalid', function () {
@@ -300,10 +300,20 @@ describe('csharp restsharp function', function () {
             testOptions.indentCount = -1;
             testOptions.indentType = 'spaceTab';
             testOptions.requestTimeout = -3000;
-            sanitizedOptions = sanitizeOptions(testOptions, expectedOptions);
-            expect(sanitizedOptions.indentCount).to.equal(expectedOptions.indentCount.default);
-            expect(sanitizedOptions.indentType).to.equal(expectedOptions.indentType.default);
-            expect(sanitizedOptions.requestTimeout).to.equal(expectedOptions.requestTimeout.default);
+            sanitizedOptions = sanitizeOptions(testOptions, defaultOptions);
+            expect(sanitizedOptions.indentCount).to.equal(defaultOptions.indentCount.default);
+            expect(sanitizedOptions.indentType).to.equal(defaultOptions.indentType.default);
+            expect(sanitizedOptions.requestTimeout).to.equal(defaultOptions.requestTimeout.default);
+        });
+
+        it('should return the same object when valid options are provided', function () {
+            for (var id in defaultOptions) {
+                if (defaultOptions.hasOwnProperty(id)) {
+                    testOptions[id] = defaultOptions[id].default;
+                }
+            }
+            sanitizedOptions = sanitizeOptions(testOptions, defaultOptions);
+            expect(sanitizedOptions).to.deep.equal(testOptions);
         });
     });
 
