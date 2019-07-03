@@ -115,7 +115,7 @@ describe('Powershell-restmethod converter', function () {
     describe('convert for different request types', function () {
         mainCollection.item.forEach(function (item) {
             // Skipping tests for Travis CI, till powershell dependency issue is sorted on travis
-            it(item.name, function (done) {
+            it.skip(item.name, function (done) {
                 var request = new sdk.Request(item.request),
                     collection = {
                         item: [
