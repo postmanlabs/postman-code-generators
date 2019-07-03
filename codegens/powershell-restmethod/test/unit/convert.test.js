@@ -115,7 +115,7 @@ describe('Powershell-restmethod converter', function () {
     describe('convert for different request types', function () {
         mainCollection.item.forEach(function (item) {
             // Skipping tests for Travis CI, till powershell dependency issue is sorted on travis
-            it.skip(item.name, function (done) {
+            it(item.name, function (done) {
                 var request = new sdk.Request(item.request),
                     collection = {
                         item: [
@@ -265,6 +265,31 @@ describe('Powershell-restmethod converter', function () {
                     return;
                 }
                 expect(snippet).to.be.a('string');
+            });
+        });
+
+        it('should generate snippet for file body mode', function () {
+            request = new sdk.Request({
+                'url': 'https://echo.getpostman.com/post',
+                'method': 'POST',
+                'body': {
+                    'mode': 'file',
+                    'file': [
+                        {
+                            'key': 'fileName',
+                            'src': 'file',
+                            'type': 'file'
+                        }
+                    ]
+                }
+            });
+            options = { indentType: 'space', indentCount: 2 };
+            convert(request, options, function (error, snippet) {
+                if (error) {
+                    expect.fail(null, null, error);
+                }
+                expect(snippet).to.be.a('string');
+                expect(snippet).to.not.equal('');
             });
         });
     });

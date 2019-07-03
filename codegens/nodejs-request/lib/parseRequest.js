@@ -3,10 +3,10 @@ var _ = require('./lodash'),
     sanitize = require('./util').sanitize;
 
 /**
- * parses body of request when type of the request body is formdata or urlencoded and 
+ * parses body of request when type of the request body is formdata or urlencoded and
  * returns code snippet for nodejs to add body
  *
- * @param {Array<Object>} dataArray - array containing body elements of request 
+ * @param {Array<Object>} dataArray - array containing body elements of request
  * @param {String} indentString - string required for indentation
  * @param {Boolean} trimBody - indicates whether to trim body or not
  */
@@ -21,7 +21,7 @@ function extractFormData (dataArray, indentString, trimBody) {
         /* istanbul ignore next */
         if (item.type === 'file') {
             /**
-             * creating snippet to send file in nodejs request 
+             * creating snippet to send file in nodejs request
              * for example:
              *  'fieldname': {
              *      'value': fs.createStream('filename.ext'),
@@ -29,7 +29,7 @@ function extractFormData (dataArray, indentString, trimBody) {
              *          'filename': 'filename.ext',
              *          'contentType: null
              *          }
-             *      }   
+             *      }
              *  }
              */
             accumalator.push([
@@ -55,7 +55,7 @@ function extractFormData (dataArray, indentString, trimBody) {
 
 /**
  * Parses body object based on mode of body and returns code snippet
- * 
+ *
  * @param {Object} requestbody - json object for body of request
  * @param {String} indentString - string for indentation
  * @param {Boolean} trimBody - indicates whether to trim body fields or not
@@ -74,7 +74,7 @@ function parseBody (requestbody, indentString, trimBody) {
             /* istanbul ignore next */
             case 'file':
                 return 'formData: {\n' +
-                        extractFormData([{type: 'file', key: 'file', src: requestbody[requestbody.mode].src}]) +
+                        extractFormData(requestbody[requestbody.mode], indentString, trimBody) +
                         indentString + '}';
             default:
                 return '';
@@ -84,11 +84,11 @@ function parseBody (requestbody, indentString, trimBody) {
 }
 
 /**
- * parses header of request object and returns code snippet of nodejs request to add header 
- * 
+ * parses header of request object and returns code snippet of nodejs request to add header
+ *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required in code snippet
- * @returns {String} - code snippet of nodejs request to add header 
+ * @returns {String} - code snippet of nodejs request to add header
  */
 function parseHeader (request, indentString) {
     var headerObject = request.getHeaders({enabled: true}),
