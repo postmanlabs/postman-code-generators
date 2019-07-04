@@ -74,12 +74,12 @@ function parseFileData (body, trim) {
             bodySnippet += `$multipartFile = "${data.src}"\n` +
             '$FileStream = [System.IO.FileStream]::new($multipartFile, [System.IO.FileMode]::Open)\n' +
             '$fileHeader = [System.Net.Http.Headers.ContentDispositionHeaderValue]::new("form-data")\n' +
-            '$fileHeader.Name = "File header name"\n' +
+            '$fileHeader.Name = "Form data field name"\n' +
             `$fileHeader.FileName = "${sanitize(data.key, trim)}"\n` +
             '$fileContent = [System.Net.Http.StreamContent]::new($FileStream)\n' +
             '$fileContent.Headers.ContentDisposition = $fileHeader\n' +
             '$fileContent.Headers.ContentType = ' +
-            '[System.Net.Http.Headers.MediaTypeHeaderValue]::Parse("Content type of your file")\n' +
+            '[System.Net.Http.Headers.MediaTypeHeaderValue]::Parse("Content-Type Header")\n' +
             '$multipartContent.Add($fileContent)\n\n';
         }
     });
