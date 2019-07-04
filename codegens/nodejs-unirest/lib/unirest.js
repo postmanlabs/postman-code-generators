@@ -1,4 +1,6 @@
 var _ = require('./lodash'),
+    sanitizeOptions = require('./util').sanitizeOptions,
+    defaultOptions = {},
 
     parseRequest = require('./parseRequest');
 
@@ -98,10 +100,15 @@ function convert (request, options, callback) {
         throw new Error('Nodejs-Unirest-Converter: callback is not valid function');
     }
     getOptions().forEach((option) => {
-        if (_.isUndefined(options[option.id])) {
-            options[option.id] = option.default;
+        defaultOptions[option.id] = {
+            default: option.default,
+            type: option.type
+        };
+        if (option.type === 'enum') {
+            defaultOptions[option.id].availableOptions = option.availableOptions;
         }
     });
+    options = sanitizeOptions(options, defaultOptions);
 
     //  String representing value of indentation required
     var indentString;

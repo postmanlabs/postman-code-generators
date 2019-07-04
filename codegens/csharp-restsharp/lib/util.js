@@ -15,10 +15,13 @@ function sanitize (inputString, trim) {
 }
 
 /**
- * sanitize input options
+ * sanitizes input options
  *
  * @param {Object} options - Options provided by the user
- * @param {Object} defaultOptions - default options object built from getOptions array
+ * @param {Object} defaultOptions - default options object containing type and default for each property,
+ *  built from getOptions array
+ *
+ * @returns {Object} - Sanitized options object
  */
 function sanitizeOptions (options, defaultOptions) {
     var result = {},

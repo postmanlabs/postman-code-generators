@@ -1,7 +1,9 @@
 var sanitize = require('./util').sanitize,
+    sanitizeOptions = require('./util').sanitizeOptions,
     form = require('./util').form,
     _ = require('./lodash'),
-    self;
+    self,
+    defaultOptions = {};
 
 self = module.exports = {
     convert: function (request, options, callback) {
@@ -10,10 +12,15 @@ self = module.exports = {
             throw new Error('Curl-Converter: callback is not valid function');
         }
         self.getOptions().forEach((option) => {
-            if (_.isUndefined(options[option.id])) {
-                options[option.id] = option.default;
+            defaultOptions[option.id] = {
+                default: option.default,
+                type: option.type
+            };
+            if (option.type === 'enum') {
+                defaultOptions[option.id].availableOptions = option.availableOptions;
             }
         });
+        options = sanitizeOptions(options, defaultOptions);
 
         var indent, trim, headersData, body, text, redirect, timeout, multiLine, format, snippet, silent;
         redirect = options.followRedirect;

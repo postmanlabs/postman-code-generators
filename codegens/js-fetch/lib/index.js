@@ -1,5 +1,7 @@
 var _ = require('./lodash'),
-    sanitize = require('./util').sanitize;
+    sanitize = require('./util').sanitize,
+    sanitizeOptions = require('./util').sanitizeOptions,
+    defaultOptions = {};
 const VALID_BODY_MODES = ['urlencoded', 'raw', 'file', 'formdata'];
 
 /**
@@ -180,10 +182,15 @@ function convert (request, options, callback) {
         throw new Error('JS-Fetch Converter callback is not a valid function');
     }
     getOptions().forEach((option) => {
-        if (_.isUndefined(options[option.id])) {
-            options[option.id] = option.default;
+        defaultOptions[option.id] = {
+            default: option.default,
+            type: option.type
+        };
+        if (option.type === 'enum') {
+            defaultOptions[option.id].availableOptions = option.availableOptions;
         }
     });
+    options = sanitizeOptions(options, defaultOptions);
 
     var indent = options.indentType === 'tab' ? '\t' : ' ',
         trim = options.trimRequestBody,

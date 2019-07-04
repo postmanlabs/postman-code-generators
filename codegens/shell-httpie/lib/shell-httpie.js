@@ -1,6 +1,8 @@
 var _ = require('./lodash'),
   Helpers = require('./util/helpers'),
-  self;
+  sanitizeOptions = require('./util/sanitize').sanitizeOptions,
+  self,
+  defaultOptions = {};
 
 const GAP = ' ',
   URLENCODED = 'urlencoded',
@@ -62,10 +64,15 @@ self = module.exports = {
     }
 
     self.getOptions().forEach((option) => {
-      if (_.isUndefined(options[option.id])) {
-        options[option.id] = option.default;
+      defaultOptions[option.id] = {
+        default: option.default,
+        type: option.type
+      };
+      if (option.type === 'enum') {
+        defaultOptions[option.id].availableOptions = option.availableOptions;
       }
     });
+    options = sanitizeOptions(options, defaultOptions);
 
     Helpers.parseURLVariable(request);
     url = Helpers.addHost(request) + Helpers.addPathandQuery(request);

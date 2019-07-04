@@ -1,5 +1,5 @@
 let utils = require('./util'),
-  _ = require('./lodash');
+  defaultOptions = {};
 
 /**
  * Used in order to get additional options for generation of C# code snippet (i.e. Include Boilerplate code)
@@ -30,10 +30,15 @@ function getOptions () {
 function convert (request, options, callback) {
   let snippet = '';
   getOptions().forEach((option) => {
-    if (_.isUndefined(options[option.id])) {
-      options[option.id] = option.default;
+    defaultOptions[option.id] = {
+      default: option.default,
+      type: option.type
+    };
+    if (option.type === 'enum') {
+      defaultOptions[option.id].availableOptions = option.availableOptions;
     }
   });
+  options = utils.sanitizeOptions(options, defaultOptions);
   snippet = `${request.method} ${utils.getEndPoint(request)} HTTP/1.1\n`;
   snippet += `Host: ${utils.getHost(request)}\n`;
   snippet += `${utils.getHeaders(request)}\n`;

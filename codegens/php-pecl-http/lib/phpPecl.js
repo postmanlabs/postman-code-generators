@@ -1,7 +1,9 @@
 var _ = require('./lodash'),
     parseBody = require('./util/parseBody'),
     sanitize = require('./util/sanitize').sanitize,
-    self;
+    sanitizeOptions = require('./util/sanitize').sanitizeOptions,
+    self,
+    defaultOptions = {};
 
 /**
  * Used to get the headers and put them in the desired form of the language
@@ -78,7 +80,7 @@ self = module.exports = {
      *                                                               default: 2 for indentType: tab)
      * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
                                                 (default: 0 -> never bail out)
-     * @param {Boolean} options.requestBodyTrim : whether to trim request body fields (default: false)
+     * @param {Boolean} options.trimRequestBody : whether to trim request body fields (default: false)
      * @param {Boolean} options.followRedirect : whether to allow redirects of a request
      * @param  {Function} callback - function with parameters (error, snippet)
      */
@@ -94,10 +96,15 @@ self = module.exports = {
             throw new Error('Php-Pecl(HTTP)~convert: Callback is not a function');
         }
         self.getOptions().forEach((option) => {
-            if (_.isUndefined(options[option.id])) {
-                options[option.id] = option.default;
+            defaultOptions[option.id] = {
+                default: option.default,
+                type: option.type
+            };
+            if (option.type === 'enum') {
+                defaultOptions[option.id].availableOptions = option.availableOptions;
             }
         });
+        options = sanitizeOptions(options, defaultOptions);
 
         identity = options.indentType === 'tab' ? '\t' : ' ';
         indentation = identity.repeat(options.indentCount);
@@ -109,7 +116,7 @@ self = module.exports = {
         snippet += `$request->setRequestMethod('${request.method}');\n`;
         if (!_.isEmpty(request.body)) {
             snippet += '$body = new http\\Message\\Body;\n';
-            snippet += `${parseBody(request.toJSON(), indentation, options.requestBodyTrim)}`;
+            snippet += `${parseBody(request.toJSON(), indentation, options.trimRequestBody)}`;
             snippet += '$request->setBody($body);\n';
         }
         snippet += '$request->setOptions(array(';

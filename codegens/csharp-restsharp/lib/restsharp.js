@@ -3,7 +3,8 @@ var _ = require('./lodash'),
     parseRequest = require('./parseRequest'),
     sanitize = require('./util').sanitize,
     sanitizeOptions = require('./util').sanitizeOptions,
-    self;
+    self,
+    defaultOptions = {};
 
 /**
  * Generates snippet in csharp-restsharp by parsing data from Postman-SDK request object
@@ -119,7 +120,6 @@ self = module.exports = {
 
         //  String representing value of indentation required
         var indentString,
-            expectedOptions = {},
 
             //  snippets to include C# class definition according to options
             headerSnippet = '',
@@ -129,15 +129,15 @@ self = module.exports = {
             snippet = '';
 
         self.getOptions().forEach((option) => {
-            expectedOptions[option.id] = {
+            defaultOptions[option.id] = {
                 default: option.default,
                 type: option.type
             };
             if (option.type === 'enum') {
-                expectedOptions[option.id].availableOptions = option.availableOptions;
+                defaultOptions[option.id].availableOptions = option.availableOptions;
             }
         });
-        options = sanitizeOptions(options, expectedOptions);
+        options = sanitizeOptions(options, defaultOptions);
 
         indentString = options.indentType === 'tab' ? '\t' : ' ';
         indentString = indentString.repeat(options.indentCount);

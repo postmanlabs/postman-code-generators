@@ -1,6 +1,8 @@
 var _ = require('./lodash'),
     sanitize = require('./util').sanitize,
-    self;
+    sanitizeOptions = require('./util').sanitizeOptions,
+    self,
+    defaultOptions = {};
 
 /**
  * Parses Raw data from request to fetch syntax
@@ -217,10 +219,15 @@ self = module.exports = {
             throw new Error('Swift-Converter: callback is not valid function');
         }
         self.getOptions().forEach((option) => {
-            if (_.isUndefined(options[option.id])) {
-                options[option.id] = option.default;
+            defaultOptions[option.id] = {
+                default: option.default,
+                type: option.type
+            };
+            if (option.type === 'enum') {
+                defaultOptions[option.id].availableOptions = option.availableOptions;
             }
         });
+        options = sanitizeOptions(options, defaultOptions);
         var codeSnippet, indent, trim, timeout, finalUrl, // followRedirect,
             bodySnippet = '',
             headerSnippet = '',

@@ -1,7 +1,9 @@
 const _ = require('./lodash'),
+    sanitizeOptions = require('./util').sanitizeOptions,
 
     parseRequest = require('./parseRequest');
-var self;
+var self,
+    defaultOptions = {};
 
 /**
  * retuns snippet of nodejs(native) by parsing data from Postman-SDK request object
@@ -164,10 +166,15 @@ self = module.exports = {
             throw new Error('NodeJS-Request-Converter: callback is not valid function');
         }
         self.getOptions().forEach((option) => {
-            if (_.isUndefined(options[option.id])) {
-                options[option.id] = option.default;
+            defaultOptions[option.id] = {
+                default: option.default,
+                type: option.type
+            };
+            if (option.type === 'enum') {
+                defaultOptions[option.id].availableOptions = option.availableOptions;
             }
         });
+        options = sanitizeOptions(options, defaultOptions);
 
         //  String representing value of indentation required
         var indentString;
