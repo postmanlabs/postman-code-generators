@@ -306,12 +306,24 @@ describe('csharp restsharp function', function () {
             expect(sanitizedOptions.requestTimeout).to.equal(defaultOptions.requestTimeout.default);
         });
 
-        it('should return the same object when valid options are provided', function () {
+        it('should return the same object when default options are provided', function () {
             for (var id in defaultOptions) {
                 if (defaultOptions.hasOwnProperty(id)) {
                     testOptions[id] = defaultOptions[id].default;
                 }
             }
+            sanitizedOptions = sanitizeOptions(testOptions, defaultOptions);
+            expect(sanitizedOptions).to.deep.equal(testOptions);
+        });
+
+        it('should return the same object when valid (but not necessarily defaults) options are provided', function () {
+            testOptions = {};
+            testOptions.indentType = 'tab';
+            testOptions.indentCount = 3;
+            testOptions.requestTimeout = 3000;
+            testOptions.trimRequestBody = true;
+            testOptions.followRedirect = false;
+            testOptions.includeBoilerplate = true;
             sanitizedOptions = sanitizeOptions(testOptions, defaultOptions);
             expect(sanitizedOptions).to.deep.equal(testOptions);
         });
