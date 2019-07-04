@@ -145,7 +145,7 @@ describe('Shell-Httpie convert function', function () {
     });
   });
 
-  it.only('should add a timeout of 1 hour (3600 seconds) for RequestTimeout set to 0', function () {
+  it('should add a timeout of 1 hour (3600 seconds) for RequestTimeout set to 0', function () {
     var request = new sdk.Request({
         'method': 'GET',
         'header': [],

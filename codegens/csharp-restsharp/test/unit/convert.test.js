@@ -158,7 +158,8 @@ describe('csharp restsharp function', function () {
                         indentCount: 1,
                         indentType: 'tab',
                         followRedirect: true,
-                        trimRequestBody: true
+                        trimRequestBody: true,
+                        requestTimeout: 5000
                     };
                 convert(request, options, function (error, snippet) {
                     if (error) {

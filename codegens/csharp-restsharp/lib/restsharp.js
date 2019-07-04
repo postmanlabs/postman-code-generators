@@ -20,6 +20,9 @@ function makeSnippet (request, options) {
     if (options.requestTimeout) {
         snippet += `client.Timeout = ${options.requestTimeout};\n`;
     }
+    else {
+        snippet += 'client.Timeout = -1;\n';
+    }
     snippet += `var request = new RestRequest(${isUnSupportedMethod ? '' : ('Method.' + request.method)});\n`;
     snippet += parseRequest.parseHeader(request.toJSON(), options.trimRequestBody);
     snippet += parseRequest.parseBody(request, options.trimRequestBody);
