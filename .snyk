@@ -1,0 +1,58 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.13.5
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-450202:
+    - newman > async > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - eslint-plugin-jsdoc > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - eslint-plugin-lodash > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - newman > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - async > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - postman-collection > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - eslint > inquirer > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - jsdoc > catharsis > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - eslint > table > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - jsdoc > requizzle > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - newman > postman-runtime > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - newman > postman-collection-transformer > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - eslint > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - dependency-check > async > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - newman > postman-collection > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - newman > postman-runtime > postman-collection > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - nyc > istanbul-lib-instrument > @babel/types > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - newman > postman-runtime > postman-sandbox > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - newman > postman-runtime > async > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - nyc > istanbul-lib-instrument > @babel/traverse > @babel/types > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - newman > postman-runtime > postman-sandbox > uvm > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - jsdoc-to-markdown > jsdoc-api > jsdoc > catharsis > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - jsdoc-to-markdown > jsdoc-api > jsdoc > requizzle > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - nyc > istanbul-lib-instrument > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2019-07-04T02:00:43.999Z'
+    - nyc > istanbul-lib-instrument > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2019-07-04T02:00:43.999Z'

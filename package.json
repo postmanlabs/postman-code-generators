@@ -13,7 +13,9 @@
     "prepack": "node npm/pre-package.js",
     "postinstall": "node npm/deepinstall.js",
     "deepinstall": "node npm/deepinstall.js",
-    "cirequirements": "npm/ci-requirements.sh"
+    "cirequirements": "npm/ci-requirements.sh",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -26,7 +28,8 @@
     "async": "2.5.0",
     "path": "0.12.7",
     "postman-collection": "3.4.8",
-    "shelljs": "0.7.8"
+    "shelljs": "0.7.8",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "browserify": "14.4.0",
@@ -54,5 +57,6 @@
   },
   "engines": {
     "node": ">=6"
-  }
+  },
+  "snyk": true
 }
