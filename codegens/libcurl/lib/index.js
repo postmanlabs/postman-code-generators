@@ -175,14 +175,14 @@ module.exports = {
         description: 'Trim request body fields'
       },
       {
-        name: 'Use Mime Format',
+        name: 'Use curl_mime',
         id: 'useMimeType',
         type: 'boolean',
         default: true,
         description: 'Use curl_mime to send multipart/form-data requests'
       },
       {
-        name: 'Request Timeout',
+        name: 'Request timeout',
         id: 'requestTimeout',
         type: 'integer',
         default: 0,
