@@ -20,7 +20,10 @@ function makeSnippet (request, indentString, options) {
         urlString = encodeURI(request.url.toString());
 
     if (options.requestTimeout > 0) {
-        snippet += `Unirest.setTimeouts(${options.requestTimeout}, 0);\n`;
+        snippet += `Unirest.setTimeouts(0, ${options.requestTimeout});\n`;
+    }
+    else {
+        snippet += 'Unirest.setTimeouts(0, 0);\n';
     }
 
     if (options.followRedirect) {

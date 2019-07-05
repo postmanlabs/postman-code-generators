@@ -144,6 +144,31 @@ describe('Shell-Httpie convert function', function () {
       }
     });
   });
+
+  it('should add a timeout of 1 hour (3600 seconds) for RequestTimeout set to 0', function () {
+    var request = new sdk.Request({
+        'method': 'GET',
+        'header': [],
+        'url': {
+          'raw': 'https://google.com',
+          'protocol': 'https',
+          'host': [
+            'google',
+            'com'
+          ]
+        }
+      }),
+      options = {
+        requestTimeout: 0
+      };
+    convert(request, options, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('--timeout 3600');
+    });
+  });
 });
 
 describe('Sanitize function', function () {

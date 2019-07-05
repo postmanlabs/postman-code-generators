@@ -193,6 +193,12 @@ function convert (request, options, callback) {
     codeSnippet += `${indent}}\n});\n\n`;
 
     codeSnippet += `xhr.open("${request.method}", "${encodeURI(request.url.toString())}");\n`;
+    if (options.requestTimeout) {
+        codeSnippet += `xhr.timeout = ${options.requestTimeout};\n`;
+        codeSnippet += 'xhr.addEventListener("ontimeout", function(e) {\n';
+        codeSnippet += `${indent} console.log(e);\n`;
+        codeSnippet += '});\n';
+    }
 
     headerSnippet = parseHeaders(request.getHeaders({enabled: true}));
 

@@ -127,6 +127,9 @@ self = module.exports = {
         if (options.requestTimeout > 0) {
             snippet += `${indentation}--timeout=${Math.floor(options.requestTimeout / 1000)} \\\n`;
         }
+        else {
+            snippet += `${indentation}--timeout=0 \\\n`;
+        }
         // Shell-wget supports 20 redirects by default (without any specific options)
         if (typeof options.followRedirect === 'boolean' && !options.followRedirect) {
             snippet += `${indentation}--max-redirect=0 \\\n`;

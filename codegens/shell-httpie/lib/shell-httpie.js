@@ -52,7 +52,12 @@ self = module.exports = {
       timeout,
       url = '',
       handleRedirect = (enableRedirect) => { if (!enableRedirect) { return GAP + '--follow' + GAP; } return GAP; },
-      handleRequestTimeout = (time) => { if (time) { return '--timeout ' + (time / 1000) + GAP; } return GAP; };
+      handleRequestTimeout = (time) => {
+        if (time) {
+          return '--timeout ' + (time / 1000) + GAP;
+        }
+        return '--timeout 3600' + GAP;
+      };
 
     // check whether options was passed or not
     if (_.isFunction(options)) {

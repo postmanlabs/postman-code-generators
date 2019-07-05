@@ -181,7 +181,7 @@ self = module.exports = {
         }
 
         if (timeout > 0) {
-            codeSnippet += `${indent}timeout := time.Duration(${timeout} * time.Second)\n`;
+            codeSnippet += `${indent}timeout := time.Duration(${timeout / 1000} * time.Second)\n`;
         }
 
         codeSnippet += indent + 'client := &http.Client {\n';

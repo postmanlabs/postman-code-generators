@@ -30,11 +30,13 @@ self = module.exports = {
       formdataString = '',
       protocol,
       BOUNDARY = '----WebKitFormBoundary7MA4YWxkTrZu0gW',
-      responseCode;
+      responseCode,
+      timeout;
 
     multiLine = options.multiLine;
     trim = options.trimRequestBody;
     protocol = options.protocol;
+    timeout = options.requestTimeout;
 
     if (multiLine) {
       newline = '\n';
@@ -49,6 +51,9 @@ self = module.exports = {
     snippet += newline + 'if(curl) {';
     snippet += indent + `curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "${request.method}");`;
     snippet += indent + `curl_easy_setopt(curl, CURLOPT_URL, "${encodeURI(request.url.toString())}");`;
+    if (timeout) {
+      snippet += indent + `curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, ${timeout}L);`;
+    }
     snippet += indent + `curl_easy_setopt(curl, CURLOPT_DEFAULT_PROTOCOL, "${protocol}");`;
     snippet += indent + 'struct curl_slist *headers = NULL;';
     headersData = request.getHeaders({ enabled: true });
@@ -187,6 +192,13 @@ self = module.exports = {
         type: 'boolean',
         default: true,
         description: 'Use the mime format to send formdata requests'
+      },
+      {
+        name: 'Request Timeout',
+        id: 'requestTimeout',
+        type: 'integer',
+        default: 0,
+        description: 'Integer denoting time after which the request will bail out in milliseconds'
       }
     ];
   }

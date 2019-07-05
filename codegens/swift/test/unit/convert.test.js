@@ -178,6 +178,17 @@ describe('Swift Converter', function () {
                 }
             });
         });
+
+        it('should add infinite timeout when requestTimeout is set to 0', function () {
+            convert(request, { requestTimeout: 0}, function (error, snippet) {
+                if (error) {
+                    expect.fail(null, null, error);
+                }
+                expect(snippet).to.be.a('string');
+                expect(snippet).to.include('timeoutInterval: Double.infinity');
+
+            });
+        });
     });
 
     describe('getOptions function', function () {

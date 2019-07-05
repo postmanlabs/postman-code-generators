@@ -202,6 +202,16 @@ describe('Shell-Wget converter', function () {
                 }
             });
         });
+
+        it('should generate snippet with timout flag set as 0 (infinite) when requestTimeout is set as 0', function () {
+            convert(request, {requestTimeout: 0}, function (error, snippet) {
+                if (error) {
+                    expect.fail(null, null, error);
+                }
+                expect(snippet).to.be.a('string');
+                expect(snippet).to.include('--timeout=0');
+            });
+        });
     });
 
     describe('getOptions function', function () {
