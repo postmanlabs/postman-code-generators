@@ -5,7 +5,7 @@ let utils = require('./util');
  *
  * @module getOptions
  *
- * @returns {Array} Additional options specific to generation of csharp-restsharp code snippet
+ * @returns {Array} Additional options specific to generation of http code snippet
  */
 function getOptions () {
   return [{
@@ -13,7 +13,7 @@ function getOptions () {
     id: 'trimRequestBody',
     type: 'boolean',
     default: true,
-    description: 'Boolean denoting whether to trim request body fields'
+    description: 'Trim request body fields'
   }];
 }
 
@@ -36,7 +36,6 @@ function convert (request, options, callback) {
 
   return callback(null, snippet);
 }
-
 
 module.exports = {
   getOptions: getOptions,

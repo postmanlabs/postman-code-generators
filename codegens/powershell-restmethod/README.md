@@ -14,7 +14,7 @@ Convert function takes three parameters
 * `request` - Postman-SDK Request Object
 
 * `options` - options is an object which hsa following properties
-    * `trimRequestBody` - Boolean denoting whether to trim request body fields
+    * `trimRequestBody` - Trim request body fields
     * `followRedirect` - Boolean denoting whether to redirect a request
     * `requestTimeout` - Integer denoting time after which the request will bail out in milli-seconds
 

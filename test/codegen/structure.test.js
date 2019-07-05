@@ -8,58 +8,58 @@ var _ = require('lodash'),
 // Keep adding new options
 const expectedOptions = {
     multiLine: {
-      name: 'MultiLine Curl Request',
+      name: 'Multiline snippet',
       type: 'boolean',
       default: true,
-      description: 'denoting whether to get the request in single or multiple lines'
+      description: 'Split cURL command across multiple lines'
     },
     longFormat: {
-      name: 'Long Format',
+      name: 'Long form options',
       type: 'boolean',
       default: true,
-      description: 'denoting whether to get the request in short form or long form'
+      description: 'Use the long form for cURL options (--header instead of -H)'
     },
     includeBoilerplate: {
-      name: 'Include Boilerplate',
+      name: 'Include boilerplate',
       type: 'boolean',
       default: false,
-      description: 'Boolean denoting whether to include class definition and import statements in snippet'
+      description: 'Include class definition and import statements in snippet'
     },
     indentCount: {
-      name: 'Indent Count',
+      name: 'Indent count',
       type: 'positiveInteger',
       default: 0,
-      description: 'Integer denoting count of indentation required'
+      description: 'Number of indentation characters to add per code level'
     },
     indentType: {
       name: 'Indent type',
       type: 'enum',
       default: 'tab',
-      description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
+      description: 'Character used for indentation'
     },
     requestTimeout: {
-      name: 'Request Timeout',
+      name: 'Request timeout',
       type: 'positiveInteger',
       default: 0,
-      description: 'Integer denoting time after which the request will bail out in milliseconds'
+      description: 'How long the request should wait for a response before timing out (milliseconds)'
     },
     followRedirect: {
       name: 'Follow redirect',
       type: 'boolean',
       default: true,
-      description: 'Boolean denoting whether or not to automatically follow redirects'
+      description: 'Automatically follow HTTP redirects'
     },
     trimRequestBody: {
       name: 'Body trim',
       type: 'boolean',
       default: true,
-      description: 'Boolean denoting whether to trim request body fields'
+      description: 'Trim request body fields'
     },
     silent: {
       name: 'Silent',
       type: 'boolean',
       default: false,
-      description: 'Boolean denoting whether to make request in silent or quiet mode.'
+      description: 'Use cURL\'s silent mode in the generated snippet'
     }
   },
   // Standard array of ids that should be used for options ids. Any new option should be updated here.
@@ -195,7 +195,8 @@ describe('Code-gen repository ' + codegen, function () {
     it('must have consistent type, description and name', function () {
       options.forEach((option) => {
         if (expectedOptions[option.id]) {
-          expect(option.description).to.be.eql(expectedOptions[option.id].description);
+          // the description property can be different across different languages
+          expect(option).to.have.property('description');
           expect(option.name).to.be.eql(expectedOptions[option.id].name);
           expect(option.type).to.be.eql(expectedOptions[option.id].type);
         }

@@ -92,54 +92,54 @@ self = module.exports = {
     getOptions: function () {
         return [
             {
-                name: 'MultiLine Curl Request',
+                name: 'Multiline snippet',
                 id: 'multiLine',
                 type: 'boolean',
                 default: true,
-                description: 'denoting whether to get the request in single or multiple lines'
+                description: 'Split cURL command across multiple lines'
             },
             {
-                name: 'Long Format',
+                name: 'Long form options',
                 id: 'longFormat',
                 type: 'boolean',
                 default: true,
-                description: 'denoting whether to get the request in short form or long form'
+                description: 'Use the long form for cURL options (--header instead of -H)'
             },
             {
-                name: 'Line Continuation Character',
+                name: 'Line continuation character',
                 id: 'lineContinuationCharacter',
                 availableOptions: ['\\', '^'],
                 type: 'enum',
                 default: '\\',
-                description: 'denoting the line continuation character for generated codegen'
+                description: 'Character that should be used to split lines in a multiline snippet'
             },
             {
-                name: 'Request Timeout',
+                name: 'Request timeout',
                 id: 'requestTimeout',
                 type: 'positiveInteger',
                 default: 0,
-                description: 'Integer denoting time after which the request will bail out in milliseconds'
+                description: 'How long the request should wait for a response before timing out (seconds)'
             },
             {
                 name: 'Follow redirect',
                 id: 'followRedirect',
                 type: 'boolean',
                 default: true,
-                description: 'Boolean denoting whether or not to automatically follow redirects'
+                description: 'Automatically follow HTTP redirects'
             },
             {
                 name: 'Body trim',
                 id: 'trimRequestBody',
                 type: 'boolean',
                 default: false,
-                description: 'Boolean denoting whether to trim request body fields'
+                description: 'Trim request body fields'
             },
             {
                 name: 'Silent',
                 id: 'silent',
                 type: 'boolean',
                 default: false,
-                description: 'Boolean denoting whether to make request in silent or quiet mode.'
+                description: 'Use cURL\'s silent mode in the generated snippet'
             }
         ];
     }

@@ -226,10 +226,10 @@ describe('java unirest convert function for test collection', function () {
         });
 
         it('should return snippet with disableRedirectHandling function for' +
-            'follor redirect option', function () {
+            'follow redirect option set to false', function () {
             request = new sdk.Request(mainCollection.item[0].request);
             options = {
-                followRedirect: true
+                followRedirect: false
             };
             convert(request, options, function (error, snippet) {
                 if (error) {
@@ -315,12 +315,12 @@ describe('java unirest convert function for test collection', function () {
         });
 
         it('should return all the valid options', function () {
-            expect(getOptions()[0]).to.have.property('id', 'indentCount');
-            expect(getOptions()[1]).to.have.property('id', 'indentType');
-            expect(getOptions()[2]).to.have.property('id', 'requestTimeout');
-            expect(getOptions()[3]).to.have.property('id', 'followRedirect');
-            expect(getOptions()[4]).to.have.property('id', 'trimRequestBody');
-            expect(getOptions()[5]).to.have.property('id', 'includeBoilerplate');
+            expect(getOptions()[0]).to.have.property('id', 'includeBoilerplate');
+            expect(getOptions()[1]).to.have.property('id', 'indentCount');
+            expect(getOptions()[2]).to.have.property('id', 'indentType');
+            expect(getOptions()[3]).to.have.property('id', 'requestTimeout');
+            expect(getOptions()[4]).to.have.property('id', 'followRedirect');
+            expect(getOptions()[5]).to.have.property('id', 'trimRequestBody');
         });
     });
 
