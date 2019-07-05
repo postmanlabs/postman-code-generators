@@ -199,6 +199,7 @@ describe('Code-gen repository ' + codegen, function () {
           expect(option).to.have.property('description');
           expect(option.name).to.be.eql(expectedOptions[option.id].name);
           expect(option.type).to.be.eql(expectedOptions[option.id].type);
+          expect(option.description).to.be.eql(expectedOptions[option.id].description);
         }
         else {
           console.log(`Option ${option.name} not present in the list of expected options.`);

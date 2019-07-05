@@ -21,14 +21,14 @@ self = module.exports = {
         id: 'requestTimeout',
         type: 'positiveInteger',
         default: 0,
-        description: 'Integer denoting time after which the request will bail out in milliseconds'
+        description: 'How long the request should wait for a response before timing out (milliseconds)'
       },
       {
         name: 'Follow redirect',
         id: 'followRedirect',
         type: 'boolean',
         default: true,
-        description: 'Boolean denoting whether or not to automatically follow redirects'
+        description: 'Automatically follow HTTP redirects'
       }
     ];
   },

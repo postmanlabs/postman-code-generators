@@ -118,7 +118,7 @@ self = module.exports = {
                 id: 'requestTimeout',
                 type: 'positiveInteger',
                 default: 0,
-                description: 'How long the request should wait for a response before timing out (seconds)'
+                description: 'How long the request should wait for a response before timing out (milliseconds)'
             },
             {
                 name: 'Follow redirect',

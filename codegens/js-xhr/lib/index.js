@@ -143,7 +143,7 @@ function getOptions () {
             id: 'trimRequestBody',
             type: 'boolean',
             default: true,
-            description: 'Automatically follow HTTP redirects'
+            description: 'Trim request body fields'
         }
     ];
 }

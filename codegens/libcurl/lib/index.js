@@ -145,7 +145,7 @@ self = module.exports = {
         id: 'multiLine',
         type: 'boolean',
         default: true,
-        description: 'Split code across multiple lines'
+        description: 'Split cURL command across multiple lines'
       },
       {
         name: 'Protocol',
