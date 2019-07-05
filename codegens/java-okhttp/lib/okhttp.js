@@ -8,11 +8,11 @@ const METHODS_WITHOUT_BODY = ['GET', 'HEAD', 'COPY', 'UNLOCK', 'UNLINK', 'PURGE'
 
 /**
  * retuns snippet of java okhttp by parsing data from Postman-SDK request object
- * 
+ *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required for code snippet
  * @param {Object} options - Options to tweak code snippet
- * @returns {String} - java okhttp code snippet for given request object 
+ * @returns {String} - java okhttp code snippet for given request object
  */
 function makeSnippet (request, indentString, options) {
 
@@ -54,7 +54,7 @@ function makeSnippet (request, indentString, options) {
  *
  * @module convert
  *
- * @param {Object} request - postman-SDK request object 
+ * @param {Object} request - postman-SDK request object
  * @param {Object} options - Options to tweak code snippet generated in Java-OkHttp
  * @param {String} options.indentType - type for indentation eg: space, tab
  * @param {String} options.indentCount - number of spaces or tabs for indentation.

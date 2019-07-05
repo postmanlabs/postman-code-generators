@@ -24,7 +24,7 @@ function makeSnippet (request, indentString, options) {
         snippet += 'Unirest.setTimeouts(0, 0);\n';
     }
 
-    if (options.followRedirect) {
+    if (!options.followRedirect) {
         snippet += 'Unirest.setHttpClient(org.apache.http.impl.client.HttpClients.custom()\n' +
                    indentString + '.disableRedirectHandling()\n' +
                    indentString + '.build());\n';

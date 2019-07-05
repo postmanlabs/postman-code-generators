@@ -27,7 +27,7 @@ Convert function will take three parameters
     * `indentType`- string representing type of indentation for code snippet. eg: 'space', 'tab' (default: 'tab')
     * `indentCount`- integer representing count of indentation required.
     * `requestTimeout` : Integer denoting time after which the request will bail out in milli-seconds
-    * `trimRequestBody` : Boolean denoting whether to trim request body fields
+    * `trimRequestBody` : Trim request body fields
     * `followRedirect` : Boolean denoting whether to redirect a request
 
 * `callback`- callback function with first parameter as error and second parameter as string for code snippet

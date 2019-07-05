@@ -138,54 +138,55 @@ module.exports = {
   getOptions: function () {
     return [
       {
-        name: 'MultiLine Curl Request',
+        name: 'Multiline snippet',
         id: 'multiLine',
         type: 'boolean',
         default: true,
-        description: 'denoting whether to get the request in single or multiple lines'
+        description: 'Split code across multiple lines'
       },
       {
-        name: 'Curl Request`s Protocol',
+        name: 'Protocol',
         id: 'protocol',
-        type: 'string',
+        type: 'enum',
+        availableOptions: ['http', 'https'],
         default: 'https',
-        description: 'denoting the protocol type used in the request'
+        description: 'The protocol to be used to make the request'
       },
       {
-        name: 'Indent Count',
+        name: 'Indent count',
         id: 'indentCount',
         type: 'integer',
-        default: 1,
-        description: 'Integer denoting count of indentation required'
+        default: 2,
+        description: 'Number of indentation characters to add per code level'
       },
       {
         name: 'Indent type',
         id: 'indentType',
         type: 'enum',
         availableOptions: ['tab', 'space'],
-        default: 'tab',
-        description: 'String denoting type of indentation for code snippet. eg: \'space\', \'tab\''
+        default: 'space',
+        description: 'Character used for indentation'
       },
       {
         name: 'Body trim',
         id: 'trimRequestBody',
         type: 'boolean',
         default: true,
-        description: 'Boolean denoting whether to trim request body fields'
+        description: 'Trim request body fields'
       },
       {
-        name: 'Use Mime Format',
+        name: 'Use curl_mime',
         id: 'useMimeType',
         type: 'boolean',
         default: true,
-        description: 'Use the mime format to send formdata requests'
+        description: 'Use curl_mime to send multipart/form-data requests'
       },
       {
-        name: 'Request Timeout',
+        name: 'Request timeout',
         id: 'requestTimeout',
         type: 'integer',
         default: 0,
-        description: 'Integer denoting time after which the request will bail out in milliseconds'
+        description: 'How long the request should wait for a response before timing out (milliseconds)'
       }
     ];
   }
