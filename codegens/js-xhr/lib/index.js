@@ -120,7 +120,7 @@ function getOptions () {
         {
             name: 'Indent Count',
             id: 'indentCount',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 2,
             description: 'Integer denoting count of indentation required'
         },
@@ -135,7 +135,7 @@ function getOptions () {
         {
             name: 'Request Timeout',
             id: 'requestTimeout',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 0,
             description: 'Integer denoting time after which the request will bail out in milliseconds'
         },

@@ -162,7 +162,7 @@ self = module.exports = {
       {
         name: 'Indent Count',
         id: 'indentCount',
-        type: 'integer',
+        type: 'positiveInteger',
         default: 1,
         description: 'Integer denoting count of indentation required'
       },

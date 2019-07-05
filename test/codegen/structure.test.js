@@ -27,7 +27,7 @@ const expectedOptions = {
     },
     indentCount: {
       name: 'Indent Count',
-      type: 'integer',
+      type: 'positiveInteger',
       default: 0,
       description: 'Integer denoting count of indentation required'
     },
@@ -39,7 +39,7 @@ const expectedOptions = {
     },
     requestTimeout: {
       name: 'Request Timeout',
-      type: 'integer',
+      type: 'positiveInteger',
       default: 0,
       description: 'Integer denoting time after which the request will bail out in milliseconds'
     },

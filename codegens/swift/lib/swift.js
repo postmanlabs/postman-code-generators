@@ -156,7 +156,7 @@ self = module.exports = {
             {
                 name: 'Indent Count',
                 id: 'indentCount',
-                type: 'integer',
+                type: 'positiveInteger',
                 default: 2,
                 description: 'Integer denoting count of indentation required'
             },
@@ -171,7 +171,7 @@ self = module.exports = {
             {
                 name: 'Request Timeout',
                 id: 'requestTimeout',
-                type: 'integer',
+                type: 'positiveInteger',
                 default: 0,
                 description: 'Integer denoting time after which the request will bail out in milliseconds'
             },

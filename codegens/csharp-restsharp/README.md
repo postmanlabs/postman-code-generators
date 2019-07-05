@@ -14,7 +14,7 @@ Convert function will take three parameters
 
 * `options`- options is an object which can have following properties
     * `indentType`- string representing type of indentation for code snippet. eg: 'space', 'tab'
-    * `indentCount`- integer representing count of indentation required.
+    * `indentCount`- positiveInteger representing count of indentation required.
     * `includeBoilerplate` - Boolean denoting whether to include class definition and import statements in code snippet
     * `requestTimeout` : Integer denoting time after which the request will bail out in milli-seconds
     * `trimRequestBody` : Boolean denoting whether to trim request body fields

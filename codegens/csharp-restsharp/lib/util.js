@@ -41,7 +41,7 @@ function sanitizeOptions (options, defaultOptions) {
                         result[id] = options[id];
                     }
                     break;
-                case 'integer':
+                case 'positiveInteger':
                     if (typeof options[id] !== 'number' || options[id] < 0) {
                         result[id] = defaultOptions[id].default;
                     }

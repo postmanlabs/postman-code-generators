@@ -142,7 +142,7 @@ function getOptions () {
         {
             name: 'Request Timeout',
             id: 'requestTimeout',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 0,
             description: 'Integer denoting time after which the request will bail out in milliseconds'
         },
