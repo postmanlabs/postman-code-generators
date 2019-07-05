@@ -217,8 +217,8 @@ describe('js-xhr convert function', function () {
 
             request = new sdk.Request(req),
             options = {
-                indentCount: 3,
-                indentType: 'tab',
+                indentCount: 2,
+                indentType: 'space',
                 trimRequestBody: false,
                 requestTimeout: 3000
             };
@@ -235,6 +235,10 @@ describe('js-xhr convert function', function () {
             it('should contain formData object', function () {
                 expect(snippet).to.deep.include('var data = new FormData()');
                 expect(snippet).to.deep.include('data.append("sdf", "helo")');
+            });
+
+            it('should add timeout option when timeout is set to non zero value', function () {
+                expect(snippet).to.include('xhr.timeout = 3000');
             });
         });
     });

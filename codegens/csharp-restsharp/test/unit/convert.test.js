@@ -157,9 +157,9 @@ describe('csharp restsharp function', function () {
                     options = {
                         indentCount: 1,
                         indentType: 'tab',
-                        requestTimeout: 2000,
                         followRedirect: true,
-                        trimRequestBody: true
+                        trimRequestBody: true,
+                        requestTimeout: 5000
                     };
                 convert(request, options, function (error, snippet) {
                     if (error) {
@@ -179,7 +179,6 @@ describe('csharp restsharp function', function () {
                 options = {
                     indentCount: 1,
                     indentType: 'tab',
-                    requestTimeout: 2000,
                     followRedirect: true,
                     trimRequestBody: true
                 };
@@ -227,6 +226,16 @@ describe('csharp restsharp function', function () {
                         expect(snippetArray[i + 1].charAt(2)).to.not.equal(' ');
                     }
                 }
+            });
+        });
+
+        it('should add client timeout configurations when requestTimeout is set to non zero value', function () {
+            convert(request, {requestTimeout: 5}, function (error, snippet) {
+                if (error) {
+                    expect.fail(null, null, error);
+                }
+                expect(snippet).to.be.a('string');
+                expect(snippet).to.include('client.Timeout = 5');
             });
         });
 

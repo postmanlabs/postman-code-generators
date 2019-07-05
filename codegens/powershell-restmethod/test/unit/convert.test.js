@@ -267,6 +267,31 @@ describe('Powershell-restmethod converter', function () {
                 expect(snippet).to.be.a('string');
             });
         });
+
+        it('should generate snippet for file body mode', function () {
+            request = new sdk.Request({
+                'url': 'https://echo.getpostman.com/post',
+                'method': 'POST',
+                'body': {
+                    'mode': 'file',
+                    'file': [
+                        {
+                            'key': 'fileName',
+                            'src': 'file',
+                            'type': 'file'
+                        }
+                    ]
+                }
+            });
+            options = { indentType: 'space', indentCount: 2 };
+            convert(request, options, function (error, snippet) {
+                if (error) {
+                    expect.fail(null, null, error);
+                }
+                expect(snippet).to.be.a('string');
+                expect(snippet).to.not.equal('');
+            });
+        });
     });
 
     describe('getOptions function', function () {

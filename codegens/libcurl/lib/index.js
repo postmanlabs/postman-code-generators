@@ -17,11 +17,13 @@ module.exports = {
       formdataString = '',
       protocol,
       BOUNDARY = '----WebKitFormBoundary7MA4YWxkTrZu0gW',
-      responseCode;
+      responseCode,
+      timeout;
 
     multiLine = options.multiLine || _.isUndefined(options.multiLine);
     trim = options.trimRequestBody ? options.trimRequestBody : false;
     protocol = options.protocol ? options.protocol : 'https';
+    timeout = options.requestTimeout;
 
     if (multiLine) {
       newline = '\n';
@@ -36,6 +38,9 @@ module.exports = {
     snippet += newline + 'if(curl) {';
     snippet += indent + `curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "${request.method}");`;
     snippet += indent + `curl_easy_setopt(curl, CURLOPT_URL, "${encodeURI(request.url.toString())}");`;
+    if (timeout) {
+      snippet += indent + `curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, ${timeout}L);`;
+    }
     snippet += indent + `curl_easy_setopt(curl, CURLOPT_DEFAULT_PROTOCOL, "${protocol}");`;
     snippet += indent + 'struct curl_slist *headers = NULL;';
     headersData = request.getHeaders({ enabled: true });
@@ -175,6 +180,13 @@ module.exports = {
         type: 'boolean',
         default: true,
         description: 'Use curl_mime to send multipart/form-data requests'
+      },
+      {
+        name: 'Request Timeout',
+        id: 'requestTimeout',
+        type: 'integer',
+        default: 0,
+        description: 'How long the request should wait for a response before timing out (milliseconds)'
       }
     ];
   }

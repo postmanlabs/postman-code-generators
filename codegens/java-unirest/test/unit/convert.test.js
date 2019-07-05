@@ -205,7 +205,23 @@ describe('java unirest convert function for test collection', function () {
                     return;
                 }
                 expect(snippet).to.be.a('string');
-                expect(snippet).to.include('.setTimeouts(1000, 0)');
+                expect(snippet).to.include('.setTimeouts(0, 1000)');
+            });
+        });
+
+        it('should return snippet with setTimeouts function setting both ' +
+            'connection and socket timeout to 0 when requestTimeout is set to 0', function () {
+            request = new sdk.Request(mainCollection.item[0].request);
+            options = {
+                requestTimeout: 0
+            };
+            convert(request, options, function (error, snippet) {
+                if (error) {
+                    expect.fail(null, null, error);
+                    return;
+                }
+                expect(snippet).to.be.a('string');
+                expect(snippet).to.include('.setTimeouts(0, 0)');
             });
         });
 

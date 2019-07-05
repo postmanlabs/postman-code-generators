@@ -32,7 +32,7 @@ const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'client
 
 /**
  * Executes codesnippet and compares output with newman response
- * 
+ *
  * @param {String} codeSnippet - code snippet from convert function
  * @param {Object} collection - sample collection
  * @param {Function} done - callback for async calls
@@ -135,7 +135,7 @@ describe('Ruby converter', function () {
                 };
             convert(request, {indentType: 'space',
                 indentCount: 4,
-                requestTimeout: 100,
+                requestTimeout: 1000,
                 trimRequestBody: false,
                 addCacheHeader: false,
                 followRedirect: true}, function (err, snippet) {
@@ -151,6 +151,29 @@ describe('Ruby converter', function () {
     it('should throw an error when callback is not function', function () {
         expect(function () { convert({}, {}); })
             .to.throw('Ruby~convert: Callback is not a function');
+    });
+
+    it('should set read_timeout when requestTimeout is set to non zero value', function () {
+        var request = new sdk.Request({
+                'method': 'GET',
+                'header': [],
+                'url': {
+                    'raw': 'http://google.com',
+                    'protocol': 'http',
+                    'host': [
+                        'google',
+                        'com'
+                    ]
+                }
+            }),
+            options = {requestTimeout: 3000};
+        convert(request, options, function (error, snippet) {
+            if (error) {
+                expect.fail(null, null, error);
+            }
+            expect(snippet).to.be.a('string');
+            expect(snippet).to.include('http.read_timeout = 3');
+        });
     });
 
 });

@@ -13,7 +13,7 @@ var expect = require('chai').expect,
 
 /**
  * compiles and runs codesnippet then compare it with newman output
- * 
+ *
  * @param {String} codeSnippet - code snippet that needed to run using java
  * @param {Object} collection - collection which will be run using newman
  * @param {Function} done - callback for async call from mocha
@@ -235,6 +235,31 @@ describe('nodejs-request convert function', function () {
                 }
                 expect(snippet).to.be.a('string');
                 expect(snippet).to.not.include('body:');
+            });
+        });
+
+        it('should generate snippet for file body mode', function () {
+            request = new sdk.Request({
+                'url': 'https://echo.getpostman.com/post',
+                'method': 'POST',
+                'body': {
+                    'mode': 'file',
+                    'file': [
+                        {
+                            'key': 'fileName',
+                            'src': 'file',
+                            'type': 'file'
+                        }
+                    ]
+                }
+            });
+            options = { indentType: 'space', indentCount: 2 };
+            convert(request, options, function (error, snippet) {
+                if (error) {
+                    expect.fail(null, null, error);
+                }
+                expect(snippet).to.be.a('string');
+                expect(snippet).to.not.equal('');
             });
         });
 

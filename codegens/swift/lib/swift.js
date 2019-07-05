@@ -235,7 +235,8 @@ module.exports = {
         if (bodySnippet !== '') {
             codeSnippet += `${bodySnippet}\n\n`;
         }
-        codeSnippet += `var request = URLRequest(url: URL(string: "${finalUrl}")!, timeoutInterval: ${timeout})\n`;
+        codeSnippet += `var request = URLRequest(url: URL(string: "${finalUrl}")!,` +
+         `timeoutInterval: ${timeout ? timeout : 'Double.infinity'})\n`;
         headerSnippet = parseHeaders(request.getHeaders({ enabled: true }), (request.body ? request.body.mode : 'raw'));
         if (headerSnippet !== '') {
             codeSnippet += headerSnippet + '\n';
