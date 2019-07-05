@@ -35,7 +35,7 @@ self = module.exports = {
   },
 
   /**
-    * Used to convert the postman sdk-request object in php-curl reuqest snippet 
+    * Used to convert the postman sdk-request object in shell-httpie reuqest snippet 
     * 
     * @param  {Object} request - postman SDK-request object
     * @param  {Object} options
