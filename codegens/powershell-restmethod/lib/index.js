@@ -177,7 +177,7 @@ function convert (request, options, callback) {
     if (!_.isFunction(callback)) {
         throw new Error('Powershell RestMethod Converter callback is not a valid function');
     }
-    options = sanitizeOptions(options, self.getOptions());
+    options = sanitizeOptions(options, getOptions());
 
     var trim = options.trimRequestBody,
         headers, body,
