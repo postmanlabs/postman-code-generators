@@ -134,7 +134,7 @@ function runSnippet (codeSnippet, collection, done) {
 }
 
 describe('okhttp convert function', function () {
-  describe('convert for different request types', function () {
+  describe.skip('convert for different request types', function () {
     var headerSnippet = 'import java.io.*;\n' +
                             'import okhttp3.*;\n' +
                             'public class main {\n' +

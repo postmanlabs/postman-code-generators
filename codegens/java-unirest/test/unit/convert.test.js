@@ -141,7 +141,7 @@ describe('java unirest convert function for test collection', function () {
 
   mainCollection.item.forEach(function (item) {
     // Skipping tests for CI
-    it(item.name, function (done) {
+    it.skip(item.name, function (done) {
       var request = new sdk.Request(item.request),
         collection = {
           item: [
