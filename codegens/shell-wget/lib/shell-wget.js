@@ -1,6 +1,8 @@
 var _ = require('./lodash'),
     parseBody = require('./util/parseBody'),
-    sanitize = require('./util/sanitize').sanitize;
+    sanitize = require('./util/sanitize').sanitize,
+    sanitizeOptions = require('./util/sanitize').sanitizeOptions,
+    self;
 
 /**
  * Used to parse the request headers
@@ -23,7 +25,7 @@ function getHeaders (request, indentation) {
     return `${indentation}--header '' \\`;
 }
 
-module.exports = {
+self = module.exports = {
     /**
      * Used to return options which are specific to a particular plugin
      *
@@ -38,7 +40,7 @@ module.exports = {
             {
                 name: 'Indent count',
                 id: 'indentCount',
-                type: 'integer',
+                type: 'positiveInteger',
                 default: 2,
                 description: 'Number of indentation characters to add per code level'
             },
@@ -53,7 +55,7 @@ module.exports = {
             {
                 name: 'Request timeout',
                 id: 'requestTimeout',
-                type: 'integer',
+                type: 'positiveInteger',
                 default: 0,
                 description: 'How long the request should wait for a response before timing out (milliseconds)'
             },
@@ -103,8 +105,10 @@ module.exports = {
             throw new Error('Shell-wget~convert: Callback is not a function');
         }
 
+        options = sanitizeOptions(options, self.getOptions());
+
         identity = options.indentType === 'tab' ? '\t' : ' ';
-        indentation = identity.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+        indentation = identity.repeat(options.indentCount);
         // concatenation and making up the final string
 
         snippet = 'wget --no-check-certificate --quiet \\\n';

@@ -1,7 +1,9 @@
 var _ = require('./lodash'),
 
     parseRequest = require('./parseRequest'),
-    sanitize = require('./util').sanitize;
+    sanitize = require('./util').sanitize,
+    sanitizeOptions = require('./util').sanitizeOptions,
+    self;
 
 /**
  * Generates snippet in csharp-restsharp by parsing data from Postman-SDK request object
@@ -40,7 +42,7 @@ function makeSnippet (request, options) {
     return snippet;
 }
 
-module.exports = {
+self = module.exports = {
     /**
      * Used in order to get additional options for generation of C# code snippet (i.e. Include Boilerplate code)
      *
@@ -60,7 +62,7 @@ module.exports = {
             {
                 name: 'Indent count',
                 id: 'indentCount',
-                type: 'integer',
+                type: 'positiveInteger',
                 default: 2,
                 description: 'Number of indentation characters to add per code level'
             },
@@ -75,7 +77,7 @@ module.exports = {
             {
                 name: 'Request timeout',
                 id: 'requestTimeout',
-                type: 'integer',
+                type: 'positiveInteger',
                 default: 0,
                 description: 'How long the request should wait for a response before timing out (milliseconds)'
             },
@@ -130,8 +132,10 @@ module.exports = {
             //  snippet to create request in csharp-restsharp
             snippet = '';
 
+        options = sanitizeOptions(options, self.getOptions());
+
         indentString = options.indentType === 'tab' ? '\t' : ' ';
-        indentString = indentString.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+        indentString = indentString.repeat(options.indentCount);
 
         if (options.includeBoilerplate) {
             headerSnippet = 'using System;\n' +

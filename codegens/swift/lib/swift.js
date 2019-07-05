@@ -1,5 +1,7 @@
 var _ = require('./lodash'),
-    sanitize = require('./util').sanitize;
+    sanitize = require('./util').sanitize,
+    sanitizeOptions = require('./util').sanitizeOptions,
+    self;
 
 /**
  * Parses Raw data from request to fetch syntax
@@ -140,7 +142,7 @@ function parseHeaders (headers, mode) {
     return headerSnippet;
 }
 
-module.exports = {
+self = module.exports = {
     /**
      * Used in order to get additional options for generation of Swift code snippet
      *
@@ -153,7 +155,7 @@ module.exports = {
             {
                 name: 'Indent count',
                 id: 'indentCount',
-                type: 'integer',
+                type: 'positiveInteger',
                 default: 2,
                 description: 'Number of indentation characters to add per code level'
             },
@@ -168,7 +170,7 @@ module.exports = {
             {
                 name: 'Request timeout',
                 id: 'requestTimeout',
-                type: 'integer',
+                type: 'positiveInteger',
                 default: 0,
                 description: 'How long the request should wait for a response before timing out (milliseconds)'
             },
@@ -215,14 +217,14 @@ module.exports = {
         else if (!_.isFunction(callback)) {
             throw new Error('Swift-Converter: callback is not valid function');
         }
-
+        options = sanitizeOptions(options, self.getOptions());
         var codeSnippet, indent, trim, timeout, finalUrl, // followRedirect,
             bodySnippet = '',
             headerSnippet = '',
             requestBody = (request.body ? request.body.toJSON() : {});
 
         indent = options.indentType === 'tab' ? '\t' : ' ';
-        indent = indent.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+        indent = indent.repeat(options.indentCount);
         timeout = options.requestTimeout;
         // followRedirect = options.followRedirect;
         trim = options.trimRequestBody;

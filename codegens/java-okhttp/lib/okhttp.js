@@ -1,7 +1,8 @@
 var _ = require('./lodash'),
 
     parseRequest = require('./parseRequest'),
-    sanitize = require('./util').sanitize;
+    sanitize = require('./util').sanitize,
+    sanitizeOptions = require('./util').sanitizeOptions;
 
 //  Since Java OkHttp requires to add extralines of code to handle methods with body
 const METHODS_WITHOUT_BODY = ['GET', 'HEAD', 'COPY', 'UNLOCK', 'UNLINK', 'PURGE', 'LINK', 'VIEW'];
@@ -50,6 +51,61 @@ function makeSnippet (request, indentString, options) {
 }
 
 /**
+ * Used in order to get options for generation of Java okhattp code snippet (i.e. Include Boilerplate code)
+ *
+ * @module getOptions
+ *
+ * @returns {Array} Options specific to generation of Java okhattp code snippet
+ */
+function getOptions () {
+    return [
+        {
+            name: 'Include boilerplate',
+            id: 'includeBoilerplate',
+            type: 'boolean',
+            default: false,
+            description: 'Include class definition and import statements in snippet'
+        },
+        {
+            name: 'Indent count',
+            id: 'indentCount',
+            type: 'positiveInteger',
+            default: 2,
+            description: 'Number of indentation characters to add per code level'
+        },
+        {
+            name: 'Indent type',
+            id: 'indentType',
+            type: 'enum',
+            availableOptions: ['tab', 'space'],
+            default: 'space',
+            description: 'Character used for indentation'
+        },
+        {
+            name: 'Request timeout',
+            id: 'requestTimeout',
+            type: 'positiveInteger',
+            default: 0,
+            description: 'How long the request should wait for a response before timing out (milliseconds)'
+        },
+        {
+            name: 'Follow redirect',
+            id: 'followRedirect',
+            type: 'boolean',
+            default: true,
+            description: 'Automatically follow HTTP redirects'
+        },
+        {
+            name: 'Body trim',
+            id: 'trimRequestBody',
+            type: 'boolean',
+            default: true,
+            description: 'Trim request body fields'
+        }
+    ];
+}
+
+/**
  * Converts Postman sdk request object to java okhttp code snippet
  *
  * @module convert
@@ -64,7 +120,7 @@ function makeSnippet (request, indentString, options) {
  * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
  * @param {Function} callback - callback function with parameters (error, snippet)
  */
-module.exports = function (request, options, callback) {
+function convert (request, options, callback) {
 
     if (_.isFunction(options)) {
         callback = options;
@@ -73,7 +129,7 @@ module.exports = function (request, options, callback) {
     else if (!_.isFunction(callback)) {
         throw new Error('Java-OkHttp-Converter: callback is not valid function');
     }
-
+    options = sanitizeOptions(options, getOptions());
     //  String representing value of indentation required
     var indentString,
 
@@ -85,7 +141,7 @@ module.exports = function (request, options, callback) {
         snippet = '';
 
     indentString = options.indentType === 'tab' ? '\t' : ' ';
-    indentString = indentString.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+    indentString = indentString.repeat(options.indentCount);
 
     if (options.includeBoilerplate) {
         headerSnippet = 'import java.io.*;\n' +
@@ -103,4 +159,8 @@ module.exports = function (request, options, callback) {
     (snippet = indentString.repeat(2) + snippet.split('\n').join('\n' + indentString.repeat(2)) + '\n');
 
     return callback(null, headerSnippet + snippet + footerSnippet);
+}
+module.exports = {
+    convert: convert,
+    getOptions: getOptions
 };

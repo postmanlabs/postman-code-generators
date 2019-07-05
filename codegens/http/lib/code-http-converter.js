@@ -1,6 +1,23 @@
 let utils = require('./util');
 
 /**
+ * Used in order to get additional options for generation of C# code snippet (i.e. Include Boilerplate code)
+ *
+ * @module getOptions
+ *
+ * @returns {Array} Additional options specific to generation of http code snippet
+ */
+function getOptions () {
+  return [{
+    name: 'Body trim',
+    id: 'trimRequestBody',
+    type: 'boolean',
+    default: true,
+    description: 'Trim request body fields'
+  }];
+}
+
+/**
  * Converts a Postman SDK request to HTTP message
  * 
  * @param {Object} request - Postman SDK request
@@ -11,7 +28,7 @@ let utils = require('./util');
  */
 function convert (request, options, callback) {
   let snippet = '';
-
+  options = utils.sanitizeOptions(options, getOptions());
   snippet = `${request.method} ${utils.getEndPoint(request)} HTTP/1.1\n`;
   snippet += `Host: ${utils.getHost(request)}\n`;
   snippet += `${utils.getHeaders(request)}\n`;
@@ -21,15 +38,6 @@ function convert (request, options, callback) {
 }
 
 module.exports = {
-  getOptions: function () {
-    return [{
-      name: 'Body trim',
-      id: 'trimRequestBody',
-      type: 'boolean',
-      default: true,
-      description: 'Trim request body fields'
-    }];
-  },
-
+  getOptions: getOptions,
   convert: convert
 };

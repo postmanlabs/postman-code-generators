@@ -1,6 +1,8 @@
 var _ = require('./lodash'),
     sanitize = require('./util').sanitize,
-    isFile = false;
+    sanitizeOptions = require('./util').sanitizeOptions,
+    isFile = false,
+    self;
 
 /**
  * Parses Raw data to fetch syntax
@@ -122,12 +124,13 @@ function parseHeaders (headers, indent) {
     return headerSnippet;
 }
 
-module.exports = {
+self = module.exports = {
     convert: function (request, options, callback) {
 
         if (!_.isFunction(callback)) {
             throw new Error('GoLang-Converter: callback is not valid function');
         }
+        options = sanitizeOptions(options, self.getOptions());
 
         var codeSnippet, indent, trim, timeout, followRedirect,
             bodySnippet = '',
@@ -135,7 +138,7 @@ module.exports = {
             headerSnippet = '';
 
         indent = options.indentType === 'tab' ? '\t' : ' ';
-        indent = indent.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+        indent = indent.repeat(options.indentCount);
         timeout = options.requestTimeout;
         followRedirect = options.followRedirect;
         trim = options.trimRequestBody;
@@ -207,7 +210,7 @@ module.exports = {
         return [{
             name: 'Indent count',
             id: 'indentCount',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 2,
             description: 'Number of indentation characters to add per code level'
         },
@@ -222,9 +225,9 @@ module.exports = {
         {
             name: 'Request timeout',
             id: 'requestTimeout',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 0,
-            description: 'How long the request should wait for a response before timing out (seconds)'
+            description: 'How long the request should wait for a response before timing out (milliseconds)'
         },
         {
             name: 'Follow redirect',

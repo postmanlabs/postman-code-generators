@@ -1,6 +1,8 @@
 var _ = require('./lodash'),
     parseBody = require('./util/parseBody'),
-    sanitize = require('./util/sanitize').sanitize;
+    sanitize = require('./util/sanitize').sanitize,
+    sanitizeOptions = require('./util/sanitize').sanitizeOptions,
+    self;
 
 /**
  * Used to get the headers and put them in the desired form of the language
@@ -24,7 +26,7 @@ function getHeaders (request, indentation) {
 }
 
 
-module.exports = {
+self = module.exports = {
     /**
      * @returns {Array} plugin specific options
      */
@@ -33,7 +35,7 @@ module.exports = {
             {
                 name: 'Indent count',
                 id: 'indentCount',
-                type: 'integer',
+                type: 'positiveInteger',
                 default: 2,
                 description: 'Number of indentation characters to add per code level'
             },
@@ -48,7 +50,7 @@ module.exports = {
             {
                 name: 'Request timeout',
                 id: 'requestTimeout',
-                type: 'integer',
+                type: 'positiveInteger',
                 default: 0,
                 description: 'How long the request should wait for a response before timing out (milliseconds)'
             },
@@ -77,7 +79,7 @@ module.exports = {
      *                                                               default: 2 for indentType: tab)
      * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
                                                 (default: 0 -> never bail out)
-     * @param {Boolean} options.requestBodyTrim : whether to trim request body fields (default: false)
+     * @param {Boolean} options.trimRequestBody : whether to trim request body fields (default: false)
      * @param {Boolean} options.followRedirect : whether to allow redirects of a request
      * @param  {Function} callback - function with parameters (error, snippet)
      */
@@ -92,6 +94,7 @@ module.exports = {
         else if (!_.isFunction(callback)) {
             throw new Error('Php-Pecl(HTTP)~convert: Callback is not a function');
         }
+        options = sanitizeOptions(options, self.getOptions());
 
         identity = options.indentType === 'tab' ? '\t' : ' ';
         indentation = identity.repeat(options.indentCount);
@@ -103,7 +106,7 @@ module.exports = {
         snippet += `$request->setRequestMethod('${request.method}');\n`;
         if (!_.isEmpty(request.body)) {
             snippet += '$body = new http\\Message\\Body;\n';
-            snippet += `${parseBody(request.toJSON(), indentation, options.requestBodyTrim)}`;
+            snippet += `${parseBody(request.toJSON(), indentation, options.trimRequestBody)}`;
             snippet += '$request->setBody($body);\n';
         }
         snippet += '$request->setOptions(array(';

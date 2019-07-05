@@ -1,7 +1,8 @@
 var _ = require('./lodash'),
 
     parseRequest = require('./parseRequest'),
-    sanitize = require('./util').sanitize;
+    sanitize = require('./util').sanitize,
+    sanitizeOptions = require('./util').sanitizeOptions;
 
 /**
  * retuns snippet of nodejs(request) by parsing data from Postman-SDK request object
@@ -64,7 +65,7 @@ function getOptions () {
         {
             name: 'Indent count',
             id: 'indentCount',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 2,
             description: 'Number of indentation characters to add per code level'
         },
@@ -79,7 +80,7 @@ function getOptions () {
         {
             name: 'Request timeout',
             id: 'requestTimeout',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 0,
             description: 'How long the request should wait for a response before timing out (milliseconds)'
         },
@@ -116,6 +117,7 @@ function convert (request, options, callback) {
     if (!_.isFunction(callback)) {
         throw new Error('NodeJS-Request-Converter: callback is not valid function');
     }
+    options = sanitizeOptions(options, getOptions());
 
     //  String representing value of indentation required
     var indentString;

@@ -9,7 +9,9 @@ var expect = require('chai').expect,
     mainCollection = require('./fixtures/testcollection/collection.json'),
     testCollection = require('./fixtures/testcollection/collectionForEdge.json'),
     getOptions = require('../../lib/index').getOptions,
-    testResponse = require('./fixtures/testresponse.json');
+    testResponse = require('./fixtures/testresponse.json'),
+    sanitize = require('../../lib/util').sanitize,
+    sanitizeOptions = require('../../lib/util').sanitizeOptions;
 
 /**
  * compiles and runs codesnippet then compare it with newman output
@@ -253,6 +255,86 @@ describe('csharp restsharp function', function () {
             expect(getOptions()[3]).to.have.property('id', 'requestTimeout');
             expect(getOptions()[4]).to.have.property('id', 'followRedirect');
             expect(getOptions()[5]).to.have.property('id', 'trimRequestBody');
+        });
+    });
+
+    describe('Sanitize function', function () {
+
+        it('should return empty string when input is not a string type', function () {
+            expect(sanitize(123, false)).to.equal('');
+            expect(sanitize(null, false)).to.equal('');
+            expect(sanitize({}, false)).to.equal('');
+            expect(sanitize([], false)).to.equal('');
+        });
+
+        it('should trim input string when needed', function () {
+            expect(sanitize('inputString     ', true)).to.equal('inputString');
+        });
+    });
+
+    describe('sanitizeOptions function', function () {
+        var defaultOptions = {},
+            testOptions = {},
+            sanitizedOptions;
+
+        getOptions().forEach((option) => {
+            defaultOptions[option.id] = {
+                default: option.default,
+                type: option.type
+            };
+            if (option.type === 'enum') {
+                defaultOptions[option.id].availableOptions = option.availableOptions;
+            }
+        });
+
+        it('should remove option not supported by module', function () {
+            testOptions.randomName = 'random value';
+            sanitizedOptions = sanitizeOptions(testOptions, getOptions());
+            expect(sanitizedOptions).to.not.have.property('randomName');
+        });
+
+        it('should use defaults when option value type does not match with expected type', function () {
+            testOptions = {};
+            testOptions.indentCount = '5';
+            testOptions.trimRequestBody = 'true';
+            testOptions.indentType = 'tabSpace';
+            sanitizedOptions = sanitizeOptions(testOptions, getOptions());
+            expect(sanitizedOptions.indentCount).to.equal(defaultOptions.indentCount.default);
+            expect(sanitizedOptions.indentType).to.equal(defaultOptions.indentType.default);
+            expect(sanitizedOptions.trimRequestBody).to.equal(defaultOptions.trimRequestBody.default);
+        });
+
+        it('should use defaults when option type is valid but value is invalid', function () {
+            testOptions = {};
+            testOptions.indentCount = -1;
+            testOptions.indentType = 'spaceTab';
+            testOptions.requestTimeout = -3000;
+            sanitizedOptions = sanitizeOptions(testOptions, getOptions());
+            expect(sanitizedOptions.indentCount).to.equal(defaultOptions.indentCount.default);
+            expect(sanitizedOptions.indentType).to.equal(defaultOptions.indentType.default);
+            expect(sanitizedOptions.requestTimeout).to.equal(defaultOptions.requestTimeout.default);
+        });
+
+        it('should return the same object when default options are provided', function () {
+            for (var id in defaultOptions) {
+                if (defaultOptions.hasOwnProperty(id)) {
+                    testOptions[id] = defaultOptions[id].default;
+                }
+            }
+            sanitizedOptions = sanitizeOptions(testOptions, getOptions());
+            expect(sanitizedOptions).to.deep.equal(testOptions);
+        });
+
+        it('should return the same object when valid (but not necessarily defaults) options are provided', function () {
+            testOptions = {};
+            testOptions.indentType = 'tab';
+            testOptions.indentCount = 3;
+            testOptions.requestTimeout = 3000;
+            testOptions.trimRequestBody = true;
+            testOptions.followRedirect = false;
+            testOptions.includeBoilerplate = true;
+            sanitizedOptions = sanitizeOptions(testOptions, getOptions());
+            expect(sanitizedOptions).to.deep.equal(testOptions);
         });
     });
 

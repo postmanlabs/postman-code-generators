@@ -218,7 +218,7 @@ describe('nodejs-request convert function', function () {
                     return;
                 }
                 expect(snippet).to.be.a('string');
-                expect(snippet).to.include('\'headers\': {\n}');
+                expect(snippet).to.include('\'headers\': {\n  }');
             });
         });
 

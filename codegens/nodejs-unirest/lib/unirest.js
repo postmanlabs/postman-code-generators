@@ -1,4 +1,5 @@
 var _ = require('./lodash'),
+    sanitizeOptions = require('./util').sanitizeOptions,
 
     parseRequest = require('./parseRequest');
 
@@ -45,7 +46,7 @@ function getOptions () {
         {
             name: 'Indent count',
             id: 'indentCount',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 2,
             description: 'Number of indentation characters to add per code level'
         },
@@ -60,7 +61,7 @@ function getOptions () {
         {
             name: 'Request timeout',
             id: 'requestTimeout',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 0,
             description: 'How long the request should wait for a response before timing out (milliseconds)'
         },
@@ -97,6 +98,7 @@ function convert (request, options, callback) {
     if (!_.isFunction(callback)) {
         throw new Error('Nodejs-Unirest-Converter: callback is not valid function');
     }
+    options = sanitizeOptions(options, getOptions());
 
     //  String representing value of indentation required
     var indentString;

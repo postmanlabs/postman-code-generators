@@ -11,7 +11,7 @@ describe('Converter test', function () {
 
   _.forEach(requests, function (r, ind) {
     let testRequest = new Request(r.request);
-    convert(testRequest, {}, function (err, snippet) {
+    convert(testRequest, {trimRequestBody: false}, function (err, snippet) {
       if (err) {
         console.log('Something went wrong while converting the request');
       }

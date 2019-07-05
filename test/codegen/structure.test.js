@@ -27,7 +27,7 @@ const expectedOptions = {
     },
     indentCount: {
       name: 'Indent count',
-      type: 'integer',
+      type: 'positiveInteger',
       default: 0,
       description: 'Number of indentation characters to add per code level'
     },
@@ -39,7 +39,7 @@ const expectedOptions = {
     },
     requestTimeout: {
       name: 'Request timeout',
-      type: 'integer',
+      type: 'positiveInteger',
       default: 0,
       description: 'How long the request should wait for a response before timing out (milliseconds)'
     },
@@ -199,6 +199,7 @@ describe('Code-gen repository ' + codegen, function () {
           expect(option).to.have.property('description');
           expect(option.name).to.be.eql(expectedOptions[option.id].name);
           expect(option.type).to.be.eql(expectedOptions[option.id].type);
+          expect(option.description).to.be.eql(expectedOptions[option.id].description);
         }
         else {
           console.log(`Option ${option.name} not present in the list of expected options.`);

@@ -1,6 +1,8 @@
 var _ = require('./lodash'),
     sanitize = require('./util/sanitize').sanitize,
-    parseBody = require('./util/parseBody');
+    sanitizeOptions = require('./util/sanitize').sanitizeOptions,
+    parseBody = require('./util/parseBody'),
+    self;
 
 /**
  * Used to parse the request headers
@@ -49,7 +51,7 @@ function getUrlPathWithQuery (requestUrl) {
     return urlPathWithQuery;
 }
 
-module.exports = {
+self = module.exports = {
     /**
      * Used to return options which are specific to a particular plugin
      *
@@ -62,7 +64,7 @@ module.exports = {
             {
                 name: 'Indent count',
                 id: 'indentCount',
-                type: 'integer',
+                type: 'positiveInteger',
                 default: 2,
                 description: 'Number of indentation characters to add per code level'
             },
@@ -77,7 +79,7 @@ module.exports = {
             {
                 name: 'Request timeout',
                 id: 'requestTimeout',
-                type: 'integer',
+                type: 'positiveInteger',
                 default: 0,
                 description: 'How long the request should wait for a response before timing out (milliseconds)'
             },
@@ -126,9 +128,10 @@ module.exports = {
         else if (!_.isFunction(callback)) {
             throw new Error('Python-Http.Client~convert: Callback is not a function');
         }
+        options = sanitizeOptions(options, self.getOptions());
 
         identity = options.indentType === 'tab' ? '\t' : ' ';
-        indentation = identity.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+        indentation = identity.repeat(options.indentCount);
 
         snippet += 'import http.client\n';
         snippet += `conn = http.client.HTTPSConnection("${request.url.host.join('.')}"`;

@@ -1,6 +1,8 @@
 var _ = require('./lodash'),
     parseBody = require('./util/parseBody'),
-    sanitize = require('./util/sanitize').sanitize;
+    sanitize = require('./util/sanitize').sanitize,
+    sanitizeOptions = require('./util/sanitize').sanitizeOptions,
+    self;
 
 /**
      * Used to parse the request headers
@@ -47,7 +49,7 @@ function createForm (request, trimRequestBody) {
     return form;
 }
 
-module.exports = {
+self = module.exports = {
     /**
      * Used to return options which are specific to a particular plugin
      *
@@ -57,7 +59,7 @@ module.exports = {
         return [{
             name: 'Indent count',
             id: 'indentCount',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 2,
             description: 'Number of indentation characters to add per code level'
         },
@@ -72,7 +74,7 @@ module.exports = {
         {
             name: 'Request timeout',
             id: 'requestTimeout',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 0,
             description: 'How long the request should wait for a response before timing out (milliseconds)'
         },
@@ -110,11 +112,10 @@ module.exports = {
         else if (!_.isFunction(callback)) {
             throw new Error('js-jQuery~convert: Callback is not a function');
         }
-
+        options = sanitizeOptions(options, self.getOptions());
         indentType = (options.indentType === 'tab') ? '\t' : ' ';
 
-        indent = indentType.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
-        options.requestTimeout = options.requestTimeout || 0;
+        indent = indentType.repeat(options.indentCount);
 
         if (request.body && request.body.mode === 'formdata') {
             jQueryCode = createForm(request.toJSON(), options.trimRequestBody);

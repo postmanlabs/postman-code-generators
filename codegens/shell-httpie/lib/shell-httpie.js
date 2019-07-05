@@ -1,23 +1,40 @@
 var _ = require('./lodash'),
-  Helpers = require('./util/helpers');
+  Helpers = require('./util/helpers'),
+  sanitizeOptions = require('./util/sanitize').sanitizeOptions,
+  self;
 
 const GAP = ' ',
   URLENCODED = 'urlencoded',
   FORM_DATA = 'formdata',
   RAW = 'raw';
 
-module.exports = {
+self = module.exports = {
   /**
    * Used to return options which are specific to a particular plugin
    * 
    * @returns {Array}
    */
   getOptions: function () {
-    return [];
+    return [
+      {
+        name: 'Request timeout',
+        id: 'requestTimeout',
+        type: 'positiveInteger',
+        default: 0,
+        description: 'How long the request should wait for a response before timing out (milliseconds)'
+      },
+      {
+        name: 'Follow redirect',
+        id: 'followRedirect',
+        type: 'boolean',
+        default: true,
+        description: 'Automatically follow HTTP redirects'
+      }
+    ];
   },
 
   /**
-    * Used to convert the postman sdk-request object in php-curl reuqest snippet 
+    * Used to convert the postman sdk-request object in shell-httpie reuqest snippet 
     * 
     * @param  {Object} request - postman SDK-request object
     * @param  {Object} options
@@ -50,9 +67,11 @@ module.exports = {
       throw new Error('Shell-Httpie~convert: Callback not a function');
     }
 
+    options = sanitizeOptions(options, self.getOptions());
+
     Helpers.parseURLVariable(request);
     url = Helpers.addHost(request) + Helpers.addPathandQuery(request);
-    timeout = options.requestTimeout || '';
+    timeout = options.requestTimeout;
     parsedHeaders = Helpers.addHeaders(request);
 
     // snippet construction based on the request body

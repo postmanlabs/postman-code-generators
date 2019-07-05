@@ -1,5 +1,6 @@
 var _ = require('./lodash'),
-    sanitize = require('./util').sanitize;
+    sanitize = require('./util').sanitize,
+    sanitizeOptions = require('./util').sanitizeOptions;
 const VALID_BODY_MODES = ['urlencoded', 'raw', 'file', 'formdata'];
 
 /**
@@ -127,7 +128,7 @@ function getOptions () {
         {
             name: 'Indent count',
             id: 'indentCount',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 2,
             description: 'Number of indentation characters to add per code level'
         },
@@ -142,7 +143,7 @@ function getOptions () {
         {
             name: 'Request timeout',
             id: 'requestTimeout',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 0,
             description: 'How long the request should wait for a response before timing out (milliseconds)'
         },
@@ -179,6 +180,7 @@ function convert (request, options, callback) {
     if (!_.isFunction(callback)) {
         throw new Error('JS-Fetch Converter callback is not a valid function');
     }
+    options = sanitizeOptions(options, getOptions());
 
     var indent = options.indentType === 'tab' ? '\t' : ' ',
         trim = options.trimRequestBody,

@@ -1,5 +1,6 @@
 var _ = require('./lodash'),
-    sanitize = require('./util').sanitize;
+    sanitize = require('./util').sanitize,
+    sanitizeOptions = require('./util').sanitizeOptions;
 
 /**
  * Parses URLEncoded body from request
@@ -118,7 +119,7 @@ function getOptions () {
         {
             name: 'Indent count',
             id: 'indentCount',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 2,
             description: 'Number of indentation characters to add per code level'
         },
@@ -133,7 +134,7 @@ function getOptions () {
         {
             name: 'Request timeout',
             id: 'requestTimeout',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 0,
             description: 'How long the request should wait for a response before timing out (milliseconds)'
         },
@@ -142,7 +143,7 @@ function getOptions () {
             id: 'trimRequestBody',
             type: 'boolean',
             default: true,
-            description: 'Automatically follow HTTP redirects'
+            description: 'Trim request body fields'
         }
     ];
 }
@@ -162,7 +163,7 @@ function convert (request, options, callback) {
     if (!_.isFunction(callback)) {
         throw new Error('JS-XHR-Converter: callback is not valid function');
     }
-
+    options = sanitizeOptions(options, getOptions());
     var indent, trim, headerSnippet,
         codeSnippet = '',
         bodySnippet = '';

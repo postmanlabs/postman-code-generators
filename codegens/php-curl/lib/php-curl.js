@@ -1,6 +1,8 @@
 var _ = require('./lodash'),
     parseBody = require('./util/parseBody'),
-    sanitize = require('./util/sanitize').sanitize;
+    sanitize = require('./util/sanitize').sanitize,
+    sanitizeOptions = require('./util/sanitize').sanitizeOptions,
+    self;
 
 /**
  * Used to parse the request headers
@@ -23,7 +25,7 @@ function getHeaders (request, indentation) {
     return '';
 }
 
-module.exports = {
+self = module.exports = {
     /**
      * Used to return options which are specific to a particular plugin
      *
@@ -33,7 +35,7 @@ module.exports = {
         return [{
             name: 'Indent count',
             id: 'indentCount',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 2,
             description: 'Number of indentation characters to add per code level'
         },
@@ -48,7 +50,7 @@ module.exports = {
         {
             name: 'Request timeout',
             id: 'requestTimeout',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 0,
             description: 'How long the request should wait for a response before timing out (milliseconds)'
         },
@@ -95,9 +97,10 @@ module.exports = {
         else if (!_.isFunction(callback)) {
             throw new Error('Php-Curl~convert: Callback is not a function');
         }
+        options = sanitizeOptions(options, self.getOptions());
 
         identity = options.indentType === 'tab' ? '\t' : ' ';
-        indentation = identity.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+        indentation = identity.repeat(options.indentCount);
         // concatenation and making up the final string
         finalUrl = request.url.toString();
         if (finalUrl !== encodeURI(finalUrl)) {
@@ -110,8 +113,8 @@ module.exports = {
         snippet += `${indentation}CURLOPT_RETURNTRANSFER => true,\n`;
         snippet += `${indentation}CURLOPT_ENCODING => "",\n`;
         snippet += `${indentation}CURLOPT_MAXREDIRS => 10,\n`;
-        snippet += `${indentation}CURLOPT_TIMEOUT => ${options.requestTimeout || 0},\n`;
-        snippet += `${indentation}CURLOPT_FOLLOWLOCATION => ${options.followRedirect || false},\n`;
+        snippet += `${indentation}CURLOPT_TIMEOUT => ${options.requestTimeout},\n`;
+        snippet += `${indentation}CURLOPT_FOLLOWLOCATION => ${options.followRedirect},\n`;
         snippet += `${indentation}CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,\n`;
         snippet += `${indentation}CURLOPT_CUSTOMREQUEST => "${request.method}",\n`;
         snippet += `${parseBody(request.toJSON(), options.trimRequestBody, indentation)}`;

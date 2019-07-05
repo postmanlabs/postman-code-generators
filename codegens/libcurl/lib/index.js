@@ -1,12 +1,15 @@
 var sanitize = require('./util').sanitize,
-  _ = require('./lodash');
+  sanitizeOptions = require('./util').sanitizeOptions,
+  _ = require('./lodash'),
+  self;
 
-module.exports = {
+self = module.exports = {
   convert: function (request, options, callback) {
 
     if (!_.isFunction(callback)) {
       throw new Error('Curl-Converter: callback is not valid function');
     }
+    options = sanitizeOptions(options, self.getOptions());
 
     var indent = '',
       trim, headersData, body, text,
@@ -20,9 +23,9 @@ module.exports = {
       responseCode,
       timeout;
 
-    multiLine = options.multiLine || _.isUndefined(options.multiLine);
-    trim = options.trimRequestBody ? options.trimRequestBody : false;
-    protocol = options.protocol ? options.protocol : 'https';
+    multiLine = options.multiLine;
+    trim = options.trimRequestBody;
+    protocol = options.protocol;
     timeout = options.requestTimeout;
 
     if (multiLine) {
@@ -142,7 +145,7 @@ module.exports = {
         id: 'multiLine',
         type: 'boolean',
         default: true,
-        description: 'Split code across multiple lines'
+        description: 'Split cURL command across multiple lines'
       },
       {
         name: 'Protocol',
@@ -155,7 +158,7 @@ module.exports = {
       {
         name: 'Indent count',
         id: 'indentCount',
-        type: 'integer',
+        type: 'positiveInteger',
         default: 2,
         description: 'Number of indentation characters to add per code level'
       },
@@ -184,7 +187,7 @@ module.exports = {
       {
         name: 'Request timeout',
         id: 'requestTimeout',
-        type: 'integer',
+        type: 'positiveInteger',
         default: 0,
         description: 'How long the request should wait for a response before timing out (milliseconds)'
       }

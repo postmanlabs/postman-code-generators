@@ -1,6 +1,8 @@
 const _ = require('./lodash'),
+    sanitizeOptions = require('./util').sanitizeOptions,
 
     parseRequest = require('./parseRequest');
+var self;
 
 /**
  * retuns snippet of nodejs(native) by parsing data from Postman-SDK request object
@@ -113,7 +115,7 @@ function makeSnippet (request, indentString, options) {
  * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
  * @param {Function} callback - callback function with parameters (error, snippet)
  */
-module.exports = {
+self = module.exports = {
     /**
      * Used to return options which are specific to a particular plugin
      *
@@ -123,7 +125,7 @@ module.exports = {
         return [{
             name: 'Indent count',
             id: 'indentCount',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 2,
             description: 'Number of indentation characters to add per code level'
         },
@@ -138,7 +140,7 @@ module.exports = {
         {
             name: 'Request timeout',
             id: 'requestTimeout',
-            type: 'integer',
+            type: 'positiveInteger',
             default: 0,
             description: 'How long the request should wait for a response before timing out (milliseconds)'
         },
@@ -162,12 +164,13 @@ module.exports = {
         if (!_.isFunction(callback)) {
             throw new Error('NodeJS-Request-Converter: callback is not valid function');
         }
+        options = sanitizeOptions(options, self.getOptions());
 
         //  String representing value of indentation required
         var indentString;
 
         indentString = options.indentType === 'tab' ? '\t' : ' ';
-        indentString = indentString.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+        indentString = indentString.repeat(options.indentCount);
 
         return callback(null, makeSnippet(request, indentString, options));
     }
