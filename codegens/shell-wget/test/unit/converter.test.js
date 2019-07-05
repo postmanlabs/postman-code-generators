@@ -32,7 +32,7 @@ const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'json',
 
 /**
  * Executes codesnippet and compares output with newman response
- * 
+ *
  * @param {String} codeSnippet - code snippet from convert function
  * @param {Object} collection - sample collection
  * @param {Function} done - callback for async calls
@@ -200,6 +200,16 @@ describe('Shell-Wget converter', function () {
                         expect(snippetArray[i + 1].charAt(2)).to.not.equal(SINGLE_TAB);
                     }
                 }
+            });
+        });
+
+        it('should generate snippet with timout flag set as 0 (infinite) when requestTimeout is set as 0', function () {
+            convert(request, {requestTimeout: 0}, function (error, snippet) {
+                if (error) {
+                    expect.fail(null, null, error);
+                }
+                expect(snippet).to.be.a('string');
+                expect(snippet).to.include('--timeout=0');
             });
         });
     });
