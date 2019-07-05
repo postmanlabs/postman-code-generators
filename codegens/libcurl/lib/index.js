@@ -1,8 +1,7 @@
 var sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
   _ = require('./lodash'),
-  self,
-  defaultOptions = {};
+  self;
 
 self = module.exports = {
   convert: function (request, options, callback) {
@@ -10,16 +9,7 @@ self = module.exports = {
     if (!_.isFunction(callback)) {
       throw new Error('Curl-Converter: callback is not valid function');
     }
-    self.getOptions().forEach((option) => {
-      defaultOptions[option.id] = {
-        default: option.default,
-        type: option.type
-      };
-      if (option.type === 'enum') {
-        defaultOptions[option.id].availableOptions = option.availableOptions;
-      }
-    });
-    options = sanitizeOptions(options, defaultOptions);
+    options = sanitizeOptions(options, self.getOptions());
 
     var indent = '',
       trim, headersData, body, text,

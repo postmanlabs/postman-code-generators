@@ -1,8 +1,7 @@
 var _ = require('./lodash'),
   Helpers = require('./util/helpers'),
   sanitizeOptions = require('./util/sanitize').sanitizeOptions,
-  self,
-  defaultOptions = {};
+  self;
 
 const GAP = ' ',
   URLENCODED = 'urlencoded',
@@ -68,16 +67,7 @@ self = module.exports = {
       throw new Error('Shell-Httpie~convert: Callback not a function');
     }
 
-    self.getOptions().forEach((option) => {
-      defaultOptions[option.id] = {
-        default: option.default,
-        type: option.type
-      };
-      if (option.type === 'enum') {
-        defaultOptions[option.id].availableOptions = option.availableOptions;
-      }
-    });
-    options = sanitizeOptions(options, defaultOptions);
+    options = sanitizeOptions(options, self.getOptions());
 
     Helpers.parseURLVariable(request);
     url = Helpers.addHost(request) + Helpers.addPathandQuery(request);

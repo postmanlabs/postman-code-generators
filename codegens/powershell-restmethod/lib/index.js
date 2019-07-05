@@ -1,7 +1,6 @@
 var _ = require('./lodash'),
     sanitize = require('./util').sanitize,
-    sanitizeOptions = require('./util').sanitizeOptions,
-    defaultOptions = {};
+    sanitizeOptions = require('./util').sanitizeOptions;
 const VALID_METHODS = ['DEFAULT',
     'DELETE',
     'GET',
@@ -178,16 +177,7 @@ function convert (request, options, callback) {
     if (!_.isFunction(callback)) {
         throw new Error('Powershell RestMethod Converter callback is not a valid function');
     }
-    getOptions().forEach((option) => {
-        defaultOptions[option.id] = {
-            default: option.default,
-            type: option.type
-        };
-        if (option.type === 'enum') {
-            defaultOptions[option.id].availableOptions = option.availableOptions;
-        }
-    });
-    options = sanitizeOptions(options, defaultOptions);
+    options = sanitizeOptions(options, self.getOptions());
 
     var trim = options.trimRequestBody,
         headers, body,

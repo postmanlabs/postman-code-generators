@@ -2,8 +2,7 @@ var _ = require('./lodash'),
 
     parseRequest = require('./parseRequest'),
     sanitize = require('./util').sanitize,
-    sanitizeOptions = require('./util').sanitizeOptions,
-    defaultOptions = {};
+    sanitizeOptions = require('./util').sanitizeOptions;
 
 //  Since Java OkHttp requires to add extralines of code to handle methods with body
 const METHODS_WITHOUT_BODY = ['GET', 'HEAD', 'COPY', 'UNLOCK', 'UNLINK', 'PURGE', 'LINK', 'VIEW'];
@@ -130,16 +129,7 @@ function convert (request, options, callback) {
     else if (!_.isFunction(callback)) {
         throw new Error('Java-OkHttp-Converter: callback is not valid function');
     }
-    getOptions().forEach((option) => {
-        defaultOptions[option.id] = {
-            default: option.default,
-            type: option.type
-        };
-        if (option.type === 'enum') {
-            defaultOptions[option.id].availableOptions = option.availableOptions;
-        }
-    });
-    options = sanitizeOptions(options, defaultOptions);
+    options = sanitizeOptions(options, getOptions());
     //  String representing value of indentation required
     var indentString,
 

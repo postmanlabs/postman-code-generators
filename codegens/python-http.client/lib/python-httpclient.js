@@ -2,8 +2,7 @@ var _ = require('./lodash'),
     sanitize = require('./util/sanitize').sanitize,
     sanitizeOptions = require('./util/sanitize').sanitizeOptions,
     parseBody = require('./util/parseBody'),
-    self,
-    defaultOptions = {};
+    self;
 
 /**
  * Used to parse the request headers
@@ -129,16 +128,7 @@ self = module.exports = {
         else if (!_.isFunction(callback)) {
             throw new Error('Python-Http.Client~convert: Callback is not a function');
         }
-        self.getOptions().forEach((option) => {
-            defaultOptions[option.id] = {
-                default: option.default,
-                type: option.type
-            };
-            if (option.type === 'enum') {
-                defaultOptions[option.id].availableOptions = option.availableOptions;
-            }
-        });
-        options = sanitizeOptions(options, defaultOptions);
+        options = sanitizeOptions(options, self.getOptions());
 
         identity = options.indentType === 'tab' ? '\t' : ' ';
         indentation = identity.repeat(options.indentCount);

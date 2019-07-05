@@ -3,8 +3,7 @@ var _ = require('./lodash'),
     parseRequest = require('./parseRequest'),
     sanitize = require('./util').sanitize,
     sanitizeOptions = require('./util').sanitizeOptions,
-    self,
-    defaultOptions = {};
+    self;
 
 /**
  * Generates snippet in csharp-restsharp by parsing data from Postman-SDK request object
@@ -133,16 +132,7 @@ self = module.exports = {
             //  snippet to create request in csharp-restsharp
             snippet = '';
 
-        self.getOptions().forEach((option) => {
-            defaultOptions[option.id] = {
-                default: option.default,
-                type: option.type
-            };
-            if (option.type === 'enum') {
-                defaultOptions[option.id].availableOptions = option.availableOptions;
-            }
-        });
-        options = sanitizeOptions(options, defaultOptions);
+        options = sanitizeOptions(options, self.getOptions());
 
         indentString = options.indentType === 'tab' ? '\t' : ' ';
         indentString = indentString.repeat(options.indentCount);

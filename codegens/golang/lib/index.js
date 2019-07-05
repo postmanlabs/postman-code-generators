@@ -2,8 +2,7 @@ var _ = require('./lodash'),
     sanitize = require('./util').sanitize,
     sanitizeOptions = require('./util').sanitizeOptions,
     isFile = false,
-    self,
-    defaultOptions = {};
+    self;
 
 /**
  * Parses Raw data to fetch syntax
@@ -131,16 +130,7 @@ self = module.exports = {
         if (!_.isFunction(callback)) {
             throw new Error('GoLang-Converter: callback is not valid function');
         }
-        self.getOptions().forEach((option) => {
-            defaultOptions[option.id] = {
-                default: option.default,
-                type: option.type
-            };
-            if (option.type === 'enum') {
-                defaultOptions[option.id].availableOptions = option.availableOptions;
-            }
-        });
-        options = sanitizeOptions(options, defaultOptions);
+        options = sanitizeOptions(options, self.getOptions());
 
         var codeSnippet, indent, trim, timeout, followRedirect,
             bodySnippet = '',

@@ -289,7 +289,7 @@ describe('csharp restsharp function', function () {
 
         it('should remove option not supported by module', function () {
             testOptions.randomName = 'random value';
-            sanitizedOptions = sanitizeOptions(testOptions, defaultOptions);
+            sanitizedOptions = sanitizeOptions(testOptions, getOptions());
             expect(sanitizedOptions).to.not.have.property('randomName');
         });
 
@@ -298,7 +298,7 @@ describe('csharp restsharp function', function () {
             testOptions.indentCount = '5';
             testOptions.trimRequestBody = 'true';
             testOptions.indentType = 'tabSpace';
-            sanitizedOptions = sanitizeOptions(testOptions, defaultOptions);
+            sanitizedOptions = sanitizeOptions(testOptions, getOptions());
             expect(sanitizedOptions.indentCount).to.equal(defaultOptions.indentCount.default);
             expect(sanitizedOptions.indentType).to.equal(defaultOptions.indentType.default);
             expect(sanitizedOptions.trimRequestBody).to.equal(defaultOptions.trimRequestBody.default);
@@ -309,7 +309,7 @@ describe('csharp restsharp function', function () {
             testOptions.indentCount = -1;
             testOptions.indentType = 'spaceTab';
             testOptions.requestTimeout = -3000;
-            sanitizedOptions = sanitizeOptions(testOptions, defaultOptions);
+            sanitizedOptions = sanitizeOptions(testOptions, getOptions());
             expect(sanitizedOptions.indentCount).to.equal(defaultOptions.indentCount.default);
             expect(sanitizedOptions.indentType).to.equal(defaultOptions.indentType.default);
             expect(sanitizedOptions.requestTimeout).to.equal(defaultOptions.requestTimeout.default);
@@ -321,7 +321,7 @@ describe('csharp restsharp function', function () {
                     testOptions[id] = defaultOptions[id].default;
                 }
             }
-            sanitizedOptions = sanitizeOptions(testOptions, defaultOptions);
+            sanitizedOptions = sanitizeOptions(testOptions, getOptions());
             expect(sanitizedOptions).to.deep.equal(testOptions);
         });
 
@@ -333,7 +333,7 @@ describe('csharp restsharp function', function () {
             testOptions.trimRequestBody = true;
             testOptions.followRedirect = false;
             testOptions.includeBoilerplate = true;
-            sanitizedOptions = sanitizeOptions(testOptions, defaultOptions);
+            sanitizedOptions = sanitizeOptions(testOptions, getOptions());
             expect(sanitizedOptions).to.deep.equal(testOptions);
         });
     });

@@ -1,7 +1,6 @@
 var _ = require('./lodash'),
     sanitize = require('./util').sanitize,
-    sanitizeOptions = require('./util').sanitizeOptions,
-    defaultOptions = {};
+    sanitizeOptions = require('./util').sanitizeOptions;
 
 /**
  * Parses URLEncoded body from request
@@ -164,16 +163,7 @@ function convert (request, options, callback) {
     if (!_.isFunction(callback)) {
         throw new Error('JS-XHR-Converter: callback is not valid function');
     }
-    getOptions().forEach((option) => {
-        defaultOptions[option.id] = {
-            default: option.default,
-            type: option.type
-        };
-        if (option.type === 'enum') {
-            defaultOptions[option.id].availableOptions = option.availableOptions;
-        }
-    });
-    options = sanitizeOptions(options, defaultOptions);
+    options = sanitizeOptions(options, getOptions());
     var indent, trim, headerSnippet,
         codeSnippet = '',
         bodySnippet = '';

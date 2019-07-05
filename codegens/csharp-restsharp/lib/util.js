@@ -18,15 +18,23 @@ function sanitize (inputString, trim) {
  * sanitizes input options
  *
  * @param {Object} options - Options provided by the user
- * @param {Object} defaultOptions - default options object containing type and default for each property,
- *  built from getOptions array
+ * @param {Array} optionsArray - options array received from getOptions function
  *
  * @returns {Object} - Sanitized options object
  */
-function sanitizeOptions (options, defaultOptions) {
+function sanitizeOptions (options, optionsArray) {
     var result = {},
+        defaultOptions = {},
         id;
-
+    optionsArray.forEach((option) => {
+        defaultOptions[option.id] = {
+            default: option.default,
+            type: option.type
+        };
+        if (option.type === 'enum') {
+            defaultOptions[option.id].availableOptions = option.availableOptions;
+        }
+    });
     for (id in options) {
         if (options.hasOwnProperty(id)) {
             if (defaultOptions[id] === undefined) {
