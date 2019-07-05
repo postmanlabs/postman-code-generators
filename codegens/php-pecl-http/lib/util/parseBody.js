@@ -1,5 +1,5 @@
 var _ = require('../lodash'),
-    sanitize = require('./sanitize').sanitize;
+  sanitize = require('./sanitize').sanitize;
 
 /**
  * Used to parse the body of the postman SDK-request and return in the desired format
@@ -10,60 +10,60 @@ var _ = require('../lodash'),
  * @returns {String} - request body
  */
 module.exports = function (request, indentation, bodyTrim) {
-    // used to check whether body is present in the request or not
-    if (request.body) {
-        var bodyDataMap = [],
-            bodyFileMap = [],
-            requestBody = '',
-            enabledBodyList;
+  // used to check whether body is present in the request or not
+  if (request.body) {
+    var bodyDataMap = [],
+      bodyFileMap = [],
+      requestBody = '',
+      enabledBodyList;
 
-        switch (request.body.mode) {
-            case 'raw':
-                if (!_.isEmpty(request.body[request.body.mode])) {
-                    requestBody += `$body->append('${request.body[request.body.mode]}');\n`;
-                }
-                return requestBody;
+    switch (request.body.mode) {
+      case 'raw':
+        if (!_.isEmpty(request.body[request.body.mode])) {
+          requestBody += `$body->append('${request.body[request.body.mode]}');\n`;
+        }
+        return requestBody;
 
-            case 'urlencoded':
-                enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
-                if (!_.isEmpty(enabledBodyList)) {
-                    bodyDataMap = _.map(enabledBodyList, function (value) {
-                        return `${indentation}'${sanitize(value.key, bodyTrim)}' => ` +
+      case 'urlencoded':
+        enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
+        if (!_.isEmpty(enabledBodyList)) {
+          bodyDataMap = _.map(enabledBodyList, function (value) {
+            return `${indentation}'${sanitize(value.key, bodyTrim)}' => ` +
                             `'${sanitize(value.value, bodyTrim)}'`;
-                    });
-                    requestBody = `$body->append(new http\\QueryString(array(\n${bodyDataMap.join(',\n')})));`;
-                }
-                return requestBody;
+          });
+          requestBody = `$body->append(new http\\QueryString(array(\n${bodyDataMap.join(',\n')})));`;
+        }
+        return requestBody;
 
-            case 'formdata':
-                enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
-                if (!_.isEmpty(enabledBodyList)) {
-                    bodyDataMap = _.map(_.filter(enabledBodyList, {'type': 'text'}), function (value) {
-                        return (`${indentation}'${sanitize(value.key, bodyTrim)}' => ` +
+      case 'formdata':
+        enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
+        if (!_.isEmpty(enabledBodyList)) {
+          bodyDataMap = _.map(_.filter(enabledBodyList, {'type': 'text'}), function (value) {
+            return (`${indentation}'${sanitize(value.key, bodyTrim)}' => ` +
                             `'${sanitize(value.value, bodyTrim)}'`);
-                    });
-                    bodyFileMap = _.map(_.filter(enabledBodyList, {'type': 'file'}), function (value) {
-                        return (`${indentation.repeat(2)}array('name' => '${sanitize(value.key, bodyTrim)}', ` +
+          });
+          bodyFileMap = _.map(_.filter(enabledBodyList, {'type': 'file'}), function (value) {
+            return (`${indentation.repeat(2)}array('name' => '${sanitize(value.key, bodyTrim)}', ` +
                             `'type' => '${sanitize(value.type, bodyTrim)}', ` +
                             `'file' => '${sanitize(value.src, bodyTrim)}', ` +
                             '\'data\' => null)');
-                    });
-                    requestBody = `$body->addForm(array(\n${bodyDataMap.join(',\n')}\n), ` +
+          });
+          requestBody = `$body->addForm(array(\n${bodyDataMap.join(',\n')}\n), ` +
                         `array(${bodyFileMap.join(',\n')}));\n`;
-                }
-                return requestBody;
+        }
+        return requestBody;
 
-            case 'file':
-                requestBody = `${indentation.repeat(2)}array('name' => '` +
+      case 'file':
+        requestBody = `${indentation.repeat(2)}array('name' => '` +
                     `${sanitize(request.body[request.body.mode].key, bodyTrim)}', ` +
                     `'type' => '${sanitize(request.body[request.body.mode].type, bodyTrim)}', ` +
                     `'file' => '${sanitize(request.body[request.body.mode].src, bodyTrim)}', ` +
                     '\'data\' => null)';
-                return `$body->addForm(array(), array(${requestBody}));\n`;
+        return `$body->addForm(array(), array(${requestBody}));\n`;
 
-            default:
-                return requestBody;
-        }
+      default:
+        return requestBody;
     }
-    return '';
+  }
+  return '';
 };

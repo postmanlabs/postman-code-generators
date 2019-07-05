@@ -1,5 +1,5 @@
 var _ = require('../lodash'),
-    sanitize = require('./sanitize').sanitize;
+  sanitize = require('./sanitize').sanitize;
 
 /**
  * Used to parse the body of the postman SDK-request and return in the desired format
@@ -10,58 +10,58 @@ var _ = require('../lodash'),
  * @returns {String} - request body
  */
 module.exports = function (request, indentation, bodyTrim) {
-    // used to check whether body is present in the request or not
-    if (request.body) {
-        var requestBody = '',
-            bodyDataMap,
-            bodyFileMap,
-            enabledBodyList;
+  // used to check whether body is present in the request or not
+  if (request.body) {
+    var requestBody = '',
+      bodyDataMap,
+      bodyFileMap,
+      enabledBodyList;
 
-        switch (request.body.mode) {
-            case 'raw':
-                if (!_.isEmpty(request.body[request.body.mode])) {
-                    requestBody += `payload = ${sanitize(request.body[request.body.mode],
-                        request.body.mode, bodyTrim)}\n`;
-                }
-                else {
-                    requestBody = 'payload  = {}\n';
-                }
-                return requestBody;
-            case 'urlencoded':
-                enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
-                if (!_.isEmpty(enabledBodyList)) {
-                    bodyDataMap = _.map(enabledBodyList, function (value) {
-                        return `${sanitize(value.key, request.body.mode, bodyTrim)}=` +
-                        `${sanitize(value.value, request.body.mode, bodyTrim)}`;
-                    });
-                    requestBody += `payload = '${bodyDataMap.join('&')}'\n`;
-                }
-                else {
-                    requestBody = 'payload = {}\n';
-                }
-                return requestBody;
-            case 'formdata':
-                enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
-                if (!_.isEmpty(enabledBodyList)) {
-                    bodyDataMap = _.map(_.filter(enabledBodyList, {'type': 'text'}), function (value) {
-                        return (`'${sanitize(value.key, request.body.mode, bodyTrim)}': ` +
-                            `'${sanitize(value.value, request.body.mode, bodyTrim)}'`);
-                    });
-                    bodyFileMap = _.map(_.filter(enabledBodyList, {'type': 'file'}), function (value) {
-                        return `('${value.key}': open('${sanitize(value.src, request.body.mode, bodyTrim)}','rb')`;
-                    });
-                    requestBody = `payload = {${bodyDataMap.join(',\n')}}\nfiles = {${bodyFileMap.join(',')}}\n`;
-                }
-                else {
-                    requestBody = 'payload = {}\nfiles = {}\n';
-                }
-                return requestBody;
-            case 'file':
-                return `payload = {open('${request.body[request.body.mode].src}', 'rb').read()\n}`;
-            default:
-                return 'payload = {}\n';
+    switch (request.body.mode) {
+      case 'raw':
+        if (!_.isEmpty(request.body[request.body.mode])) {
+          requestBody += `payload = ${sanitize(request.body[request.body.mode],
+            request.body.mode, bodyTrim)}\n`;
         }
+        else {
+          requestBody = 'payload  = {}\n';
+        }
+        return requestBody;
+      case 'urlencoded':
+        enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
+        if (!_.isEmpty(enabledBodyList)) {
+          bodyDataMap = _.map(enabledBodyList, function (value) {
+            return `${sanitize(value.key, request.body.mode, bodyTrim)}=` +
+                        `${sanitize(value.value, request.body.mode, bodyTrim)}`;
+          });
+          requestBody += `payload = '${bodyDataMap.join('&')}'\n`;
+        }
+        else {
+          requestBody = 'payload = {}\n';
+        }
+        return requestBody;
+      case 'formdata':
+        enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
+        if (!_.isEmpty(enabledBodyList)) {
+          bodyDataMap = _.map(_.filter(enabledBodyList, {'type': 'text'}), function (value) {
+            return (`'${sanitize(value.key, request.body.mode, bodyTrim)}': ` +
+                            `'${sanitize(value.value, request.body.mode, bodyTrim)}'`);
+          });
+          bodyFileMap = _.map(_.filter(enabledBodyList, {'type': 'file'}), function (value) {
+            return `('${value.key}': open('${sanitize(value.src, request.body.mode, bodyTrim)}','rb')`;
+          });
+          requestBody = `payload = {${bodyDataMap.join(',\n')}}\nfiles = {${bodyFileMap.join(',')}}\n`;
+        }
+        else {
+          requestBody = 'payload = {}\nfiles = {}\n';
+        }
+        return requestBody;
+      case 'file':
+        return `payload = {open('${request.body[request.body.mode].src}', 'rb').read()\n}`;
+      default:
+        return 'payload = {}\n';
     }
-    return 'payload = {}\n';
+  }
+  return 'payload = {}\n';
 }
 ;

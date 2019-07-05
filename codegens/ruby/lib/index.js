@@ -1,4 +1,4 @@
 module.exports = {
-    convert: require('./ruby').convert,
-    getOptions: require('./ruby').getOptions
+  convert: require('./ruby').convert,
+  getOptions: require('./ruby').getOptions
 };

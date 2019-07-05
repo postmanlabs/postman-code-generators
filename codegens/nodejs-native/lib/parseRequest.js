@@ -1,6 +1,6 @@
 const _ = require('./lodash'),
 
-    sanitize = require('./util').sanitize;
+  sanitize = require('./util').sanitize;
 
 /**
  * parses body of request when type of the request body is formdata or urlencoded and 
@@ -11,49 +11,49 @@ const _ = require('./lodash'),
  * @param {Boolean} trimBody - indicates whether to trim body or not
  */
 function extractFormData (dataArray, indentString, trimBody) {
-    if (!dataArray) {
-        return '';
+  if (!dataArray) {
+    return '';
+  }
+  var snippetString = _.reduce(dataArray, (accumalator, item) => {
+    if (item.disabled) {
+      return accumalator;
     }
-    var snippetString = _.reduce(dataArray, (accumalator, item) => {
-        if (item.disabled) {
-            return accumalator;
-        }
 
-        accumalator.push(
-            indentString + `'${sanitize(item.key, trimBody)}': '${sanitize(item.value, trimBody)}'`
-        );
+    accumalator.push(
+      indentString + `'${sanitize(item.key, trimBody)}': '${sanitize(item.value, trimBody)}'`
+    );
 
-        return accumalator;
-    }, []);
-    return snippetString.join(',\n');
+    return accumalator;
+  }, []);
+  return snippetString.join(',\n');
 }
 
 function generateMultipartFormData (requestbody) {
-    const boundary = '------WebKitFormBoundary7MA4YWxkTrZu0gW\\r\\nContent-Disposition: form-data; ',
-        dataArray = requestbody[requestbody.mode],
-        postData = '"' + boundary + _.reduce(dataArray, (accumalator, dataArrayElement) => {
-            if (!dataArrayElement.disabled || dataArrayElement.disabled === false) {
-                const key = dataArrayElement.key.replace(/"/g, "'");
+  const boundary = '------WebKitFormBoundary7MA4YWxkTrZu0gW\\r\\nContent-Disposition: form-data; ',
+    dataArray = requestbody[requestbody.mode],
+    postData = '"' + boundary + _.reduce(dataArray, (accumalator, dataArrayElement) => {
+      if (!dataArrayElement.disabled || dataArrayElement.disabled === false) {
+        const key = dataArrayElement.key.replace(/"/g, '\'');
 
-                if (dataArrayElement.type === 'file') {
-                    const filename = `filename=\\"{Insert_File_Name}\\"`,
-                        contentType = `Content-Type: \\"{Insert_File_Content_Type}\\"`,
-                        fileContent = '{Insert_File_Content}';
+        if (dataArrayElement.type === 'file') {
+          const filename = 'filename=\\"{Insert_File_Name}\\"',
+            contentType = 'Content-Type: \\"{Insert_File_Content_Type}\\"',
+            fileContent = '{Insert_File_Content}';
 
-                    // eslint-disable-next-line max-len
-                    accumalator.push(`name=\\"${key}\\"; ${filename}\\r\\n${contentType}\\r\\n\\r\\n${fileContent}\\r\\n`);
-                }
-                else {
-                    // eslint-disable-next-line no-useless-escape
-                    const value = dataArrayElement.value.replace(/\\\"/g, '\\\\\"').replace(/\"/g, '\\"');
-                    accumalator.push(`name=\\"${key}\\"\\r\\n\\r\\n${value}\\r\\n`);
-                }
-            }
-            return accumalator;
-        // eslint-disable-next-line no-useless-escape
-        }, []).join(`${boundary}`) + '------WebKitFormBoundary7MA4YWxkTrZu0gW--\"';
+          // eslint-disable-next-line max-len
+          accumalator.push(`name=\\"${key}\\"; ${filename}\\r\\n${contentType}\\r\\n\\r\\n${fileContent}\\r\\n`);
+        }
+        else {
+          // eslint-disable-next-line no-useless-escape
+          const value = dataArrayElement.value.replace(/\\\"/g, '\\\\\"').replace(/\"/g, '\\"');
+          accumalator.push(`name=\\"${key}\\"\\r\\n\\r\\n${value}\\r\\n`);
+        }
+      }
+      return accumalator;
+      // eslint-disable-next-line no-useless-escape
+    }, []).join(`${boundary}`) + '------WebKitFormBoundary7MA4YWxkTrZu0gW--\"';
 
-    return postData;
+  return postData;
 }
 
 /**
@@ -64,20 +64,20 @@ function generateMultipartFormData (requestbody) {
  * @param {Boolean} trimBody - indicates whether to trim body fields or not
  */
 function parseBody (requestbody, indentString, trimBody) {
-    if (requestbody) {
-        switch (requestbody.mode) {
-            case 'raw':
-                return ` ${JSON.stringify(requestbody[requestbody.mode])}`;
-            case 'formdata':
-                return generateMultipartFormData(requestbody);
-            case 'urlencoded':
-                return `qs.stringify({\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
+  if (requestbody) {
+    switch (requestbody.mode) {
+      case 'raw':
+        return ` ${JSON.stringify(requestbody[requestbody.mode])}`;
+      case 'formdata':
+        return generateMultipartFormData(requestbody);
+      case 'urlencoded':
+        return `qs.stringify({\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
                     '\n})';
-            default:
-                return '';
-        }
+      default:
+        return '';
     }
-    return '';
+  }
+  return '';
 }
 
 /**
@@ -88,24 +88,24 @@ function parseBody (requestbody, indentString, trimBody) {
  * @returns {String} - code snippet of nodejs native to add header 
  */
 function parseHeader (request, indentString) {
-    var headerObject = request.getHeaders({enabled: true}),
-        headerSnippet = indentString + '\'headers\': {\n';
+  var headerObject = request.getHeaders({enabled: true}),
+    headerSnippet = indentString + '\'headers\': {\n';
 
-    if (headerObject) {
-        headerSnippet += _.reduce(Object.keys(headerObject), function (accumalator, key) {
-            accumalator.push(
-                indentString.repeat(2) + `'${sanitize(key)}': '${sanitize(headerObject[key])}'`
-            );
-            return accumalator;
-        }, []).join(',\n');
-    }
+  if (headerObject) {
+    headerSnippet += _.reduce(Object.keys(headerObject), function (accumalator, key) {
+      accumalator.push(
+        indentString.repeat(2) + `'${sanitize(key)}': '${sanitize(headerObject[key])}'`
+      );
+      return accumalator;
+    }, []).join(',\n');
+  }
 
-    if (headerObject && !_.isEmpty(headerObject)) {
-        headerSnippet += '\n';
-    }
+  if (headerObject && !_.isEmpty(headerObject)) {
+    headerSnippet += '\n';
+  }
 
-    headerSnippet += indentString + '}';
-    return headerSnippet;
+  headerSnippet += indentString + '}';
+  return headerSnippet;
 }
 
 /**
@@ -116,19 +116,19 @@ function parseHeader (request, indentString) {
  * @returns {String} - code snippet of nodejs native to add hostname 
  */
 function parseHost (request, indentString) {
-    var hostArray = _.get(request, 'url.host', []),
-        hostSnippet = indentString + '\'hostname\': \'';
+  var hostArray = _.get(request, 'url.host', []),
+    hostSnippet = indentString + '\'hostname\': \'';
 
-    if (hostArray.length) {
-        hostSnippet += _.reduce(hostArray, function (accumalator, key) {
-            accumalator.push(`${sanitize(key)}`);
-            return accumalator;
-        }, []).join('.');
-    }
+  if (hostArray.length) {
+    hostSnippet += _.reduce(hostArray, function (accumalator, key) {
+      accumalator.push(`${sanitize(key)}`);
+      return accumalator;
+    }, []).join('.');
+  }
 
-    hostSnippet += '\'';
+  hostSnippet += '\'';
 
-    return hostSnippet;
+  return hostSnippet;
 }
 
 /**
@@ -139,39 +139,39 @@ function parseHost (request, indentString) {
  * @returns {String} - code snippet of nodejs native to add path 
  */
 function parsePath (request, indentString) {
-    var pathArray = _.get(request, 'url.path'),
-        queryArray = _.get(request.toJSON(), 'url.query'),
-        pathSnippet = indentString + '\'path\': \'/',
-        querySnippet = '';
+  var pathArray = _.get(request, 'url.path'),
+    queryArray = _.get(request.toJSON(), 'url.query'),
+    pathSnippet = indentString + '\'path\': \'/',
+    querySnippet = '';
 
-    if (pathArray && pathArray.length) {
-        pathSnippet += _.reduce(pathArray, function (accumalator, key) {
-            if (key.length) {
-                accumalator.push(`${sanitize(key)}`);
-            }
-            else {
-                accumalator.push('');
-            }
-            return accumalator;
-        }, []).join('/');
-    }
+  if (pathArray && pathArray.length) {
+    pathSnippet += _.reduce(pathArray, function (accumalator, key) {
+      if (key.length) {
+        accumalator.push(`${sanitize(key)}`);
+      }
+      else {
+        accumalator.push('');
+      }
+      return accumalator;
+    }, []).join('/');
+  }
 
-    if (queryArray && queryArray.length) {
-        const queryExists = !(_.every(queryArray, function (element) {
-            return element.disabled && element.disabled === false;
-        }));
+  if (queryArray && queryArray.length) {
+    const queryExists = !(_.every(queryArray, function (element) {
+      return element.disabled && element.disabled === false;
+    }));
 
-        if (queryExists) {
-            querySnippet += '?' + _.reduce(queryArray, function (accumalator, queryElement) {
-                if (!queryElement.disabled || _.get(queryElement, 'disabled') === false) {
-                    accumalator.push(`${queryElement.key}=${encodeURIComponent(sanitize(queryElement.value))}`);
-                }
-                return accumalator;
-            }, []).join('&');
+    if (queryExists) {
+      querySnippet += '?' + _.reduce(queryArray, function (accumalator, queryElement) {
+        if (!queryElement.disabled || _.get(queryElement, 'disabled') === false) {
+          accumalator.push(`${queryElement.key}=${encodeURIComponent(sanitize(queryElement.value))}`);
         }
+        return accumalator;
+      }, []).join('&');
     }
-    pathSnippet += querySnippet + '\'';
-    return pathSnippet;
+  }
+  pathSnippet += querySnippet + '\'';
+  return pathSnippet;
 }
 
 /**
@@ -180,37 +180,37 @@ function parsePath (request, indentString) {
  * @param {Object} request - Postman SDK request object 
  */
 function parseURLVariable (request) {
-    const variableArray = _.get(request.toJSON(), 'url.variable', []);
+  const variableArray = _.get(request.toJSON(), 'url.variable', []);
 
-    if (!variableArray.length) {
-        return;
-    }
+  if (!variableArray.length) {
+    return;
+  }
 
-    variableArray.forEach(function (variableArrayElement) {
-        request.url.host.forEach(function (hostArrayElement, hostArrayElementIndex) {
-            if (hostArrayElement === ':' + variableArrayElement.key) {
-                request.url.host[hostArrayElementIndex] = variableArrayElement.value;
-            }
-        });
-
-        request.url.path.forEach(function (pathArrayElement, pathArrayElementIndex) {
-            if (pathArrayElement === ':' + variableArrayElement.key) {
-                request.url.path[pathArrayElementIndex] = variableArrayElement.value;
-            }
-        });
-
-        request.toJSON().url.query.forEach(function (queryArrayElement, queryArrayElementIndex) {
-            if (queryArrayElement === ':' + variableArrayElement.key) {
-                request.url.query[queryArrayElementIndex] = variableArrayElement.value;
-            }
-        });
+  variableArray.forEach(function (variableArrayElement) {
+    request.url.host.forEach(function (hostArrayElement, hostArrayElementIndex) {
+      if (hostArrayElement === ':' + variableArrayElement.key) {
+        request.url.host[hostArrayElementIndex] = variableArrayElement.value;
+      }
     });
+
+    request.url.path.forEach(function (pathArrayElement, pathArrayElementIndex) {
+      if (pathArrayElement === ':' + variableArrayElement.key) {
+        request.url.path[pathArrayElementIndex] = variableArrayElement.value;
+      }
+    });
+
+    request.toJSON().url.query.forEach(function (queryArrayElement, queryArrayElementIndex) {
+      if (queryArrayElement === ':' + variableArrayElement.key) {
+        request.url.query[queryArrayElementIndex] = variableArrayElement.value;
+      }
+    });
+  });
 }
 
 module.exports = {
-    parseBody: parseBody,
-    parseHeader: parseHeader,
-    parseHost: parseHost,
-    parsePath: parsePath,
-    parseURLVariable: parseURLVariable
+  parseBody: parseBody,
+  parseHeader: parseHeader,
+  parseHost: parseHost,
+  parsePath: parsePath,
+  parseURLVariable: parseURLVariable
 };

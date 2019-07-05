@@ -7,13 +7,13 @@
  * @returns {String} 
  */
 function sanitize (inputString, trim) {
-    if (typeof inputString !== 'string') {
-        return '';
-    }
-    (trim) && (inputString = inputString.trim());
-    return inputString.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
+  if (typeof inputString !== 'string') {
+    return '';
+  }
+  (trim) && (inputString = inputString.trim());
+  return inputString.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
 }
 
 module.exports = {
-    sanitize: sanitize
+  sanitize: sanitize
 };

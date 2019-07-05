@@ -1,7 +1,7 @@
 var _ = require('./lodash'),
 
-    parseRequest = require('./parseRequest'),
-    sanitize = require('./util').sanitize;
+  parseRequest = require('./parseRequest'),
+  sanitize = require('./util').sanitize;
 
 //  Since Java OkHttp requires to add extralines of code to handle methods with body
 const METHODS_WITHOUT_BODY = ['GET', 'HEAD', 'COPY', 'UNLOCK', 'UNLINK', 'PURGE', 'LINK', 'VIEW'];
@@ -16,37 +16,37 @@ const METHODS_WITHOUT_BODY = ['GET', 'HEAD', 'COPY', 'UNLOCK', 'UNLINK', 'PURGE'
  */
 function makeSnippet (request, indentString, options) {
 
-    var isBodyRequired = !(_.includes(METHODS_WITHOUT_BODY, request.method)),
-        snippet = 'OkHttpClient client = new OkHttpClient().newBuilder()\n',
-        requestBody = (request.body ? request.body.toJSON() : {});
+  var isBodyRequired = !(_.includes(METHODS_WITHOUT_BODY, request.method)),
+    snippet = 'OkHttpClient client = new OkHttpClient().newBuilder()\n',
+    requestBody = (request.body ? request.body.toJSON() : {});
 
-    if (options.requestTimeout > 0) {
-        snippet += indentString + `.setConnectTimeout(${options.requestTimeout}, TimeUnit.MILLISECONDS)\n`;
-    }
+  if (options.requestTimeout > 0) {
+    snippet += indentString + `.setConnectTimeout(${options.requestTimeout}, TimeUnit.MILLISECONDS)\n`;
+  }
 
-    if (!options.followRedirect) {
-        snippet += indentString + '.followRedirects(false)\n';
-    }
+  if (!options.followRedirect) {
+    snippet += indentString + '.followRedirects(false)\n';
+  }
 
-    snippet += indentString + '.build();\n';
+  snippet += indentString + '.build();\n';
 
-    if (isBodyRequired) {
-        //  snippet for creating mediatype object in java based on content-type of request
-        snippet += `MediaType mediaType = MediaType.parse("${parseRequest.parseContentType(request)}");\n`;
-        snippet += parseRequest.parseBody(requestBody, indentString, options.trimRequestBody);
-    }
+  if (isBodyRequired) {
+    //  snippet for creating mediatype object in java based on content-type of request
+    snippet += `MediaType mediaType = MediaType.parse("${parseRequest.parseContentType(request)}");\n`;
+    snippet += parseRequest.parseBody(requestBody, indentString, options.trimRequestBody);
+  }
 
-    snippet += 'Request request = new Request.Builder()\n';
-    snippet += indentString + `.url("${sanitize(request.url.toString())}")\n`;
-    snippet += indentString + `.method("${request.method}", ${isBodyRequired ? 'body' : 'null'})\n`;
+  snippet += 'Request request = new Request.Builder()\n';
+  snippet += indentString + `.url("${sanitize(request.url.toString())}")\n`;
+  snippet += indentString + `.method("${request.method}", ${isBodyRequired ? 'body' : 'null'})\n`;
 
-    //  java-okhttp snippet for adding headers to request
-    snippet += parseRequest.parseHeader(request, indentString);
+  //  java-okhttp snippet for adding headers to request
+  snippet += parseRequest.parseHeader(request, indentString);
 
-    snippet += indentString + '.build();\n';
-    snippet += 'Response response = client.newCall(request).execute();';
+  snippet += indentString + '.build();\n';
+  snippet += 'Response response = client.newCall(request).execute();';
 
-    return snippet;
+  return snippet;
 }
 
 /**
@@ -66,41 +66,41 @@ function makeSnippet (request, indentString, options) {
  */
 module.exports = function (request, options, callback) {
 
-    if (_.isFunction(options)) {
-        callback = options;
-        options = {};
-    }
-    else if (!_.isFunction(callback)) {
-        throw new Error('Java-OkHttp-Converter: callback is not valid function');
-    }
+  if (_.isFunction(options)) {
+    callback = options;
+    options = {};
+  }
+  else if (!_.isFunction(callback)) {
+    throw new Error('Java-OkHttp-Converter: callback is not valid function');
+  }
 
-    //  String representing value of indentation required
-    var indentString,
+  //  String representing value of indentation required
+  var indentString,
 
-        //  snippets to include java class definition according to options
-        headerSnippet = '',
-        footerSnippet = '',
+    //  snippets to include java class definition according to options
+    headerSnippet = '',
+    footerSnippet = '',
 
-        //  snippet to create request in java okhttp
-        snippet = '';
+    //  snippet to create request in java okhttp
+    snippet = '';
 
-    indentString = options.indentType === 'tab' ? '\t' : ' ';
-    indentString = indentString.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
+  indentString = options.indentType === 'tab' ? '\t' : ' ';
+  indentString = indentString.repeat(options.indentCount || (options.indentType === 'tab' ? 1 : 4));
 
-    if (options.includeBoilerplate) {
-        headerSnippet = 'import java.io.*;\n' +
+  if (options.includeBoilerplate) {
+    headerSnippet = 'import java.io.*;\n' +
                         'import okhttp3.*;\n' +
                         'public class main {\n' +
                         indentString + 'public static void main(String []args) throws IOException{\n';
-        footerSnippet = indentString.repeat(2) + 'System.out.println(response.body().string());\n' +
+    footerSnippet = indentString.repeat(2) + 'System.out.println(response.body().string());\n' +
                         indentString + '}\n}\n';
-    }
+  }
 
-    snippet = makeSnippet(request, indentString, options);
+  snippet = makeSnippet(request, indentString, options);
 
-    //  if boilerplate is included then two more indentString needs to be added in snippet
-    (options.includeBoilerplate) &&
+  //  if boilerplate is included then two more indentString needs to be added in snippet
+  (options.includeBoilerplate) &&
     (snippet = indentString.repeat(2) + snippet.split('\n').join('\n' + indentString.repeat(2)) + '\n');
 
-    return callback(null, headerSnippet + snippet + footerSnippet);
+  return callback(null, headerSnippet + snippet + footerSnippet);
 };

@@ -1,4 +1,4 @@
 module.exports = {
-    convert: require('./request').convert,
-    getOptions: require('./request').getOptions
+  convert: require('./request').convert,
+  getOptions: require('./request').getOptions
 };

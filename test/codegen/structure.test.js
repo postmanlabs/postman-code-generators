@@ -216,7 +216,7 @@ describe('Code-gen repository ' + codegen, function () {
     });
 
   });
-  describe('.eslintrc', function () {
+  describe.skip('.eslintrc', function () {
     it('must exist', function (done) {
       fs.stat(`${CODEGEN_ABS_PATH}/.eslintrc`, done);
     });

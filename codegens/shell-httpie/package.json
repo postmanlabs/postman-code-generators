@@ -13,9 +13,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "./scripts/test.sh",
-    "test-lint": "./scripts/test-lint.sh",
-    "test-unit": "./scripts/test-unit.sh",
+    "test": "node ./scripts/test.js",
+    "test-lint": "node ./scripts/test-lint.js",
+    "test-unit": "node ./scripts/test-unit.js",
     "coverage": "nyc report --reporter=html --reporter=text mocha"
   },
   "repository": {

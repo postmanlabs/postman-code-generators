@@ -7,28 +7,28 @@ module.exports = {
 * @param {Boolean} [inputTrim] - whether to trim the input
 * @returns {String}
 */
-    sanitize: function (inputString, escapeCharFor, inputTrim) {
+  sanitize: function (inputString, escapeCharFor, inputTrim) {
 
-        if (typeof inputString !== 'string') {
-            return '';
-        }
-        inputString = inputTrim && typeof inputTrim === 'boolean' ? inputString.trim() : inputString;
-        if (escapeCharFor && typeof escapeCharFor === 'string') {
-            switch (escapeCharFor) {
-                case 'raw':
-                    return JSON.stringify(inputString);
-                case 'urlencoded':
-                    return inputString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-                case 'formdata':
-                    return inputString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-                case 'file':
-                    return inputString.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
-                case 'header':
-                    return inputString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-                default:
-                    return inputString.replace(/"/g, '\\"');
-            }
-        }
-        return inputString;
+    if (typeof inputString !== 'string') {
+      return '';
     }
+    inputString = inputTrim && typeof inputTrim === 'boolean' ? inputString.trim() : inputString;
+    if (escapeCharFor && typeof escapeCharFor === 'string') {
+      switch (escapeCharFor) {
+        case 'raw':
+          return JSON.stringify(inputString);
+        case 'urlencoded':
+          return inputString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+        case 'formdata':
+          return inputString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+        case 'file':
+          return inputString.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
+        case 'header':
+          return inputString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+        default:
+          return inputString.replace(/"/g, '\\"');
+      }
+    }
+    return inputString;
+  }
 };

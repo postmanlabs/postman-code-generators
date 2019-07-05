@@ -1,6 +1,6 @@
 var _ = require('./lodash'),
 
-    sanitize = require('./util').sanitize;
+  sanitize = require('./util').sanitize;
 
 /**
  * parses body of request when type of the request body is formdata or urlencoded and 
@@ -11,16 +11,16 @@ var _ = require('./lodash'),
  * @param {Boolean} trimBody - indicates whether to trim body or not
  */
 function extractFormData (dataArray, indentString, trimBody) {
-    if (!dataArray) {
-        return '';
+  if (!dataArray) {
+    return '';
+  }
+  var snippetString = _.reduce(dataArray, (accumalator, item) => {
+    if (item.disabled) {
+      return accumalator;
     }
-    var snippetString = _.reduce(dataArray, (accumalator, item) => {
-        if (item.disabled) {
-            return accumalator;
-        }
-        /* istanbul ignore next */
-        if (item.type === 'file') {
-            /**
+    /* istanbul ignore next */
+    if (item.type === 'file') {
+      /**
              * creating snippet to send file in nodejs request 
              * for example:
              *  'fieldname': {
@@ -32,25 +32,25 @@ function extractFormData (dataArray, indentString, trimBody) {
              *      }   
              *  }
              */
-            accumalator.push([
-                indentString.repeat(2) + `'${sanitize(item.key, trimBody)}': {`,
-                indentString.repeat(3) + `'value': fs.createReadStream('${sanitize(item.src, trimBody)}'),`,
-                indentString.repeat(3) + '\'options\': {',
-                indentString.repeat(4) + `'filename': '${sanitize(item.src, trimBody)}',`,
-                indentString.repeat(4) + '\'contentType\': null',
-                indentString.repeat(3) + '}',
-                indentString.repeat(2) + '}'
-            ].join('\n'));
-        }
-        else {
-            accumalator.push(
-                indentString.repeat(2) +
+      accumalator.push([
+        indentString.repeat(2) + `'${sanitize(item.key, trimBody)}': {`,
+        indentString.repeat(3) + `'value': fs.createReadStream('${sanitize(item.src, trimBody)}'),`,
+        indentString.repeat(3) + '\'options\': {',
+        indentString.repeat(4) + `'filename': '${sanitize(item.src, trimBody)}',`,
+        indentString.repeat(4) + '\'contentType\': null',
+        indentString.repeat(3) + '}',
+        indentString.repeat(2) + '}'
+      ].join('\n'));
+    }
+    else {
+      accumalator.push(
+        indentString.repeat(2) +
                 `'${sanitize(item.key, trimBody)}': '${sanitize(item.value, trimBody)}'`
-            );
-        }
-        return accumalator;
-    }, []);
-    return snippetString.join(',\n') + '\n';
+      );
+    }
+    return accumalator;
+  }, []);
+  return snippetString.join(',\n') + '\n';
 }
 
 /**
@@ -61,26 +61,26 @@ function extractFormData (dataArray, indentString, trimBody) {
  * @param {Boolean} trimBody - indicates whether to trim body fields or not
  */
 function parseBody (requestbody, indentString, trimBody) {
-    if (requestbody) {
-        switch (requestbody.mode) {
-            case 'raw':
-                return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
-            case 'formdata':
-                return `formData: {\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
+  if (requestbody) {
+    switch (requestbody.mode) {
+      case 'raw':
+        return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
+      case 'formdata':
+        return `formData: {\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
                         indentString + '}';
-            case 'urlencoded':
-                return `form: {\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
+      case 'urlencoded':
+        return `form: {\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
                         indentString + '}';
-            /* istanbul ignore next */
-            case 'file':
-                return 'formData: {\n' +
+        /* istanbul ignore next */
+      case 'file':
+        return 'formData: {\n' +
                         extractFormData([{type: 'file', key: 'file', src: requestbody[requestbody.mode].src}]) +
                         indentString + '}';
-            default:
-                return '';
-        }
+      default:
+        return '';
     }
-    return '';
+  }
+  return '';
 }
 
 /**
@@ -91,23 +91,23 @@ function parseBody (requestbody, indentString, trimBody) {
  * @returns {String} - code snippet of nodejs request to add header 
  */
 function parseHeader (request, indentString) {
-    var headerObject = request.getHeaders({enabled: true}),
-        headerSnippet = indentString + '\'headers\': {\n';
+  var headerObject = request.getHeaders({enabled: true}),
+    headerSnippet = indentString + '\'headers\': {\n';
 
-    if (!_.isEmpty(headerObject)) {
-        headerSnippet += _.reduce(Object.keys(headerObject), function (accumalator, key) {
-            accumalator.push(
-                indentString.repeat(2) + `'${sanitize(key)}': '${sanitize(headerObject[key])}'`
-            );
-            return accumalator;
-        }, []).join(',\n') + '\n';
-    }
+  if (!_.isEmpty(headerObject)) {
+    headerSnippet += _.reduce(Object.keys(headerObject), function (accumalator, key) {
+      accumalator.push(
+        indentString.repeat(2) + `'${sanitize(key)}': '${sanitize(headerObject[key])}'`
+      );
+      return accumalator;
+    }, []).join(',\n') + '\n';
+  }
 
-    headerSnippet += indentString + '}';
-    return headerSnippet;
+  headerSnippet += indentString + '}';
+  return headerSnippet;
 }
 
 module.exports = {
-    parseBody: parseBody,
-    parseHeader: parseHeader
+  parseBody: parseBody,
+  parseHeader: parseHeader
 };
