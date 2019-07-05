@@ -17,7 +17,7 @@ self = module.exports = {
   getOptions: function () {
     return [
       {
-        name: 'Request Timeout',
+        name: 'Request timeout',
         id: 'requestTimeout',
         type: 'positiveInteger',
         default: 0,
