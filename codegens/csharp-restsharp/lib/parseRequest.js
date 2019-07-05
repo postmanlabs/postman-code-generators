@@ -1,6 +1,6 @@
 
 var _ = require('./lodash'),
-    sanitize = require('./util').sanitize;
+  sanitize = require('./util').sanitize;
 
 /**
  * Parses body of request specific requests having form data
@@ -10,25 +10,25 @@ var _ = require('./lodash'),
  * @returns {String} code snippet of csharp-restsharp for multipart formdata
  */
 function parseFormData (requestBody, trimFields) {
-    if (!Array.isArray(requestBody[requestBody.mode])) {
-        return '';
+  if (!Array.isArray(requestBody[requestBody.mode])) {
+    return '';
+  }
+
+  return requestBody[requestBody.mode].reduce((body, data) => {
+    if (data.disabled) {
+      return body;
+    }
+    if (data.type === 'file') {
+      body += `request.AddFile("${sanitize(data.key, trimFields)}", "${sanitize(data.src, trimFields)}");\n`;
+    }
+    else {
+      (!data.value) && (data.value = '');
+      body += `request.AddParameter("${sanitize(data.key, trimFields)}", ` +
+                `"${sanitize(data.value, trimFields)}");\n`;
     }
 
-    return requestBody[requestBody.mode].reduce((body, data) => {
-        if (data.disabled) {
-            return body;
-        }
-        if (data.type === 'file') {
-            body += `request.AddFile("${sanitize(data.key, trimFields)}", "${sanitize(data.src, trimFields)}");\n`;
-        }
-        else {
-            (!data.value) && (data.value = '');
-            body += `request.AddParameter("${sanitize(data.key, trimFields)}", ` +
-                `"${sanitize(data.value, trimFields)}");\n`;
-        }
-
-        return body;
-    }, '');
+    return body;
+  }, '');
 }
 
 /**
@@ -38,7 +38,7 @@ function parseFormData (requestBody, trimFields) {
  * @returns {String} content-type of request body
  */
 function parseContentType (request) {
-    return request.getHeaders({enabled: true, ignoreCase: true})['content-type'] || 'text/plain';
+  return request.getHeaders({enabled: true, ignoreCase: true})['content-type'] || 'text/plain';
 }
 
 
@@ -50,24 +50,24 @@ function parseContentType (request) {
  * @returns {String} code snippet of csharp-restsharp parsed from request object
  */
 function parseBody (request, trimFields) {
-    var requestBody = request.body.toJSON();
-    if (!_.isEmpty(requestBody)) {
-        switch (requestBody.mode) {
-            case 'urlencoded':
-                return parseFormData(requestBody, trimFields);
-            case 'formdata':
-                return parseFormData(requestBody, trimFields);
-            case 'raw':
-                return `request.AddParameter("${parseContentType(request)}", ` +
+  var requestBody = request.body.toJSON();
+  if (!_.isEmpty(requestBody)) {
+    switch (requestBody.mode) {
+      case 'urlencoded':
+        return parseFormData(requestBody, trimFields);
+      case 'formdata':
+        return parseFormData(requestBody, trimFields);
+      case 'raw':
+        return `request.AddParameter("${parseContentType(request)}", ` +
                     `${JSON.stringify(requestBody[requestBody.mode])},  ParameterType.RequestBody);\n`;
-            /* istanbul ignore next */
-            case 'file':
-                return `request.AddFile("file", "${sanitize(requestBody[requestBody.mode].src, trimFields)}");\n`;
-            default:
-                return '';
-        }
+        /* istanbul ignore next */
+      case 'file':
+        return `request.AddFile("file", "${sanitize(requestBody[requestBody.mode].src, trimFields)}");\n`;
+      default:
+        return '';
     }
-    return '';
+  }
+  return '';
 }
 
 /**
@@ -77,20 +77,20 @@ function parseBody (request, trimFields) {
  * @returns {String} code snippet for adding headers in csharp-restsharp
  */
 function parseHeader (requestJson) {
-    if (!Array.isArray(requestJson.header)) {
-        return '';
-    }
+  if (!Array.isArray(requestJson.header)) {
+    return '';
+  }
 
-    return requestJson.header.reduce((headerSnippet, header) => {
-        if (!header.disabled) {
-            headerSnippet += `request.AddHeader("${sanitize(header.key)}", "${sanitize(header.value)}");\n`;
-        }
-        return headerSnippet;
-    }, '');
+  return requestJson.header.reduce((headerSnippet, header) => {
+    if (!header.disabled) {
+      headerSnippet += `request.AddHeader("${sanitize(header.key)}", "${sanitize(header.value)}");\n`;
+    }
+    return headerSnippet;
+  }, '');
 }
 
 module.exports = {
-    parseBody: parseBody,
-    parseHeader: parseHeader,
-    parseContentType: parseContentType
+  parseBody: parseBody,
+  parseHeader: parseHeader,
+  parseContentType: parseContentType
 };

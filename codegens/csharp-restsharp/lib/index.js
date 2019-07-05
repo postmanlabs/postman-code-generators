@@ -1,4 +1,4 @@
 module.exports = {
-    convert: require('./restsharp').convert,
-    getOptions: require('./restsharp').getOptions
+  convert: require('./restsharp').convert,
+  getOptions: require('./restsharp').getOptions
 };

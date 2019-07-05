@@ -1,6 +1,6 @@
 
 var _ = require('./lodash'),
-    sanitize = require('./util').sanitize;
+  sanitize = require('./util').sanitize;
 
 /**
  * parses body of request and returns urlencoded string
@@ -10,13 +10,13 @@ var _ = require('./lodash'),
  * @returns {String} - urlencoded string for request body
  */
 function parseUrlencode (requestBody, trimFields) {
-    //  reducing array of urlencoded form data to array of strings
-    return _.reduce(requestBody[requestBody.mode], function (accumalator, data) {
-        if (!data.disabled) {
-            accumalator.push(`${sanitize(data.key, trimFields)}=${sanitize(data.value, trimFields)}`);
-        }
-        return accumalator;
-    }, []).join('&');
+  //  reducing array of urlencoded form data to array of strings
+  return _.reduce(requestBody[requestBody.mode], function (accumalator, data) {
+    if (!data.disabled) {
+      accumalator.push(`${sanitize(data.key, trimFields)}=${sanitize(data.value, trimFields)}`);
+    }
+    return accumalator;
+  }, []).join('&');
 }
 
 /**
@@ -28,25 +28,25 @@ function parseUrlencode (requestBody, trimFields) {
  * @returns {String} - code snippet of java okhttp for multipart formdata
  */
 function parseFormData (requestBody, indentString, trimFields) {
-    return _.reduce(requestBody[requestBody.mode], function (body, data) {
-        if (data.disabled) {
-            return body;
-        }
-        /* istanbul ignore next */
-        if (data.type === 'file') {
-            body += indentString + '.addFormDataPart' +
+  return _.reduce(requestBody[requestBody.mode], function (body, data) {
+    if (data.disabled) {
+      return body;
+    }
+    /* istanbul ignore next */
+    if (data.type === 'file') {
+      body += indentString + '.addFormDataPart' +
                     `("${sanitize(data.key, trimFields)}","${sanitize(data.src, trimFields)}",\n` +
                     indentString + 'RequestBody.create(MediaType.parse("application/octet-stream"),\n' +
                     indentString + `new File("${sanitize(data.src)}")))\n`;
-        }
-        else {
-            !data.value && (data.value = '');
-            body += indentString + '.addFormDataPart' +
+    }
+    else {
+      !data.value && (data.value = '');
+      body += indentString + '.addFormDataPart' +
                     `("${sanitize(data.key, trimFields)}", "${sanitize(data.value, trimFields)}")\n`;
-        }
+    }
 
-        return body;
-    }, '') + indentString + '.build()';
+    return body;
+  }, '') + indentString + '.build()';
 }
 
 /**
@@ -58,28 +58,28 @@ function parseFormData (requestBody, indentString, trimFields) {
  * @returns {String} - code snippet of java okhttp parsed from request object
  */
 function parseBody (requestBody, indentString, trimFields) {
-    if (!_.isEmpty(requestBody)) {
-        switch (requestBody.mode) {
-            case 'urlencoded':
-                return 'RequestBody body = RequestBody.create(mediaType, ' +
+  if (!_.isEmpty(requestBody)) {
+    switch (requestBody.mode) {
+      case 'urlencoded':
+        return 'RequestBody body = RequestBody.create(mediaType, ' +
                         `"${parseUrlencode(requestBody, trimFields)}");\n`;
-            case 'raw':
-                return 'RequestBody body = RequestBody.create(mediaType, ' +
+      case 'raw':
+        return 'RequestBody body = RequestBody.create(mediaType, ' +
                         `${JSON.stringify(requestBody[requestBody.mode])});\n`;
-            case 'formdata':
-                return 'RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
+      case 'formdata':
+        return 'RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
                         `${parseFormData(requestBody, indentString, trimFields)};\n`;
-            /* istanbul ignore next */
-            case 'file':
-                return 'RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
+        /* istanbul ignore next */
+      case 'file':
+        return 'RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
                         indentString + `.addFormDataPart("file", "${requestBody[requestBody.mode].src}",\n` +
                         indentString + 'RequestBody.create(MediaType.parse("application/octet-stream"),\n' +
                         indentString + `new File("${requestBody[requestBody.mode].src}"))).build();\n`;
-            default:
-                return 'RequestBody body = RequestBody.create(mediaType, "");\n';
-        }
+      default:
+        return 'RequestBody body = RequestBody.create(mediaType, "");\n';
     }
-    return 'RequestBody body = RequestBody.create(mediaType, "");\n';
+  }
+  return 'RequestBody body = RequestBody.create(mediaType, "");\n';
 }
 
 /**
@@ -90,17 +90,17 @@ function parseBody (requestBody, indentString, trimFields) {
  * @returns {String} - code snippet for adding headers in java-okhttp
  */
 function parseHeader (request, indentString) {
-    var headerObject = request.getHeaders({enabled: true}),
-        headerSnippet = '';
+  var headerObject = request.getHeaders({enabled: true}),
+    headerSnippet = '';
 
-    if (!_.isEmpty(headerObject)) {
-        headerSnippet += _.reduce(Object.keys(headerObject), function (accumalator, key) {
-            accumalator += indentString + `.addHeader("${sanitize(key)}", ` +
+  if (!_.isEmpty(headerObject)) {
+    headerSnippet += _.reduce(Object.keys(headerObject), function (accumalator, key) {
+      accumalator += indentString + `.addHeader("${sanitize(key)}", ` +
                            `"${sanitize(headerObject[key])}")\n`;
-            return accumalator;
-        }, '');
-    }
-    return headerSnippet;
+      return accumalator;
+    }, '');
+  }
+  return headerSnippet;
 }
 
 /**
@@ -110,11 +110,11 @@ function parseHeader (request, indentString) {
  * @returns {String}- content-type of request body
  */
 function parseContentType (request) {
-    return request.getHeaders({enabled: true, ignoreCase: true})['content-type'] || 'text/plain';
+  return request.getHeaders({enabled: true, ignoreCase: true})['content-type'] || 'text/plain';
 }
 
 module.exports = {
-    parseBody: parseBody,
-    parseHeader: parseHeader,
-    parseContentType: parseContentType
+  parseBody: parseBody,
+  parseHeader: parseHeader,
+  parseContentType: parseContentType
 };

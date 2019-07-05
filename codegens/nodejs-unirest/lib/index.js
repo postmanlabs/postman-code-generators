@@ -1,4 +1,4 @@
 module.exports = {
-    convert: require('./unirest').convert,
-    getOptions: require('./unirest').getOptions
+  convert: require('./unirest').convert,
+  getOptions: require('./unirest').getOptions
 };

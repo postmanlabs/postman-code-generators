@@ -1,8 +1,8 @@
 var _ = require('./lodash'),
 
-    parseRequest = require('./parseRequest'),
-    sanitize = require('./util').sanitize,
-    sanitizeOptions = require('./util').sanitizeOptions;
+  parseRequest = require('./parseRequest'),
+  sanitize = require('./util').sanitize,
+  sanitizeOptions = require('./util').sanitizeOptions;
 
 /**
  * retuns snippet of nodejs(request) by parsing data from Postman-SDK request object
@@ -13,13 +13,13 @@ var _ = require('./lodash'),
  * @returns {String} - nodejs(request) code snippet for given request object
  */
 function makeSnippet (request, indentString, options) {
-    var snippet = 'var request = require(\'request\');\n',
-        optionsArray = [];
+  var snippet = 'var request = require(\'request\');\n',
+    optionsArray = [];
 
-    snippet += 'var fs = require(\'fs\')\n';
-    snippet += 'var options = {\n';
+  snippet += 'var fs = require(\'fs\')\n';
+  snippet += 'var options = {\n';
 
-    /**
+  /**
      * creating string to represent options object using optionArray.join()
      * example:
      *  options: {
@@ -28,31 +28,31 @@ function makeSnippet (request, indentString, options) {
      *      timeout: 1000
      *  }
      */
-    optionsArray.push(indentString + `'method': '${request.method}'`);
-    optionsArray.push(indentString + `'url': '${sanitize(request.url.toString())}'`);
+  optionsArray.push(indentString + `'method': '${request.method}'`);
+  optionsArray.push(indentString + `'url': '${sanitize(request.url.toString())}'`);
 
-    optionsArray.push(parseRequest.parseHeader(request, indentString));
+  optionsArray.push(parseRequest.parseHeader(request, indentString));
 
-    if (request.body && request.body[request.body.mode]) {
-        optionsArray.push(
-            indentString + parseRequest.parseBody(request.body.toJSON(), indentString, options.trimRequestBody)
-        );
-    }
-    if (options.requestTimeout) {
-        optionsArray.push(indentString + `timeout: ${options.requestTimeout},`);
-    }
-    if (options.followRedirect === false) {
-        optionsArray.push(indentString + 'followRedirect: false');
-    }
-    snippet += optionsArray.join(',\n') + '\n';
-    snippet += '}\n';
+  if (request.body && request.body[request.body.mode]) {
+    optionsArray.push(
+      indentString + parseRequest.parseBody(request.body.toJSON(), indentString, options.trimRequestBody)
+    );
+  }
+  if (options.requestTimeout) {
+    optionsArray.push(indentString + `timeout: ${options.requestTimeout},`);
+  }
+  if (options.followRedirect === false) {
+    optionsArray.push(indentString + 'followRedirect: false');
+  }
+  snippet += optionsArray.join(',\n') + '\n';
+  snippet += '}\n';
 
-    snippet += 'request(options, function (error, response) { \n';
-    snippet += indentString + 'if (error) throw new Error(error);\n';
-    snippet += indentString + 'console.log(response.body);\n';
-    snippet += '});\n';
+  snippet += 'request(options, function (error, response) { \n';
+  snippet += indentString + 'if (error) throw new Error(error);\n';
+  snippet += indentString + 'console.log(response.body);\n';
+  snippet += '});\n';
 
-    return snippet;
+  return snippet;
 }
 
 /**
@@ -61,44 +61,44 @@ function makeSnippet (request, indentString, options) {
  * @returns {Array} - Returns an array of option objects
  */
 function getOptions () {
-    return [
-        {
-            name: 'Indent count',
-            id: 'indentCount',
-            type: 'positiveInteger',
-            default: 2,
-            description: 'Number of indentation characters to add per code level'
-        },
-        {
-            name: 'Indent type',
-            id: 'indentType',
-            type: 'enum',
-            availableOptions: ['tab', 'space'],
-            default: 'space',
-            description: 'Character used for indentation'
-        },
-        {
-            name: 'Request timeout',
-            id: 'requestTimeout',
-            type: 'positiveInteger',
-            default: 0,
-            description: 'How long the request should wait for a response before timing out (milliseconds)'
-        },
-        {
-            name: 'Follow redirect',
-            id: 'followRedirect',
-            type: 'boolean',
-            default: true,
-            description: 'Automatically follow HTTP redirects'
-        },
-        {
-            name: 'Body trim',
-            id: 'trimRequestBody',
-            type: 'boolean',
-            default: true,
-            description: 'Trim request body fields'
-        }
-    ];
+  return [
+    {
+      name: 'Indent count',
+      id: 'indentCount',
+      type: 'positiveInteger',
+      default: 2,
+      description: 'Number of indentation characters to add per code level'
+    },
+    {
+      name: 'Indent type',
+      id: 'indentType',
+      type: 'enum',
+      availableOptions: ['tab', 'space'],
+      default: 'space',
+      description: 'Character used for indentation'
+    },
+    {
+      name: 'Request timeout',
+      id: 'requestTimeout',
+      type: 'positiveInteger',
+      default: 0,
+      description: 'How long the request should wait for a response before timing out (milliseconds)'
+    },
+    {
+      name: 'Follow redirect',
+      id: 'followRedirect',
+      type: 'boolean',
+      default: true,
+      description: 'Automatically follow HTTP redirects'
+    },
+    {
+      name: 'Body trim',
+      id: 'trimRequestBody',
+      type: 'boolean',
+      default: true,
+      description: 'Trim request body fields'
+    }
+  ];
 }
 
 /**
@@ -114,21 +114,21 @@ function getOptions () {
  * @param {Function} callback - callback function with parameters (error, snippet)
  */
 function convert (request, options, callback) {
-    if (!_.isFunction(callback)) {
-        throw new Error('NodeJS-Request-Converter: callback is not valid function');
-    }
-    options = sanitizeOptions(options, getOptions());
+  if (!_.isFunction(callback)) {
+    throw new Error('NodeJS-Request-Converter: callback is not valid function');
+  }
+  options = sanitizeOptions(options, getOptions());
 
-    //  String representing value of indentation required
-    var indentString;
+  //  String representing value of indentation required
+  var indentString;
 
-    indentString = options.indentType === 'tab' ? '\t' : ' ';
-    indentString = indentString.repeat(options.indentCount);
+  indentString = options.indentType === 'tab' ? '\t' : ' ';
+  indentString = indentString.repeat(options.indentCount);
 
-    return callback(null, makeSnippet(request, indentString, options));
+  return callback(null, makeSnippet(request, indentString, options));
 }
 
 module.exports = {
-    convert: convert,
-    getOptions: getOptions
+  convert: convert,
+  getOptions: getOptions
 };

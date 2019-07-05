@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 module.exports = {
 
-    /**
+  /**
        * Checks if `value` is an empty object, array or string.
        *
        * Objects are considered empty if they have no own enumerable string keyed
@@ -31,25 +31,25 @@ module.exports = {
        * isEmpty({ 'a': 1 })
        * // => false
        */
-    isEmpty: function (value) {
-        // eslint-disable-next-line lodash/prefer-is-nil
-        if (value === null || value === undefined) {
-            return true;
-        }
-        if (Array.isArray(value) || typeof value === 'string' || typeof value.splice === 'function') {
-            return !value.length;
-        }
+  isEmpty: function (value) {
+    // eslint-disable-next-line lodash/prefer-is-nil
+    if (value === null || value === undefined) {
+      return true;
+    }
+    if (Array.isArray(value) || typeof value === 'string' || typeof value.splice === 'function') {
+      return !value.length;
+    }
 
-        for (const key in value) {
-            if (Object.prototype.hasOwnProperty.call(value, key)) {
-                return false;
-            }
-        }
+    for (const key in value) {
+      if (Object.prototype.hasOwnProperty.call(value, key)) {
+        return false;
+      }
+    }
 
-        return true;
-    },
+    return true;
+  },
 
-    /**
+  /**
        * Checks if `value` is `undefined`.
        *
        * @param {*} value The value to check.
@@ -62,11 +62,11 @@ module.exports = {
        * isUndefined(null)
        * // => false
        */
-    isUndefined: function (value) {
-        return value === undefined;
-    },
+  isUndefined: function (value) {
+    return value === undefined;
+  },
 
-    /**
+  /**
        * Checks if `func` is classified as a `Function` object.
        *
        * @param {*} func The value to check.
@@ -79,11 +79,11 @@ module.exports = {
        * isFunction(/abc/)
        * // => false
        */
-    isFunction: function (func) {
-        return typeof func === 'function';
-    },
+  isFunction: function (func) {
+    return typeof func === 'function';
+  },
 
-    /**
+  /**
        * Converts the first character of `string` to upper case and the remaining
        * to lower case.
        *
@@ -98,11 +98,11 @@ module.exports = {
        * // => 'John'
        */
 
-    capitalize: function (string) {
-        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-    },
+  capitalize: function (string) {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  },
 
-    /**
+  /**
        * Reduces `array` to a value which is the accumulated result of running
        * each element in `array` thru `iteratee`, where each successive
        * invocation is supplied the return value of the previous. If `accumulator`
@@ -120,11 +120,11 @@ module.exports = {
        * // => 3
        *
        */
-    reduce: function (array, iteratee, accumulator) {
-        return array.reduce(iteratee, accumulator);
-    },
+  reduce: function (array, iteratee, accumulator) {
+    return array.reduce(iteratee, accumulator);
+  },
 
-    /**
+  /**
        * Iterates over elements of `array`, returning an array of all elements
        * `predicate` returns truthy for. The predicate is invoked with three
        * arguments: (value, index, array).
@@ -142,22 +142,22 @@ module.exports = {
           * filter(users, ({ active }) => active)
           * // => object for ['barney']
           */
-    filter: function (array, predicate) {
-        if (typeof predicate === 'function') {
-            return array.filter(predicate);
-        }
-        var key = Object.keys(predicate),
-            val = predicate[key],
-            res = [];
-        array.forEach(function (item) {
-            if (item[key] && item[key] === val) {
-                res.push(item);
-            }
-        });
-        return res;
-    },
+  filter: function (array, predicate) {
+    if (typeof predicate === 'function') {
+      return array.filter(predicate);
+    }
+    var key = Object.keys(predicate),
+      val = predicate[key],
+      res = [];
+    array.forEach(function (item) {
+      if (item[key] && item[key] === val) {
+        res.push(item);
+      }
+    });
+    return res;
+  },
 
-    /**
+  /**
        * The opposite of `filter` this method returns the elements of `array`
        * that `predicate` does **not** return truthy for.
        *
@@ -174,17 +174,17 @@ module.exports = {
           * reject(users, 'active')
           * // => object for ['fred']
           */
-    reject: function (array, predicate) {
-        var res = [];
-        array.forEach((object) => {
-            if (!object[predicate]) {
-                res.push(object);
-            }
-        });
-        return res;
-    },
+  reject: function (array, predicate) {
+    var res = [];
+    array.forEach((object) => {
+      if (!object[predicate]) {
+        res.push(object);
+      }
+    });
+    return res;
+  },
 
-    /**
+  /**
        * Creates an array of values by running each element of `array` thru `iteratee`.
        * The iteratee is invoked with three arguments: (value, index, array).
        *
@@ -200,11 +200,11 @@ module.exports = {
           * map([4, 8], square)
           * // => [16, 64]
           */
-    map: function (array, iteratee) {
-        return array.map(iteratee);
-    },
+  map: function (array, iteratee) {
+    return array.map(iteratee);
+  },
 
-    /**
+  /**
        * Iterates over elements of `collection` and invokes `iteratee` for each element.
        * The iteratee is invoked with three arguments: (value, index|key, collection).
        *
@@ -220,27 +220,27 @@ module.exports = {
        * // => Logs 'a' then 'b'
        */
 
-    forEach: function (collection, iteratee) {
-        if (collection === null) {
-            return null;
-        }
+  forEach: function (collection, iteratee) {
+    if (collection === null) {
+      return null;
+    }
 
-        if (Array.isArray(collection)) {
-            return collection.forEach(iteratee);
-        }
-        const iterable = Object(collection),
-            props = Object.keys(collection);
-        var index = -1,
-            key, i;
+    if (Array.isArray(collection)) {
+      return collection.forEach(iteratee);
+    }
+    const iterable = Object(collection),
+      props = Object.keys(collection);
+    var index = -1,
+      key, i;
 
-        for (i = 0; i < props.length; i++) {
-            key = props[++index];
-            iteratee(iterable[key], key, iterable);
-        }
-        return collection;
-    },
+    for (i = 0; i < props.length; i++) {
+      key = props[++index];
+      iteratee(iterable[key], key, iterable);
+    }
+    return collection;
+  },
 
-    /**
+  /**
        * Checks if `value` is in `collection`. If `collection` is a string, it's
        * checked for a substring of `value`, otherwise it checks if the `value` is present
        * as a key in a `collection` object.
@@ -259,21 +259,21 @@ module.exports = {
        * _.includes('abcd', 'bc');
        * // => true
        */
-    includes: function (collection, value) {
-        if (Array.isArray(collection) || typeof collection === 'string') {
-            return collection.includes(value);
+  includes: function (collection, value) {
+    if (Array.isArray(collection) || typeof collection === 'string') {
+      return collection.includes(value);
+    }
+    for (var key in collection) {
+      if (collection.hasOwnProperty(key)) {
+        if (collection[key] === value) {
+          return true;
         }
-        for (var key in collection) {
-            if (collection.hasOwnProperty(key)) {
-                if (collection[key] === value) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    },
+      }
+    }
+    return false;
+  },
 
-    /**
+  /**
        * Gets the size of `collection` by returning its length for array and strings.
        * For objects it returns the number of enumerable string keyed
        * properties.
@@ -291,19 +291,19 @@ module.exports = {
        * size('pebbles')
        * // => 7
        */
-    size: function (collection) {
-        // eslint-disable-next-line lodash/prefer-is-nil
-        if (collection === null || collection === undefined) {
-            return 0;
-        }
-        if (Array.isArray(collection) || typeof collection === 'string') {
-            return collection.length;
-        }
+  size: function (collection) {
+    // eslint-disable-next-line lodash/prefer-is-nil
+    if (collection === null || collection === undefined) {
+      return 0;
+    }
+    if (Array.isArray(collection) || typeof collection === 'string') {
+      return collection.length;
+    }
 
-        return Object.keys(collection).length;
-    },
+    return Object.keys(collection).length;
+  },
 
-    /**
+  /**
        * Converts all elements in `array` into a string separated by `separator`.
        *
        * @param {Array} array The array to convert.
@@ -314,14 +314,14 @@ module.exports = {
        * _.join(['a', 'b', 'c'], '~');
        * // => 'a~b~c'
        */
-    join: function (array, separator) {
-        if (array === null) {
-            return '';
-        }
-        return array.join(separator);
-    },
+  join: function (array, separator) {
+    if (array === null) {
+      return '';
+    }
+    return array.join(separator);
+  },
 
-    /**
+  /**
        * Removes trailing whitespace or specified characters from `string`.
        *
        * @param {string} [string=''] The string to trim.
@@ -335,18 +335,18 @@ module.exports = {
        * trimEnd('-_-abc-_-', '_-')
        * // => '-_-abc'
        */
-    trimEnd: function (string, chars) {
-        if (!string) {
-            return '';
-        }
-        if (string && !chars) {
-            return string.replace(/\s*$/, '');
-        }
-        chars += '$';
-        return string.replace(new RegExp(chars, 'g'), '');
-    },
+  trimEnd: function (string, chars) {
+    if (!string) {
+      return '';
+    }
+    if (string && !chars) {
+      return string.replace(/\s*$/, '');
+    }
+    chars += '$';
+    return string.replace(new RegExp(chars, 'g'), '');
+  },
 
-    /**
+  /**
        * Returns the index of the first
        * element `predicate` returns truthy for.
        *
@@ -368,31 +368,31 @@ module.exports = {
           * // => 0
           *
           */
-    findIndex: function (array, predicate) {
-        var length = array === null ? 0 : array.length,
-            index = -1,
-            keys = Object.keys(predicate),
-            found, i;
-        if (!length) {
-            return -1;
+  findIndex: function (array, predicate) {
+    var length = array === null ? 0 : array.length,
+      index = -1,
+      keys = Object.keys(predicate),
+      found, i;
+    if (!length) {
+      return -1;
+    }
+    for (i = 0; i < array.length; i++) {
+      found = true;
+      // eslint-disable-next-line no-loop-func
+      keys.forEach((key) => {
+        if (!(array[i][key] && array[i][key] === predicate[key])) {
+          found = false;
         }
-        for (i = 0; i < array.length; i++) {
-            found = true;
-            // eslint-disable-next-line no-loop-func
-            keys.forEach((key) => {
-                if (!(array[i][key] && array[i][key] === predicate[key])) {
-                    found = false;
-                }
-            });
-            if (found) {
-                index = i;
-                break;
-            }
-        }
-        return index;
-    },
+      });
+      if (found) {
+        index = i;
+        break;
+      }
+    }
+    return index;
+  },
 
-    /**
+  /**
        * Gets the value at `path` of `object`. If the resolved value is
        * `undefined`, the `defaultValue` is returned in its place.
        *
@@ -411,23 +411,23 @@ module.exports = {
        * get(object, 'a.b', 'default')
        * // => 'c'
        */
-    get: function (object, path, defaultValue) {
-        if (object === null) {
-            return undefined;
-        }
-        var arr = path.split('.'),
-            res = object,
-            i;
-        for (i = 0; i < arr.length; i++) {
-            res = res[arr[i]];
-            if (res === undefined) {
-                return defaultValue;
-            }
-        }
-        return res;
-    },
+  get: function (object, path, defaultValue) {
+    if (object === null) {
+      return undefined;
+    }
+    var arr = path.split('.'),
+      res = object,
+      i;
+    for (i = 0; i < arr.length; i++) {
+      res = res[arr[i]];
+      if (res === undefined) {
+        return defaultValue;
+      }
+    }
+    return res;
+  },
 
-    /**
+  /**
        * Checks if `predicate` returns truthy for **all** elements of `array`.
        * Iteration is stopped once `predicate` returns falsey. The predicate is
        * invoked with three arguments: (value, index, array).
@@ -441,16 +441,16 @@ module.exports = {
        * every([true, 1, null, 'yes'], Boolean)
        * // => false
        */
-    every: function (array, predicate) {
-        var index = -1,
-            length = array === null ? 0 : array.length;
+  every: function (array, predicate) {
+    var index = -1,
+      length = array === null ? 0 : array.length;
 
-        while (++index < length) {
-            if (!predicate(array[index], index, array)) {
-                return false;
-            }
-        }
-        return true;
+    while (++index < length) {
+      if (!predicate(array[index], index, array)) {
+        return false;
+      }
     }
+    return true;
+  }
 
 };

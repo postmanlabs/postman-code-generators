@@ -56,7 +56,7 @@ self = module.exports = {
                 ` multipart/form-data; boundary=${BOUNDARY}");`;
     }
     snippet += indent + 'curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);';
-    //request body
+    // request body
     if (request.method === 'HEAD') {
       snippet += indent + 'curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);';
     }
