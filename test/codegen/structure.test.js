@@ -108,6 +108,7 @@ describe('Code-gen repository ' + codegen, function () {
         expect(json.com_postman_plugin).to.have.property('lang');
         expect(json.com_postman_plugin).to.have.property('type');
         expect(json.com_postman_plugin).to.have.property('variant');
+        expect(json.com_postman_plugin).to.have.property('syntax_mode');
         expect(json).to.have.property('engines');
         expect(json.engines).to.eql({
           node: '>=8'
