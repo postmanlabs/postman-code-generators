@@ -5,7 +5,8 @@
   "com_postman_plugin": {
     "type": "code_generator",
     "lang": "shell",
-    "variant": "Httpie"
+    "variant": "Httpie",
+    "syntax_mode": "powershell"
   },
   "main": "index.js",
   "directories": {
