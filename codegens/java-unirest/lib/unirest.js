@@ -1,7 +1,7 @@
 var _ = require('./lodash'),
-    sanitizeOptions = require('./util').sanitizeOptions,
+  sanitizeOptions = require('./util').sanitizeOptions,
 
-    parseRequest = require('./parseRequest');
+  parseRequest = require('./parseRequest');
 
 //  Methods supported by Java Unirest Library
 const SUPPORTED_METHODS = ['GET', 'POST', 'PUT', 'HEAD', 'PATCH', 'DELETE', 'OPTIONS'];
@@ -15,37 +15,37 @@ const SUPPORTED_METHODS = ['GET', 'POST', 'PUT', 'HEAD', 'PATCH', 'DELETE', 'OPT
  * @return {String} - java unirest code snippet
  */
 function makeSnippet (request, indentString, options) {
-    var snippet = '',
-        urlString = encodeURI(request.url.toString());
+  var snippet = '',
+    urlString = encodeURI(request.url.toString());
 
-    if (options.requestTimeout > 0) {
-        snippet += `Unirest.setTimeouts(0, ${options.requestTimeout});\n`;
-    }
-    else {
-        snippet += 'Unirest.setTimeouts(0, 0);\n';
-    }
+  if (options.requestTimeout > 0) {
+    snippet += `Unirest.setTimeouts(0, ${options.requestTimeout});\n`;
+  }
+  else {
+    snippet += 'Unirest.setTimeouts(0, 0);\n';
+  }
 
-    if (!options.followRedirect) {
-        snippet += 'Unirest.setHttpClient(org.apache.http.impl.client.HttpClients.custom()\n' +
+  if (!options.followRedirect) {
+    snippet += 'Unirest.setHttpClient(org.apache.http.impl.client.HttpClients.custom()\n' +
                    indentString + '.disableRedirectHandling()\n' +
                    indentString + '.build());\n';
-    }
+  }
 
-    snippet += 'HttpResponse<String> response = Unirest.';
+  snippet += 'HttpResponse<String> response = Unirest.';
 
-    //  since unirest supports only six HTTP request methods
-    if (_.includes(SUPPORTED_METHODS, request.method)) {
-        snippet += `${request.method.toLowerCase()}("${urlString}")\n`;
-    }
-    else {
-        console.warn(request.method + ' method isn\'t supported by Unirest java library');
-        snippet += `get("${urlString}")\n`;
-    }
-    snippet += parseRequest.parseHeader(request, indentString);
-    snippet += parseRequest.parseBody(request, indentString, options.trimRequestBody);
-    snippet += indentString + '.asString();\n';
+  //  since unirest supports only six HTTP request methods
+  if (_.includes(SUPPORTED_METHODS, request.method)) {
+    snippet += `${request.method.toLowerCase()}("${urlString}")\n`;
+  }
+  else {
+    console.warn(request.method + ' method isn\'t supported by Unirest java library');
+    snippet += `get("${urlString}")\n`;
+  }
+  snippet += parseRequest.parseHeader(request, indentString);
+  snippet += parseRequest.parseBody(request, indentString, options.trimRequestBody);
+  snippet += indentString + '.asString();\n';
 
-    return snippet;
+  return snippet;
 }
 
 /**
@@ -54,51 +54,51 @@ function makeSnippet (request, indentString, options) {
  * @returns {Array} - Array of the particular options applicable to java unirest
  */
 function getOptions () {
-    return [
-        {
-            name: 'Include boilerplate',
-            id: 'includeBoilerplate',
-            type: 'boolean',
-            default: false,
-            description: 'Include class definition and import statements in snippet'
-        },
-        {
-            name: 'Indent count',
-            id: 'indentCount',
-            type: 'positiveInteger',
-            default: 2,
-            description: 'Number of indentation characters to add per code level'
-        },
-        {
-            name: 'Indent type',
-            id: 'indentType',
-            type: 'enum',
-            availableOptions: ['tab', 'space'],
-            default: 'space',
-            description: 'Character used for indentation'
-        },
-        {
-            name: 'Request timeout',
-            id: 'requestTimeout',
-            type: 'positiveInteger',
-            default: 0,
-            description: 'How long the request should wait for a response before timing out (milliseconds)'
-        },
-        {
-            name: 'Follow redirect',
-            id: 'followRedirect',
-            type: 'boolean',
-            default: true,
-            description: 'Automatically follow HTTP redirects'
-        },
-        {
-            name: 'Body trim',
-            id: 'trimRequestBody',
-            type: 'boolean',
-            default: true,
-            description: 'Trim request body fields'
-        }
-    ];
+  return [
+    {
+      name: 'Include boilerplate',
+      id: 'includeBoilerplate',
+      type: 'boolean',
+      default: false,
+      description: 'Include class definition and import statements in snippet'
+    },
+    {
+      name: 'Indent count',
+      id: 'indentCount',
+      type: 'positiveInteger',
+      default: 2,
+      description: 'Number of indentation characters to add per code level'
+    },
+    {
+      name: 'Indent type',
+      id: 'indentType',
+      type: 'enum',
+      availableOptions: ['tab', 'space'],
+      default: 'space',
+      description: 'Character used for indentation'
+    },
+    {
+      name: 'Request timeout',
+      id: 'requestTimeout',
+      type: 'positiveInteger',
+      default: 0,
+      description: 'How long the request should wait for a response before timing out (milliseconds)'
+    },
+    {
+      name: 'Follow redirect',
+      id: 'followRedirect',
+      type: 'boolean',
+      default: true,
+      description: 'Automatically follow HTTP redirects'
+    },
+    {
+      name: 'Body trim',
+      id: 'trimRequestBody',
+      type: 'boolean',
+      default: true,
+      description: 'Trim request body fields'
+    }
+  ];
 }
 
 /**
@@ -116,41 +116,41 @@ function getOptions () {
  */
 function convert (request, options, callback) {
 
-    if (!_.isFunction(callback)) {
-        throw new Error('Java-Unirest-Converter: callback is not valid function');
-    }
-    options = sanitizeOptions(options, getOptions());
-    //  String representing value of indentation required
-    var indentString,
+  if (!_.isFunction(callback)) {
+    throw new Error('Java-Unirest-Converter: callback is not valid function');
+  }
+  options = sanitizeOptions(options, getOptions());
+  //  String representing value of indentation required
+  var indentString,
 
-        //  code snippets to include java class definition according to options
-        headerSnippet = '',
-        footerSnippet = '',
+    //  code snippets to include java class definition according to options
+    headerSnippet = '',
+    footerSnippet = '',
 
-        //  code snippet to create request using java unirest
-        snippet = '';
+    //  code snippet to create request using java unirest
+    snippet = '';
 
-    indentString = options.indentType === 'tab' ? '\t' : ' ';
-    indentString = indentString.repeat(options.indentCount);
+  indentString = options.indentType === 'tab' ? '\t' : ' ';
+  indentString = indentString.repeat(options.indentCount);
 
-    if (options.includeBoilerplate) {
-        headerSnippet = 'import com.mashape.unirest.http.*;\n' +
+  if (options.includeBoilerplate) {
+    headerSnippet = 'import com.mashape.unirest.http.*;\n' +
                         'import java.io.*;\n' +
                         'public class main {\n' +
                         indentString + 'public static void main(String []args) throws Exception{\n';
-        footerSnippet = indentString.repeat(2) + 'System.out.println(response.getBody());\n' +
+    footerSnippet = indentString.repeat(2) + 'System.out.println(response.getBody());\n' +
                         indentString + '}\n}\n';
-    }
+  }
 
-    snippet = makeSnippet(request, indentString, options);
+  snippet = makeSnippet(request, indentString, options);
 
-    //  if boilerplate is included then two more indentString needs to be added in snippet
-    (options.includeBoilerplate) &&
+  //  if boilerplate is included then two more indentString needs to be added in snippet
+  (options.includeBoilerplate) &&
     (snippet = indentString.repeat(2) + snippet.split('\n').join('\n' + indentString.repeat(2)) + '\n');
 
-    return callback(null, headerSnippet + snippet + footerSnippet);
+  return callback(null, headerSnippet + snippet + footerSnippet);
 }
 module.exports = {
-    convert: convert,
-    getOptions: getOptions
+  convert: convert,
+  getOptions: getOptions
 };

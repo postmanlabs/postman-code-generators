@@ -1,5 +1,5 @@
 module.exports = {
-    /**
+  /**
     * sanitization of values : trim, escape characters
     *
     * @param {String} inputString - input
@@ -7,34 +7,34 @@ module.exports = {
     * @param {Boolean} [inputTrim] - whether to trim the input
     * @returns {String} Sanitized String handling escape characters
     */
-    sanitize: function (inputString, escapeCharFor, inputTrim) {
+  sanitize: function (inputString, escapeCharFor, inputTrim) {
 
-        if (typeof inputString !== 'string') {
-            return '';
-        }
-        inputString = inputTrim && typeof inputTrim === 'boolean' ? inputString.trim() : inputString;
-        if (escapeCharFor && typeof escapeCharFor === 'string') {
-            switch (escapeCharFor) {
-                case 'raw':
-                    return JSON.stringify(inputString);
-                case 'urlencoded':
-                    return escape(inputString);
-                case 'formdata-key':
-                    // eslint-disable-next-line quotes
-                    return inputString.replace(/"/g, "'");
-                case 'formdata-value':
-                    // eslint-disable-next-line no-useless-escape
-                    return inputString.replace(/\\\"/g, '\\\\\"').replace(/\"/g, '\\"');
-                case 'header':
-                    return inputString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-                default:
-                    return inputString.replace(/"/g, '\\"');
-            }
-        }
-        return inputString;
-    },
+    if (typeof inputString !== 'string') {
+      return '';
+    }
+    inputString = inputTrim && typeof inputTrim === 'boolean' ? inputString.trim() : inputString;
+    if (escapeCharFor && typeof escapeCharFor === 'string') {
+      switch (escapeCharFor) {
+        case 'raw':
+          return JSON.stringify(inputString);
+        case 'urlencoded':
+          return escape(inputString);
+        case 'formdata-key':
+          // eslint-disable-next-line quotes
+          return inputString.replace(/"/g, "'");
+        case 'formdata-value':
+          // eslint-disable-next-line no-useless-escape
+          return inputString.replace(/\\\"/g, '\\\\\"').replace(/\"/g, '\\"');
+        case 'header':
+          return inputString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+        default:
+          return inputString.replace(/"/g, '\\"');
+      }
+    }
+    return inputString;
+  },
 
-    /**
+  /**
     * sanitizes input options
     *
     * @param {Object} options - Options provided by the user
@@ -42,63 +42,63 @@ module.exports = {
     *
     * @returns {Object} - Sanitized options object
     */
-    sanitizeOptions: function (options, optionsArray) {
-        var result = {},
-            defaultOptions = {},
-            id;
-        optionsArray.forEach((option) => {
-            defaultOptions[option.id] = {
-                default: option.default,
-                type: option.type
-            };
-            if (option.type === 'enum') {
-                defaultOptions[option.id].availableOptions = option.availableOptions;
-            }
-        });
+  sanitizeOptions: function (options, optionsArray) {
+    var result = {},
+      defaultOptions = {},
+      id;
+    optionsArray.forEach((option) => {
+      defaultOptions[option.id] = {
+        default: option.default,
+        type: option.type
+      };
+      if (option.type === 'enum') {
+        defaultOptions[option.id].availableOptions = option.availableOptions;
+      }
+    });
 
-        for (id in options) {
-            if (options.hasOwnProperty(id)) {
-                if (defaultOptions[id] === undefined) {
-                    continue;
-                }
-                switch (defaultOptions[id].type) {
-                    case 'boolean':
-                        if (typeof options[id] !== 'boolean') {
-                            result[id] = defaultOptions[id].default;
-                        }
-                        else {
-                            result[id] = options[id];
-                        }
-                        break;
-                    case 'positiveInteger':
-                        if (typeof options[id] !== 'number' || options[id] < 0) {
-                            result[id] = defaultOptions[id].default;
-                        }
-                        else {
-                            result[id] = options[id];
-                        }
-                        break;
-                    case 'enum':
-                        if (!defaultOptions[id].availableOptions.includes(options[id])) {
-                            result[id] = defaultOptions[id].default;
-                        }
-                        else {
-                            result[id] = options[id];
-                        }
-                        break;
-                    default:
-                        result[id] = options[id];
-                }
-            }
+    for (id in options) {
+      if (options.hasOwnProperty(id)) {
+        if (defaultOptions[id] === undefined) {
+          continue;
         }
-
-        for (id in defaultOptions) {
-            if (defaultOptions.hasOwnProperty(id)) {
-                if (result[id] === undefined) {
-                    result[id] = defaultOptions[id].default;
-                }
+        switch (defaultOptions[id].type) {
+          case 'boolean':
+            if (typeof options[id] !== 'boolean') {
+              result[id] = defaultOptions[id].default;
             }
+            else {
+              result[id] = options[id];
+            }
+            break;
+          case 'positiveInteger':
+            if (typeof options[id] !== 'number' || options[id] < 0) {
+              result[id] = defaultOptions[id].default;
+            }
+            else {
+              result[id] = options[id];
+            }
+            break;
+          case 'enum':
+            if (!defaultOptions[id].availableOptions.includes(options[id])) {
+              result[id] = defaultOptions[id].default;
+            }
+            else {
+              result[id] = options[id];
+            }
+            break;
+          default:
+            result[id] = options[id];
         }
-        return result;
+      }
     }
+
+    for (id in defaultOptions) {
+      if (defaultOptions.hasOwnProperty(id)) {
+        if (result[id] === undefined) {
+          result[id] = defaultOptions[id].default;
+        }
+      }
+    }
+    return result;
+  }
 };

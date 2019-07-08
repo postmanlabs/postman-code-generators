@@ -1,4 +1,4 @@
 module.exports = {
-    convert: require('./shell-wget').convert,
-    getOptions: require('./shell-wget').getOptions
+  convert: require('./shell-wget').convert,
+  getOptions: require('./shell-wget').getOptions
 };
