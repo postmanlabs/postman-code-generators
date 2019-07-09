@@ -11,7 +11,7 @@ const GAP = ' ',
 self = module.exports = {
   /**
    * Used to return options which are specific to a particular plugin
-   * 
+   *
    * @returns {Array}
    */
   getOptions: function () {
@@ -34,8 +34,8 @@ self = module.exports = {
   },
 
   /**
-    * Used to convert the postman sdk-request object in shell-httpie reuqest snippet 
-    * 
+    * Used to convert the postman sdk-request object in shell-httpie reuqest snippet
+    *
     * @param  {Object} request - postman SDK-request object
     * @param  {Object} options
     * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
@@ -50,7 +50,7 @@ self = module.exports = {
       bodyMode,
       timeout,
       url = '',
-      handleRedirect = (enableRedirect) => { if (!enableRedirect) { return GAP + '--follow' + GAP; } return GAP; },
+      handleRedirect = (enableRedirect) => { if (enableRedirect) { return GAP + '--follow' + GAP; } return GAP; },
       handleRequestTimeout = (time) => {
         if (time) {
           return '--timeout ' + (time / 1000) + GAP;
