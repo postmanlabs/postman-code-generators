@@ -11,54 +11,50 @@ self = module.exports = {
     }
     options = sanitizeOptions(options, self.getOptions());
 
-    var indent = '',
-      trim, headersData, body, text,
-      multiLine,
-      snippet,
-      newline = ' ',
+    var trim, headersData, body, text,
+      snippet = '',
       formCheck,
       formdataString = '',
       protocol,
       BOUNDARY = '----WebKitFormBoundary7MA4YWxkTrZu0gW',
-      responseCode,
-      timeout;
-
-    multiLine = options.multiLine;
+      timeout,
+      indent = options.indentType === 'tab' ? '\t' : ' ',
+      indentString = indent.repeat(options.indentCount),
+      headerSnippet = '',
+      footerSnippet = '';
+    if (options.includeBoilerplate) {
+      headerSnippet = '#include <stdio.h>\n#include <string.h>\n#include <curl/curl.h>\n' +
+      'int main(int argc, char *argv[]){\n';
+      footerSnippet = 'return (int)res;\n}';
+    }
     trim = options.trimRequestBody;
     protocol = options.protocol;
     timeout = options.requestTimeout;
-
-    if (multiLine) {
-      newline = '\n';
-      indent = options.indentType === 'tab' ? '\t' : ' ';
-      indent = newline + indent.repeat(options.indentCount);
-    }
-    snippet = '#include <stdio.h>' + newline + '#include <string.h>' + newline +
-    '#include <curl/curl.h>' + newline + 'int main(int argc, char *argv[]){\n';
-    snippet += 'CURL *curl;';
-    snippet += newline + 'CURLcode res;';
-    snippet += newline + 'curl = curl_easy_init();';
-    snippet += newline + 'if(curl) {';
-    snippet += indent + `curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "${request.method}");`;
-    snippet += indent + `curl_easy_setopt(curl, CURLOPT_URL, "${encodeURI(request.url.toString())}");`;
+    snippet += 'CURL *curl;\n';
+    snippet += 'CURLcode res;\n';
+    snippet += 'curl = curl_easy_init();\n';
+    snippet += 'if(curl) {\n';
+    snippet += indentString + `curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "${request.method}");\n`;
+    snippet += indentString +
+    `curl_easy_setopt(curl, CURLOPT_URL, "${encodeURI(request.url.toString())}");\n`;
     if (timeout) {
-      snippet += indent + `curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, ${timeout}L);`;
+      snippet += indentString + `curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, ${timeout}L);\n`;
     }
-    snippet += indent + `curl_easy_setopt(curl, CURLOPT_DEFAULT_PROTOCOL, "${protocol}");`;
-    snippet += indent + 'struct curl_slist *headers = NULL;';
+    snippet += indentString + `curl_easy_setopt(curl, CURLOPT_DEFAULT_PROTOCOL, "${protocol}");\n`;
+    snippet += indentString + 'struct curl_slist *headers = NULL;\n';
     headersData = request.getHeaders({ enabled: true });
     _.forEach(headersData, function (value, key) {
-      snippet += indent + `headers = curl_slist_append(headers, "${key}: ${value}");`;
+      snippet += indentString + `headers = curl_slist_append(headers, "${key}: ${value}");\n`;
     });
     body = request.body.toJSON();
     if (body.mode && body.mode === 'formdata' && !options.useMimeType) {
-      snippet += indent + 'headers = curl_slist_append(headers, "content-type:' +
-                ` multipart/form-data; boundary=${BOUNDARY}");`;
+      snippet += indentString + 'headers = curl_slist_append(headers, "content-type:' +
+                ` multipart/form-data; boundary=${BOUNDARY}");\n`;
     }
-    snippet += indent + 'curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);';
+    snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);\n';
     // request body
     if (request.method === 'HEAD') {
-      snippet += indent + 'curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);';
+      snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);\n';
     }
     if (!_.isEmpty(body)) {
       switch (body.mode) {
@@ -69,40 +65,41 @@ self = module.exports = {
               text.push(`${escape(data.key)}=${escape(data.value)}`);
             }
           });
-          snippet += indent + `const char *data = "${text.join('&')}";`;
-          snippet += indent + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);';
+          snippet += indentString + `const char *data = "${text.join('&')}";\n`;
+          snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);\n';
           break;
         case 'raw':
-          snippet += indent + `const char *data = "${sanitize(body.raw.toString(), trim)}";`;
-          snippet += indent + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);';
+          snippet += indentString + `const char *data = "${sanitize(body.raw.toString(), trim)}";\n`;
+          snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);\n';
           break;
         case 'formdata':
           if (options.useMimeType) {
-            snippet += indent + 'curl_mime *mime;';
-            snippet += indent + 'curl_mimepart *part;';
-            snippet += indent + 'mime = curl_mime_init(curl);';
-            snippet += indent + 'part = curl_mime_addpart(mime);';
+            snippet += indentString + 'curl_mime *mime;\n';
+            snippet += indentString + 'curl_mimepart *part;\n';
+            snippet += indentString + 'mime = curl_mime_init(curl);\n';
+            snippet += indentString + 'part = curl_mime_addpart(mime);\n';
             formCheck = false;
 
             _.forEach(body.formdata, function (data) {
               if (!(data.disabled)) {
                 if (formCheck) {
-                  snippet += indent + 'part = curl_mime_addpart(mime);';
+                  snippet += indentString + 'part = curl_mime_addpart(mime);\n';
                 }
                 else {
                   formCheck = true;
                 }
                 if (data.type === 'file') {
-                  snippet += indent + `curl_mime_name(part, "${sanitize(data.key, trim)}");`;
-                  snippet += indent + `curl_mime_filedata(part, "${sanitize(data.src, trim)}");`;
+                  snippet += indentString + `curl_mime_name(part, "${sanitize(data.key, trim)}");\n`;
+                  snippet += indentString + `curl_mime_filedata(part, "${sanitize(data.src, trim)}");\n`;
                 }
                 else {
-                  snippet += indent + `curl_mime_name(part, "${sanitize(data.key, trim)}");`;
-                  snippet += indent + `curl_mime_data(part, "${sanitize(data.value, trim)}", CURL_ZERO_TERMINATED);`;
+                  snippet += indentString + `curl_mime_name(part, "${sanitize(data.key, trim)}");\n`;
+                  snippet += indentString +
+                  `curl_mime_data(part, "${sanitize(data.value, trim)}", CURL_ZERO_TERMINATED);\n`;
                 }
               }
             });
-            snippet += indent + 'curl_easy_setopt(curl, CURLOPT_MIMEPOST, mime);';
+            snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_MIMEPOST, mime);\n';
           }
           else {
             BOUNDARY = '--' + BOUNDARY;
@@ -113,39 +110,42 @@ self = module.exports = {
               }
             });
             formdataString += BOUNDARY + '--';
-            snippet += indent + `curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "${formdataString}");`;
+            snippet += indentString + `curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "${formdataString}");\n`;
           }
           break;
         case 'file':
-          snippet += indent + `const char *data = "${sanitize(body.key, trim)}=@${sanitize(body.value, trim)}";`;
-          snippet += indent + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);';
+          snippet += indentString +
+          `const char *data = "${sanitize(body.key, trim)}=@${sanitize(body.value, trim)}";\n`;
+          snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);\n';
           break;
         default:
           snippet = String(snippet);
       }
     }
 
-    snippet += indent + 'res = curl_easy_perform(curl);';
-    responseCode = ['if(res == CURLE_OK) {', 'long response_code;',
-      'curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);',
-      'if(!res && response_code) printf("%03ld", response_code);', '}'];
-
-    snippet += indent + responseCode.join(indent);
+    snippet += indentString + 'res = curl_easy_perform(curl);\n';
+    snippet += indentString + 'if(res == CURLE_OK) {\n';
+    snippet += indentString.repeat(2) + 'long response_code;\n';
+    snippet += indentString.repeat(2) + 'curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);\n';
+    snippet += indentString.repeat(2) + 'if(!res && response_code) printf("%03ld", response_code);\n';
+    snippet += indentString + '}\n';
     if (body.mode === 'formdata' && options.useMimeType) {
-      snippet += indent + 'curl_mime_free(mime);';
+      snippet += indentString + 'curl_mime_free(mime);\n';
     }
-    snippet += newline + '}';
-    snippet += newline + 'curl_easy_cleanup(curl);' + newline + 'return (int)res;' + newline + '}';
-    callback(null, snippet);
+    snippet += '}\n';
+    snippet += 'curl_easy_cleanup(curl);\n';
+    (options.includeBoilerplate) &&
+    (snippet = indentString + snippet.split('\n').join('\n' + indentString));
+    callback(null, headerSnippet + snippet + footerSnippet);
   },
   getOptions: function () {
     return [
       {
-        name: 'Multiline snippet',
-        id: 'multiLine',
+        name: 'Include boilerplate',
+        id: 'includeBoilerplate',
         type: 'boolean',
-        default: true,
-        description: 'Split cURL command across multiple lines'
+        default: false,
+        description: 'Include class definition and import statements in snippet'
       },
       {
         name: 'Protocol',
