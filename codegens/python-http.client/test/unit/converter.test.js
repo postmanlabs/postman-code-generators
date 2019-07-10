@@ -122,7 +122,7 @@ function runSnippet (codeSnippet, collection, done) {
   });
 }
 
-describe('Python- Requests converter', function () {
+describe('Python-http.client converter', function () {
   mainCollection.item.forEach(function (item) {
     it(item.name, function (done) {
       var request = new sdk.Request(item.request),
@@ -202,6 +202,27 @@ describe('Python- Requests converter', function () {
       });
     });
 
+    it('should generate snippet when url is not provied', function () {
+      var request = new sdk.Request({
+        'name': 'test',
+        'request': {
+          'method': 'GET',
+          'header': [],
+          'url': {
+            'raw': ''
+          }
+        },
+        'response': []
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('conn = http.client.HTTPSConnection("")');
+      });
+    });
+
   });
 
   describe('parseBody function', function () {
@@ -247,8 +268,7 @@ describe('Python- Requests converter', function () {
       expect(getOptions()[0]).to.have.property('id', 'indentCount');
       expect(getOptions()[1]).to.have.property('id', 'indentType');
       expect(getOptions()[2]).to.have.property('id', 'requestTimeout');
-      expect(getOptions()[3]).to.have.property('id', 'followRedirect');
-      expect(getOptions()[4]).to.have.property('id', 'trimRequestBody');
+      expect(getOptions()[3]).to.have.property('id', 'trimRequestBody');
     });
   });
 
