@@ -233,6 +233,29 @@ describe('js-fetch convert function for test collection', function () {
         expect(snippet).to.include('body: raw');
       });
     });
+
+    it('should generate snippet for no body provided', function () {
+      request = new sdk.Request({
+        'method': 'GET',
+        'url': {
+          'raw': 'https://mockbin.org/request',
+          'protocol': 'https',
+          'host': [
+            'mockbin',
+            'org'
+          ],
+          'path': [
+            'request'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+      });
+    });
   });
 
   describe('getOptions function', function () {
