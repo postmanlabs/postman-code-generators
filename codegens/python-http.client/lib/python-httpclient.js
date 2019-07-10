@@ -84,13 +84,6 @@ self = module.exports = {
         description: 'How long the request should wait for a response before timing out (milliseconds)'
       },
       {
-        name: 'Follow redirect',
-        id: 'followRedirect',
-        type: 'boolean',
-        default: true,
-        description: 'Automatically follow HTTP redirects'
-      },
-      {
         name: 'Body trim',
         id: 'trimRequestBody',
         type: 'boolean',
@@ -142,7 +135,6 @@ self = module.exports = {
     snippet += 'res = conn.getresponse()\n';
     snippet += 'data = res.read()\n';
     snippet += 'print(data.decode("utf-8"))';
-    snippet += options.followRedirect ? '' : '# Cant handle redirects. Redirects always true\n';
 
     return callback(null, snippet);
   }
