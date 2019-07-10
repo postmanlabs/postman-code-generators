@@ -127,7 +127,7 @@ self = module.exports = {
     indentation = identity.repeat(options.indentCount);
 
     snippet += 'import http.client\n';
-    snippet += `conn = http.client.HTTPSConnection("${request.url.host.join('.')}"`;
+    snippet += `conn = http.client.HTTPSConnection("${request.url.host ? request.url.host.join('.') : ''}"`;
     snippet += options.requestTimeout !== 0 ? `, timeout = ${options.requestTimeout})\n` : ')\n';
     snippet += parseBody(request.toJSON(), indentation, options.requestBodyTrim);
     snippet += getheaders(request, indentation);

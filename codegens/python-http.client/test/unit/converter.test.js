@@ -202,6 +202,27 @@ describe('Python- Requests converter', function () {
       });
     });
 
+    it('should generate snippet when url is not provied', function () {
+      var request = new sdk.Request({
+        'name': 'test',
+        'request': {
+          'method': 'GET',
+          'header': [],
+          'url': {
+            'raw': ''
+          }
+        },
+        'response': []
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('conn = http.client.HTTPSConnection("")');
+      });
+    });
+
   });
 
   describe('parseBody function', function () {
