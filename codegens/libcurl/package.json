@@ -4,7 +4,7 @@
   "description": "Converter plugin to convert from postman sdk request to C-LibCurl code snippet",
   "com_postman_plugin": {
     "type": "code_generator",
-    "lang": "libcurl",
+    "lang": "C",
     "variant": "libcurl",
     "syntax_mode": "c_cpp"
   },
