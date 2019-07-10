@@ -6,11 +6,11 @@ var self;
 
 /**
  * retuns snippet of nodejs(native) by parsing data from Postman-SDK request object
- * 
+ *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required for code snippet
  * @param {Object} options
- * @returns {String} - nodejs(native) code snippet for given request object 
+ * @returns {String} - nodejs(native) code snippet for given request object
  */
 function makeSnippet (request, indentString, options) {
   var nativeModule = (request.url.protocol === 'http' ? 'http' : 'https'),
@@ -28,7 +28,7 @@ function makeSnippet (request, indentString, options) {
 
   snippet += 'var options = {\n';
 
-  /** 
+  /**
      * creating string to represent options object using optionArray.join()
      * example:
      *  options: {
@@ -37,7 +37,7 @@ function makeSnippet (request, indentString, options) {
      *      path: '/x?a=10',
      *      headers: {
      *          'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
-     *      } 
+     *      }
      *  }
      */
   if (request.body && request.body[request.body.mode]) {
@@ -52,8 +52,7 @@ function makeSnippet (request, indentString, options) {
   optionsArray.push(parseRequest.parseHeader(request, indentString));
 
   if (options.followRedirect) {
-    optionsArray.push(indentString + '\'maxRedirects\': 20 // sets the maximum number of allowed ' +
-            'redirect; default 20');
+    optionsArray.push(indentString + '\'maxRedirects\': 20');
   }
 
   snippet += optionsArray.join(',\n') + '\n';
@@ -105,8 +104,8 @@ function makeSnippet (request, indentString, options) {
 
 /**
  * Converts Postman sdk request object to nodejs native code snippet
- * 
- * @param {Object} request - postman-SDK request object 
+ *
+ * @param {Object} request - postman-SDK request object
  * @param {Object} options
  * @param {String} options.indentType - type for indentation eg: space, tab
  * @param {String} options.indentCount - number of spaces or tabs for indentation.
