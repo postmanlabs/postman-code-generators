@@ -64,6 +64,32 @@
 			"response": []
 		},
 		{
+			"name": "Request headers with single quoted strings in keys and values",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "key'key",
+						"value": "value'value",
+						"type": "text"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "https://postman-echo.com/get",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "GET Request with disabled query",
 			"event": [
 				{

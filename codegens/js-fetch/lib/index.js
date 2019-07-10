@@ -109,7 +109,7 @@ function parseHeaders (headers) {
   if (!_.isEmpty(headers)) {
     headerSnippet = 'var myHeaders = new Headers();\n';
     _.forEach(headers, function (value, key) {
-      headerSnippet += `myHeaders.append('${key}', '${value}');\n`;
+      headerSnippet += `myHeaders.append("${sanitize(key)}", "${sanitize(value)}");\n`;
     });
   }
   else {
