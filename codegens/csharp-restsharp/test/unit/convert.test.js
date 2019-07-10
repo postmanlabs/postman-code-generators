@@ -241,6 +241,16 @@ describe('csharp restsharp function', function () {
       });
     });
 
+    it('should add client FollowRedirects configurations when followRedirects is set to false', function () {
+      convert(request, {followRedirect: false}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('client.FollowRedirects = false');
+      });
+    });
+
   });
 
   describe('getOptions function', function () {

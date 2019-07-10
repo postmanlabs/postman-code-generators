@@ -25,6 +25,9 @@ function makeSnippet (request, options) {
   else {
     snippet += 'client.Timeout = -1;\n';
   }
+  if (!options.followRedirect) {
+    snippet += 'client.FollowRedirects = false;\n';
+  }
   snippet += `var request = new RestRequest(${isUnSupportedMethod ? '' : ('Method.' + request.method)});\n`;
   snippet += parseRequest.parseHeader(request.toJSON(), options.trimRequestBody);
   snippet += parseRequest.parseBody(request, options.trimRequestBody);
