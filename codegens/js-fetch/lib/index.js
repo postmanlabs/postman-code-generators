@@ -109,7 +109,7 @@ function parseHeaders (headers) {
   if (!_.isEmpty(headers)) {
     headerSnippet = 'var myHeaders = new Headers();\n';
     _.forEach(headers, function (value, key) {
-      headerSnippet += `myHeaders.append('${key}', '${value}');\n`;
+      headerSnippet += `myHeaders.append("${sanitize(key)}", "${sanitize(value)}");\n`;
     });
   }
   else {
@@ -196,7 +196,7 @@ function convert (request, options, callback) {
   headers = request.getHeaders({enabled: true});
   headerSnippet = parseHeaders(headers);
 
-  body = request.body.toJSON();
+  body = request.body && request.body.toJSON();
   bodySnippet = parseBody(body, trim);
 
   optionsSnippet = `var requestOptions = {\n${indent}`;
