@@ -150,8 +150,8 @@ describe('libcurl convert function', function () {
             indentCount: 1,
             indentType: 'tab',
             requestTimeout: 200,
-            multiLine: true,
-            useMimeType: false
+            useMimeType: false,
+            includeBoilerplate: true
           };
 
         convert(request, options, function (error, snippet) {
@@ -185,7 +185,6 @@ describe('libcurl convert function', function () {
           indentCount: 1,
           indentType: 'tab',
           requestTimeout: 200,
-          multiLine: true,
           trimRequestBody: true
         },
         callback = null;
@@ -212,7 +211,7 @@ describe('libcurl convert function', function () {
 
     it('should return an array of specific options', function () {
       expect(options).to.be.an('array');
-      expect(options[0]).to.have.property('id', 'multiLine');
+      expect(options[0]).to.have.property('id', 'includeBoilerplate');
       expect(options[1]).to.have.property('id', 'protocol');
       expect(options[2]).to.have.property('id', 'indentCount');
       expect(options[3]).to.have.property('id', 'indentType');
