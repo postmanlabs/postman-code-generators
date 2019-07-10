@@ -103,7 +103,7 @@ function parseHeaders (headers) {
   var headerSnippet = '';
   if (!_.isEmpty(headers)) {
     _.forEach(headers, function (value, key) {
-      headerSnippet += `xhr.setRequestHeader("${key}", "${value}");\n`;
+      headerSnippet += `xhr.setRequestHeader("${sanitize(key)}", "${sanitize(value)}");\n`;
     });
   }
   return headerSnippet;
@@ -195,7 +195,6 @@ function convert (request, options, callback) {
   codeSnippet += headerSnippet + '\n';
 
   codeSnippet += 'xhr.send(data);';
-
   callback(null, codeSnippet);
 }
 

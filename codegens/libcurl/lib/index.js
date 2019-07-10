@@ -44,7 +44,7 @@ self = module.exports = {
     snippet += indentString + 'struct curl_slist *headers = NULL;\n';
     headersData = request.getHeaders({ enabled: true });
     _.forEach(headersData, function (value, key) {
-      snippet += indentString + `headers = curl_slist_append(headers, "${key}: ${value}");\n`;
+      snippet += indentString + `headers = curl_slist_append(headers, "${sanitize(key)}: ${sanitize(value)}");\n`;
     });
     body = request.body.toJSON();
     if (body.mode && body.mode === 'formdata' && !options.useMimeType) {

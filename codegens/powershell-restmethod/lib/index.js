@@ -123,7 +123,7 @@ function parseHeaders (headers) {
   if (!_.isEmpty(headers)) {
     headerSnippet = '$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"\n';
     _.forEach(headers, function (value, key) {
-      headerSnippet += `$headers.Add("${key}", '${value}')\n`;
+      headerSnippet += `$headers.Add("${sanitize(key)}", "${sanitize(value)}")\n`;
     });
   }
   else {
