@@ -64,6 +64,32 @@
 			"response": []
 		},
 		{
+			"name": "Request headers with double quoted strings in values",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "key",
+						"value": "value\"value",
+						"type": "text"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "https://postman-echo.com/get",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "GET Request with disabled query",
 			"event": [
 				{
