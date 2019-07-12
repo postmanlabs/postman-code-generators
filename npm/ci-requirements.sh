@@ -1,5 +1,12 @@
 #!/bin/bash
 set -ev; # stop on error
+echo "Installing dependencies required for tests in codegens/java-okhttp"
+pushd ./codegens/java-okhttp &>/dev/null;
+
+  sudo wget http://central.maven.org/maven2/com/squareup/okhttp3/okhttp/3.9.1/okhttp-3.9.1.jar
+  sudo wget http://central.maven.org/maven2/com/squareup/okio/okio/1.14.0/okio-1.14.0.jar
+  sudo touch main.java
+popd &>/dev/null;
 
 echo "Installing dependencies required for tests in codegens/swift"
 pushd ./codegens/swift &>/dev/null;

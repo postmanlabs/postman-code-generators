@@ -17,20 +17,17 @@ var expect = require('chai').expect,
  * @param {Function} done - callback for async calls
  */
 function runSnippet (codeSnippet, collection, done) {
-  fs.writeFile('dependencies/main.java', codeSnippet, function (err) {
+  fs.writeFile('main.java', codeSnippet, function (err) {
     if (err) {
       expect.fail(null, null, err);
       return done();
     }
 
     //  classpath of external libararies for java to compile 
-    var classpath = 'dependencies/*',
-
-      //  bash command string for compiling java
-      compile = 'javac -cp ' + classpath + ': dependencies/main.java',
+    var compile = 'javac -cp *.jar main.java',
 
       //  bash command stirng for run compiled java file
-      run = 'java -cp ' + classpath + ':dependencies main';
+      run = 'java -cp *.jar main';
 
     //  step by step process for compile, run code snippet, then comparing its output with newman
     parallel([
@@ -134,7 +131,7 @@ function runSnippet (codeSnippet, collection, done) {
 }
 
 describe('okhttp convert function', function () {
-  describe.skip('convert for different request types', function () {
+  describe('convert for different request types', function () {
     var headerSnippet = 'import java.io.*;\n' +
                             'import okhttp3.*;\n' +
                             'public class main {\n' +
