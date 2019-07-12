@@ -9,5 +9,4 @@ pushd ./codegens/swift &>/dev/null;
   sudo wget https://swift.org/builds/swift-5.0.1-release/ubuntu1604/swift-5.0.1-RELEASE/swift-5.0.1-RELEASE-ubuntu16.04.tar.gz
   sudo tar xzf swift-5.0.1-RELEASE-ubuntu16.04.tar.gz
   sudo chmod 777 swift-5.0.1-RELEASE-ubuntu16.04/usr/lib/swift/CoreFoundation/module.map
-  sudo export PATH=/swift-5.0.1-RELEASE-ubuntu16.04/usr/bin:$PATH
 popd &>/dev/null;
