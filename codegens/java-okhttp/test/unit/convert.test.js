@@ -20,10 +20,10 @@ function runSnippet (codeSnippet, collection, done) {
   fs.writeFileSync('main.java', codeSnippet);
 
   //  classpath of external libararies for java to compile 
-  var compile = 'javac -cp *.jar main.java',
+  var compile = 'javac -cp *: main.java',
 
     //  bash command stirng for run compiled java file
-    run = 'java -cp *.jar main';
+    run = 'java -cp *: main';
 
   //  step by step process for compile, run code snippet, then comparing its output with newman
   parallel([
