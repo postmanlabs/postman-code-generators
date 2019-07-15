@@ -32,6 +32,25 @@ function parseFormData (requestBody, trimFields) {
 }
 
 /**
+ * 
+ * 
+ * @param {String} requestUrl 
+ * @param {Boolean} trimFields 
+ */
+/* function addParameter(requestUrl, trimFields) {
+  if (requestUrl.contains('?')) {
+    requestUrl += `?${sanitize(data.key, trimFields)}=` +
+    `${sanitize(data.value, trimFields)}`;
+  }
+  else {
+    requestUrl += `&${sanitize(data.key, trimFields)}=` +
+    `${sanitize(data.value, trimFields)}`;
+  }
+  
+  return requestUrl;
+} */
+
+/**
  * Returns content-type of request body if available else returns text/plain as default
  *
  * @param {Object} request - Postman SDK request object
@@ -50,13 +69,14 @@ function parseContentType (request) {
  * @returns {String} code snippet of csharp-dotnetcore parsed from request object
  */
 function parseBody (request, trimFields) {
-  var requestBody = request.body.toJSON();
+  var requestBody = request.body.toJSON(),
+    requestUrl = request.url.toString();
   if (!_.isEmpty(requestBody)) {
     switch (requestBody.mode) {
       case 'urlencoded':
-        return parseFormData(requestBody, trimFields);
+        return parseFormData(requestBody, requestUrl, trimFields);
       case 'formdata':
-        return parseFormData(requestBody, trimFields);
+        return parseFormData(requestBody, requestUrl, trimFields);
       case 'raw':
         return `${JSON.stringify(requestBody[requestBody.mode])}`;
         /* istanbul ignore next */
