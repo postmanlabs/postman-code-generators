@@ -40,7 +40,7 @@ function makeSnippet (request, options) {
     (UNSUPPORTED_METHODS_LIKE_POST.includes(request.method)) &&
             (snippet += `var stringTask = client.PostAsync("${sanitize(request.url.toString())},
             new StringContent(${parseRequest.parseBody(request, options.trimRequestBody)},
-            Encoding.UTF8, ${parseContentType(request)})");\n`);
+            Encoding.UTF8, ${parseRequest.parseContentType(request)})");\n`);
   }
   else {
     // Determine which method call to paste. Each request type has a different method associated with it.
@@ -51,12 +51,12 @@ function makeSnippet (request, options) {
       case 'POST':
         snippet += `HttpResponseMessage response = await client.PostAsync("${sanitize(request.url.toString())},
         new StringContent(${parseRequest.parseBody(request, options.trimRequestBody)},
-        Encoding.UTF8, ${parseContentType(request)})");\n`;
+        Encoding.UTF8, ${parseRequest.parseContentType(request)})");\n`;
         break;
       case 'PUT':
         snippet += `HttpResponseMessage response = await client.PutAsync("${sanitize(request.url.toString())},
         new StringContent(${parseRequest.parseBody(request, options.trimRequestBody)},
-        Encoding.UTF8, ${parseContentType(request)})");\n`;
+        Encoding.UTF8, ${parseRequest.parseContentType(request)})");\n`;
         break;
       case 'DELETE':
         snippet += `HttpResponseMessage response = await client.DeleteAsync("${sanitize(request.url.toString())}");\n`;
