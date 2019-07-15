@@ -137,10 +137,10 @@ function runSnippet (codeSnippet, collection, done) {
   });
 }
 
-describe('csharp restsharp function', function () {
+describe('csharp .net core function', function () {
   describe.skip('convert for different request types', function () {
     var headerSnippet = 'using System;\n' +
-                            'using RestSharp;\n' +
+                            'using System.Net.Http;\n' +
                             'namespace HelloWorldApplication {\n' +
                             'class HelloWorld {\n' +
                             'static void Main(string[] args) {\n',
@@ -175,7 +175,7 @@ describe('csharp restsharp function', function () {
     });
   });
 
-  describe('csharp-restsharp convert function', function () {
+  describe('csharp-dotnetcore convert function', function () {
     it('should return expected snippet', function () {
       var request = new sdk.Request(mainCollection.item[4].request),
         options = {
@@ -210,7 +210,7 @@ describe('csharp restsharp function', function () {
           expect.fail(null, null, error);
           return;
         }
-        expect(snippet).to.include('using System;\nusing RestSharp;\nnamespace HelloWorldApplication {\n');
+        expect(snippet).to.include('using System;\nusing System.Net.Http;\nnamespace HelloWorldApplication {\n');
       });
     });
 
@@ -254,7 +254,7 @@ describe('csharp restsharp function', function () {
   });
 
   describe('getOptions function', function () {
-    it('should return array of options for csharp-restsharp converter', function () {
+    it('should return array of options for csharp-dotnetcore converter', function () {
       expect(getOptions()).to.be.an('array');
     });
 

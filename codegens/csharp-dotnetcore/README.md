@@ -1,12 +1,12 @@
-# codegen-csharp-restsharp
+# codegen-csharp-dotnetcore
 
-> Converts Postman-SDK Request into code snippet for Csharp-RestSharp.
+> Converts Postman-SDK Request into code snippet for Csharp-dotnetcore.
 
 #### Prerequisites
 To run Code-Gen, ensure that you have NodeJS >= v6. A copy of the NodeJS installable can be downloaded from https://nodejs.org/en/download/package-manager.
 
 ## Using the Module
-The module will expose an object which will have property `convert` which is the function for converting the Postman-SDK request to Csharp-RestSharp code snippet.
+The module will expose an object which will have property `convert` which is the function for converting the Postman-SDK request to Csharp-dotnetcore code snippet.
 
 ### convert function
 Convert function will take three parameters

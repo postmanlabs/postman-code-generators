@@ -6,11 +6,11 @@ var _ = require('./lodash'),
   self;
 
 /**
- * Generates snippet in csharp-restsharp by parsing data from Postman-SDK request object
+ * Generates snippet in csharp-dotnetcore by parsing data from Postman-SDK request object
  *
  * @param {Object} request - Postman SDK request object
  * @param {Object} options - Options to tweak code snippet
- * @returns {String} csharp-restsharp code snippet for given request object
+ * @returns {String} csharp-dotnetcore code snippet for given request object
  */
 function makeSnippet (request, options) {
   const UNSUPPORTED_METHODS_LIKE_POST = ['LINK', 'UNLINK', 'LOCK', 'PROPFIND'],
@@ -78,7 +78,7 @@ self = module.exports = {
      *
      * @module getOptions
      *
-     * @returns {Array} Additional options specific to generation of csharp-restsharp code snippet
+     * @returns {Array} Additional options specific to generation of csharp-dotnetcore code snippet
      */
   getOptions: function () {
     return [
@@ -129,7 +129,7 @@ self = module.exports = {
   },
 
   /**
-     * Converts Postman sdk request object to csharp-restsharp code snippet
+     * Converts Postman sdk request object to csharp-dotnetcore code snippet
      *
      * @module convert
      *
@@ -149,7 +149,7 @@ self = module.exports = {
   convert: function (request, options, callback) {
 
     if (!_.isFunction(callback)) {
-      throw new Error('C#-RestSharp-Converter: Callback is not valid function');
+      throw new Error('C#-DotNetCore-Converter: Callback is not valid function');
     }
 
     //  String representing value of indentation required
@@ -159,7 +159,7 @@ self = module.exports = {
       headerSnippet = '',
       footerSnippet = '',
 
-      //  snippet to create request in csharp-restsharp
+      //  snippet to create request in csharp-dotnetcore
       snippet = '';
 
     options = sanitizeOptions(options, self.getOptions());
@@ -169,7 +169,7 @@ self = module.exports = {
 
     if (options.includeBoilerplate) {
       headerSnippet = 'using System;\n' +
-                            'using RestSharp;\n' +
+                            'using System.Net.Http;\n' +
                             'namespace HelloWorldApplication {\n' +
                             indentString + 'class HelloWorld {\n' +
                             indentString.repeat(2) + 'static void Main(string[] args) {\n';

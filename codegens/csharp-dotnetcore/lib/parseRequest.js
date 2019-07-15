@@ -7,7 +7,7 @@ var _ = require('./lodash'),
  *
  * @param {Object} requestBody - JSON object representing body of request
  * @param {Boolean} trimFields - indicates whether to trim fields of body
- * @returns {String} code snippet of csharp-restsharp for multipart formdata
+ * @returns {String} code snippet of csharp-dotnetcore for multipart formdata
  */
 function parseFormData (requestBody, trimFields) {
   if (!Array.isArray(requestBody[requestBody.mode])) {
@@ -43,11 +43,11 @@ function parseContentType (request) {
 
 
 /**
- * Parses request object and returns csharp-restsharp code snippet for adding request body
+ * Parses request object and returns csharp-dotnetcore code snippet for adding request body
  *
  * @param {Object} request - JSON object representing body of request
  * @param {Boolean} trimFields - indicates whether to trim fields of body
- * @returns {String} code snippet of csharp-restsharp parsed from request object
+ * @returns {String} code snippet of csharp-dotnetcore parsed from request object
  */
 function parseBody (request, trimFields) {
   var requestBody = request.body.toJSON();
@@ -58,7 +58,8 @@ function parseBody (request, trimFields) {
       case 'formdata':
         return parseFormData(requestBody, trimFields);
       case 'raw':
-        return `${JSON.stringify(requestBody[requestBody.mode])}`;
+        return `request.AddParameter("${parseContentType(request)}", ` +
+                    `${JSON.stringify(requestBody[requestBody.mode])},  ParameterType.RequestBody);\n`;
         /* istanbul ignore next */
       case 'file':
         return `request.AddFile("file", "${sanitize(requestBody[requestBody.mode].src, trimFields)}");\n`;
@@ -70,10 +71,10 @@ function parseBody (request, trimFields) {
 }
 
 /**
- * Parses header in Postman-SDK request and returns code snippet of csharp-restsharp for adding headers
+ * Parses header in Postman-SDK request and returns code snippet of csharp-dotnetcore for adding headers
  *
  * @param {Object} requestJson - Postman SDK reqeust object
- * @returns {String} code snippet for adding headers in csharp-restsharp
+ * @returns {String} code snippet for adding headers in csharp-dotnetcore
  */
 function parseHeader (requestJson) {
   if (!Array.isArray(requestJson.header)) {
@@ -82,7 +83,7 @@ function parseHeader (requestJson) {
 
   return requestJson.header.reduce((headerSnippet, header) => {
     if (!header.disabled) {
-      headerSnippet += `client.DefaultRequestHeaders.Add("${sanitize(header.key)}", "${sanitize(header.value)}");\n`;
+      headerSnippet += `request.DefaultRequestHeaders.Add("${sanitize(header.key)}", "${sanitize(header.value)}");\n`;
     }
     return headerSnippet;
   }, '');
