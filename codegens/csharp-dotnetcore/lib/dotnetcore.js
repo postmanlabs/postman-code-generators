@@ -13,9 +13,9 @@ var _ = require('./lodash'),
  * @returns {String} csharp-restsharp code snippet for given request object
  */
 function makeSnippet (request, options) {
-  const UNSUPPORTED_METHODS_LIKE_POST = ['LINK', 'UNLINK', 'LOCK', 'PROPFIND'],
-    UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW', 'COPY'];
-
+  const UNSUPPORTED_METHODS_LIKE_POST = ['LINK', 'UNLINK', 'LOCK', 'PROPFIND'];
+  const UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW', 'COPY'];
+  var requestBody = request.body.toJSON();
   var snippet = 'HttpClient client = new HttpClient();\n';
   var isUnSupportedMethod = UNSUPPORTED_METHODS_LIKE_GET.includes(request.method) || UNSUPPORTED_METHODS_LIKE_POST.includes(request.method);
   if (options.requestTimeout > 0) {
@@ -40,7 +40,7 @@ function makeSnippet (request, options) {
   }
   else {
     //We need a switch statement here that determines which method call we paste. there is a different method call for each request type.
-    switch (requestBody.mode)
+    switch (request.method)
     {
       case 'GET':
           snippet += `string response = client.GetStringAsync("${sanitize(request.url.toString())}");\n`;
