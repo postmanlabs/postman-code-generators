@@ -58,8 +58,7 @@ function parseBody (request, trimFields) {
       case 'formdata':
         return parseFormData(requestBody, trimFields);
       case 'raw':
-        return `request.AddParameter("${parseContentType(request)}", ` +
-                    `${JSON.stringify(requestBody[requestBody.mode])},  ParameterType.RequestBody);\n`;
+        return `${JSON.stringify(requestBody[requestBody.mode])}`;
         /* istanbul ignore next */
       case 'file':
         return `request.AddFile("file", "${sanitize(requestBody[requestBody.mode].src, trimFields)}");\n`;

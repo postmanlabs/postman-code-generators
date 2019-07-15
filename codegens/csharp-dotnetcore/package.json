@@ -1,11 +1,11 @@
 {
-  "name": "@postman/codegen-csharp-restsharp",
+  "name": "@postman/codegen-csharp-dotnetcore",
   "version": "0.1.1",
-  "description": "Converts postman request into csharp-restsharp code snippet",
+  "description": "Converts postman request into csharp-dotnetcore code snippet",
   "com_postman_plugin": {
     "type": "code_generator",
     "lang": "csharp",
-    "variant": "RestSharp",
+    "variant": ".Net Core",
     "syntax_mode": "csharp"
   },
   "main": "index.js",
