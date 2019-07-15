@@ -83,7 +83,7 @@ function parseHeader (requestJson) {
 
   return requestJson.header.reduce((headerSnippet, header) => {
     if (!header.disabled) {
-      headerSnippet += `request.AddHeader("${sanitize(header.key)}", "${sanitize(header.value)}");\n`;
+      headerSnippet += `client.DefaultRequestHeaders.Add("${sanitize(header.key)}", "${sanitize(header.value)}");\n`;
     }
     return headerSnippet;
   }, '');

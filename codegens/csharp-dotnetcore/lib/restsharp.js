@@ -16,31 +16,47 @@ function makeSnippet (request, options) {
   const UNSUPPORTED_METHODS_LIKE_POST = ['LINK', 'UNLINK', 'LOCK', 'PROPFIND'],
     UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW', 'COPY'];
 
-  var snippet = `var client = new RestClient("${sanitize(request.url.toString())}");\n`,
-    isUnSupportedMethod = UNSUPPORTED_METHODS_LIKE_GET.includes(request.method) ||
-            UNSUPPORTED_METHODS_LIKE_POST.includes(request.method);
-  if (options.requestTimeout) {
-    snippet += `client.Timeout = ${options.requestTimeout};\n`;
+  var snippet = 'HttpClient client = new HttpClient();\n';
+  var isUnSupportedMethod = UNSUPPORTED_METHODS_LIKE_GET.includes(request.method) || UNSUPPORTED_METHODS_LIKE_POST.includes(request.method);
+  if (options.requestTimeout > 0) {
+    snippet += `client.Timeout = TimeSpan.FromMilliseconds(${options.requestTimeout});\n`;//Postman uses milliseconds as the base unit for request timeout time.
   }
-  else {
-    snippet += 'client.Timeout = -1;\n';
+  else if (options.requestTimeout == 0){
+    snippet += 'client.Timeout = Timeout.InfiniteTimeSpan;\n';//A value of 0 as the request timeout indicates wait forever in Postman
   }
+  /* TODO: Translate following redirects
   if (!options.followRedirect) {
     snippet += 'client.FollowRedirects = false;\n';
   }
+  */
   snippet += `var request = new RestRequest(${isUnSupportedMethod ? '' : ('Method.' + request.method)});\n`;
   snippet += parseRequest.parseHeader(request.toJSON(), options.trimRequestBody);
   snippet += parseRequest.parseBody(request, options.trimRequestBody);
   if (isUnSupportedMethod) {
     (UNSUPPORTED_METHODS_LIKE_GET.includes(request.method)) &&
-            (snippet += `IRestResponse response = client.ExecuteAsGet(request, "${request.method}");\n`);
+            (snippet += `var stringTask = client.GetStringAsync("${sanitize(request.url.toString())}");\n`);
     (UNSUPPORTED_METHODS_LIKE_POST.includes(request.method)) &&
-            (snippet += `IRestResponse response = client.ExecuteAsPost(request, "${request.method}");\n`);
+            (snippet += `var stringTask = client.PostAsync("${sanitize(request.url.toString())}, new StringContent(${JSON.stringify(requestBody[requestBody.mode])}, Encoding.UTF8, ${parseContentType(request)})");\n`);
   }
   else {
-    snippet += 'IRestResponse response = client.Execute(request);\n';
+    //We need a switch statement here that determines which method call we paste. there is a different method call for each request type.
+    switch (requestBody.mode)
+    {
+      case 'GET':
+          snippet += `string response = client.GetStringAsync("${sanitize(request.url.toString())}");\n`;
+          break;
+      case 'POST':
+          snippet += `HttpResponseMessage response = client.PostAsync("${sanitize(request.url.toString())}, new StringContent(${JSON.stringify(requestBody[requestBody.mode])}, Encoding.UTF8, ${parseContentType(request)})");\n`;
+          break;
+      case 'PUT':
+          snippet += `HttpResponseMessage response = client.PutAsync("${sanitize(request.url.toString())}, new StringContent(${JSON.stringify(requestBody[requestBody.mode])}, Encoding.UTF8, ${parseContentType(request)})");\n`;
+          break;
+      case 'DELETE':
+          snippet += `HttpResponseMessage response = client.DeleteAsync("${sanitize(request.url.toString())}");\n`;
+          break;
+    }
   }
-  snippet += 'Console.WriteLine(response.Content);';
+  snippet += 'Console.WriteLine(response.ToString());';//Does nothing if response is already a string. If response is an HttpResponseMessage, response is converted to a string.
 
   return snippet;
 }
