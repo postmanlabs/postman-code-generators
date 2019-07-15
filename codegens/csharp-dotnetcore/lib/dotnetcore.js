@@ -39,7 +39,7 @@ function makeSnippet (request, options) {
             (snippet += `var stringTask = client.GetStringAsync("${sanitize(request.url.toString())}");\n`);
     (UNSUPPORTED_METHODS_LIKE_POST.includes(request.method)) &&
             (snippet += `var stringTask = client.PostAsync("${sanitize(request.url.toString())},
-            new StringContent(${parseRequest.parseBody(request, options.trimRequestBody)},
+            new StringContent("${parseRequest.parseBody(request, options.trimRequestBody)}",
             Encoding.UTF8, ${parseRequest.parseContentType(request)})");\n`);
   }
   else {
@@ -50,12 +50,12 @@ function makeSnippet (request, options) {
         break;
       case 'POST':
         snippet += `HttpResponseMessage response = await client.PostAsync("${sanitize(request.url.toString())},
-        new StringContent(${parseRequest.parseBody(request, options.trimRequestBody)},
+        new StringContent("${parseRequest.parseBody(request, options.trimRequestBody)}",
         Encoding.UTF8, ${parseRequest.parseContentType(request)})");\n`;
         break;
       case 'PUT':
         snippet += `HttpResponseMessage response = await client.PutAsync("${sanitize(request.url.toString())},
-        new StringContent(${parseRequest.parseBody(request, options.trimRequestBody)},
+        new StringContent("${parseRequest.parseBody(request, options.trimRequestBody)}",
         Encoding.UTF8, ${parseRequest.parseContentType(request)})");\n`;
         break;
       case 'DELETE':

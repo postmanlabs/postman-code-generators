@@ -23,8 +23,8 @@ function parseFormData (requestBody, trimFields) {
     }
     else {
       (!data.value) && (data.value = '');
-      body += `request.AddParameter("${sanitize(data.key, trimFields)}", ` +
-                `"${sanitize(data.value, trimFields)}");\n`;
+      body += `"key": "${sanitize(data.key, trimFields)}",\n` +
+                `"value": "${sanitize(data.value, trimFields)}"\n`;
     }
 
     return body;
@@ -58,8 +58,7 @@ function parseBody (request, trimFields) {
       case 'formdata':
         return parseFormData(requestBody, trimFields);
       case 'raw':
-        return `request.AddParameter("${parseContentType(request)}", ` +
-                    `${JSON.stringify(requestBody[requestBody.mode])},  ParameterType.RequestBody);\n`;
+        return `${JSON.stringify(requestBody[requestBody.mode])}`;
         /* istanbul ignore next */
       case 'file':
         return `request.AddFile("file", "${sanitize(requestBody[requestBody.mode].src, trimFields)}");\n`;
