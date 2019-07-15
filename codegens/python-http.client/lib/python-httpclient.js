@@ -22,7 +22,7 @@ function getheaders (request, indentation) {
             `'${sanitize(headerObject[key], 'header')}'`;
     });
     if (requestBodyMode === 'formdata') {
-      headerMap.push(`${indent}'Content-type': 'multipart/form-data; boundary={}'.format(boundary)`);
+      headerMap.push(`${indentation}'Content-type': 'multipart/form-data; boundary={}'.format(boundary)`);
     }
     return `headers = {\n${headerMap.join(',\n')}\n}\n`;
   }
