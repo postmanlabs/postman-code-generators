@@ -14,7 +14,7 @@ function parseFormData (requestBody, trimFields) {
     return '';
   }
 
-  return requestBody[requestBody.mode].reduce((body, data) => {
+  var newBody = requestBody[requestBody.mode].reduce((body, data) => {
     if (data.disabled) {
       return body;
     }
@@ -23,12 +23,14 @@ function parseFormData (requestBody, trimFields) {
     }
     else {
       (!data.value) && (data.value = '');
-      body += `"key": "${sanitize(data.key, trimFields)}",\n` +
-                `"value": "${sanitize(data.value, trimFields)}"\n`;
+      body += `\\"key\\": \\"${sanitize(data.key, trimFields)}\\",\\n\\"value\\": \\"${sanitize(data.value, trimFields)}\\",\\n`;
     }
 
     return body;
   }, '');
+
+  newBody = newBody.substring(0, newBody.length - 3); // Trim the last comma and newline escape character off.
+  return newBody;
 }
 
 /**
@@ -78,7 +80,7 @@ function parseBody (request, trimFields) {
       case 'formdata':
         return parseFormData(requestBody, requestUrl, trimFields);
       case 'raw':
-        return `${JSON.stringify(requestBody[requestBody.mode])}`;
+        return `${JSON.stringify(requestBody[requestBody.mode])}\\n`;
         /* istanbul ignore next */
       case 'file':
         return `request.AddFile("file", "${sanitize(requestBody[requestBody.mode].src, trimFields)}");\n`;

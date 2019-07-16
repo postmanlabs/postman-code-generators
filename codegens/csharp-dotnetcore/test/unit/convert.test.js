@@ -237,7 +237,7 @@ describe('csharp .net core function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('client.Timeout = 5');
+        expect(snippet).to.include('client.Timeout = TimeSpan.FromMilliseconds(5)');
       });
     });
 

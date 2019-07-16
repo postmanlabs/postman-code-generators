@@ -13,11 +13,10 @@ var _ = require('./lodash'),
  * @returns {String} csharp-dotnetcore code snippet for given request object
  */
 function makeSnippet (request, options) {
-  const UNSUPPORTED_METHODS_LIKE_POST = ['LINK', 'UNLINK', 'LOCK', 'PROPFIND'],
-    UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW', 'COPY'];
-  var snippet = 'HttpClient client = new HttpClient();\n',
-    isUnSupportedMethod = UNSUPPORTED_METHODS_LIKE_GET.includes(request.method) ||
-    UNSUPPORTED_METHODS_LIKE_POST.includes(request.method);
+  const UNSUPPORTED_METHODS_LIKE_POST = ['LINK', 'UNLINK', 'LOCK', 'PROPFIND'];
+  const UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW', 'COPY'];
+  var snippet = 'HttpClient client = new HttpClient();\n';
+  var isUnSupportedMethod = UNSUPPORTED_METHODS_LIKE_GET.includes(request.method) || UNSUPPORTED_METHODS_LIKE_POST.includes(request.method);
   if (options.requestTimeout > 0) {
     // Postman uses milliseconds as the base unit for request timeout time.
     snippet += `client.Timeout = TimeSpan.FromMilliseconds(${options.requestTimeout});\n`;
@@ -36,11 +35,9 @@ function makeSnippet (request, options) {
   // snippet += parseRequest.parseBody(request, options.trimRequestBody);
   if (isUnSupportedMethod) {
     (UNSUPPORTED_METHODS_LIKE_GET.includes(request.method)) &&
-            (snippet += `var stringTask = client.GetStringAsync("${sanitize(request.url.toString())}");\n`);
+            (snippet += `string response = await client.GetStringAsync("${sanitize(request.url.toString())}");\n`);
     (UNSUPPORTED_METHODS_LIKE_POST.includes(request.method)) &&
-            (snippet += `var stringTask = client.PostAsync("${sanitize(request.url.toString())},
-            new StringContent("${parseRequest.parseBody(request, options.trimRequestBody)}",
-            Encoding.UTF8, ${parseRequest.parseContentType(request)})");\n`);
+            (snippet += `HttpResponseMessage response = await client.PostAsync("${sanitize(request.url.toString())}, new StringContent("{\\n${parseRequest.parseBody(request, options.trimRequestBody)}\\n}", Encoding.UTF8, "${parseRequest.parseContentType(request)}");\n`);
   }
   else {
     // Determine which method call to paste. Each request type has a different method associated with it.
@@ -49,14 +46,10 @@ function makeSnippet (request, options) {
         snippet += `string response = await client.GetStringAsync("${sanitize(request.url.toString())}");\n`;
         break;
       case 'POST':
-        snippet += `HttpResponseMessage response = await client.PostAsync("${sanitize(request.url.toString())},
-        new StringContent("${parseRequest.parseBody(request, options.trimRequestBody)}",
-        Encoding.UTF8, ${parseRequest.parseContentType(request)})");\n`;
+        snippet += `HttpResponseMessage response = await client.PostAsync("${sanitize(request.url.toString())}, new StringContent("{\\n${parseRequest.parseBody(request, options.trimRequestBody)}\\n}", Encoding.UTF8, "${parseRequest.parseContentType(request)}");\n`;
         break;
       case 'PUT':
-        snippet += `HttpResponseMessage response = await client.PutAsync("${sanitize(request.url.toString())},
-        new StringContent("${parseRequest.parseBody(request, options.trimRequestBody)}",
-        Encoding.UTF8, ${parseRequest.parseContentType(request)})");\n`;
+        snippet += `HttpResponseMessage response = await client.PutAsync("${sanitize(request.url.toString())}, new StringContent("{\\n${parseRequest.parseBody(request, options.trimRequestBody)}\\n}", Encoding.UTF8, "${parseRequest.parseContentType(request)}");\n`;
         break;
       case 'DELETE':
         snippet += `HttpResponseMessage response = await client.DeleteAsync("${sanitize(request.url.toString())}");\n`;
