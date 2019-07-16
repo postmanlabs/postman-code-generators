@@ -247,7 +247,7 @@ describe('csharp .net core function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('client.FollowRedirects = false');
+        expect(snippet).to.include('clientHandler.AllowAutoRedirect = false;');
       });
     });
 

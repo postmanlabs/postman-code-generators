@@ -15,7 +15,12 @@ var _ = require('./lodash'),
 function makeSnippet (request, options) {
   const UNSUPPORTED_METHODS_LIKE_POST = ['LINK', 'UNLINK', 'LOCK', 'PROPFIND'];
   const UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW', 'COPY'];
-  var snippet = 'HttpClient client = new HttpClient();\n';
+  var snippet = 'HttpClientHandler clientHandler = new HttpClientHandler();\n';
+  // Check if redirects should be followed or not
+  if (!options.followRedirect) {
+    snippet += 'clientHandler.AllowAutoRedirect = false;\n';
+  }
+  snippet += 'HttpClient client = new HttpClient(clientHandler);\n';
   var isUnSupportedMethod = UNSUPPORTED_METHODS_LIKE_GET.includes(request.method) || UNSUPPORTED_METHODS_LIKE_POST.includes(request.method);
   if (options.requestTimeout > 0) {
     // Postman uses milliseconds as the base unit for request timeout time.
@@ -26,11 +31,6 @@ function makeSnippet (request, options) {
     snippet += 'client.Timeout = Timeout.InfiniteTimeSpan;\n';
   }
 
-  /* TODO: Translate following redirects
-  if (!options.followRedirect) {
-    snippet += 'client.FollowRedirects = false;\n';
-  }
-  */
   snippet += parseRequest.parseHeader(request.toJSON(), options.trimRequestBody);
   // snippet += parseRequest.parseBody(request, options.trimRequestBody);
   if (isUnSupportedMethod) {
