@@ -15,52 +15,52 @@ var _ = require('./lodash'),
 function makeSnippet (request, options) {
   const UNSUPPORTED_METHODS_LIKE_POST = ['LINK', 'UNLINK', 'LOCK', 'PROPFIND'];
   const UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW', 'COPY'];
-  var snippet = 'HttpClientHandler clientHandler = new HttpClientHandler();\n';
+  var snippet = '\t\t\tHttpClientHandler clientHandler = new HttpClientHandler();\n';
   // Check if redirects should be followed or not
   if (!options.followRedirect) {
-    snippet += 'clientHandler.AllowAutoRedirect = false;\n';
+    snippet += '\t\t\tclientHandler.AllowAutoRedirect = false;\n';
   }
-  snippet += 'HttpClient client = new HttpClient(clientHandler);\n';
+  snippet += '\t\t\tHttpClient client = new HttpClient(clientHandler);\n';
   var isUnSupportedMethod = UNSUPPORTED_METHODS_LIKE_GET.includes(request.method) || UNSUPPORTED_METHODS_LIKE_POST.includes(request.method);
   if (options.requestTimeout > 0) {
     // Postman uses milliseconds as the base unit for request timeout time.
-    snippet += `client.Timeout = TimeSpan.FromMilliseconds(${options.requestTimeout});\n`;
+    snippet += `\t\t\tclient.Timeout = TimeSpan.FromMilliseconds(${options.requestTimeout});\n`;
   }
   else if (options.requestTimeout === 0) {
     // A value of 0 as the request timeout in Postman means wait forever.
-    snippet += 'client.Timeout = Timeout.InfiniteTimeSpan;\n';
+    snippet += '\t\t\tclient.Timeout = Timeout.InfiniteTimeSpan;\n';
   }
 
   snippet += parseRequest.parseHeader(request.toJSON(), options.trimRequestBody);
   // snippet += parseRequest.parseBody(request, options.trimRequestBody);
   if (isUnSupportedMethod) {
     (UNSUPPORTED_METHODS_LIKE_GET.includes(request.method)) &&
-            (snippet += `string response = await client.GetStringAsync("${sanitize(request.url.toString())}");\n`);
+            (snippet += `\t\t\tstring response = await client.GetStringAsync("${sanitize(request.url.toString())}");\n`);
     (UNSUPPORTED_METHODS_LIKE_POST.includes(request.method)) &&
-            (snippet += `HttpResponseMessage response = await client.PostAsync("${sanitize(request.url.toString())}, new StringContent("{\\n${parseRequest.parseBody(request, options.trimRequestBody)}\\n}", Encoding.UTF8, "${parseRequest.parseContentType(request)}");\n`);
+            (snippet += `\t\t\tHttpResponseMessage response = await client.PostAsync("${sanitize(request.url.toString())}, new StringContent("{\\n${parseRequest.parseBody(request, options.trimRequestBody)}\\n}", Encoding.UTF8, "${parseRequest.parseContentType(request)}");\n`);
   }
   else {
     // Determine which method call to paste. Each request type has a different method associated with it.
     switch (request.method) {
       case 'GET':
-        snippet += `string response = await client.GetStringAsync("${sanitize(request.url.toString())}");\n`;
+        snippet += `\t\t\tstring response = await client.GetStringAsync("${sanitize(request.url.toString())}");\n`;
         break;
       case 'POST':
-        snippet += `HttpResponseMessage response = await client.PostAsync("${sanitize(request.url.toString())}, new StringContent("{\\n${parseRequest.parseBody(request, options.trimRequestBody)}\\n}", Encoding.UTF8, "${parseRequest.parseContentType(request)}");\n`;
+        snippet += `\t\t\tHttpResponseMessage response = await client.PostAsync("${sanitize(request.url.toString())}, new StringContent("{\\n${parseRequest.parseBody(request, options.trimRequestBody)}\\n}", Encoding.UTF8, "${parseRequest.parseContentType(request)}");\n`;
         break;
       case 'PUT':
-        snippet += `HttpResponseMessage response = await client.PutAsync("${sanitize(request.url.toString())}, new StringContent("{\\n${parseRequest.parseBody(request, options.trimRequestBody)}\\n}", Encoding.UTF8, "${parseRequest.parseContentType(request)}");\n`;
+        snippet += `\t\t\tHttpResponseMessage response = await client.PutAsync("${sanitize(request.url.toString())}, new StringContent("{\\n${parseRequest.parseBody(request, options.trimRequestBody)}\\n}", Encoding.UTF8, "${parseRequest.parseContentType(request)}");\n`;
         break;
       case 'DELETE':
-        snippet += `HttpResponseMessage response = await client.DeleteAsync("${sanitize(request.url.toString())}");\n`;
+        snippet += `\t\t\tHttpResponseMessage response = await client.DeleteAsync("${sanitize(request.url.toString())}");\n`;
         break;
       default:
-        snippet += 'Unsupported Request Type!\n';
+        snippet += '\t\t\tUnsupported Request Type!\n';
         break;
     }
   }
   // If response is an HttpResponseMessage, response is converted to a string. Else, this does nothing.
-  snippet += 'Console.WriteLine(response.ToString());';
+  snippet += '\t\t\tConsole.WriteLine(response.ToString());\n';
 
   return snippet;
 }

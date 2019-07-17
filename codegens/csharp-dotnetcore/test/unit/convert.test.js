@@ -30,7 +30,7 @@ function runSnippet (codeSnippet, collection, done) {
     }
 
     //  bash command string for compiling C#
-    var compile = `mcs -reference:${depedenciesPath}/RestSharp.dll` +
+    var compile = `mcs -reference:${depedenciesPath}/DotNetCore.dll` +
                 ` -out:${depedenciesPath}/main.exe ${depedenciesPath}/main.cs`,
 
       //  bash command stirng for run compiled C# file
@@ -138,13 +138,15 @@ function runSnippet (codeSnippet, collection, done) {
 }
 
 describe('csharp .net core function', function () {
-  describe.skip('convert for different request types', function () {
+  describe('convert for different request types', function () {
     var headerSnippet = 'using System;\n' +
-                            'using System.Net.Http;\n' +
-                            'namespace HelloWorldApplication {\n' +
-                            'class HelloWorld {\n' +
-                            'static void Main(string[] args) {\n',
-      footerSnippet = '}\n}\n}\n';
+                        'using System.Net.Http;\n' +
+                        'using System.Text;\n' +
+                        'using System.Threading.Tasks;\n' +
+                        'namespace HttpRequests {\n' +
+                        '\tclass Program {\n' +
+                        '\t\tstatic async Task Main(string[] args) {\n',
+      footerSnippet = '\t\t}\n\t}\n}\n';
 
     mainCollection.item.forEach(function (item) {
       it(item.name, function (done) {

@@ -104,7 +104,7 @@ function parseHeader (requestJson) {
 
   return requestJson.header.reduce((headerSnippet, header) => {
     if (!header.disabled) {
-      headerSnippet += `request.DefaultRequestHeaders.Add("${sanitize(header.key)}", "${sanitize(header.value)}");\n`;
+      headerSnippet += `\t\t\trequest.DefaultRequestHeaders.Add("${sanitize(header.key)}", "${sanitize(header.value)}");\n`;
     }
     return headerSnippet;
   }, '');
