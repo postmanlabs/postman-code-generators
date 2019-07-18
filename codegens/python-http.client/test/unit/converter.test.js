@@ -133,7 +133,7 @@ describe('Python-http.client converter', function () {
             }
           ]
         };
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 0,
         requestBodyTrim: false,
@@ -175,8 +175,8 @@ describe('Python-http.client converter', function () {
       });
     });
 
-    it('should generate snippet with tab as an indent type', function () {
-      convert(request, { indentType: 'tab', indentCount: 1 }, function (error, snippet) {
+    it('should generate snippet with Tab as an indent type', function () {
+      convert(request, { indentType: 'Tab', indentCount: 1 }, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
           return;

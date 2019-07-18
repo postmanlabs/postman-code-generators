@@ -142,7 +142,7 @@ describe('Ocaml convert function', function () {
           },
           options = {
             indentCount: 1,
-            indentType: 'tab',
+            indentType: 'Tab',
             requestTimeout: 2000,
             followRedirect: true,
             trimRequestBody: false
@@ -180,8 +180,8 @@ describe('Ocaml convert function', function () {
       });
     });
 
-    it('should generate snippet with space as an indent type with exact indent count', function () {
-      convert(request, { indentType: 'space', indentCount: 2 }, function (error, snippet) {
+    it('should generate snippet with Space as an indent type with exact indent count', function () {
+      convert(request, { indentType: 'Space', indentCount: 2 }, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
           return;
@@ -198,7 +198,7 @@ describe('Ocaml convert function', function () {
 
     // By default takes 2 spaces as indentCount and indentType
     it('should generate snippet with default indent count for absent option indentCount', function () {
-      convert(request, { indentType: 'space' }, function (error, snippet) {
+      convert(request, { indentType: 'Space' }, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
           return;

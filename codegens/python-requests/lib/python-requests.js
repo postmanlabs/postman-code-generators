@@ -6,8 +6,8 @@ var _ = require('./lodash'),
 
 /**
  * Used to parse the request headers
- * 
- * @param  {Object} request - postman SDK-request object 
+ *
+ * @param  {Object} request - postman SDK-request object
  * @param  {String} indentation - used for indenting snippet's structure
  * @returns {String} - request headers in the desired format
  */
@@ -28,7 +28,7 @@ function getheaders (request, indentation) {
 self = module.exports = {
   /**
      * Used to return options which are specific to a particular plugin
-     * 
+     *
      * @returns {Array}
      */
   getOptions: function () {
@@ -43,8 +43,8 @@ self = module.exports = {
       name: 'Indent type',
       id: 'indentType',
       type: 'enum',
-      availableOptions: ['tab', 'space'],
-      default: 'space',
+      availableOptions: ['Tab', 'Space'],
+      default: 'Space',
       description: 'Character used for indentation'
     },
     {
@@ -71,13 +71,13 @@ self = module.exports = {
   },
 
   /**
-    * Used to convert the postman sdk-request object to python request snippet 
-    * 
+    * Used to convert the postman sdk-request object to python request snippet
+    *
     * @param  {Object} request - postman SDK-request object
     * @param  {Object} options
-    * @param  {String} options.indentType - type of indentation eg: space / tab (default: space)
-    * @param  {Number} options.indentCount - frequency of indent (default: 4 for indentType: space, 
-                                                                    default: 1 for indentType: tab)
+    * @param  {String} options.indentType - type of indentation eg: Space / Tab (default: Space)
+    * @param  {Number} options.indentCount - frequency of indent (default: 4 for indentType: Space,
+                                                                    default: 1 for indentType: Tab)
     * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
                                                 (default: 0 -> never bail out)
     * @param {Boolean} options.trimRequestBody : whether to trim request body fields (default: false)
@@ -98,7 +98,7 @@ self = module.exports = {
     }
     options = sanitizeOptions(options, self.getOptions());
 
-    identity = options.indentType === 'tab' ? '\t' : ' ';
+    identity = options.indentType === 'Tab' ? '\t' : ' ';
     indentation = identity.repeat(options.indentCount);
     snippet += 'import requests\n\n';
     snippet += `url = "${sanitize(request.url.toString(), 'url')}"\n\n`;

@@ -107,7 +107,7 @@ function makeSnippet (request, indentString, options) {
  *
  * @param {Object} request - postman-SDK request object
  * @param {Object} options
- * @param {String} options.indentType - type for indentation eg: space, tab
+ * @param {String} options.indentType - type for indentation eg: Space, Tab
  * @param {String} options.indentCount - number of spaces or tabs for indentation.
  * @param {Boolean} options.followRedirect - whether to enable followredirect
  * @param {Boolean} options.trimRequestBody - whether to trim fields in request body or not
@@ -132,8 +132,8 @@ self = module.exports = {
       name: 'Indent type',
       id: 'indentType',
       type: 'enum',
-      availableOptions: ['tab', 'space'],
-      default: 'space',
+      availableOptions: ['Tab', 'Space'],
+      default: 'Space',
       description: 'Character used for indentation'
     },
     {
@@ -168,7 +168,7 @@ self = module.exports = {
     //  String representing value of indentation required
     var indentString;
 
-    indentString = options.indentType === 'tab' ? '\t' : ' ';
+    indentString = options.indentType === 'Tab' ? '\t' : ' ';
     indentString = indentString.repeat(options.indentCount);
 
     return callback(null, makeSnippet(request, indentString, options));

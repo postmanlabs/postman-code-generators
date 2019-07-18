@@ -73,8 +73,8 @@ function getOptions () {
       name: 'Indent type',
       id: 'indentType',
       type: 'enum',
-      availableOptions: ['tab', 'space'],
-      default: 'space',
+      availableOptions: ['Tab', 'Space'],
+      default: 'Space',
       description: 'Character used for indentation'
     },
     {
@@ -106,7 +106,7 @@ function getOptions () {
  *
  * @param {Object} request - postman-SDK request object
  * @param {Object} options
- * @param {String} options.indentType - type for indentation eg: space, tab
+ * @param {String} options.indentType - type for indentation eg: Space, Tab
  * @param {String} options.indentCount - number of spaces or tabs for indentation.
  * @param {Boolean} [options.includeBoilerplate] - indicates whether to include class defination in java
  * @param {Boolean} options.followRedirect - whether to enable followredirect
@@ -130,7 +130,7 @@ function convert (request, options, callback) {
     //  code snippet to create request using java unirest
     snippet = '';
 
-  indentString = options.indentType === 'tab' ? '\t' : ' ';
+  indentString = options.indentType === 'Tab' ? '\t' : ' ';
   indentString = indentString.repeat(options.indentCount);
 
   if (options.includeBoilerplate) {

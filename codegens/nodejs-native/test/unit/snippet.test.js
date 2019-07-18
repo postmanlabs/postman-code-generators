@@ -10,7 +10,7 @@ var expect = require('chai').expect,
 
 /**
  * compiles and runs codesnippet then compare it with newman output
- * 
+ *
  * @param {String} codeSnippet - code snippet that needed to run using java
  * @param {Object} collection - collection which will be run using newman
  * @param {Function} done - callback for async call from mocha
@@ -129,7 +129,7 @@ describe('nodejs-native convert function', function () {
             }
           ]
         };
-      convert(request, {indentCount: 2, indentType: 'space'}, function (error, snippet) {
+      convert(request, {indentCount: 2, indentType: 'Space'}, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
           return;

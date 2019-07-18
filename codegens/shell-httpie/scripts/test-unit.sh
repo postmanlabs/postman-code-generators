@@ -37,7 +37,7 @@ fi
 [ -d .coverage ] && rm -rf .coverage && mkdir .coverage;
 
 # run test
-node --max-old-space-size=2048 ../../node_modules/.bin/istanbul cover ${ISTANBUL_REPORT} \
+node --max-old-Space-size=2048 ../../node_modules/.bin/istanbul cover ${ISTANBUL_REPORT} \
   --dir ./.coverage --print both _mocha -- \
   --timeout 5000 --reporter ${MOCHA_REPORTER} --reporter-options output=${XUNIT_FILE} \
   test/unit/*.test.js --recursive --prof --grep "$1";

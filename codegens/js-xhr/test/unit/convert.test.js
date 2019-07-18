@@ -129,7 +129,7 @@ describe('js-xhr convert function', function () {
           },
           options = {
             indentCount: 3,
-            indentType: 'space',
+            indentType: 'Space',
             trimRequestBody: true,
             requestTimeout: 3000
           };
@@ -218,7 +218,7 @@ describe('js-xhr convert function', function () {
       request = new sdk.Request(req),
       options = {
         indentCount: 2,
-        indentType: 'space',
+        indentType: 'Space',
         trimRequestBody: false,
         requestTimeout: 3000
       };
@@ -250,8 +250,8 @@ describe('js-xhr convert function', function () {
     it('should have 2 as default indent count ', function () {
       expect(options[0].default).to.equal(2);
     });
-    it('should have space as default indent type ', function () {
-      expect(options[1].default).to.equal('space');
+    it('should have Space as default indent type ', function () {
+      expect(options[1].default).to.equal('Space');
     });
     it('should have 0 as default request timeout ', function () {
       expect(options[2].default).to.equal(0);

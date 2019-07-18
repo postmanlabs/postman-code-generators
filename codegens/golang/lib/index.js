@@ -137,7 +137,7 @@ self = module.exports = {
       responseSnippet = '',
       headerSnippet = '';
 
-    indent = options.indentType === 'tab' ? '\t' : ' ';
+    indent = options.indentType === 'Tab' ? '\t' : ' ';
     indent = indent.repeat(options.indentCount);
     timeout = options.requestTimeout;
     followRedirect = options.followRedirect;
@@ -218,8 +218,8 @@ self = module.exports = {
       name: 'Indent type',
       id: 'indentType',
       type: 'enum',
-      availableOptions: ['tab', 'space'],
-      default: 'space',
+      availableOptions: ['Tab', 'Space'],
+      default: 'Space',
       description: 'Character used for indentation'
     },
     {

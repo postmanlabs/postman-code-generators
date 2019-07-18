@@ -14,7 +14,7 @@ Convert function takes three parameters
 * `request` - Postman-SDK Request Object
 
 * `options` - options is an object which hsa following properties
-    * `indentType` - String denoting type of indentation for code snippet. eg: 'space', 'tab'
+    * `indentType` - String denoting type of indentation for code snippet. eg: 'Space', 'Tab'
     * `indentCount` - Number of indentation characters to add per code level
     * `trimRequestBody` - Trim request body fields
     * `requestTimeout` - Integer denoting time after which the request will bail out in milli-seconds
@@ -26,7 +26,7 @@ Convert function takes three parameters
 var request = new sdk.Request('www.google.com'),  //using postman sdk to create request  
     options = {
         indentCount: 3,
-        indentType: 'space',
+        indentType: 'Space',
         requestTimeout: 200,
         trimRequestBody: true
     };
