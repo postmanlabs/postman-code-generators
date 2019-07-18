@@ -76,14 +76,14 @@ function parseBody (request, trimFields) {
   if (!_.isEmpty(requestBody)) {
     switch (requestBody.mode) {
       case 'urlencoded':
-        return parseFormData(requestBody, requestUrl, trimFields);
+        return `"{\\n${parseFormData(requestBody, requestUrl, trimFields)}\\n}"`;
       case 'formdata':
-        return parseFormData(requestBody, requestUrl, trimFields);
+        return `"{\\n${parseFormData(requestBody, requestUrl, trimFields)}\\n}"`;
       case 'raw':
-        return `${JSON.stringify(requestBody[requestBody.mode])}\\n`;
+        return `${JSON.stringify(requestBody[requestBody.mode])}`;
         /* istanbul ignore next */
       case 'file':
-        return `${JSON.stringify(requestBody[requestBody.mode].src, trimFields)}"\\n`;
+        return `${JSON.stringify(requestBody[requestBody.mode].src, trimFields)}`;
       default:
         return '';
     }
@@ -104,7 +104,13 @@ function parseHeader (requestJson) {
 
   return requestJson.header.reduce((headerSnippet, header) => {
     if (!header.disabled) {
-      headerSnippet += `\t\t\tclient.DefaultRequestHeaders.Add("${sanitize(header.key)}", "${sanitize(header.value)}");\n`;
+      if (sanitize(header.key) === 'Content-Type') {
+
+      }
+      else {
+        headerSnippet += `\t\t\tclient.DefaultRequestHeaders.Add("${sanitize(header.key)}", "${sanitize(header.value)}");\n`;
+      }
+      // headerSnippet += `\t\t\tclient.DefaultRequestHeaders.Add("${sanitize(header.key)}", "${sanitize(header.value)}");\n`;
     }
     return headerSnippet;
   }, '');

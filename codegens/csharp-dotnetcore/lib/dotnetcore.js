@@ -14,7 +14,7 @@ var _ = require('./lodash'),
  */
 function makeSnippet (request, options) {
   const UNSUPPORTED_METHODS_LIKE_POST = ['LINK', 'UNLINK', 'LOCK', 'PROPFIND'];
-  const UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW', 'COPY'];
+  const UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW', 'COPY', 'HEAD', 'OPTIONS'];
   var snippet = '\t\t\tHttpClientHandler clientHandler = new HttpClientHandler();\n';
   // Check if redirects should be followed or not
   if (!options.followRedirect) {
@@ -37,7 +37,7 @@ function makeSnippet (request, options) {
     (UNSUPPORTED_METHODS_LIKE_GET.includes(request.method)) &&
             (snippet += `\t\t\tstring response = await client.GetStringAsync("${sanitize(request.url.toString())}");\n`);
     (UNSUPPORTED_METHODS_LIKE_POST.includes(request.method)) &&
-            (snippet += `\t\t\tHttpResponseMessage response = await client.PostAsync("${sanitize(request.url.toString())}, new StringContent("{\\n${parseRequest.parseBody(request, options.trimRequestBody)}\\n}", Encoding.UTF8, "${parseRequest.parseContentType(request)}");\n`);
+            (snippet += `\t\t\tHttpResponseMessage response = await client.PostAsync("${sanitize(request.url.toString())}", new StringContent(${parseRequest.parseBody(request, options.trimRequestBody)}, Encoding.UTF8, "${parseRequest.parseContentType(request)}"));\n`);
   }
   else {
     // Determine which method call to paste. Each request type has a different method associated with it.
@@ -46,16 +46,19 @@ function makeSnippet (request, options) {
         snippet += `\t\t\tstring response = await client.GetStringAsync("${sanitize(request.url.toString())}");\n`;
         break;
       case 'POST':
-        snippet += `\t\t\tHttpResponseMessage response = await client.PostAsync("${sanitize(request.url.toString())}, new StringContent("{\\n${parseRequest.parseBody(request, options.trimRequestBody)}\\n}", Encoding.UTF8, "${parseRequest.parseContentType(request)}");\n`;
+        snippet += `\t\t\tHttpResponseMessage response = await client.PostAsync("${sanitize(request.url.toString())}", new StringContent(${parseRequest.parseBody(request, options.trimRequestBody)}, Encoding.UTF8, "${parseRequest.parseContentType(request)}"));\n`;
         break;
       case 'PUT':
-        snippet += `\t\t\tHttpResponseMessage response = await client.PutAsync("${sanitize(request.url.toString())}, new StringContent("{\\n${parseRequest.parseBody(request, options.trimRequestBody)}\\n}", Encoding.UTF8, "${parseRequest.parseContentType(request)}");\n`;
+        snippet += `\t\t\tHttpResponseMessage response = await client.PutAsync("${sanitize(request.url.toString())}", new StringContent(${parseRequest.parseBody(request, options.trimRequestBody)}, Encoding.UTF8, "${parseRequest.parseContentType(request)}"));\n`;
         break;
       case 'DELETE':
         snippet += `\t\t\tHttpResponseMessage response = await client.DeleteAsync("${sanitize(request.url.toString())}");\n`;
         break;
+      case 'PATCH':
+        snippet += `\t\t\tHttpResponseMessage response = await client.PatchAsync("${sanitize(request.url.toString())}", new StringContent(${parseRequest.parseBody(request, options.trimRequestBody)}, Encoding.UTF8, "${parseRequest.parseContentType(request)}"));\n`;
+        break;
       default:
-        snippet += '\t\t\tUnsupported Request Type!\n';
+        snippet += `\t\t\tUnsupported Request Type! ${request.method} Requests Are Not Supported!\n`;
         break;
     }
   }

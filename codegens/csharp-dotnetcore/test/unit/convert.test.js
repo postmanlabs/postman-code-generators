@@ -30,11 +30,11 @@ function runSnippet (codeSnippet, collection, done) {
     }
 
     //  bash command string for compiling C#
-    var compile = `"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\Roslyn\\csc.exe" -reference:${depedenciesPath}/System.Net.Http.dll -reference:${depedenciesPath}/System.Runtime.dll -reference:${depedenciesPath}/mscorlib.dll -reference:${depedenciesPath}/System.Private.CoreLib.dll -reference:${depedenciesPath}/System.Private.Uri.dll -reference:${depedenciesPath}/System.Console.dll -reference:${depedenciesPath}/System.Threading.Tasks.dll -out:${depedenciesPath}/main.exe ${depedenciesPath}/main.cs`,
+    var compile = `"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\Roslyn\\csc.exe" -reference:${depedenciesPath}/System.Net.Http.dll -reference:${depedenciesPath}/System.Runtime.dll -reference:${depedenciesPath}/mscorlib.dll -reference:${depedenciesPath}/System.Private.CoreLib.dll -reference:${depedenciesPath}/System.Private.Uri.dll -reference:${depedenciesPath}/System.Console.dll -reference:${depedenciesPath}/System.Threading.Tasks.dll -out:${depedenciesPath}/main.exe ${depedenciesPath}/main.cs`;
     // Old: var compile = '"C:\\Program Files\\Mono\\bin\\mcs" -reference:${depedenciesPath}/System.Net.Http.dll -out:${depedenciesPath}/main.exe ${depedenciesPath}/main.cs'
 
     //  bash command stirng for run compiled C# file
-    run = `"C:\\Program Files\\Mono\\bin\\mono.exe"  ${depedenciesPath}/main.exe`;
+    var run = `"C:\\Program Files\\Mono\\bin\\mono.exe"  ${depedenciesPath}/main.exe`;
     // Old: run = `mono  ${depedenciesPath}/main.exe`;
 
     //  step by step process for compile, run code snippet, then comparing its output with newman
@@ -152,7 +152,7 @@ describe('csharp .net core function', function () {
 
     mainCollection.item.forEach(function (item) {
       it(item.name, function (done) {
-        var request = new sdk.Request(mainCollection.item[0].request),
+        var request = new sdk.Request(mainCollection.item[22].request),
           collection = {
             item: [
               {
