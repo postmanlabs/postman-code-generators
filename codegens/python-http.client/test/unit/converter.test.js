@@ -223,6 +223,40 @@ describe('Python-http.client converter', function () {
       });
     });
 
+    it('should generate snippet with correct indent when body mode is formdata', function () {
+      var request = new sdk.Request({
+        'method': 'GET',
+        'header': [
+          {
+            'key': 'my-sample-header',
+            'value': 'Lorem ipsum dolor sit amet'
+          }
+        ],
+        'body': {
+          'mode': 'formdata',
+          'formdata': []
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/headers',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'headers'
+          ]
+        }
+      });
+      convert(request, { indentType: 'space', indentCount: 2}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('  \'Content-type\': \'multipart/form-data; boundary={}\'.format(boundary)');
+      });
+    });
+
   });
 
   describe('parseBody function', function () {
