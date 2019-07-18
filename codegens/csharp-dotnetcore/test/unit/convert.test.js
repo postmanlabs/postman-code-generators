@@ -30,11 +30,12 @@ function runSnippet (codeSnippet, collection, done) {
     }
 
     //  bash command string for compiling C#
-    var compile = `mcs -reference:${depedenciesPath}/DotNetCore.dll` +
-                ` -out:${depedenciesPath}/main.exe ${depedenciesPath}/main.cs`,
+    var compile = `"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\Roslyn\\csc.exe" -reference:${depedenciesPath}/System.Net.Http.dll -out:${depedenciesPath}/main.exe ${depedenciesPath}/main.cs`,
+    // Old: var compile = '"C:\\Program Files\\Mono\\bin\\mcs" -reference:${depedenciesPath}/System.Net.Http.dll -out:${depedenciesPath}/main.exe ${depedenciesPath}/main.cs'
 
-      //  bash command stirng for run compiled C# file
-      run = `mono  ${depedenciesPath}/main.exe`;
+    //  bash command stirng for run compiled C# file
+    run = `${depedenciesPath}/main.exe`;
+    // Old: run = `mono  ${depedenciesPath}/main.exe`;
 
     //  step by step process for compile, run code snippet, then comparing its output with newman
     parallel([
@@ -137,6 +138,7 @@ function runSnippet (codeSnippet, collection, done) {
   });
 }
 
+// To disable tests, add .skip after the describe or it keywords.
 describe('csharp .net core function', function () {
   describe('convert for different request types', function () {
     var headerSnippet = 'using System;\n' +

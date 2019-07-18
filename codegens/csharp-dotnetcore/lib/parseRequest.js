@@ -19,7 +19,7 @@ function parseFormData (requestBody, trimFields) {
       return body;
     }
     if (data.type === 'file') {
-      body += `request.AddFile("${sanitize(data.key, trimFields)}", "${sanitize(data.src, trimFields)}");\n`;
+      body += `\\"key\\": \\"${sanitize(data.key, trimFields)}\\",\\n\\"value\\": \\"${sanitize(data.src, trimFields)}\\",\\n`;
     }
     else {
       (!data.value) && (data.value = '');
@@ -83,7 +83,7 @@ function parseBody (request, trimFields) {
         return `${JSON.stringify(requestBody[requestBody.mode])}\\n`;
         /* istanbul ignore next */
       case 'file':
-        return `request.AddFile("file", "${sanitize(requestBody[requestBody.mode].src, trimFields)}");\n`;
+        return `${JSON.stringify(requestBody[requestBody.mode].src, trimFields)}"\\n`;
       default:
         return '';
     }
