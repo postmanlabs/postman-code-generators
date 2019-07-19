@@ -34,25 +34,6 @@ function parseFormData (requestBody, trimFields) {
 }
 
 /**
- * 
- * 
- * @param {String} requestUrl 
- * @param {Boolean} trimFields 
- */
-/* function addParameter(requestUrl, trimFields) {
-  if (requestUrl.contains('?')) {
-    requestUrl += `?${sanitize(data.key, trimFields)}=` +
-    `${sanitize(data.value, trimFields)}`;
-  }
-  else {
-    requestUrl += `&${sanitize(data.key, trimFields)}=` +
-    `${sanitize(data.value, trimFields)}`;
-  }
-  
-  return requestUrl;
-} */
-
-/**
  * Returns content-type of request body if available else returns text/plain as default
  *
  * @param {Object} request - Postman SDK request object
@@ -61,7 +42,6 @@ function parseFormData (requestBody, trimFields) {
 function parseContentType (request) {
   return request.getHeaders({enabled: true, ignoreCase: true})['content-type'] || 'text/plain';
 }
-
 
 /**
  * Parses request object and returns csharp-dotnetcore code snippet for adding request body
@@ -104,13 +84,13 @@ function parseHeader (requestJson) {
 
   return requestJson.header.reduce((headerSnippet, header) => {
     if (!header.disabled) {
+      // Content type headers are already added to the method that send the request.
       if (sanitize(header.key) === 'Content-Type') {
 
       }
       else {
         headerSnippet += `\t\t\tclient.DefaultRequestHeaders.Add("${sanitize(header.key)}", "${sanitize(header.value)}");\n`;
       }
-      // headerSnippet += `\t\t\tclient.DefaultRequestHeaders.Add("${sanitize(header.key)}", "${sanitize(header.value)}");\n`;
     }
     return headerSnippet;
   }, '');

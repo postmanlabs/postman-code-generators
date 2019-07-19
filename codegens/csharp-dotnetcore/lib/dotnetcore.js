@@ -58,7 +58,7 @@ function makeSnippet (request, options) {
         snippet += `\t\t\tHttpResponseMessage response = await client.PatchAsync("${sanitize(request.url.toString())}", new StringContent(${parseRequest.parseBody(request, options.trimRequestBody)}, Encoding.UTF8, "${parseRequest.parseContentType(request)}"));\n`;
         break;
       default:
-        snippet += `\t\t\tUnsupported Request Type! ${request.method} Requests Are Not Supported!\n`;
+        snippet += `\t\t\tConsole.WriteLine("Unsupported Request Type! ${request.method} Requests Are Not Supported!");\n`;
         break;
     }
   }
@@ -165,10 +165,15 @@ self = module.exports = {
 
     if (options.includeBoilerplate) {
       headerSnippet = 'using System;\n' +
-                            'using System.Net.Http;\n' +
-                            'namespace HelloWorldApplication {\n' +
-                            indentString + 'class HelloWorld {\n' +
-                            indentString.repeat(2) + 'static void Main(string[] args) {\n';
+                      'using System.Net.Http;\n' +
+                      'using System.Text;\n' +
+                      'using System.Threading.Tasks;\n' +
+                      'namespace HttpRequests {\n' +
+                      indentString + 'class Program {\n' +
+                      indentString.repeat(2) + 'static void Main(string[] args) {\n' +
+                      indentString.repeat(3) + 'Request().Wait();\n' +
+                      indentString.repeat(2) + '}\n' +
+                      indentString.repeat(2) + 'static async Task Request() {\n';
       footerSnippet = indentString.repeat(2) + '}\n' + indentString + '}\n}\n';
     }
 

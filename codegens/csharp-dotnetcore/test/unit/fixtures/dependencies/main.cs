@@ -11,9 +11,7 @@ namespace HttpRequests {
 			HttpClientHandler clientHandler = new HttpClientHandler();
 			HttpClient client = new HttpClient(clientHandler);
 			client.Timeout = TimeSpan.FromMilliseconds(5000);
-			client.DefaultRequestHeaders.Add("my-sample-header", "'Lorem ipsum dolor sit amet'");
-			client.DefaultRequestHeaders.Add("not-disabled-header", "'ENABLED'");
-			string response = await client.GetStringAsync("https://postman-echo.com/headers");
+			string response = await client.GetStringAsync("https://704c30e8-77fe-4dc4-93e2-9c9c68dfb4e1.mock.pstmn.io/copy");
 			Console.WriteLine(response.ToString());
 		}
 	}
