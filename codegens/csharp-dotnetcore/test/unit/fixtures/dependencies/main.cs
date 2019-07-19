@@ -11,7 +11,9 @@ namespace HttpRequests {
 			HttpClientHandler clientHandler = new HttpClientHandler();
 			HttpClient client = new HttpClient(clientHandler);
 			client.Timeout = TimeSpan.FromMilliseconds(5000);
-			HttpResponseMessage response = await client.PostAsync("https://postman-echo.com/post", new StringContent("{\n  \"json\": \"Test-Test\"\n}", Encoding.UTF8, "application/json"));
+			client.DefaultRequestHeaders.Add("my-sample-header", "'Lorem ipsum dolor sit amet'");
+			client.DefaultRequestHeaders.Add("not-disabled-header", "'ENABLED'");
+			string response = await client.GetStringAsync("https://postman-echo.com/headers");
 			Console.WriteLine(response.ToString());
 		}
 	}

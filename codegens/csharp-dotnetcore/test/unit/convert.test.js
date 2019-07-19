@@ -31,10 +31,10 @@ function runSnippet (codeSnippet, collection, done) {
 
     //  bash command string for compiling C#
     // var compile = `"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\Roslyn\\csc.exe" -langversion:7.1 -reference:${depedenciesPath}/System.Net.Http.dll -reference:${depedenciesPath}/System.Runtime.dll -reference:${depedenciesPath}/mscorlib.dll -reference:${depedenciesPath}/System.Private.CoreLib.dll -reference:${depedenciesPath}/System.Private.Uri.dll -reference:${depedenciesPath}/System.Console.dll -reference:${depedenciesPath}/System.Threading.Tasks.dll -out:${depedenciesPath}/main.exe ${depedenciesPath}/main.cs`;
-    var compile = `mcs -reference:${depedenciesPath}/System.Net.Http.dll -reference:${depedenciesPath}/System.Runtime.dll -reference:${depedenciesPath}/mscorlib.dll -reference:${depedenciesPath}/System.Private.CoreLib.dll -reference:${depedenciesPath}/System.Private.Uri.dll -reference:${depedenciesPath}/System.Console.dll -reference:${depedenciesPath}/System.Threading.Tasks.dll -out:${depedenciesPath}/main.exe ${depedenciesPath}/main.cs`;
+    var compile = `mcs -reference:${depedenciesPath}/System.Net.Http.dll -reference:${depedenciesPath}/System.Runtime.dll -reference:${depedenciesPath}/mscorlib.dll -reference:${depedenciesPath}/System.Console.dll -reference:${depedenciesPath}/System.Threading.Tasks.dll -out:${depedenciesPath}/main.exe ${depedenciesPath}/main.cs`;
 
-    //  bash command stirng for run compiled C# file
-    var run = `mono  ${depedenciesPath}/main.exe`;
+    //  bash command string for run compiled C# file
+    var run = `mono ${depedenciesPath}/main.exe`;
     // Old: run = `mono  ${depedenciesPath}/main.exe`;
 
     //  step by step process for compile, run code snippet, then comparing its output with newman
