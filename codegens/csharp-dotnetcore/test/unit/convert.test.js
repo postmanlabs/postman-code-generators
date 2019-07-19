@@ -147,7 +147,11 @@ describe('csharp .net core function', function () {
                         'using System.Threading.Tasks;\n' +
                         'namespace HttpRequests {\n' +
                         '\tclass Program {\n' +
-                        '\t\tstatic async Task Main(string[] args) {\n',
+                        '\t\tstatic void Main(string[] args) {\n' +
+                        '\t\t\tRequest().Wait();\n' +
+                        '\t\t}\n' +
+                        '\t\tstatic async Task Request() {\n',
+
       footerSnippet = '\t\t}\n\t}\n}\n';
 
     mainCollection.item.forEach(function (item) {
