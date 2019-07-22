@@ -19,17 +19,17 @@ function parseFormData (requestBody, trimFields) {
       return body;
     }
     if (data.type === 'file') {
-      body += `"${sanitize(data.key, trimFields)}": "${sanitize(data.src, trimFields)}"\\n`;
+      body += `\\"${sanitize(data.key, trimFields)}": \\"${sanitize(data.src, trimFields)}"\\n`;
     }
     else {
       (!data.value) && (data.value = '');
-      body += `"${sanitize(data.key, trimFields)}": "${sanitize(data.value, trimFields)}"\\n`;
+      body += `\\"${sanitize(data.key, trimFields)}\\": \\"${sanitize(data.value, trimFields)}\\"\\n`;
     }
 
     return body;
   }, '');
 
-  newBody = newBody.substring(0, newBody.length - 3); // Trim the last comma and newline escape character off.
+  newBody = newBody.substring(2, newBody.length - 4); // Trim the extra quote off the beginning and extra quote and special characters off the end.
   return newBody;
 }
 
@@ -56,9 +56,9 @@ function parseBody (request, trimFields) {
   if (!_.isEmpty(requestBody)) {
     switch (requestBody.mode) {
       case 'urlencoded':
-        return `\t\t\trequest.Content = new StringContent("{\\n${parseFormData(requestBody, requestUrl, trimFields)}\\n}", Encoding.UTF8, "${parseContentType(request)}");\n`;
+        return `\t\t\trequest.Content = new StringContent("${parseFormData(requestBody, requestUrl, trimFields)}", Encoding.UTF8, "${parseContentType(request)}");\n`;
       case 'formdata':
-        return `\t\t\trequest.Content = new StringContent("{\\n${parseFormData(requestBody, requestUrl, trimFields)}\\n}", Encoding.UTF8, "${parseContentType(request)}");\n`;
+        return `\t\t\trequest.Content = new StringContent("${parseFormData(requestBody, requestUrl, trimFields)}", Encoding.UTF8, "${parseContentType(request)}");\n`;
       case 'raw':
         return `\t\t\trequest.Content = new StringContent(${JSON.stringify(requestBody[requestBody.mode])}, Encoding.UTF8, "${parseContentType(request)}");\n`;
         /* istanbul ignore next */
