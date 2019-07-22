@@ -127,7 +127,7 @@ describe('Shell-Httpie convert function', function () {
             },
             options = {
               indentCount: 3,
-              indentType: 'space',
+              indentType: 'Space',
               multiLine: true,
               followRedirect: true,
               longFormat: true

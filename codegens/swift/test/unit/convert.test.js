@@ -126,7 +126,7 @@ describe('Swift Converter', function () {
           },
           options = {
             indentCount: 1,
-            indentType: 'tab',
+            indentType: 'Tab',
             requestTimeout: 2000,
             followRedirect: true,
             trimRequestBody: false
@@ -163,8 +163,8 @@ describe('Swift Converter', function () {
       });
     });
 
-    it('should generate snippet with space as an indent type with default indent count', function () {
-      convert(request, { indentType: 'space' }, function (error, snippet) {
+    it('should generate snippet with Space as an indent type with default indent count', function () {
+      convert(request, { indentType: 'Space' }, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
           return;

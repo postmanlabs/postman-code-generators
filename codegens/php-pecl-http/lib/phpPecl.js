@@ -43,8 +43,8 @@ self = module.exports = {
         name: 'Indent type',
         id: 'indentType',
         type: 'enum',
-        default: 'space',
-        availableOptions: ['tab', 'space'],
+        default: 'Space',
+        availableOptions: ['Tab', 'Space'],
         description: 'Character used for indentation'
       },
       {
@@ -74,9 +74,9 @@ self = module.exports = {
   /**
      * @param  {Object} request - postman SDK-request object
      * @param  {Object} options
-     * @param  {String} options.indentType - type of indentation eg: spaces/tab (default: space)
-     * @param  {String} options.indentCount - frequency of indent (default: 4 for indentType: space,
-     *                                                               default: 2 for indentType: tab)
+     * @param  {String} options.indentType - type of indentation eg: spaces/Tab (default: Space)
+     * @param  {String} options.indentCount - frequency of indent (default: 4 for indentType: Space,
+     *                                                               default: 2 for indentType: Tab)
      * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
                                                 (default: 0 -> never bail out)
      * @param {Boolean} options.trimRequestBody : whether to trim request body fields (default: false)
@@ -96,7 +96,7 @@ self = module.exports = {
     }
     options = sanitizeOptions(options, self.getOptions());
 
-    identity = options.indentType === 'tab' ? '\t' : ' ';
+    identity = options.indentType === 'Tab' ? '\t' : ' ';
     indentation = identity.repeat(options.indentCount);
 
     snippet = '<?php\n';

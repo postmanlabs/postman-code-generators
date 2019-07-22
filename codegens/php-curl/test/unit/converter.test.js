@@ -32,7 +32,7 @@ const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'client
 
 /**
  * Executes codesnippet and compares output with newman response
- * 
+ *
  * @param {String} codeSnippet - code snippet from convert function
  * @param {Object} collection - sample collection
  * @param {Function} done - callback for async calls
@@ -131,7 +131,7 @@ describe('Curl converter', function () {
             }
           ]
         };
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 100,
         trimRequestBody: false,

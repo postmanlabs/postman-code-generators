@@ -26,7 +26,7 @@ describe('jQuery converter', function () {
   mainCollection.item.forEach(function (item) {
     it(item.name, function (done) {
       var request = new sdk.Request(item.request);
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 100,
         trimRequestBody: false,
@@ -55,7 +55,7 @@ describe('jQuery converter', function () {
         }
       }),
       options = {
-        indentType: 'space',
+        indentType: 'Space',
         indentCount: 4,
         requestTimeout: 100,
         trimRequestBody: false,

@@ -28,7 +28,7 @@ self = module.exports = {
       snippet += ` ${form('-m', format)} ${timeout}`;
     }
     if (multiLine) {
-      indent = options.indentType === 'tab' ? '\t' : ' ';
+      indent = options.indentType === 'Tab' ? '\t' : ' ';
       indent = ' ' + options.lineContinuationCharacter + '\n' + indent.repeat(options.indentCount); // eslint-disable-line max-len
     }
     else {

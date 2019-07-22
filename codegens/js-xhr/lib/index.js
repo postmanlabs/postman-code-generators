@@ -127,8 +127,8 @@ function getOptions () {
       name: 'Indent type',
       id: 'indentType',
       type: 'enum',
-      availableOptions: ['tab', 'space'],
-      default: 'space',
+      availableOptions: ['Tab', 'Space'],
+      default: 'Space',
       description: 'Character used for indentation'
     },
     {
@@ -152,7 +152,7 @@ function getOptions () {
  * @description Converts Postman sdk request object to nodejs(unirest) code snippet
  * @param {Object} request - postman-SDK request object
  * @param {Object} options
- * @param {String} options.indentType - type for indentation eg: space, tab
+ * @param {String} options.indentType - type for indentation eg: Space, Tab
  * @param {String} options.indentCount - number of spaces or tabs for indentation.
  * @param {Boolean} options.trimRequestBody - whether to trim fields in request body or not
  * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
@@ -167,7 +167,7 @@ function convert (request, options, callback) {
   var indent, trim, headerSnippet,
     codeSnippet = '',
     bodySnippet = '';
-  indent = options.indentType === 'tab' ? '\t' : ' ';
+  indent = options.indentType === 'Tab' ? '\t' : ' ';
   indent = indent.repeat(options.indentCount);
   trim = options.trimRequestBody;
 

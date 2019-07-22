@@ -16,7 +16,7 @@ describe('Request Snippet', function () {
         request = collection.items.members[0].request,
         outputSnippet;
 
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 0,
         trimRequestBody: false,
@@ -47,7 +47,7 @@ describe('Request Snippet', function () {
         request = collection.items.members[1].request,
         outputSnippet;
 
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 10,
         trimRequestBody: false,
@@ -80,7 +80,7 @@ describe('Request Snippet', function () {
         request = collection.items.members[2].request,
         outputSnippet;
 
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 0,
         trimRequestBody: false,
@@ -111,7 +111,7 @@ describe('Request Snippet', function () {
         request = collection.items.members[3].request,
         outputSnippet;
 
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 0,
         trimRequestBody: false,
@@ -140,7 +140,7 @@ describe('Request Snippet', function () {
         request = collection.items.members[4].request,
         outputSnippet;
 
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 0,
         trimRequestBody: true,
@@ -175,7 +175,7 @@ describe('Request Snippet', function () {
         request = collection.items.members[5].request,
         outputSnippet;
 
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 0,
         trimRequestBody: false,
@@ -205,7 +205,7 @@ describe('Request Snippet', function () {
         request = collection.items.members[6].request,
         outputSnippet;
 
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 0,
         trimRequestBody: false,
@@ -240,7 +240,7 @@ describe('Request Snippet', function () {
         request = collection.items.members[7].request,
         outputSnippet;
 
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 0,
         trimRequestBody: false,
@@ -274,7 +274,7 @@ describe('Request Snippet', function () {
         request = collection.items.members[8].request,
         outputSnippet;
 
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 0,
         trimRequestBody: false,
@@ -306,7 +306,7 @@ describe('Request Snippet', function () {
         request = collection.items.members[9].request,
         outputSnippet;
 
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 0,
         trimRequestBody: false,
@@ -338,7 +338,7 @@ describe('Request Snippet', function () {
         request = collection.items.members[10].request,
         outputSnippet;
 
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 0,
         trimRequestBody: false,
@@ -370,7 +370,7 @@ describe('Request Snippet', function () {
         request = collection.items.members[11].request,
         outputSnippet;
 
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 0,
         trimRequestBody: false,
@@ -401,7 +401,7 @@ describe('Request Snippet', function () {
           fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
         request = collection.items.members[25].request,
         outputSnippet;
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 0,
         trimRequestBody: false,
@@ -436,7 +436,7 @@ describe('Request Snippet', function () {
           fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
         request = collection.items.members[26].request,
         outputSnippet;
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 0,
         trimRequestBody: false,
@@ -521,7 +521,7 @@ describe('Request Snippet', function () {
           ]
         }
       };
-      expect(parseBody(request, {indentType: 'space', indentCount: 4}, true)).to.be.equal('');
+      expect(parseBody(request, {indentType: 'Space', indentCount: 4}, true)).to.be.equal('');
       done();
     });
 
@@ -542,7 +542,7 @@ describe('Request Snippet', function () {
           ]
         }
       };
-      expect(parseBody(request, {indentType: 'space', indentCount: 4}, true)).to.be.equal('');
+      expect(parseBody(request, {indentType: 'Space', indentCount: 4}, true)).to.be.equal('');
       done();
     });
 
@@ -565,7 +565,7 @@ describe('Request Snippet', function () {
           ]
         }
       };
-      expect(parseBody(request, {indentType: 'space', indentCount: 4}, true)).to.be.equal('');
+      expect(parseBody(request, {indentType: 'Space', indentCount: 4}, true)).to.be.equal('');
       done();
     });
 
@@ -585,7 +585,7 @@ describe('Request Snippet', function () {
           ]
         }
       };
-      expect(parseBody(request, {indentType: 'space', indentCount: 4}, true)).to.be.equal('');
+      expect(parseBody(request, {indentType: 'Space', indentCount: 4}, true)).to.be.equal('');
       done();
     });
   });
@@ -598,8 +598,8 @@ describe('Request Snippet', function () {
     it('should have 2 as default indent count ', function () {
       expect(options[0].default).to.equal(2);
     });
-    it('should have space as default indent type ', function () {
-      expect(options[1].default).to.equal('space');
+    it('should have Space as default indent type ', function () {
+      expect(options[1].default).to.equal('Space');
     });
     it('should have 0 as default request timeout ', function () {
       expect(options[2].default).to.equal(0);

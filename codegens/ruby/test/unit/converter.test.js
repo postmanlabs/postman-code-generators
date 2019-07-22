@@ -133,7 +133,7 @@ describe('Ruby converter', function () {
             }
           ]
         };
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 1000,
         trimRequestBody: false,

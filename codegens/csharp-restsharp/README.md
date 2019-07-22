@@ -26,7 +26,7 @@ Convert function will take three parameters
 ```js
 var request = new sdk.Request('www.google.com'),  //using postman sdk to create request  
     options = {
-        indentType: 'space',
+        indentType: 'Space',
         indentCount: 2,
         includeBoilerplate: false
     };

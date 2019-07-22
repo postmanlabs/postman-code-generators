@@ -136,8 +136,8 @@ function getOptions () {
       name: 'Indent type',
       id: 'indentType',
       type: 'enum',
-      availableOptions: ['tab', 'space'],
-      default: 'space',
+      availableOptions: ['Tab', 'Space'],
+      default: 'Space',
       description: 'Character used for indentation'
     },
     {
@@ -169,7 +169,7 @@ function getOptions () {
  *
  * @param {Object} request - postman-SDK request object
  * @param {Object} options
- * @param {String} options.indentType - type for indentation eg: space, tab
+ * @param {String} options.indentType - type for indentation eg: Space, Tab
  * @param {String} options.indentCount - number of spaces or tabs for indentation.
  * @param {Boolean} options.followRedirect - whether to enable followredirect
  * @param {Boolean} options.trimRequestBody - whether to trim fields in request body or not
@@ -182,7 +182,7 @@ function convert (request, options, callback) {
   }
   options = sanitizeOptions(options, getOptions());
 
-  var indent = options.indentType === 'tab' ? '\t' : ' ',
+  var indent = options.indentType === 'Tab' ? '\t' : ' ',
     trim = options.trimRequestBody,
     headers, body,
     codeSnippet = '',

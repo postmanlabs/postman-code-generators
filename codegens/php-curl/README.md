@@ -30,9 +30,9 @@ It requires 3 mandatory parameters `request`, `callback` and `options`
 
 * `options` is an object with the following properties
 
-    * `indentType` : can be `tab` or `space` (default: 'space')
+    * `indentType` : can be `Tab` or `Space` (default: 'Space')
 
-    * `indentCount` : Integer denoting the number of tabs/spaces required for indentation, range 0-8 (default : for indentType tab : 2, for indentType space : 4)
+    * `indentCount` : Integer denoting the number of tabs/spaces required for indentation, range 0-8 (default : for indentType Tab : 2, for indentType Space : 4)
     
     * `requestTimeout` : Integer denoting time after which the request will bail out in milli-seconds (default: 0 -> never bail out)
 
@@ -49,7 +49,7 @@ It requires 3 mandatory parameters `request`, `callback` and `options`
 sdk = require('postman-collection');
 
 var request = sdk.Request('http://www.google.com'),
-    options = {indentType: 'tab', indentCount: 4, followRediredirect: false, trimRequestBody: true};
+    options = {indentType: 'Tab', indentCount: 4, followRediredirect: false, trimRequestBody: true};
 
 convert(request, options, function (err, snippet) {
     if (err) {
