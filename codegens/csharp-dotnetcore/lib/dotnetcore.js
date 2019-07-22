@@ -13,15 +13,15 @@ var _ = require('./lodash'),
  * @returns {String} csharp-dotnetcore code snippet for given request object
  */
 function makeSnippet (request, options) {
-  const UNSUPPORTED_METHODS_LIKE_POST = ['LINK', 'UNLINK', 'LOCK', 'PROPFIND'];
-  const UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW', 'COPY', 'HEAD', 'OPTIONS'];
+  // const UNSUPPORTED_METHODS_LIKE_POST = ['LINK', 'UNLINK', 'LOCK', 'PROPFIND'];
+  // const UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW', 'COPY', 'HEAD', 'OPTIONS'];
   var snippet = '\t\t\tHttpClientHandler clientHandler = new HttpClientHandler();\n';
   // Check if redirects should be followed or not
   if (!options.followRedirect) {
     snippet += '\t\t\tclientHandler.AllowAutoRedirect = false;\n';
   }
   snippet += '\t\t\tHttpClient client = new HttpClient(clientHandler);\n';
-  var isUnSupportedMethod = UNSUPPORTED_METHODS_LIKE_GET.includes(request.method) || UNSUPPORTED_METHODS_LIKE_POST.includes(request.method);
+  // var isUnSupportedMethod = UNSUPPORTED_METHODS_LIKE_GET.includes(request.method) || UNSUPPORTED_METHODS_LIKE_POST.includes(request.method);
   if (options.requestTimeout > 0) {
     // Postman uses milliseconds as the base unit for request timeout time.
     snippet += `\t\t\tclient.Timeout = TimeSpan.FromMilliseconds(${options.requestTimeout});\n`;
@@ -30,18 +30,17 @@ function makeSnippet (request, options) {
     // A value of 0 as the request timeout in Postman means wait forever.
     snippet += '\t\t\tclient.Timeout = Timeout.InfiniteTimeSpan;\n';
   }
+  snippet += `\t\t\tHttpRequestMessage request = new HttpRequestMessage(new HttpMethod("${request.method}"), "${sanitize(request.url.toString())}");\n`;
 
-  snippet += parseRequest.parseHeader(request.toJSON(), options.trimRequestBody);
-  // snippet += parseRequest.parseBody(request, options.trimRequestBody);
-  if (isUnSupportedMethod) {
+  /* if (isUnSupportedMethod) {
     (UNSUPPORTED_METHODS_LIKE_GET.includes(request.method)) &&
             (snippet += `\t\t\tstring response = await client.GetStringAsync("${sanitize(request.url.toString())}");\n`);
     (UNSUPPORTED_METHODS_LIKE_POST.includes(request.method)) &&
             (snippet += `\t\t\tHttpResponseMessage response = await client.PostAsync("${sanitize(request.url.toString())}", new StringContent(${parseRequest.parseBody(request, options.trimRequestBody)}, Encoding.UTF8, "${parseRequest.parseContentType(request)}"));\n`);
-  }
-  else {
+  }*/
+  // else {
     // Determine which method call to paste. Each request type has a different method associated with it.
-    switch (request.method) {
+    /* switch (request.method) {
       case 'GET':
         snippet += `\t\t\tstring response = await client.GetStringAsync("${sanitize(request.url.toString())}");\n`;
         break;
@@ -59,11 +58,16 @@ function makeSnippet (request, options) {
         break;
       default:
         snippet += `\t\t\tConsole.WriteLine("Unsupported Request Type! ${request.method} Requests Are Not Supported!");\n`;
-        break;
-    }
-  }
+        break;*/
+    // }
+  // }
+  snippet += parseRequest.parseHeader(request.toJSON(), options.trimRequestBody);
+  snippet += parseRequest.parseBody(request, options.trimRequestBody);
+  // snippet += parseRequest.parseBody(request, options.trimRequestBody);
   // If response is an HttpResponseMessage, response is converted to a string. Else, this does nothing.
-  snippet += '\t\t\tConsole.WriteLine(response.ToString());\n';
+  snippet += '\t\t\tHttpResponseMessage response = await client.SendAsync(request);\n' + 
+  '\t\t\tstring responseBody = await response.Content.ReadAsStringAsync();\n' + 
+  '\t\t\tConsole.WriteLine(responseBody);\n';
 
   return snippet;
 }

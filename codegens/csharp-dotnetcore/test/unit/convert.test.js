@@ -218,7 +218,7 @@ describe('csharp .net core function', function () {
           expect.fail(null, null, error);
           return;
         }
-        expect(snippet).to.include('using System;\nusing System.Net.Http;\nnamespace HelloWorldApplication {\n');
+        expect(snippet).to.include('using System;\nusing System.Net.Http;\nusing System.Text;\nusing System.Threading.Tasks;\nnamespace HttpRequests {\n');
       });
     });
 

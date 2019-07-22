@@ -19,11 +19,11 @@ function parseFormData (requestBody, trimFields) {
       return body;
     }
     if (data.type === 'file') {
-      body += `\\"key\\": \\"${sanitize(data.key, trimFields)}\\",\\n\\"value\\": \\"${sanitize(data.src, trimFields)}\\",\\n`;
+      body += `"${sanitize(data.key, trimFields)}": "${sanitize(data.src, trimFields)}"\\n`;
     }
     else {
       (!data.value) && (data.value = '');
-      body += `\\"key\\": \\"${sanitize(data.key, trimFields)}\\",\\n\\"value\\": \\"${sanitize(data.value, trimFields)}\\",\\n`;
+      body += `"${sanitize(data.key, trimFields)}": "${sanitize(data.value, trimFields)}"\\n`;
     }
 
     return body;
@@ -56,11 +56,11 @@ function parseBody (request, trimFields) {
   if (!_.isEmpty(requestBody)) {
     switch (requestBody.mode) {
       case 'urlencoded':
-        return `"{\\n${parseFormData(requestBody, requestUrl, trimFields)}\\n}"`;
+        return `\t\t\trequest.Content = new StringContent("{\\n${parseFormData(requestBody, requestUrl, trimFields)}\\n}", Encoding.UTF8, "${parseContentType(request)}");\n`;
       case 'formdata':
-        return `"{\\n${parseFormData(requestBody, requestUrl, trimFields)}\\n}"`;
+        return `\t\t\trequest.Content = new StringContent("{\\n${parseFormData(requestBody, requestUrl, trimFields)}\\n}", Encoding.UTF8, "${parseContentType(request)}");\n`;
       case 'raw':
-        return `${JSON.stringify(requestBody[requestBody.mode])}`;
+        return `\t\t\trequest.Content = new StringContent(${JSON.stringify(requestBody[requestBody.mode])}, Encoding.UTF8, "${parseContentType(request)}");\n`;
         /* istanbul ignore next */
       case 'file':
         return `${JSON.stringify(requestBody[requestBody.mode].src, trimFields)}`;
@@ -89,7 +89,7 @@ function parseHeader (requestJson) {
 
       }
       else {
-        headerSnippet += `\t\t\tclient.DefaultRequestHeaders.Add("${sanitize(header.key)}", "${sanitize(header.value)}");\n`;
+        headerSnippet += `\t\t\trequest.Headers.Add("${sanitize(header.key)}", "${sanitize(header.value)}");\n`;
       }
     }
     return headerSnippet;
