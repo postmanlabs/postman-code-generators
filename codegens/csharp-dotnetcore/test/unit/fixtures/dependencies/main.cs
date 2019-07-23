@@ -11,8 +11,8 @@ namespace HttpRequests {
 			HttpClientHandler clientHandler = new HttpClientHandler();
 			HttpClient client = new HttpClient(clientHandler);
 			client.Timeout = TimeSpan.FromMilliseconds(5000);
-			HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("POST"), "https://postman-echo.com/post/?hardik=\"me\"");
-			request.Content = new StringContent("1\": \"a\"\n\"2\": \"b\"\n\"\"\"12\"\"\": \"\"23\"\"\n\"'1\"2\\\"\"3'\": \"'1\"23\"4'", Encoding.UTF8, "application/x-www-form-urlencoded");
+			HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("POST"), "https://postman-echo.com/post");
+			request.Content = new StringContent("sdf\": \"\"\n\"12\": \"package.json\"\n\"'123'\": \"'\"23\"4\"\"'", Encoding.UTF8, "text/plain");
 			HttpResponseMessage response = await client.SendAsync(request);
 			string responseBody = await response.Content.ReadAsStringAsync();
 			Console.WriteLine(responseBody);

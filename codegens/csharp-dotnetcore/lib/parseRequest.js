@@ -19,7 +19,7 @@ function parseFormData (requestBody, trimFields) {
       return body;
     }
     if (data.type === 'file') {
-      body += `\\"${sanitize(data.key, trimFields)}": \\"${sanitize(data.src, trimFields)}"\\n`;
+      body += `\\"${sanitize(data.key, trimFields)}\\": \\"${sanitize(data.src, trimFields)}\\"\\n`;
     }
     else {
       (!data.value) && (data.value = '');
