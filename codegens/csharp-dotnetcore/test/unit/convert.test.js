@@ -142,6 +142,7 @@ function runSnippet (codeSnippet, collection, done) {
 describe('csharp .net core function', function () {
   describe('convert for different request types', function () {
     var headerSnippet = 'using System;\n' +
+                        'using System.IO;\n' +
                         'using System.Net.Http;\n' +
                         'using System.Text;\n' +
                         'using System.Threading.Tasks;\n' +

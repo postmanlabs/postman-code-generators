@@ -14,23 +14,25 @@ function parseFormData (requestBody, trimFields) {
     return '';
   }
 
-  var newBody = requestBody[requestBody.mode].reduce((body, data) => {
+  return requestBody[requestBody.mode].reduce((body, data) => {
     if (data.disabled) {
       return body;
     }
     if (data.type === 'file') {
-      body += `\\"${sanitize(data.key, trimFields)}\\": \\"${sanitize(data.src, trimFields)}\\"\\n`;
+      body += `\t\t\tFileStream filestream${sanitize(data.key, trimFields)} = File.OpenRead("${sanitize(data.src, trimFields)}");\n` +
+            `\t\t\tStreamContent filedata${sanitize(data.key, trimFields)} = new StreamContent(filestream${sanitize(data.key, trimFields)});\n` +
+            `\t\t\tfiledata${sanitize(data.key, trimFields)}.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data") {Name = "${sanitize(data.key, trimFields)}", FileName = "${sanitize(data.src, trimFields)}"};\n` +
+            `\t\t\tfiledata${sanitize(data.key, trimFields)}.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");\n` +
+            `\t\t\trequestContent.Add(filedata${sanitize(data.key, trimFields)});\n`;
     }
-    else {
+
+    /* else {
       (!data.value) && (data.value = '');
       body += `\\"${sanitize(data.key, trimFields)}\\": \\"${sanitize(data.value, trimFields)}\\"\\n`;
-    }
+    } */
 
     return body;
   }, '');
-
-  newBody = newBody.substring(2, newBody.length - 4); // Trim the extra quote off the beginning and extra quote and special characters off the end.
-  return newBody;
 }
 
 /**
@@ -58,7 +60,9 @@ function parseBody (request, trimFields) {
       case 'urlencoded':
         return `\t\t\trequest.Content = new StringContent("${parseFormData(requestBody, requestUrl, trimFields)}", Encoding.UTF8, "${parseContentType(request)}");\n`;
       case 'formdata':
-        return `\t\t\trequest.Content = new StringContent("${parseFormData(requestBody, requestUrl, trimFields)}", Encoding.UTF8, "${parseContentType(request)}");\n`;
+        return '\t\t\tMultipartFormDataContent requestContent = new MultipartFormDataContent();\n' +
+               `${parseFormData(requestBody, requestUrl, trimFields)}` +
+               '\t\t\trequest.Content = requestContent;\n';
       case 'raw':
         return `\t\t\trequest.Content = new StringContent(${JSON.stringify(requestBody[requestBody.mode])}, Encoding.UTF8, "${parseContentType(request)}");\n`;
         /* istanbul ignore next */
