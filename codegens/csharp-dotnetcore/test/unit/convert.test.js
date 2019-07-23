@@ -144,6 +144,7 @@ describe('csharp .net core function', function () {
     var headerSnippet = 'using System;\n' +
                         'using System.IO;\n' +
                         'using System.Net.Http;\n' +
+                        'using System.Net.Http.Headers;\n' +
                         'using System.Text;\n' +
                         'using System.Threading.Tasks;\n' +
                         'namespace HttpRequests {\n' +
@@ -157,7 +158,7 @@ describe('csharp .net core function', function () {
 
     mainCollection.item.forEach(function (item) {
       it(item.name, function (done) {
-        var request = new sdk.Request(mainCollection.item[3].request),
+        var request = new sdk.Request(mainCollection.item[4].request),
           collection = {
             item: [
               {

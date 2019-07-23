@@ -19,17 +19,18 @@ function parseFormData (requestBody, trimFields) {
       return body;
     }
     if (data.type === 'file') {
-      body += `\t\t\tFileStream filestream${sanitize(data.key, trimFields)} = File.OpenRead("${sanitize(data.src, trimFields)}");\n` +
-            `\t\t\tStreamContent filedata${sanitize(data.key, trimFields)} = new StreamContent(filestream${sanitize(data.key, trimFields)});\n` +
-            `\t\t\tfiledata${sanitize(data.key, trimFields)}.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data") {Name = "${sanitize(data.key, trimFields)}", FileName = "${sanitize(data.src, trimFields)}"};\n` +
-            `\t\t\tfiledata${sanitize(data.key, trimFields)}.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");\n` +
-            `\t\t\trequestContent.Add(filedata${sanitize(data.key, trimFields)});\n`;
+      body += `\t\t\tfileStream = File.OpenRead("${sanitize(data.src, trimFields)}");\n` +
+              '\t\t\tfileData = new StreamContent(fileStream);\n' +
+              `\t\t\tfileData.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") {Name = "${sanitize(data.key, trimFields)}", FileName = "${sanitize(data.src, trimFields)}"};\n` +
+              '\t\t\tfileData.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");\n' +
+              '\t\t\trequestContent.Add(fileData);\n';
     }
-
-    /* else {
+    else {
       (!data.value) && (data.value = '');
-      body += `\\"${sanitize(data.key, trimFields)}\\": \\"${sanitize(data.value, trimFields)}\\"\\n`;
-    } */
+      body += `\t\t\tformDataEntry = new StringContent("${sanitize(data.value, trimFields)}");\n` +
+              `\t\t\tformDataEntry.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = "${sanitize(data.key, trimFields)}"};\n` +
+              '\t\t\trequestContent.Add(formDataEntry);\n';
+    }
 
     return body;
   }, '');
@@ -58,9 +59,14 @@ function parseBody (request, trimFields) {
   if (!_.isEmpty(requestBody)) {
     switch (requestBody.mode) {
       case 'urlencoded':
-        return `\t\t\trequest.Content = new StringContent("${parseFormData(requestBody, requestUrl, trimFields)}", Encoding.UTF8, "${parseContentType(request)}");\n`;
+        return '\t\t\tMultipartFormDataContent requestContent = new MultipartFormDataContent();\n' +
+               '\t\t\tStringContent formDataEntry;\n' +
+              `${parseFormData(requestBody, requestUrl, trimFields)}`;
       case 'formdata':
         return '\t\t\tMultipartFormDataContent requestContent = new MultipartFormDataContent();\n' +
+               '\t\t\tFileStream fileStream;\n' +
+               '\t\t\tStreamContent fileData;\n' +
+               '\t\t\tStringContent formDataEntry;\n' +
                `${parseFormData(requestBody, requestUrl, trimFields)}` +
                '\t\t\trequest.Content = requestContent;\n';
       case 'raw':

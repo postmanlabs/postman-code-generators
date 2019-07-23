@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 namespace HttpRequests {
@@ -12,14 +13,21 @@ namespace HttpRequests {
 			HttpClientHandler clientHandler = new HttpClientHandler();
 			HttpClient client = new HttpClient(clientHandler);
 			client.Timeout = TimeSpan.FromMilliseconds(5000);
-			HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("POST"), "https://postman-echo.com/post");
+			HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("POST"), "https://postman-echo.com/post/?hardik=\"me\"");
 			MultipartFormDataContent requestContent = new MultipartFormDataContent();
-			FileStream filestream12 = File.OpenRead("package.json");
-			StreamContent filedata12 = new StreamContent(filestream12);
-			filedata12.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data") {Name = "12", FileName = "package.json"};
-			filedata12.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
-			requestContent.Add(filedata12);
-			request.Content = requestContent;
+			StringContent formDataEntry;
+			formDataEntry = new StringContent("a");
+			formDataEntry.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = "1"};
+			requestContent.Add(formDataEntry);
+			formDataEntry = new StringContent("b");
+			formDataEntry.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = "2"};
+			requestContent.Add(formDataEntry);
+			formDataEntry = new StringContent("\"23\"");
+			formDataEntry.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = "\"\"12\"\""};
+			requestContent.Add(formDataEntry);
+			formDataEntry = new StringContent("'1\"23\"4'");
+			formDataEntry.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = "'1\"2\\\"\"3'"};
+			requestContent.Add(formDataEntry);
 			HttpResponseMessage response = await client.SendAsync(request);
 			string responseBody = await response.Content.ReadAsStringAsync();
 			Console.WriteLine(responseBody);

@@ -169,7 +169,9 @@ self = module.exports = {
 
     if (options.includeBoilerplate) {
       headerSnippet = 'using System;\n' +
+                      'using System.IO;\n' +
                       'using System.Net.Http;\n' +
+                      'using System.Net.Http.Headers;\n' +
                       'using System.Text;\n' +
                       'using System.Threading.Tasks;\n' +
                       'namespace HttpRequests {\n' +
