@@ -19,17 +19,11 @@ function parseFormData (requestBody, trimFields) {
       return body;
     }
     if (data.type === 'file') {
-      body += `\t\t\tfileStream = File.OpenRead("${sanitize(data.src, trimFields)}");\n` +
-              '\t\t\tfileData = new StreamContent(fileStream);\n' +
-              `\t\t\tfileData.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") {Name = "${sanitize(data.key, trimFields)}", FileName = "${sanitize(data.src, trimFields)}"};\n` +
-              '\t\t\tfileData.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");\n' +
-              '\t\t\trequestContent.Add(fileData);\n';
+      body += `requestContent.Add(new StreamContent(File.OpenRead("${sanitize(data.src, trimFields)}")), "${sanitize(data.key, trimFields)}", "${sanitize(data.src, trimFields)}");\n`;
     }
     else {
       (!data.value) && (data.value = '');
-      body += `\t\t\tformDataEntry = new StringContent("${sanitize(data.value, trimFields)}");\n` +
-              `\t\t\tformDataEntry.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = "${sanitize(data.key, trimFields)}"};\n` +
-              '\t\t\trequestContent.Add(formDataEntry);\n';
+      body += `requestContent.Add(new StringContent("${sanitize(data.value, trimFields)}"), "${sanitize(data.key, trimFields)}");\n`;
     }
 
     return body;
@@ -59,18 +53,15 @@ function parseBody (request, trimFields) {
   if (!_.isEmpty(requestBody)) {
     switch (requestBody.mode) {
       case 'urlencoded':
-        return '\t\t\tMultipartFormDataContent requestContent = new MultipartFormDataContent();\n' +
-               '\t\t\tStringContent formDataEntry;\n' +
-              `${parseFormData(requestBody, requestUrl, trimFields)}`;
+        return 'MultipartFormDataContent requestContent = new MultipartFormDataContent();\n' +
+              `${parseFormData(requestBody, requestUrl, trimFields)}` +
+              'request.Content = requestContent;\n';
       case 'formdata':
-        return '\t\t\tMultipartFormDataContent requestContent = new MultipartFormDataContent();\n' +
-               '\t\t\tFileStream fileStream;\n' +
-               '\t\t\tStreamContent fileData;\n' +
-               '\t\t\tStringContent formDataEntry;\n' +
+        return 'MultipartFormDataContent requestContent = new MultipartFormDataContent();\n' +
                `${parseFormData(requestBody, requestUrl, trimFields)}` +
-               '\t\t\trequest.Content = requestContent;\n';
+               'request.Content = requestContent;\n';
       case 'raw':
-        return `\t\t\trequest.Content = new StringContent(${JSON.stringify(requestBody[requestBody.mode])}, Encoding.UTF8, "${parseContentType(request)}");\n`;
+        return `request.Content = new StringContent(${JSON.stringify(requestBody[requestBody.mode])}, Encoding.UTF8, "${parseContentType(request)}");\n`;
         /* istanbul ignore next */
       case 'file':
         return `${JSON.stringify(requestBody[requestBody.mode].src, trimFields)}`;
@@ -99,7 +90,7 @@ function parseHeader (requestJson) {
 
       }
       else {
-        headerSnippet += `\t\t\trequest.Headers.Add("${sanitize(header.key)}", "${sanitize(header.value)}");\n`;
+        headerSnippet += `request.Headers.Add("${sanitize(header.key)}", "${sanitize(header.value)}");\n`;
       }
     }
     return headerSnippet;

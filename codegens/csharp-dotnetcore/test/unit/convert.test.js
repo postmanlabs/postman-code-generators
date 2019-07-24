@@ -148,17 +148,17 @@ describe('csharp .net core function', function () {
                         'using System.Text;\n' +
                         'using System.Threading.Tasks;\n' +
                         'namespace HttpRequests {\n' +
-                        '\tclass Program {\n' +
-                        '\t\tstatic void Main(string[] args) {\n' +
-                        '\t\t\tRequest().Wait();\n' +
-                        '\t\t}\n' +
-                        '\t\tstatic async Task Request() {\n',
+                        'class Program {\n' +
+                        'static void Main(string[] args) {\n' +
+                        'Request().Wait();\n' +
+                        '}\n' +
+                        'static async Task Request() {\n',
 
       footerSnippet = '\t\t}\n\t}\n}\n';
 
     mainCollection.item.forEach(function (item) {
       it(item.name, function (done) {
-        var request = new sdk.Request(mainCollection.item[4].request),
+        var request = new sdk.Request(item.request),
           collection = {
             item: [
               {
@@ -220,7 +220,7 @@ describe('csharp .net core function', function () {
           expect.fail(null, null, error);
           return;
         }
-        expect(snippet).to.include('using System;\nusing System.Net.Http;\nusing System.Text;\nusing System.Threading.Tasks;\nnamespace HttpRequests {\n');
+        expect(snippet).to.include('using System;\nusing System.IO;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\nusing System.Threading.Tasks;\nnamespace HttpRequests {\n');
       });
     });
 
