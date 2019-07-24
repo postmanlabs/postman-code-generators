@@ -34,7 +34,7 @@ const expectedOptions = {
     indentType: {
       name: 'Indent type',
       type: 'enum',
-      default: 'tab',
+      default: 'Tab',
       description: 'Character used for indentation'
     },
     requestTimeout: {

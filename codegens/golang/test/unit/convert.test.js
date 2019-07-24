@@ -124,7 +124,7 @@ describe('Golang convert function', function () {
           },
           options = {
             indentCount: 1,
-            indentType: 'tab',
+            indentType: 'Tab',
             requestTimeout: 5000,
             followRedirect: true,
             trimRequestBody: false
@@ -188,7 +188,7 @@ describe('Golang convert function', function () {
         }
       });
       options = {
-        indentType: 'tab',
+        indentType: 'Tab',
         indentCount: 1
       };
 

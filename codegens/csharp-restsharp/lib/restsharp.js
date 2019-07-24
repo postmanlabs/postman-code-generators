@@ -73,8 +73,8 @@ self = module.exports = {
         name: 'Indent type',
         id: 'indentType',
         type: 'enum',
-        availableOptions: ['tab', 'space'],
-        default: 'space',
+        availableOptions: ['Tab', 'Space'],
+        default: 'Space',
         description: 'Character used for indentation'
       },
       {
@@ -108,9 +108,9 @@ self = module.exports = {
      *
      * @param {Object} request - Postman-SDK request object
      * @param {Object} options - Options to tweak code snippet generated in C#
-     * @param {String} options.indentType - type for indentation eg: space, tab (default: space)
+     * @param {String} options.indentType - type for indentation eg: Space, Tab (default: Space)
      * @param {String} options.indentCount - number of spaces or tabs for indentation. (default: 4 for indentType:
-                                                                         space, default: 1 for indentType: tab)
+                                                                         Space, default: 1 for indentType: Tab)
      * @param {Boolean} [options.includeBoilerplate] - indicates whether to include class defination in C#
      * @param {Boolean} options.followRedirect - whether to enable followredirect
      * @param {Boolean} options.trimRequestBody - whether to trim fields in request body or not (default: false)
@@ -137,7 +137,7 @@ self = module.exports = {
 
     options = sanitizeOptions(options, self.getOptions());
 
-    indentString = options.indentType === 'tab' ? '\t' : ' ';
+    indentString = options.indentType === 'Tab' ? '\t' : ' ';
     indentString = indentString.repeat(options.indentCount);
 
     if (options.includeBoilerplate) {

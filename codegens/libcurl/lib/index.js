@@ -18,7 +18,7 @@ self = module.exports = {
       protocol,
       BOUNDARY = '----WebKitFormBoundary7MA4YWxkTrZu0gW',
       timeout,
-      indent = options.indentType === 'tab' ? '\t' : ' ',
+      indent = options.indentType === 'Tab' ? '\t' : ' ',
       indentString = indent.repeat(options.indentCount),
       headerSnippet = '',
       footerSnippet = '';
@@ -166,8 +166,8 @@ self = module.exports = {
         name: 'Indent type',
         id: 'indentType',
         type: 'enum',
-        availableOptions: ['tab', 'space'],
-        default: 'space',
+        availableOptions: ['Tab', 'Space'],
+        default: 'Space',
         description: 'Character used for indentation'
       },
       {

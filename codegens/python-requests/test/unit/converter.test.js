@@ -31,7 +31,7 @@ const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'json',
 
 /**
  * Executes codesnippet and compares output with newman response
- * 
+ *
  * @param {String} codeSnippet - code snippet from convert function
  * @param {Object} collection - sample collection
  * @param {Function} done - callback for async calls
@@ -133,7 +133,7 @@ describe('Python- Requests converter', function () {
             }
           ]
         };
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 0,
         trimRequestBody: false,

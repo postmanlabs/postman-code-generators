@@ -127,7 +127,7 @@ describe('curl convert function', function () {
           },
           options = {
             indentCount: 3,
-            indentType: 'space',
+            indentType: 'Space',
             requestTimeout: 200,
             multiLine: true,
             followRedirect: true,

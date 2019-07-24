@@ -128,7 +128,7 @@ describe('js-fetch convert function for test collection', function () {
         },
         options = {
           indentCount: 2,
-          indentType: 'tab',
+          indentType: 'Tab',
           requestTimeout: 4000,
           multiLine: true,
           followRedirect: true,
@@ -150,10 +150,10 @@ describe('js-fetch convert function for test collection', function () {
       snippetArray,
       line_no;
 
-    it('should return a space indented snippet ', function () {
+    it('should return a Space indented snippet ', function () {
       request = new sdk.Request(mainCollection.item[0].request);
       options = {
-        indentType: 'space',
+        indentType: 'Space',
         indentCount: 2
       };
       convert(request, options, function (error, snippet) {

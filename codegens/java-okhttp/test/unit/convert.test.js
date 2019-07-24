@@ -11,7 +11,7 @@ var expect = require('chai').expect,
 
 /**
  * compiles and runs codesnippet then compare it with newman output
- * 
+ *
  * @param {String} codeSnippet - code snippet that needed to run using java
  * @param {Object} collection - collection which will be run using newman
  * @param {Function} done - callback for async calls
@@ -143,7 +143,7 @@ describe('okhttp convert function', function () {
               }
             ]
           };
-        convert(request, {indentCount: 3, indentType: 'space'}, function (error, snippet) {
+        convert(request, {indentCount: 3, indentType: 'Space'}, function (error, snippet) {
           if (error) {
             expect.fail(null, null, error);
             return;
@@ -159,7 +159,7 @@ describe('okhttp convert function', function () {
       snippetArray,
       options = {
         includeBoilerplate: true,
-        indentType: 'tab',
+        indentType: 'Tab',
         indentCount: 2
       };
 
@@ -211,7 +211,7 @@ describe('okhttp convert function', function () {
       });
     });
 
-    it('should generate snippet with tab as an indent type with exact indent count', function () {
+    it('should generate snippet with Tab as an indent type with exact indent count', function () {
       convert(request, options, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);

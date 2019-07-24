@@ -125,7 +125,7 @@ describe('Shell-Wget converter', function () {
             }
           ]
         };
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 0,
         trimRequestBody: false,
@@ -144,7 +144,7 @@ describe('Shell-Wget converter', function () {
     var request = new sdk.Request(mainCollection.item[0].request),
       snippetArray,
       options = {
-        indentType: 'tab',
+        indentType: 'Tab',
         indentCount: 2
       };
 
@@ -187,7 +187,7 @@ describe('Shell-Wget converter', function () {
       });
     });
 
-    it('should generate snippet with tab as an indent type with exact indent count', function () {
+    it('should generate snippet with Tab as an indent type with exact indent count', function () {
       convert(request, options, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);

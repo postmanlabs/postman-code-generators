@@ -150,7 +150,7 @@ describe('java unirest convert function for test collection', function () {
             }
           ]
         };
-      convert(request, {indentCount: 3, indentType: 'space'}, function (error, snippet) {
+      convert(request, {indentCount: 3, indentType: 'Space'}, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
           return;
@@ -169,10 +169,10 @@ describe('java unirest convert function for test collection', function () {
       footerSnippet,
       line_no;
 
-    it('should return a tab indented snippet ', function () {
+    it('should return a Tab indented snippet ', function () {
       request = new sdk.Request(mainCollection.item[0].request);
       options = {
-        indentType: 'tab',
+        indentType: 'Tab',
         indentCount: 1
       };
       convert(request, options, function (error, snippet) {
@@ -246,7 +246,7 @@ describe('java unirest convert function for test collection', function () {
       request = new sdk.Request(mainCollection.item[0].request);
       options = {
         includeBoilerplate: true,
-        indentType: 'tab',
+        indentType: 'Tab',
         indentCount: 1
       };
       headerSnippet = 'import com.mashape.unirest.http.*;\n' +

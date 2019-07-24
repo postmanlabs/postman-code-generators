@@ -133,7 +133,7 @@ describe('Python-http.client converter', function () {
             }
           ]
         };
-      convert(request, {indentType: 'space',
+      convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 0,
         requestBodyTrim: false,
@@ -175,8 +175,8 @@ describe('Python-http.client converter', function () {
       });
     });
 
-    it('should generate snippet with tab as an indent type', function () {
-      convert(request, { indentType: 'tab', indentCount: 1 }, function (error, snippet) {
+    it('should generate snippet with Tab as an indent type', function () {
+      convert(request, { indentType: 'Tab', indentCount: 1 }, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
           return;
@@ -220,6 +220,40 @@ describe('Python-http.client converter', function () {
         }
         expect(snippet).to.be.a('string');
         expect(snippet).to.include('conn = http.client.HTTPSConnection("")');
+      });
+    });
+
+    it('should generate snippet with correct indent when body mode is formdata', function () {
+      var request = new sdk.Request({
+        'method': 'GET',
+        'header': [
+          {
+            'key': 'my-sample-header',
+            'value': 'Lorem ipsum dolor sit amet'
+          }
+        ],
+        'body': {
+          'mode': 'formdata',
+          'formdata': []
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/headers',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'headers'
+          ]
+        }
+      });
+      convert(request, { indentType: 'space', indentCount: 2}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('  \'Content-type\': \'multipart/form-data; boundary={}\'.format(boundary)');
       });
     });
 

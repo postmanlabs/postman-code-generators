@@ -22,7 +22,7 @@ function getheaders (request, indentation) {
             `'${sanitize(headerObject[key], 'header')}'`;
     });
     if (requestBodyMode === 'formdata') {
-      headerMap.push(`${indent}'Content-type': 'multipart/form-data; boundary={}'.format(boundary)`);
+      headerMap.push(`${indentation}'Content-type': 'multipart/form-data; boundary={}'.format(boundary)`);
     }
     return `headers = {\n${headerMap.join(',\n')}\n}\n`;
   }
@@ -72,8 +72,8 @@ self = module.exports = {
         name: 'Indent type',
         id: 'indentType',
         type: 'enum',
-        default: 'space',
-        availableOptions: ['tab', 'space'],
+        default: 'Space',
+        availableOptions: ['Tab', 'Space'],
         description: 'Character used for indentation'
       },
       {
@@ -100,9 +100,9 @@ self = module.exports = {
     *
     * @param  {Object} request - postman SDK-request object
     * @param  {Object} options - Options to tweak code snippet generated in Python
-    * @param  {String} options.indentType - type of indentation eg: space / tab (default: space)
-    * @param  {Number} options.indentCount - frequency of indent (default: 4 for indentType: space,
-                                                                    default: 1 for indentType: tab)
+    * @param  {String} options.indentType - type of indentation eg: Space / Tab (default: Space)
+    * @param  {Number} options.indentCount - frequency of indent (default: 4 for indentType: Space,
+                                                                    default: 1 for indentType: Tab)
     * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
                                                 (default: 0 -> never bail out)
     * @param {Boolean} options.requestBodyTrim : whether to trim request body fields (default: false)
@@ -123,7 +123,7 @@ self = module.exports = {
     }
     options = sanitizeOptions(options, self.getOptions());
 
-    identity = options.indentType === 'tab' ? '\t' : ' ';
+    identity = options.indentType === 'Tab' ? '\t' : ' ';
     indentation = identity.repeat(options.indentCount);
 
     snippet += 'import http.client\n';

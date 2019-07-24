@@ -283,7 +283,7 @@ describe('Powershell-restmethod converter', function () {
           ]
         }
       });
-      options = { indentType: 'space', indentCount: 2 };
+      options = { indentType: 'Space', indentCount: 2 };
       convert(request, options, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);

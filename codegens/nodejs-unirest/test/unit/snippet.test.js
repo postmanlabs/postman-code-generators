@@ -131,7 +131,7 @@ describe('nodejs unirest convert function', function () {
             }
           ]
         };
-      convert(request, {indentCount: 3, indentType: 'space', trimRequestBody: 'true'}, function (error, snippet) {
+      convert(request, {indentCount: 3, indentType: 'Space', trimRequestBody: 'true'}, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
           return;
@@ -147,10 +147,10 @@ describe('nodejs unirest convert function', function () {
   describe('Convert function', function () {
     var request, reqObject, options, snippetArray, line_no;
 
-    it('should return a tab indented snippet ', function () {
+    it('should return a Tab indented snippet ', function () {
       request = new sdk.Request(mainCollection.item[0].request);
       options = {
-        indentType: 'tab',
+        indentType: 'Tab',
         indentCount: 1
       };
       convert(request, options, function (error, snippet) {

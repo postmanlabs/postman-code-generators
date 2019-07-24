@@ -158,7 +158,7 @@ describe('csharp restsharp function', function () {
           },
           options = {
             indentCount: 1,
-            indentType: 'tab',
+            indentType: 'Tab',
             followRedirect: true,
             trimRequestBody: true,
             requestTimeout: 5000
@@ -180,7 +180,7 @@ describe('csharp restsharp function', function () {
       var request = new sdk.Request(mainCollection.item[4].request),
         options = {
           indentCount: 1,
-          indentType: 'tab',
+          indentType: 'Tab',
           followRedirect: true,
           trimRequestBody: true
         };
@@ -200,7 +200,7 @@ describe('csharp restsharp function', function () {
       snippetArray,
       options = {
         includeBoilerplate: true,
-        indentType: 'space',
+        indentType: 'Space',
         indentCount: 2
       };
 
@@ -214,7 +214,7 @@ describe('csharp restsharp function', function () {
       });
     });
 
-    it('should generate snippet with space as an indent type with exact indent count', function () {
+    it('should generate snippet with Space as an indent type with exact indent count', function () {
       convert(request, options, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
@@ -337,7 +337,7 @@ describe('csharp restsharp function', function () {
 
     it('should return the same object when valid (but not necessarily defaults) options are provided', function () {
       testOptions = {};
-      testOptions.indentType = 'tab';
+      testOptions.indentType = 'Tab';
       testOptions.indentCount = 3;
       testOptions.requestTimeout = 3000;
       testOptions.trimRequestBody = true;

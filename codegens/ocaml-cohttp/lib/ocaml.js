@@ -215,8 +215,8 @@ self = module.exports = {
         name: 'Indent type',
         id: 'indentType',
         type: 'enum',
-        availableOptions: ['tab', 'space'],
-        default: 'space',
+        availableOptions: ['Tab', 'Space'],
+        default: 'Space',
         description: 'Character used for indentation'
       },
       {
@@ -250,9 +250,9 @@ self = module.exports = {
     *
     * @param  {Object} request - postman SDK-request object
     * @param  {Object} options
-    * @param  {String} options.indentType - type of indentation eg: space / tab (default: space)
-    * @param  {Number} options.indentCount - frequency of indent (default: 4 for indentType: space,
-                                                                    default: 1 for indentType: tab)
+    * @param  {String} options.indentType - type of indentation eg: Space / Tab (default: Space)
+    * @param  {Number} options.indentCount - frequency of indent (default: 4 for indentType: Space,
+                                                                    default: 1 for indentType: Tab)
     * @param {Number} options.requestTimeout - time in milli-seconds after which request will bail out
                                                 (default: 0 -> never bail out)
     * @param {Boolean} options.trimRequestBody - whether to trim request body fields (default: false)
@@ -277,7 +277,7 @@ self = module.exports = {
       requestBody = (request.body ? request.body.toJSON() : {}),
       requestBodyMode = (request.body ? request.body.mode : 'raw');
 
-    indent = options.indentType === 'tab' ? '\t' : ' ';
+    indent = options.indentType === 'Tab' ? '\t' : ' ';
     indent = indent.repeat(options.indentCount);
     // timeout = options.requestTimeout;
     // followRedirect = options.followRedirect;
