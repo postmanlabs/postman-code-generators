@@ -142,6 +142,7 @@ function runSnippet (codeSnippet, collection, done) {
 describe('csharp .net core function', function () {
   describe('convert for different request types', function () {
     var headerSnippet = 'using System;\n' +
+                        'using System.Collections.Generic;\n' +
                         'using System.IO;\n' +
                         'using System.Net.Http;\n' +
                         'using System.Net.Http.Headers;\n' +
@@ -154,11 +155,11 @@ describe('csharp .net core function', function () {
                         '}\n' +
                         'static async Task Request() {\n',
 
-      footerSnippet = '\t\t}\n\t}\n}\n';
+      footerSnippet = '}\n}\n}\n';
 
     mainCollection.item.forEach(function (item) {
       it(item.name, function (done) {
-        var request = new sdk.Request(item.request),
+        var request = new sdk.Request(mainCollection.item[3].request),
           collection = {
             item: [
               {
@@ -220,7 +221,7 @@ describe('csharp .net core function', function () {
           expect.fail(null, null, error);
           return;
         }
-        expect(snippet).to.include('using System;\nusing System.IO;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\nusing System.Threading.Tasks;\nnamespace HttpRequests {\n');
+        expect(snippet).to.include('using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\nusing System.Threading.Tasks;\nnamespace HttpRequests {\n');
       });
     });
 

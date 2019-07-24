@@ -23,7 +23,7 @@ function parseFormData (requestBody, trimFields) {
     }
     else {
       (!data.value) && (data.value = '');
-      body += `requestContent.Add(new StringContent("${sanitize(data.value, trimFields)}"), "${sanitize(data.key, trimFields)}");\n`;
+      body += `formData.Add(new KeyValuePair<string, string>("${sanitize(data.key, trimFields)}", "${sanitize(data.value, trimFields)}"));\n`;
     }
 
     return body;
@@ -53,12 +53,16 @@ function parseBody (request, trimFields) {
   if (!_.isEmpty(requestBody)) {
     switch (requestBody.mode) {
       case 'urlencoded':
-        return 'MultipartFormDataContent requestContent = new MultipartFormDataContent();\n' +
-              `${parseFormData(requestBody, requestUrl, trimFields)}` +
-              'request.Content = requestContent;\n';
+        return 'IList<KeyValuePair<string, string>> formData = new List<KeyValuePair<string, string>>();\n' +
+               `${parseFormData(requestBody, requestUrl, trimFields)}` +
+               'FormUrlEncodedContent formContent = new FormUrlEncodedContent(formData);\n' +
+               'request.Content = formContent;\n';
       case 'formdata':
         return 'MultipartFormDataContent requestContent = new MultipartFormDataContent();\n' +
+               'IList<KeyValuePair<string, string>> formData = new List<KeyValuePair<string, string>>();\n' +
                `${parseFormData(requestBody, requestUrl, trimFields)}` +
+               'FormUrlEncodedContent formContent = new FormUrlEncodedContent(formData);\n' +
+               'requestContent.Add(formContent);\n' +
                'request.Content = requestContent;\n';
       case 'raw':
         return `request.Content = new StringContent(${JSON.stringify(requestBody[requestBody.mode])}, Encoding.UTF8, "${parseContentType(request)}");\n`;
@@ -85,7 +89,7 @@ function parseHeader (requestJson) {
 
   return requestJson.header.reduce((headerSnippet, header) => {
     if (!header.disabled) {
-      // Content type headers are already added to the method that send the request.
+      // Content type headers are added directly to the object that sends the request.
       if (sanitize(header.key) === 'Content-Type') {
 
       }
