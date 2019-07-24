@@ -7,9 +7,10 @@ var _ = require('./lodash'),
  *
  * @param {Object} requestBody - JSON object representing body of request
  * @param {Boolean} trimFields - indicates whether to trim fields of body
+ * @param {String} bodyMode - indicates the request body mode
  * @returns {String} code snippet of csharp-dotnetcore for multipart formdata
  */
-function parseFormData (requestBody, trimFields) {
+function parseFormData (requestBody, trimFields, bodyMode) {
   if (!Array.isArray(requestBody[requestBody.mode])) {
     return '';
   }
@@ -23,7 +24,17 @@ function parseFormData (requestBody, trimFields) {
     }
     else {
       (!data.value) && (data.value = '');
-      body += `formData.Add(new KeyValuePair<string, string>("${sanitize(data.key, trimFields)}", "${sanitize(data.value, trimFields)}"));\n`;
+      switch (bodyMode) {
+        case 'urlencoded':
+          body += `formData.Add(new KeyValuePair<string, string>("${sanitize(data.key, trimFields)}", "${sanitize(data.value, trimFields)}"));\n`;
+          break;
+        case 'formdata':
+          body += `requestContent.Add(new StringContent("${sanitize(data.value, trimFields)}"), "${sanitize(data.key, trimFields)}");\n`;
+          break;
+        default: // Should not get here
+          break;
+      }
+      
     }
 
     return body;
@@ -48,21 +59,18 @@ function parseContentType (request) {
  * @returns {String} code snippet of csharp-dotnetcore parsed from request object
  */
 function parseBody (request, trimFields) {
-  var requestBody = request.body.toJSON(),
-    requestUrl = request.url.toString();
+  var requestBody = request.body.toJSON();
+  var bodyMode = requestBody.mode;
   if (!_.isEmpty(requestBody)) {
     switch (requestBody.mode) {
       case 'urlencoded':
         return 'IList<KeyValuePair<string, string>> formData = new List<KeyValuePair<string, string>>();\n' +
-               `${parseFormData(requestBody, requestUrl, trimFields)}` +
-               'FormUrlEncodedContent formContent = new FormUrlEncodedContent(formData);\n' +
-               'request.Content = formContent;\n';
+               `${parseFormData(requestBody, trimFields, bodyMode)}` +
+               'FormUrlEncodedContent requestContent = new FormUrlEncodedContent(formData);\n' +
+               'request.Content = requestContent;\n';
       case 'formdata':
         return 'MultipartFormDataContent requestContent = new MultipartFormDataContent();\n' +
-               'IList<KeyValuePair<string, string>> formData = new List<KeyValuePair<string, string>>();\n' +
-               `${parseFormData(requestBody, requestUrl, trimFields)}` +
-               'FormUrlEncodedContent formContent = new FormUrlEncodedContent(formData);\n' +
-               'requestContent.Add(formContent);\n' +
+               `${parseFormData(requestBody, trimFields, bodyMode)}` +
                'request.Content = requestContent;\n';
       case 'raw':
         return `request.Content = new StringContent(${JSON.stringify(requestBody[requestBody.mode])}, Encoding.UTF8, "${parseContentType(request)}");\n`;

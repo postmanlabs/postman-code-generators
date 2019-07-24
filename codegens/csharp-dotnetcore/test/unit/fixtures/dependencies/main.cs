@@ -14,15 +14,7 @@ static async Task Request() {
 HttpClientHandler clientHandler = new HttpClientHandler();
 HttpClient client = new HttpClient(clientHandler);
 client.Timeout = TimeSpan.FromMilliseconds(5000);
-HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("POST"), "https://postman-echo.com/post");
-MultipartFormDataContent requestContent = new MultipartFormDataContent();
-IList<KeyValuePair<string, string>> formData = new List<KeyValuePair<string, string>>();
-formData.Add(new KeyValuePair<string, string>("sdf", ""));
-requestContent.Add(new StreamContent(File.OpenRead("package.json")), "12", "package.json");
-formData.Add(new KeyValuePair<string, string>("'123'", "'\"23\"4\"\"'"));
-FormUrlEncodedContent formContent = new FormUrlEncodedContent(formData);
-requestContent.Add(formContent);
-request.Content = requestContent;
+HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("COPY"), "https://704c30e8-77fe-4dc4-93e2-9c9c68dfb4e1.mock.pstmn.io/copy");
 HttpResponseMessage response = await client.SendAsync(request);
 string responseBody = await response.Content.ReadAsStringAsync();
 Console.WriteLine(responseBody);

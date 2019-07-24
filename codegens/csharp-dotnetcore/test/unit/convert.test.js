@@ -159,7 +159,7 @@ describe('csharp .net core function', function () {
 
     mainCollection.item.forEach(function (item) {
       it(item.name, function (done) {
-        var request = new sdk.Request(mainCollection.item[3].request),
+        var request = new sdk.Request(item.request),
           collection = {
             item: [
               {
