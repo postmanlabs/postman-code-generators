@@ -66,8 +66,7 @@ function parseBody (request, trimFields) {
       case 'urlencoded':
         return 'IList<KeyValuePair<string, string>> formData = new List<KeyValuePair<string, string>>();\n' +
                `${parseFormData(requestBody, trimFields, bodyMode)}` +
-               'FormUrlEncodedContent requestContent = new FormUrlEncodedContent(formData);\n' +
-               'request.Content = requestContent;\n';
+               'request.Content = new FormUrlEncodedContent(formData);\n';
       case 'formdata':
         return 'MultipartFormDataContent requestContent = new MultipartFormDataContent();\n' +
                `${parseFormData(requestBody, trimFields, bodyMode)}` +
