@@ -18,3 +18,8 @@ pushd ./codegens/swift &>/dev/null;
   sudo tar xzf swift-5.0.1-RELEASE-ubuntu16.04.tar.gz
   sudo chmod 777 swift-5.0.1-RELEASE-ubuntu16.04/usr/lib/swift/CoreFoundation/module.map
 popd &>/dev/null;
+
+echo "Installing dependencies required for tests in codegens/csharp-restsharp"
+sudo apt-get install -y mono-complete
+echo "Installing dependencies required for tests in codegens/libcurl"
+sudo apt-get install curl
