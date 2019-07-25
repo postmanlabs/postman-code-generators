@@ -149,7 +149,6 @@ describe('libcurl convert function', function () {
           options = {
             indentCount: 1,
             indentType: 'Tab',
-            requestTimeout: 200,
             useMimeType: false,
             includeBoilerplate: true
           };

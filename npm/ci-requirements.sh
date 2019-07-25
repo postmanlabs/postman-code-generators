@@ -21,7 +21,5 @@ popd &>/dev/null;
 
 echo "Installing dependencies required for tests in codegens/csharp-restsharp"
 sudo apt-get install -y mono-complete
-echo "Installing dependencies required for tests in codegens/libcurl"
-sudo apt-get install curl
 echo "Installing dependencies required for tests in codegens/shell-httpie"
 sudo apt-get install httpie
