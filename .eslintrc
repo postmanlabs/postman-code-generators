@@ -22,7 +22,7 @@
     "no-dupe-args": "error",
     "no-dupe-keys": "error",
     "no-duplicate-case": "error",
-    "no-empty": "off",
+    "no-empty": "error",
     "no-empty-character-class": "error",
     "no-ex-assign": "error",
     "no-extra-boolean-cast": "error",
@@ -168,12 +168,15 @@
     "id-blacklist": "error",
     "id-length": "off",
     "id-match": "error",
-    "indent": "off",
+    "indent": ["error", 2, {
+      "VariableDeclarator": { "var": 1, "let": 1, "const": 1 },
+      "SwitchCase": 1
+    }],
     "jsx-quotes": ["error", "prefer-single"],
     "key-spacing": "error",
     "keyword-spacing": "error",
     "line-comment-position": "off",
-    "linebreak-style": "off",
+    "linebreak-style": ["error", "unix"],
     "lines-around-comment": ["error", {
       "beforeBlockComment": true,
       "afterBlockComment": false,
@@ -187,7 +190,9 @@
       "allowArrayEnd": false
     }],
     "max-depth": "error",
-    "max-len": "off",
+    "max-len": ["error", {
+      "code": 120
+    }],
     "max-lines": "off",
     "max-nested-callbacks": "error",
     "max-params": "off",
@@ -213,7 +218,7 @@
     "no-restricted-syntax": "error",
     "no-tabs": "error",
     "no-ternary": "off",
-    "no-trailing-spaces": "off",
+    "no-trailing-spaces": "error",
     "no-underscore-dangle": "off",
     "no-unneeded-ternary": "error",
     "no-whitespace-before-property": "error",
@@ -221,7 +226,7 @@
     "object-curly-newline": "off",
     "object-curly-spacing": "off",
     "object-property-newline": "off",
-    "one-var": "off",
+    "one-var": ["error", "always"],
     "one-var-declaration-per-line": "error",
     "operator-assignment": "error",
     "operator-linebreak": ["error", "after"],

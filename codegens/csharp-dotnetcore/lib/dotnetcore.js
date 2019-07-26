@@ -31,11 +31,12 @@ function makeSnippet (request, options) {
   }
 
   // Generate the main section of the code snippet.
-  snippet += `HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("${request.method}"), "${sanitize(request.url.toString())}");\n`;
+  snippet += `HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("${request.method}"), ` +
+              `"${sanitize(request.url.toString())}");\n`;
   snippet += parseRequest.parseHeader(request.toJSON(), options.trimRequestBody);
   snippet += parseRequest.parseBody(request, options.trimRequestBody);
-  snippet += 'HttpResponseMessage response = await client.SendAsync(request);\n' + 
-  'string responseBody = await response.Content.ReadAsStringAsync();\n' + 
+  snippet += 'HttpResponseMessage response = await client.SendAsync(request);\n' +
+  'string responseBody = await response.Content.ReadAsStringAsync();\n' +
   'Console.WriteLine(responseBody);\n';
 
   return snippet;
