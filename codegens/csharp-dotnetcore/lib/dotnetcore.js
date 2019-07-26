@@ -1,3 +1,5 @@
+// .Net Core Web API Port Of C# RestSharp Codegen
+// Created By: Matthew Wethington <maytanee.wethington@tylertech.com> and Isaac Ilami <isaac.ilami@tylertech.com>
 var _ = require('./lodash'),
 
   parseRequest = require('./parseRequest'),

@@ -22,7 +22,7 @@
     "type": "git",
     "url": ""
   },
-  "author": "Matthew Wethington <maytanee.wethington@tylertech.com>, Isaac Ilami <isaac.ilami@tylertech.com>",
+  "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
   "homepage": "",
   "dependencies": {},
