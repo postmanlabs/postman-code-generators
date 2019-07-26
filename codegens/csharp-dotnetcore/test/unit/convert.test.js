@@ -143,7 +143,7 @@ function runSnippet (codeSnippet, collection, done) {
 
 // To disable tests, add .skip after the describe or it keywords.
 describe('csharp .net core function', function () {
-  describe('convert for different request types', function () {
+  describe.skip('convert for different request types', function () {
     var headerSnippet = 'using System;\n' +
                         'using System.Collections.Generic;\n' +
                         'using System.IO;\n' +
