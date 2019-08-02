@@ -42,7 +42,9 @@ function parseFormData (body, trim) {
   _.forEach(body, function (data) {
     if (!data.disabled) {
       if (data.type === 'file') {
-        bodySnippet += `formdata.append("${sanitize(data.key, trim)}", "${sanitize(data.src, trim)}");\n`;
+        bodySnippet += `// if access to fs, use fs.createReadStream('${data.src}') ` +
+        'to get file contents in second argument\n';
+        bodySnippet += `formdata.append("${sanitize(data.key, trim)}",fileInput.files[0], '${data.src}');\n`;
       }
       else {
         bodySnippet += `formdata.append("${sanitize(data.key, trim)}", "${sanitize(data.value, trim)}");\n`;
@@ -185,7 +187,7 @@ function convert (request, options, callback) {
   var indent = options.indentType === 'Tab' ? '\t' : ' ',
     trim = options.trimRequestBody,
     headers, body,
-    codeSnippet = '',
+    codeSnippet = 'var fs = require(\'fs\');\n',
     headerSnippet = '',
     bodySnippet = '',
     optionsSnippet = '',
