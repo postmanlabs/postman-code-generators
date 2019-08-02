@@ -4,16 +4,15 @@ var expect = require('chai').expect,
   convert = require('../../lib').convert,
   getOptions = require('../../lib').getOptions,
   sanitize = require('../../lib/util/sanitize').sanitize,
-  parseBody = require('../../lib/util/parseBody');
+  parseBody = require('../../lib/util/parseBody'),
+  collection = new sdk.Collection(JSON.parse(fs.readFileSync('test/unit/fixtures/sample_collection.json').toString()));
 
 describe('Request Snippet', function () {
 
   describe('should be same as the valid request snippet for Php-Pecl(HTTP) for ', function () {
 
     it('request headers', function (finish) {
-      var collection = new sdk.Collection(JSON.parse(
-          fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
-        request = collection.items.members[0].request,
+      var request = collection.items.members[0].request,
         outputSnippet;
 
       convert(request, {indentType: 'Space',
@@ -42,9 +41,7 @@ describe('Request Snippet', function () {
     });
 
     it('request headers (with special characters) + (Request timeout check)', function (finish) {
-      var collection = new sdk.Collection(JSON.parse(
-          fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
-        request = collection.items.members[1].request,
+      var request = collection.items.members[1].request,
         outputSnippet;
 
       convert(request, {indentType: 'Space',
@@ -75,9 +72,7 @@ describe('Request Snippet', function () {
     });
 
     it('request headers (disabled headers)', function (finish) {
-      var collection = new sdk.Collection(JSON.parse(
-          fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
-        request = collection.items.members[2].request,
+      var request = collection.items.members[2].request,
         outputSnippet;
 
       convert(request, {indentType: 'Space',
@@ -106,9 +101,7 @@ describe('Request Snippet', function () {
     });
 
     it('GET request with disabled query', function (finish) {
-      var collection = new sdk.Collection(JSON.parse(
-          fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
-        request = collection.items.members[3].request,
+      var request = collection.items.members[3].request,
         outputSnippet;
 
       convert(request, {indentType: 'Space',
@@ -135,9 +128,7 @@ describe('Request Snippet', function () {
     });
 
     it('POST form data with special characters + (Check trim true)', function (finish) {
-      var collection = new sdk.Collection(JSON.parse(
-          fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
-        request = collection.items.members[4].request,
+      var request = collection.items.members[4].request,
         outputSnippet;
 
       convert(request, {indentType: 'Space',
@@ -170,9 +161,7 @@ describe('Request Snippet', function () {
     });
 
     it('Resolve URL (quotes + special characters)', function (finish) {
-      var collection = new sdk.Collection(JSON.parse(
-          fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
-        request = collection.items.members[5].request,
+      var request = collection.items.members[5].request,
         outputSnippet;
 
       convert(request, {indentType: 'Space',
@@ -200,9 +189,7 @@ describe('Request Snippet', function () {
     });
 
     it('POST raw text', function (finish) {
-      var collection = new sdk.Collection(JSON.parse(
-          fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
-        request = collection.items.members[6].request,
+      var request = collection.items.members[6].request,
         outputSnippet;
 
       convert(request, {indentType: 'Space',
@@ -235,9 +222,7 @@ describe('Request Snippet', function () {
     });
 
     it('POST urlencoded data with disabled entries + (Check for trim option false)', function (finish) {
-      var collection = new sdk.Collection(JSON.parse(
-          fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
-        request = collection.items.members[7].request,
+      var request = collection.items.members[7].request,
         outputSnippet;
 
       convert(request, {indentType: 'Space',
@@ -269,9 +254,7 @@ describe('Request Snippet', function () {
     });
 
     it('POST raw data as JSON', function (finish) {
-      var collection = new sdk.Collection(JSON.parse(
-          fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
-        request = collection.items.members[8].request,
+      var request = collection.items.members[8].request,
         outputSnippet;
 
       convert(request, {indentType: 'Space',
@@ -301,9 +284,7 @@ describe('Request Snippet', function () {
     });
 
     it('POST raw data as javascript', function (finish) {
-      var collection = new sdk.Collection(JSON.parse(
-          fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
-        request = collection.items.members[9].request,
+      var request = collection.items.members[9].request,
         outputSnippet;
 
       convert(request, {indentType: 'Space',
@@ -333,9 +314,7 @@ describe('Request Snippet', function () {
     });
 
     it('POST raw data as text/xml', function (finish) {
-      var collection = new sdk.Collection(JSON.parse(
-          fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
-        request = collection.items.members[10].request,
+      var request = collection.items.members[10].request,
         outputSnippet;
 
       convert(request, {indentType: 'Space',
@@ -365,9 +344,7 @@ describe('Request Snippet', function () {
     });
 
     it('POST raw data as text/html', function (finish) {
-      var collection = new sdk.Collection(JSON.parse(
-          fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
-        request = collection.items.members[11].request,
+      var request = collection.items.members[11].request,
         outputSnippet;
 
       convert(request, {indentType: 'Space',
@@ -397,9 +374,7 @@ describe('Request Snippet', function () {
     });
 
     it('POST binary file in body', function (finish) {
-      var collection = new sdk.Collection(JSON.parse(
-          fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
-        request = collection.items.members[25].request,
+      var request = collection.items.members[25].request,
         outputSnippet;
       convert(request, {indentType: 'Space',
         indentCount: 4,
@@ -416,7 +391,8 @@ describe('Request Snippet', function () {
                 '$request->setRequestMethod(\'POST\');\n' +
                 '$body = new http\\Message\\Body;\n' +
                 '$body->addForm(array(), array(' +
-                '        array(\'name\' => \'\', \'type\' => \'\', \'file\' => \'\', \'data\' => null)));\n' +
+                '        array(\'name\' => \'\', \'type\' => \'content-type header\',' +
+                ' \'file\' => \'\', \'data\' => null)));\n' +
                 '$request->setBody($body);\n' +
                 '$request->setOptions(array());\n' +
                 '$request->setHeaders(array(\n' +
@@ -432,9 +408,7 @@ describe('Request Snippet', function () {
     });
 
     it('POST form data with file', function (finish) {
-      var collection = new sdk.Collection(JSON.parse(
-          fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
-        request = collection.items.members[26].request,
+      var request = collection.items.members[26].request,
         outputSnippet;
       convert(request, {indentType: 'Space',
         indentCount: 4,
@@ -452,7 +426,8 @@ describe('Request Snippet', function () {
                 '$body = new http\\Message\\Body;\n' +
                 '$body->addForm(array(\n\n' +
                 '), array(        array(' +
-                '\'name\' => \'test-file\', \'type\' => \'file\', \'file\' => \'\', \'data\' => null)));\n' +
+                '\'name\' => \'test-file\', \'type\' => \'content-type header\',' +
+                ' \'file\' => \'\', \'data\' => null)));\n' +
                 '$request->setBody($body);\n' +
                 '$request->setOptions(array());\n\n' +
                 '$client->enqueue($request)->send();\n' +
@@ -466,9 +441,7 @@ describe('Request Snippet', function () {
   });
 
   it('should not throw an error if options is a function', function (done) {
-    var collection = new sdk.Collection(JSON.parse(
-        fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
-      request = collection.items.members[0].request;
+    var request = collection.items.members[0].request;
     convert(request, getOptions(), function (error, snippet) {
       if (error) {
         console.log(error);
@@ -481,9 +454,7 @@ describe('Request Snippet', function () {
   });
 
   it('should return valid snippet when options is not passed as argument', function (done) {
-    var collection = new sdk.Collection(JSON.parse(
-        fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
-      request = collection.items.members[0].request;
+    var request = collection.items.members[0].request;
     convert(request, function (error, snippet) {
       if (error) {
         console.log(error);
