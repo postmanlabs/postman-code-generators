@@ -46,7 +46,7 @@ function createForm (request, trimRequestBody) {
                     `${sanitize(value.value, request.body.mode, trimRequestBody)}");`);
       }
       return (`form.append("${sanitize(value.key, request.body.mode, trimRequestBody)}", fileInput.files[0], ` +
-                    `"${sanitize(value.value || value.src, request.body.mode, trimRequestBody)}");`);
+                    `"${sanitize(value.src, request.body.mode, trimRequestBody)}");`);
     });
     form += `${formMap.join('\n')}\n\n`;
   }
