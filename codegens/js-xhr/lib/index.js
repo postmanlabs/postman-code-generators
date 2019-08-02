@@ -44,8 +44,7 @@ function parseFormData (body, trim) {
       /* istanbul ignore next */
       /* ignoring because the file src is not stored in postman collection" */
       if (data.type === 'file') {
-        bodySnippet += `data.append("${sanitize(data.key, trim)}", "${sanitize(data.src, trim)}", `;
-        bodySnippet += `"${sanitize(data.key, trim)}");\n`;
+        bodySnippet += `data.append("${sanitize(data.key, trim)}",fileInput.files[0], "${data.src}");\n `;
       }
       else {
         bodySnippet += `data.append("${sanitize(data.key, trim)}", "${sanitize(data.value, trim)}");\n`;
