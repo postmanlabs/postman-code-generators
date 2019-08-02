@@ -3,10 +3,10 @@ var _ = require('../lodash'),
 
 /**
  * Used to parse the body of the postman SDK-request and return in the desired format
- * 
+ *
  * @param  {Object} request - postman SDK-request object
  * @param  {String} indentation - used for indenting snippet's structure
- * @param  {Boolean} bodyTrim - whether to trim request body fields 
+ * @param  {Boolean} bodyTrim - whether to trim request body fields
  * @returns {String} - request body
  */
 module.exports = function (request, indentation, bodyTrim) {
@@ -53,12 +53,12 @@ module.exports = function (request, indentation, bodyTrim) {
               requestBody += `dataList.append("${sanitize(data.value, 'form-data', true)}")\n`;
             }
             else {
-              requestBody += `dataList.append('Content-Disposition: form-data; name=${sanitize(data.key, 'form-data', true)}; filename={0}'.format(${sanitize(data.src, 'formdata', true)}))\n\n`; // eslint-disable-line max-len
-              requestBody += `fileType = mimetypes.guess_type(${sanitize(data.src, 'formdata', true)})[0] or 'application/octet-stream\n'`; // eslint-disable-line max-len
+              requestBody += `dataList.append('Content-Disposition: form-data; name=${sanitize(data.key, 'form-data', true)}; filename={0}'.format('${sanitize(data.src, 'formdata', true)}'))\n\n`; // eslint-disable-line max-len
+              requestBody += `fileType = mimetypes.guess_type('${sanitize(data.src, 'formdata', true)}')[0] or 'application/octet-stream'\n`; // eslint-disable-line max-len
               requestBody += 'dataList.append(\'Content-Type: {}\'.format(fileType))\n';
               requestBody += 'dataList.append(\'\')\n\n';
 
-              requestBody += `with open(${data.src}) as f:\n`;
+              requestBody += `with open('${data.src}') as f:\n`;
               requestBody += `${indentation}dataList.append(f.read())\n`;
             }
           });
