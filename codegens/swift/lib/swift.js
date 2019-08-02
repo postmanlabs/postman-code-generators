@@ -60,12 +60,17 @@ function parseFormData (body, mode, trim, indent) {
   bodySnippet += `${indent.repeat(2)}body += "--\\(boundary)\\r\\n"\n`;
   // eslint-disable-next-line no-useless-escape
   bodySnippet += `${indent.repeat(2)}body += "Content-Disposition:form-data; name=\\"\\(paramName)\\"\"\n`;
-  bodySnippet += `${indent.repeat(2)}if let paramValue = param["value"] {\n`;
+  bodySnippet += `${indent.repeat(2)}let paramType = param["type"] as! String\n`;
+  bodySnippet += `${indent.repeat(2)}if paramType == "text" {\n`;
+  bodySnippet += `${indent.repeat(3)}let paramValue = param["value"] as! String\n`;
   bodySnippet += `${indent.repeat(3)}body += "\\r\\n\\r\\n\\(paramValue)\\r\\n"\n`;
   bodySnippet += `${indent.repeat(2)}} else {\n`;
-  bodySnippet += `${indent.repeat(3)}body += "; filename=\\"{Insert_File_Name}\\"\\r\\n"\n`;
-  bodySnippet += `${indent.repeat(3)}  + "Content-Type: \\"{Insert_File_Content_Type}\\"\\r\\n\\r\\n`;
-  bodySnippet += '{Insert_File_Content}\\r\\n"\n';
+  bodySnippet += `${indent.repeat(3)}let paramSrc = param["src"] as! String\n`;
+  bodySnippet += `${indent.repeat(3)}let fileData = try NSData(contentsOfFile:paramSrc, options:[]) as Data\n`;
+  bodySnippet += `${indent.repeat(3)}let fileContent = String(data: fileData, encoding: .utf8)!\n`;
+  bodySnippet += `${indent.repeat(3)}body += "; filename=\\"\\(paramSrc)\\"\\r\\n"\n`;
+  bodySnippet += `${indent.repeat(3)}  + "Content-Type: \\"content-type header\\"\\r\\n\\r\\n`;
+  bodySnippet += '\\(fileContent)\\r\\n"\n';
   bodySnippet += `${indent.repeat(2)}}\n${indent}}\n}\nbody += "--\\(boundary)--\\r\\n";\n`;
   bodySnippet += 'let postData = body.data(using: .utf8)';
   return bodySnippet;
