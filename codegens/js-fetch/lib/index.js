@@ -44,7 +44,7 @@ function parseFormData (body, trim) {
       if (data.type === 'file') {
         bodySnippet += `// if access to fs, use fs.createReadStream('${data.src}') ` +
         'to get file contents in second argument\n';
-        bodySnippet += `formdata.append("${sanitize(data.key, trim)}",fileInput.files[0], '${data.src}');\n`;
+        bodySnippet += `formdata.append("${sanitize(data.key, trim)}",fileInput.files[0], "${data.src}");\n`;
       }
       else {
         bodySnippet += `formdata.append("${sanitize(data.key, trim)}", "${sanitize(data.value, trim)}");\n`;
