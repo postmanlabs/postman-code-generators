@@ -25,7 +25,7 @@
   "dependencies": {
     "async": "2.5.0",
     "path": "0.12.7",
-    "postman-collection": "3.4.8",
+    "postman-collection": "3.5.1",
     "shelljs": "0.7.8"
   },
   "devDependencies": {
@@ -45,10 +45,10 @@
     "jsdoc-to-markdown": "5.0.0",
     "lodash": "4.17.11",
     "mocha": "4.0.1",
-    "newman": "4.5.0",
+    "newman": "4.5.2",
     "nyc": "14.1.1",
     "parse-gitignore": "1.0.1",
-    "postman-collection": "3.4.8",
+    "postman-collection": "3.5.1",
     "pretty-ms": "3.0.1",
     "recursive-readdir": "2.1.0",
     "watchify": "3.11.1"
