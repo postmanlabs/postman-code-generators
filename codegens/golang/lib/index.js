@@ -49,10 +49,11 @@ function parseFormData (body, trim, indent) {
       if (data.type === 'file') {
         isFile = true;
         bodySnippet += `${indent}// add your file name in the next statement in place of path\n`;
-        bodySnippet += `${indent}file, err := os.Open(path)\n`;
+        bodySnippet += `${indent}file, err := os.Open("${data.src}")\n`;
         bodySnippet += `${indent}defer file.Close()\n`;
-        bodySnippet += `${indent}part, err := writer.CreateFormFile("file", filepath.Base(path))\n`;
-        bodySnippet += `${indent}_, err := io.Copy(part, file)\n`;
+        bodySnippet += `${indent}part, err := writer.CreateFormFile("${sanitize(data.key, trim)}",` +
+                        `filepath.Base("${data.src}"))\n`;
+        bodySnippet += `${indent}_, err = io.Copy(part, file)\n`;
       }
       else {
         bodySnippet += `${indent}_ = writer.WriteField("${sanitize(data.key, trim)}",`;
@@ -60,7 +61,12 @@ function parseFormData (body, trim, indent) {
       }
     }
   });
-  bodySnippet += `${indent}err := writer.Close()\n${indent}if err != nil {${indent}fmt.Println(err)}\n`;
+  if (isFile) {
+    bodySnippet += `${indent}err = writer.Close()\n${indent}if err != nil {${indent}fmt.Println(err)}\n`;
+  }
+  else {
+    bodySnippet += `${indent}err := writer.Close()\n${indent}if err != nil {${indent}fmt.Println(err)}\n`;
+  }
   return bodySnippet;
 }
 
@@ -160,6 +166,7 @@ self = module.exports = {
     }
     if (isFile) {
       codeSnippet += `${indent}"os"\n${indent}"path/filepath"\n`;
+      codeSnippet += `${indent}"io"\n`;
     }
     codeSnippet += `${indent}"net/http"\n${indent}"io/ioutil"\n)\n\n`;
 
