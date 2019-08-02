@@ -39,12 +39,24 @@ function parseFormData (body, trim) {
   var bodySnippet = '$multipartContent = [System.Net.Http.MultipartFormDataContent]::new()\n';
   _.forEach(body, function (data) {
     if (!data.disabled) {
-      bodySnippet += '$stringHeader = ' +
+      if (data.type === 'text') {
+        bodySnippet += '$stringHeader = ' +
                             '[System.Net.Http.Headers.ContentDispositionHeaderValue]::new("form-data")\n' +
                             `$stringHeader.Name = "${sanitize(data.key, trim)}"\n` +
                             `$StringContent = [System.Net.Http.StringContent]::new("${sanitize(data.value, trim)}")\n` +
                             '$StringContent.Headers.ContentDisposition = $stringHeader\n' +
                             '$multipartContent.Add($stringContent)\n\n';
+      }
+      else {
+        bodySnippet += `$multipartFile = '${data.src}'\n` +
+                        '$FileStream = [System.IO.FileStream]::new($multipartFile, [System.IO.FileMode]::Open)\n' +
+                        '$fileHeader = [System.Net.Http.Headers.ContentDispositionHeaderValue]::new("form-data")\n' +
+                        `$fileHeader.Name = "${sanitize(data.key)}"\n` +
+                        `$fileHeader.FileName = "${sanitize(data.src, trim)}"\n` +
+                        '$fileContent = [System.Net.Http.StreamContent]::new($FileStream)\n' +
+                        '$fileContent.Headers.ContentDisposition = $fileHeader\n' +
+                        '$multipartContent.Add($fileContent)\n\n';
+      }
     }
   });
   bodySnippet += '$body = $multipartContent\n';
