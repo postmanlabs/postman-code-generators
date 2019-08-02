@@ -1234,7 +1234,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": ""
+							"src": "/some/path"
 						}
 					]
 				},

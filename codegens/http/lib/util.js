@@ -9,10 +9,10 @@ const FORM_DATA_BOUNDARY = '----WebKitFormBoundary7MA4YWxkTrZu0gW',
 
 /**
  * Returns an array of properties in the property list.
- * 
+ *
  * @param {Object} propertyList - Postman SDK property list
  * @param {Boolean} includeDisabled - Determines whether disabled properties are to be returned
- * @returns {Object} List of members 
+ * @returns {Object} List of members
  */
 function getMembersOfPropertyList (propertyList, includeDisabled = false) {
   /* istanbul ignore else */
@@ -25,7 +25,7 @@ function getMembersOfPropertyList (propertyList, includeDisabled = false) {
 
 /**
  * Stringifies the members of the property list.
- * 
+ *
  * @param {Object} propertyList propertyList
  * @param {String} joinUsing specify string that should be used to join the list of properties
  * @param {Boolean} includeDisabled indicated whether or not to include disabled properties
@@ -44,7 +44,7 @@ function convertPropertyListToString (propertyList, joinUsing, includeDisabled =
 
 /**
  * Returns the request end-point as a string.
- * 
+ *
  * @param {Object} request - Postman SDK request
  * @returns {string} returns endpoint from the url path
  */
@@ -65,7 +65,7 @@ function getEndPoint (request) {
 
 /**
  * Returns the request host as a string.
- * 
+ *
  * @param {Object} request - Postman SDK request
  * @returns {String} host
  */
@@ -84,8 +84,8 @@ function getHost (request) {
 
 /**
  * Returns the request headers as a string
- * 
- * @param {Object} request - Postman SDK request 
+ *
+ * @param {Object} request - Postman SDK request
  * @returns {Function} calls convertPropertyListToString
  */
 function getHeaders (request) {
@@ -108,8 +108,8 @@ function getHeaders (request) {
 
 /**
  * Returns the request body as a string
- * 
- * @param {Object} request - Postman SDK request 
+ *
+ * @param {Object} request - Postman SDK request
  * @param {Boolean} trimRequestBody - Determines whether to trim the body
  * @returns {String} returns Body of the request
  */
@@ -145,8 +145,8 @@ function getBody (request, trimRequestBody) {
             }
             else if (property.type === 'file') {
               requestBody += 'Content-Disposition: form-data; name="';
-              requestBody += `${(trimRequestBody ? property.key.trim() : property.key)}"; filename="<FILE_NAME >"`;
-              requestBody += `\n${(trimRequestBody ? property.value.trim() : property.value)}\n`;
+              requestBody += `${(trimRequestBody ? property.key.trim() : property.key)}"; filename="`;
+              requestBody += `${(trimRequestBody ? property.src.trim() : property.src)}"\n`;
             }
             requestBody += `${FORM_DATA_BOUNDARY}\n`;
           });
