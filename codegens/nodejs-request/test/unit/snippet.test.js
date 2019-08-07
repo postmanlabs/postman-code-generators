@@ -263,6 +263,46 @@ describe('nodejs-request convert function', function () {
       });
     });
 
+    it('should return snippet with proper semicolon placed where required', function () {
+      // testing for the below snippet
+      /*
+       var request = require('request');
+       var fs = require('fs');
+       var options = {
+         'method': 'GET',
+         'url': 'https://postman-echo.com/headers',
+         'headers': {
+           'my-sample-header': 'Lorem ipsum dolor sit amet',
+           'not-disabled-header': 'ENABLED'
+         }
+       };
+       request(options, function (error, response) {
+         if (error) throw new Error(error);
+         console.log(response.body);
+       }); */
+      request = new sdk.Request(mainCollection.item[0].request);
+      options = {};
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        console.log(snippet);
+        expect(snippet).to.be.a('string');
+        var snippetArray = snippet.split('\n');
+        snippetArray.forEach(function (line, index) {
+          if (line.charAt(line.length - 2) === ')') {
+            expect(line.charAt(line.length - 1)).to.equal(';');
+          }
+          expect(line.charAt(line.length - 1)).to.not.equal(')');
+          // check for the closing curly bracket of options object
+          if (line.startsWith('request')) {
+            var previousLine = snippetArray[index - 1];
+            expect(previousLine.charAt(previousLine.length - 1)).to.equal(';');
+          }
+        });
+      });
+    });
+
     describe('getOptions function', function () {
 
       it('should return an array of specific options', function () {
