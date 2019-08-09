@@ -1,0 +1,38 @@
+{
+  "name": "@postman/codegen-nodejs-axios",
+  "version": "0.1.2",
+  "description": "Converts Postman-SDK Request into code snippet for NodeJS(Axios)",
+  "com_postman_plugin": {
+    "type": "code_generator",
+    "lang": "nodejs",
+    "variant": "Axios",
+    "syntax_mode": "javascript"
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node npm/test.js --inspect",
+    "test-lint": "node npm/test-lint.js",
+    "test-unit": "node npm/test-unit.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Ajith Chandran <ajithredsmoke@gmail.com",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/nodejs-axios",
+  "dependencies": {
+    "requests": "^0.3.0"
+  },
+  "devDependencies": {
+    "axios": "^0.19.0",
+    "request": "2.83.0"
+  },
+  "engines": {
+    "node": ">=8"
+  }
+}
