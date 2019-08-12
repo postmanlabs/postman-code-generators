@@ -227,7 +227,7 @@ function getBody (request, trimRequestBody) {
                 requestBody += `Content-Type: ${contentTypeHeaderMap[fileExtension]}\n\n`;
               }
               else {
-                requestBody += 'Content-Type: content-type header here\n\n';
+                requestBody += 'Content-Type: <Content-Type header here>\n\n';
               }
               requestBody += '(data)\n';
             }
