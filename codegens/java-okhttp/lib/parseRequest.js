@@ -4,8 +4,8 @@ var _ = require('./lodash'),
 
 /**
  * parses body of request and returns urlencoded string
- * 
- * @param {Object} requestBody - json object respresenting body of request 
+ *
+ * @param {Object} requestBody - json object respresenting body of request
  * @param {Boolean} trimFields - indicates whether to trim fields of body
  * @returns {String} - urlencoded string for request body
  */
@@ -21,7 +21,7 @@ function parseUrlencode (requestBody, trimFields) {
 
 /**
  * parses body of request and creates java okhttp code snippet for adding form data
- * 
+ *
  * @param {Object} requestBody - JSON object representing body of request
  * @param {String} indentString - string for indentation
  * @param {Boolean} trimFields - indicates whether to trim fields of body
@@ -51,7 +51,7 @@ function parseFormData (requestBody, indentString, trimFields) {
 
 /**
  * parses request object and returns java okhttp code snippet for adding request body
- * 
+ *
  * @param {Object} requestBody - JSON object representing body of request
  * @param {String} indentString - string for indentation
  * @param {Boolean} trimFields - indicates whether to trim fields of body
@@ -71,10 +71,11 @@ function parseBody (requestBody, indentString, trimFields) {
                         `${parseFormData(requestBody, indentString, trimFields)};\n`;
         /* istanbul ignore next */
       case 'file':
-        return 'RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
-                        indentString + `.addFormDataPart("file", "${requestBody[requestBody.mode].src}",\n` +
-                        indentString + 'RequestBody.create(MediaType.parse("application/octet-stream"),\n' +
-                        indentString + `new File("${requestBody[requestBody.mode].src}"))).build();\n`;
+        // return 'RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
+        //                 indentString + `.addFormDataPart("file", "${requestBody[requestBody.mode].src}",\n` +
+        //                 indentString + 'RequestBody.create(MediaType.parse("application/octet-stream"),\n' +
+        //                 indentString + `new File("${requestBody[requestBody.mode].src}"))).build();\n`;
+        return '<file contents here>\n';
       default:
         return 'RequestBody body = RequestBody.create(mediaType, "");\n';
     }
@@ -84,7 +85,7 @@ function parseBody (requestBody, indentString, trimFields) {
 
 /**
  * Parses header in Postman-SDK request and returns code snippet of java okhttp for adding headers
- * 
+ *
  * @param {Object} request - Postman SDK reqeust object
  * @param {String} indentString - indentation for code snippet
  * @returns {String} - code snippet for adding headers in java-okhttp
@@ -105,8 +106,8 @@ function parseHeader (request, indentString) {
 
 /**
  * returns content-type of request body if available else returns text/plain as default
- * 
- * @param {Object} request - Postman SDK request object 
+ *
+ * @param {Object} request - Postman SDK request object
  * @returns {String}- content-type of request body
  */
 function parseContentType (request) {

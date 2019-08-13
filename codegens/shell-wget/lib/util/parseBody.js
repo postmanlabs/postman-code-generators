@@ -3,9 +3,9 @@ var _ = require('../lodash'),
 
 /**
  * Used to parse the body of the postman SDK-request and return in the desired format
- * 
+ *
  * @param  {Object} request - postman SDK-request object
- * @param  {Boolean} trimRequestBody - whether to trim request body fields 
+ * @param  {Boolean} trimRequestBody - whether to trim request body fields
  * @param  {String} indentation - used for indenting snippet's structure
  * @returns {String} - request body
  */
@@ -52,9 +52,10 @@ module.exports = function (request, trimRequestBody, indentation) {
         return requestBody;
         /* istanbul ignore next */
       case 'file':
-        requestBody = `${indentation}--body-file = '@'`;
-        requestBody += `${sanitize(request.body[request.body.mode].src,
-          request.body.mode, trimRequestBody)}'),\n`;
+        // requestBody = `${indentation}--body-file = '@'`;
+        // requestBody += `${sanitize(request.body[request.body.mode].src,
+        //   request.body.mode, trimRequestBody)}'),\n`;
+        requestBody = `${indentation}<file contents here>\n`;
         return requestBody;
       default:
         return requestBody;

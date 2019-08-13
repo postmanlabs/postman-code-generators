@@ -14,7 +14,7 @@ const BOUNDARY_HASH = 'e4dgoae5mIkjFjfG',
 
 /**
  * Used to parse the body of the postman SDK-request and return in the desired format
- * 
+ *
  * @param  {Object} request - postman SDK-request object
  * @returns {String} - request body
  */
@@ -46,10 +46,10 @@ module.exports = {
   },
 
   /**
-   * parses host of request object and returns code snippet of nodejs native to add hostname 
-   * 
+   * parses host of request object and returns code snippet of nodejs native to add hostname
+   *
    * @param {Object} request - Postman SDK request object
-   * @returns {String} - code snippet of nodejs native to add hostname 
+   * @returns {String} - code snippet of nodejs native to add hostname
    */
   addHost: function (request) {
     var hostArray = _.get(request, 'url.host', []),
@@ -102,9 +102,9 @@ module.exports = {
   },
 
   /**
- * parses variable of request url object and sets hostname, path and query in request object 
- * 
- * @param {Object} request - Postman SDK request object 
+ * parses variable of request url object and sets hostname, path and query in request object
+ *
+ * @param {Object} request - Postman SDK request object
  */
   parseURLVariable: function (request) {
     const variableArray = _.get(request.toJSON(), 'url.variable', []);
@@ -174,7 +174,9 @@ module.exports = {
           parsedBody = requestBody ? `${Sanitize.quote(requestBody)}` : '';
         }
         break;
-
+      case 'file':
+        parsedBody = '<file contents here>';
+        break;
       default:
         parsedBody = '';
     }

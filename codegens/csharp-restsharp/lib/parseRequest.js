@@ -62,7 +62,7 @@ function parseBody (request, trimFields) {
                     `${JSON.stringify(requestBody[requestBody.mode])},  ParameterType.RequestBody);\n`;
         /* istanbul ignore next */
       case 'file':
-        return `request.AddFile("file", "${sanitize(requestBody[requestBody.mode].src, trimFields)}");\n`;
+        return '<file contents here>;\n';
       default:
         return '';
     }

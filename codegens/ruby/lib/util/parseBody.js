@@ -3,9 +3,9 @@ var _ = require('../lodash'),
 
 /**
  * Used to parse the body of the postman SDK-request and return in the desired format
- * 
+ *
  * @param  {Object} request - postman SDK-request object
- * @param  {Boolean} trimRequestBody - whether to trim request body fields 
+ * @param  {Boolean} trimRequestBody - whether to trim request body fields
  * @returns {String} - request body
  */
 module.exports = function (request, trimRequestBody) {
@@ -50,6 +50,7 @@ module.exports = function (request, trimRequestBody) {
         }
         return requestBody;
       case 'file':
+        requestBody = '<file contents here>\n';
         // TODO find out how and implement
         return requestBody;
       default:

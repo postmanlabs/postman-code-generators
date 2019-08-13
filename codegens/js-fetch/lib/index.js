@@ -70,7 +70,7 @@ function parseRawBody (body, trim) {
  * @param {Object} body File body.
  */
 function parseFileData (body) {
-  var bodySnippet = `var file = "${body.content}";\n`;
+  var bodySnippet = '<file contents here>\n';
   return bodySnippet;
 }
 

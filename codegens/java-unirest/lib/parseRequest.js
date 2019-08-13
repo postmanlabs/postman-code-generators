@@ -4,7 +4,7 @@ var _ = require('./lodash'),
 
 /**
  * parses form data from request body and returns codesnippet in java unirest
- * 
+ *
  * @param {Object} requestbody - JSON object acquired by request.body.JSON()
  * @param {String} indentString - value for indentation
  * @param {Boolean} trimField - whether to trim fields of the request body
@@ -28,9 +28,9 @@ function parseFormData (requestbody, indentString, trimField) {
 }
 
 /**
- * parses body from request object based on mode provided by request body and 
+ * parses body from request object based on mode provided by request body and
  * returns codesnippet in java unirest
- * 
+ *
  * @param {Object} request - postman request object, more information can be found in postman collection sdk
  * @param {String} indentString - value for indentation
  * @param {Boolean} trimField - whether to trim fields of body of the request
@@ -46,7 +46,7 @@ function parseBody (request, indentString, trimField) {
       case 'formdata':
         return parseFormData(request.body.toJSON(), indentString, trimField);
       case 'file':
-        return indentString + `.field("file", "new File(${request.body[request.body.mode].src})")\n`;
+        return indentString + '<file contents here>\n';
       default:
         return '';
     }
@@ -56,7 +56,7 @@ function parseBody (request, indentString, trimField) {
 
 /**
  * parses header from request and returns codesnippet in java unirest
- * 
+ *
  * @param {Object} request - postman request object, more information can be found in postman collection sdk
  * @param {String} indentString - value for indentation
  * @returns {String} - body string parsed from request object

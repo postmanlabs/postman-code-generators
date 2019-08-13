@@ -105,7 +105,8 @@ function parseBody (body, trim) {
         return parseFormData(body.formdata, trim);
         /* istanbul ignore next */
       case 'file':
-        return parseFileData(body.file, trim);
+        // return parseFileData(body.file, trim);
+        return '<file contents here>';
       default:
         return parseRawBody(body[body.mode], trim);
     }

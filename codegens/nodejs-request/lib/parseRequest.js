@@ -73,9 +73,10 @@ function parseBody (requestbody, indentString, trimBody) {
                         indentString + '}';
         /* istanbul ignore next */
       case 'file':
-        return 'formData: {\n' +
-                        extractFormData(requestbody[requestbody.mode], indentString, trimBody) +
-                        indentString + '}';
+        // return 'formData: {\n' +
+        //                 extractFormData(requestbody[requestbody.mode], indentString, trimBody) +
+        //                 indentString + '}';
+        return '<file contents here>';
       default:
         return '';
     }
