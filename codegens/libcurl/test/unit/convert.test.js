@@ -17,119 +17,113 @@ var expect = require('chai').expect,
  * @param {Function} done - callback for async calls
  */
 function runSnippet (codeSnippet, collection, done) {
-  fs.writeFile('testFile.c', codeSnippet, function (err) {
-    if (err) {
-      expect.fail(null, null, err);
+  fs.writeFileSync('testFile.c', codeSnippet);
 
-      return done();
-    }
+  //  step by step process for compile, run code snippet, then comparing its output with newman
+  parallel([
+    function (callback) {
+      exec('`curl-config --cc --cflags` -o executableFile testFile.c `curl-config --libs`',
+        function (err, stdout, stderr) {
+          if (err) {
+            return callback(err);
+          }
+          if (stderr) {
+            return callback(stderr);
+          }
 
-    //  step by step process for compile, run code snippet, then comparing its output with newman
-    parallel([
-      function (callback) {
-        exec('`curl-config --cc --cflags` -o executableFile testFile.c `curl-config --libs`',
-          function (err, stdout, stderr) {
+          exec('./executableFile', function (err, stdout, stderr) {
             if (err) {
               return callback(err);
             }
             if (stderr) {
               return callback(stderr);
             }
+            // this because response also display response code at the end of response body
+            stdout = stdout.substring(0, stdout.length - 3);
+            try {
+              stdout = JSON.parse(stdout);
+            }
+            catch (e) {
+              console.error(e);
+            }
 
-            exec('./executableFile', function (err, stdout, stderr) {
-              if (err) {
-                return callback(err);
-              }
-              if (stderr) {
-                return callback(stderr);
-              }
-              // this because response also display response code at the end of response body
-              stdout = stdout.substring(0, stdout.length - 3);
-              try {
-                stdout = JSON.parse(stdout);
-              }
-              catch (e) {
-                console.error(e);
-              }
-
-              return callback(null, stdout);
-            });
+            return callback(null, stdout);
           });
-      },
-      function (callback) {
-        newman.run({
-          collection: collection
-        }).on('request', function (err, summary) {
-          if (err) {
-            return callback(err);
-          }
-
-          var stdout = summary.response.stream.toString();
-
-          try {
-            stdout = JSON.parse(stdout);
-          }
-          catch (e) {
-            console.error(e);
-          }
-
-          return callback(null, stdout);
         });
-      }
-    ], function (err, result) {
-      if (err) {
-        expect.fail(null, null, err);
-      }
-      else if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
-        expect(result[0].toString().trim()).to.include(result[1].toString().trim());
-      }
-      else {
-        const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'clientIPAddress'],
-          headersTodelete = [
-            'accept-encoding',
-            'user-agent',
-            'cf-ray',
-            'x-request-id',
-            'x-request-start',
-            'connect-time',
-            'x-forwarded-for',
-            'content-type',
-            'kong-cloud-request-id',
-            'content-length',
-            'accept',
-            'total-route-time',
-            'cookie',
-            'cache-control',
-            'postman-token',
-            'x-real-ip'
-          ];
-
-        if (result[0]) {
-          propertiesTodelete.forEach(function (property) {
-            delete result[0][property];
-          });
-          if (result[0].headers) {
-            headersTodelete.forEach(function (property) {
-              delete result[0].headers[property];
-            });
-          }
-        }
-        if (result[1]) {
-          propertiesTodelete.forEach(function (property) {
-            delete result[1][property];
-          });
-          if (result[1].headers) {
-            headersTodelete.forEach(function (property) {
-              delete result[1].headers[property];
-            });
-          }
+    },
+    function (callback) {
+      newman.run({
+        collection: collection
+      }).on('request', function (err, summary) {
+        if (err) {
+          return callback(err);
         }
 
-        expect(result[0]).deep.equal(result[1]);
+        var stdout = summary.response.stream.toString();
+
+        try {
+          stdout = JSON.parse(stdout);
+        }
+        catch (e) {
+          console.error(e);
+        }
+
+        return callback(null, stdout);
+      });
+    }
+  ], function (err, result) {
+    if (err) {
+      expect.fail(null, null, err);
+    }
+    else if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
+      expect(result[0].toString().trim()).to.include(result[1].toString().trim());
+    }
+    else {
+      const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'clientIPAddress'],
+        headersTodelete = [
+          'accept-encoding',
+          'user-agent',
+          'cf-ray',
+          'x-request-id',
+          'x-request-start',
+          'connect-time',
+          'x-forwarded-for',
+          'content-type',
+          'kong-cloud-request-id',
+          'content-length',
+          'accept',
+          'total-route-time',
+          'cookie',
+          'cache-control',
+          'postman-token',
+          'x-real-ip'
+        ];
+
+      if (result[0]) {
+        propertiesTodelete.forEach(function (property) {
+          delete result[0][property];
+        });
+        if (result[0].headers) {
+          headersTodelete.forEach(function (property) {
+            delete result[0].headers[property];
+          });
+        }
+      }
+      if (result[1]) {
+        propertiesTodelete.forEach(function (property) {
+          delete result[1][property];
+        });
+        if (result[1].headers) {
+          headersTodelete.forEach(function (property) {
+            delete result[1].headers[property];
+          });
+        }
       }
 
-      return done();
-    });
+      expect(result[0]).deep.equal(result[1]);
+    }
+
+    return done();
   });
 }
 
