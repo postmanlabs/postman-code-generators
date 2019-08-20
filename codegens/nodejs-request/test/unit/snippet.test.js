@@ -263,6 +263,45 @@ describe('nodejs-request convert function', function () {
       });
     });
 
+    it('should return snippet with no trailing comma when requestTimeout ' +
+      'is set to non zero and followRedirect as true', function () {
+      request = new sdk.Request(mainCollection.item[0].request);
+      options = {
+        requestTimeout: 1000
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+          return;
+        }
+
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.not.include('timeout: 1000,');
+        expect(snippet).to.include('timeout: 1000');
+      });
+    });
+
+    it('should return snippet with just a single comma when requestTimeout ' +
+      'is set to non zero and followRedirect as false', function () {
+      request = new sdk.Request(mainCollection.item[0].request);
+      options = {
+        requestTimeout: 1000,
+        followRedirect: false,
+        indentCount: 1,
+        indentType: 'space'
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+          return;
+        }
+
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.not.include('timeout: 1000,,');
+        expect(snippet).to.include('timeout: 1000,\n followRedirect: false');
+      });
+    });
+
     describe('getOptions function', function () {
 
       it('should return an array of specific options', function () {
