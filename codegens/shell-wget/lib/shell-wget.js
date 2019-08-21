@@ -72,7 +72,7 @@ self = module.exports = {
         id: 'trimRequestBody',
         type: 'boolean',
         default: false,
-        description: 'Remove white space and additional lines that may affect the server’s response'
+        description: 'Remove white space and additional lines that may affect the server\'s response'
       }
     ];
   },

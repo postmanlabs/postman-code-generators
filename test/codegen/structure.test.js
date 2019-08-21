@@ -53,7 +53,7 @@ const expectedOptions = {
       name: 'Trim request body fields',
       type: 'boolean',
       default: true,
-      description: 'Remove white space and additional lines that may affect the server\’s response'
+      description: 'Remove white space and additional lines that may affect the server\'s response'
     },
     silent: {
       name: 'Use Silent Mode',

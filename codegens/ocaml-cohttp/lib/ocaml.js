@@ -224,7 +224,7 @@ self = module.exports = {
         id: 'trimRequestBody',
         type: 'boolean',
         default: true,
-        description: 'Remove white space and additional lines that may affect the server’s response'
+        description: 'Remove white space and additional lines that may affect the server\'s response'
       },
       {
         name: 'Set request timeout',
