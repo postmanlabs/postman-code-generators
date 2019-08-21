@@ -29,8 +29,8 @@ function makeSnippet (request, indentString, options) {
   }
 
   snippet += '.end(function (res) { \n';
-  snippet += indentString + 'if (res.err) console.log(res.err);\n';
-  snippet += indentString + 'console.log(JSON.stringify(res.body));\n';
+  snippet += indentString + 'if (res.error) throw new Error(res.error); \n';
+  snippet += indentString + 'console.log(res.raw_body);\n';
   snippet += '});\n';
 
   return snippet;
