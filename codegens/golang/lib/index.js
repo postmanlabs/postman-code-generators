@@ -163,7 +163,7 @@ self = module.exports = {
     }
     codeSnippet += `${indent}"net/http"\n${indent}"io/ioutil"\n)\n\n`;
 
-    codeSnippet += `func main() {\n\n${indent}url := "${encodeURI(request.url.toString())}"\n`;
+    codeSnippet += `func main() {\n\n${indent}url := "${request.url.toString()}"\n`;
     codeSnippet += `${indent}method := "${request.method}"\n\n`;
 
     if (bodySnippet !== '') {
