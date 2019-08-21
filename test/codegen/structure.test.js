@@ -8,13 +8,13 @@ var _ = require('lodash'),
 // Keep adding new options
 const expectedOptions = {
     multiLine: {
-      name: 'Multiline snippet',
+      name: 'Generate multiline snippet',
       type: 'boolean',
       default: true,
       description: 'Split cURL command across multiple lines'
     },
     longFormat: {
-      name: 'Long form options',
+      name: 'Use long form options',
       type: 'boolean',
       default: true,
       description: 'Use the long form for cURL options (--header instead of -H)'
@@ -26,40 +26,40 @@ const expectedOptions = {
       description: 'Include class definition and import statements in snippet'
     },
     indentCount: {
-      name: 'Indent count',
+      name: 'Set indentation count',
       type: 'positiveInteger',
       default: 0,
-      description: 'Number of indentation characters to add per code level'
+      description: 'Set the number of indentation characters to add per code level'
     },
     indentType: {
-      name: 'Indent type',
+      name: 'Set indentation type',
       type: 'enum',
       default: 'Tab',
-      description: 'Character used for indentation'
+      description: 'Select the character used to indent lines of code'
     },
     requestTimeout: {
-      name: 'Request timeout',
+      name: 'Set request timeout',
       type: 'positiveInteger',
       default: 0,
-      description: 'How long the request should wait for a response before timing out (milliseconds)'
+      description: 'Set number of milliseconds the request should wait for a response before timing out (use 0 for infinity)'
     },
     followRedirect: {
-      name: 'Follow redirect',
+      name: 'Follow redirects',
       type: 'boolean',
       default: true,
       description: 'Automatically follow HTTP redirects'
     },
     trimRequestBody: {
-      name: 'Body trim',
+      name: 'Trim request body fields',
       type: 'boolean',
       default: true,
-      description: 'Trim request body fields'
+      description: 'Remove white space and additional lines that may affect the server\’s response'
     },
     silent: {
-      name: 'Silent',
+      name: 'Use Silent Mode',
       type: 'boolean',
       default: false,
-      description: 'Use cURL\'s silent mode in the generated snippet'
+      description: 'Display the requested data without showing the cURL progress meter or error messages'
     }
   },
   // Standard array of ids that should be used for options ids. Any new option should be updated here.
