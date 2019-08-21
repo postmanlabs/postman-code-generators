@@ -39,7 +39,7 @@ function makeSnippet (request, indentString, options) {
     );
   }
   if (options.requestTimeout) {
-    optionsArray.push(indentString + `timeout: ${options.requestTimeout},`);
+    optionsArray.push(indentString + `timeout: ${options.requestTimeout}`);
   }
   if (options.followRedirect === false) {
     optionsArray.push(indentString + 'followRedirect: false');

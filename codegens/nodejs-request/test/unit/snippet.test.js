@@ -286,7 +286,6 @@ describe('nodejs-request convert function', function () {
         if (error) {
           expect.fail(null, null, error);
         }
-        console.log(snippet);
         expect(snippet).to.be.a('string');
         var snippetArray = snippet.split('\n');
         snippetArray.forEach(function (line, index) {
@@ -300,6 +299,44 @@ describe('nodejs-request convert function', function () {
             expect(previousLine.charAt(previousLine.length - 1)).to.equal(';');
           }
         });
+      });
+    });
+    it('should return snippet with no trailing comma when requestTimeout ' +
+      'is set to non zero and followRedirect as true', function () {
+      request = new sdk.Request(mainCollection.item[0].request);
+      options = {
+        requestTimeout: 1000
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+          return;
+        }
+
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.not.include('timeout: 1000,');
+        expect(snippet).to.include('timeout: 1000');
+      });
+    });
+
+    it('should return snippet with just a single comma when requestTimeout ' +
+      'is set to non zero and followRedirect as false', function () {
+      request = new sdk.Request(mainCollection.item[0].request);
+      options = {
+        requestTimeout: 1000,
+        followRedirect: false,
+        indentCount: 1,
+        indentType: 'space'
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+          return;
+        }
+
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.not.include('timeout: 1000,,');
+        expect(snippet).to.include('timeout: 1000,\n followRedirect: false');
       });
     });
 
@@ -317,26 +354,26 @@ describe('nodejs-request convert function', function () {
         expect(getOptions()[4]).to.have.property('id', 'trimRequestBody');
       });
     });
-  });
 
-  describe('Sanitize function', function () {
+    describe('Sanitize function', function () {
 
-    it('should return empty string when input is not a string type', function () {
-      expect(sanitize(123, false)).to.equal('');
-      expect(sanitize(null, false)).to.equal('');
-      expect(sanitize({}, false)).to.equal('');
-      expect(sanitize([], false)).to.equal('');
+      it('should return empty string when input is not a string type', function () {
+        expect(sanitize(123, false)).to.equal('');
+        expect(sanitize(null, false)).to.equal('');
+        expect(sanitize({}, false)).to.equal('');
+        expect(sanitize([], false)).to.equal('');
+      });
+
+      it('should trim input string when needed', function () {
+        expect(sanitize('inputString     ', true)).to.equal('inputString');
+      });
     });
 
-    it('should trim input string when needed', function () {
-      expect(sanitize('inputString     ', true)).to.equal('inputString');
-    });
-  });
+    describe('parseRequest function', function () {
 
-  describe('parseRequest function', function () {
-
-    it('should return empty string for empty body', function () {
-      expect(parseBody(null, ' ', false)).to.equal('');
+      it('should return empty string for empty body', function () {
+        expect(parseBody(null, ' ', false)).to.equal('');
+      });
     });
   });
 });

@@ -112,7 +112,7 @@ function runSnippet (codeSnippet, collection, done) {
 }
 
 describe('Shell-Httpie convert function', function () {
-  describe.skip('convert for different request types', function () {
+  describe('convert for different request types', function () {
 
     mainCollection.item.forEach(function (item) {
       if (item.request.body.mode !== 'formdata') {

@@ -1096,19 +1096,10 @@
 			"response": []
 		},
 		{
-			"name": "VIEW request",
+			"name": "PURGE Request",
 			"request": {
-				"method": "VIEW",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "text/plain"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
+				"method": "PURGE",
+				"header": [],
 				"url": {
 					"raw": "https://mockbin.org/request",
 					"protocol": "https",
@@ -1122,130 +1113,6 @@
 				}
 			},
 			"response": []
-		},
-		{
-			"name": "PURGE Request",
-			"request": {
-				"method": "PURGE",
-				"header": [],
-				"body": {},
-				"url": {
-					"raw": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io",
-					"protocol": "https",
-					"host": [
-						"9c76407d-5b8d-4b22-99fb-8c47a85d9848",
-						"mock",
-						"pstmn",
-						"io"
-					]
-				}
-			},
-			"response": [
-				{
-					"id": "ce52d6c3-0322-490c-9070-d4bab8ca02f0",
-					"name": "PURGE Request",
-					"originalRequest": {
-						"method": "PURGE",
-						"header": [],
-						"body": {},
-						"url": {
-							"raw": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io",
-							"protocol": "https",
-							"host": [
-								"9c76407d-5b8d-4b22-99fb-8c47a85d9848",
-								"mock",
-								"pstmn",
-								"io"
-							]
-						}
-					},
-					"status": "Not Found",
-					"code": 404,
-					"_postman_previewlanguage": "text",
-					"header": [
-						{
-							"key": "Access-Control-Allow-Credentials",
-							"value": "",
-							"name": "Access-Control-Allow-Credentials",
-							"description": ""
-						},
-						{
-							"key": "Access-Control-Allow-Headers",
-							"value": "",
-							"name": "Access-Control-Allow-Headers",
-							"description": ""
-						},
-						{
-							"key": "Access-Control-Allow-Methods",
-							"value": "",
-							"name": "Access-Control-Allow-Methods",
-							"description": ""
-						},
-						{
-							"key": "Access-Control-Allow-Origin",
-							"value": "*",
-							"name": "Access-Control-Allow-Origin",
-							"description": ""
-						},
-						{
-							"key": "Access-Control-Expose-Headers",
-							"value": "",
-							"name": "Access-Control-Expose-Headers",
-							"description": ""
-						},
-						{
-							"key": "Connection",
-							"value": "keep-alive",
-							"name": "Connection",
-							"description": ""
-						},
-						{
-							"key": "Content-Encoding",
-							"value": "gzip",
-							"name": "Content-Encoding",
-							"description": ""
-						},
-						{
-							"key": "Content-Length",
-							"value": "152",
-							"name": "Content-Length",
-							"description": ""
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json; charset=utf-8",
-							"name": "Content-Type",
-							"description": ""
-						},
-						{
-							"key": "Date",
-							"value": "Tue, 13 Feb 2018 13:58:56 GMT",
-							"name": "Date",
-							"description": ""
-						},
-						{
-							"key": "ETag",
-							"value": "W/\"a7-kIxN5L9H0YwilUQPUUio9A\"",
-							"name": "ETag",
-							"description": ""
-						},
-						{
-							"key": "Server",
-							"value": "nginx",
-							"name": "Server",
-							"description": ""
-						},
-						{
-							"key": "Vary",
-							"value": "Accept-Encoding",
-							"name": "Vary",
-							"description": ""
-						}
-					],
-					"cookie": [],
-					"body": "{\n    \"args\": {},\n    \"data\": \"Curabitur auctor, elit nec pulvinar porttitor, ex augue condimentum enim, eget suscipit urna felis quis neque.\\nSuspendisse sit amet luctus massa, nec venenatis mi. Suspendisse tincidunt massa at nibh efficitur fringilla. Nam quis congue mi. Etiam volutpat.\",\n    \"files\": {},\n    \"form\": {},\n    \"headers\": {\n        \"host\": \"postman-echo.com\",\n        \"content-length\": \"256\",\n        \"accept\": \"*/*\",\n        \"accept-encoding\": \"gzip, deflate\",\n        \"content-type\": \"text/plain\",\n        \"cookie\": \"sails.sid=s%3A1wOi4AdoZEbqBjGi6oSUC5Vlfje8wJvs.DHQfRLXfIBvZ%2Bv0KhLAThMDz%2FXvxh9gyxWYa0u1EZOU\",\n        \"user-agent\": \"PostmanRuntime/7.1.1\",\n        \"x-forwarded-port\": \"443\",\n        \"x-forwarded-proto\": \"https\"\n    },\n    \"json\": null,\n    \"url\": \"https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io\"\n}"
-				}
-			]
 		},
 		{
 			"name": "COPY Request",

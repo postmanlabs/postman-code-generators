@@ -138,7 +138,7 @@ function runSnippet (codeSnippet, collection, done) {
 }
 
 describe('csharp restsharp function', function () {
-  describe.skip('convert for different request types', function () {
+  describe('convert for different request types', function () {
     var headerSnippet = 'using System;\n' +
                             'using RestSharp;\n' +
                             'namespace HelloWorldApplication {\n' +
