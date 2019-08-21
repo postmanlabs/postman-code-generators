@@ -282,7 +282,7 @@ self = module.exports = {
     // timeout = options.requestTimeout;
     // followRedirect = options.followRedirect;
     trim = options.trimRequestBody;
-    finalUrl = encodeURI(request.url.toString());
+    finalUrl = request.url.toString();
     methodArg = getMethodArg(request.method);
     headerSnippet += parseHeaders(requestBodyMode, request.getHeaders({enabled: true}), indent);
     bodySnippet = parseBody(requestBody, trim, indent);

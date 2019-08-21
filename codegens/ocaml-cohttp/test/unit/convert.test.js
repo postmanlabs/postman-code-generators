@@ -160,7 +160,8 @@ describe('Ocaml convert function', function () {
 
   describe('convert function', function () {
     var request = new sdk.Request(mainCollection.item[0].request),
-      snippetArray;
+      snippetArray,
+      options = {};
 
     const SINGLE_SPACE = ' ';
 
@@ -210,6 +211,42 @@ describe('Ocaml convert function', function () {
             expect(snippetArray[i + 1].charAt(1)).to.equal(' ');
           }
         }
+      });
+    });
+
+    it('should not encode URL as the ocaml sdk does it', function () {
+      request = new sdk.Request({
+        'method': 'GET',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/get?a={{xyz}}',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'get'
+          ],
+          'query': [
+            {
+              'key': 'a',
+              'value': '{{xyz}}'
+            }
+          ]
+        }
+      });
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('"https://postman-echo.com/get?a={{xyz}}"');
+        expect(snippet).to.not.include('"https://postman-echo.com/get?a=%7B%7Bxyz%7D%7D"');
       });
     });
   });
