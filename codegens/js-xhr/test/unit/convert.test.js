@@ -267,5 +267,42 @@ describe('js-xhr convert function', function () {
         callback = null;
       expect(function () { convert(request, options, callback); }).to.throw(Error);
     });
+
+    it('should not encode URL as the golang sdk does it', function () {
+      var request = new sdk.Request({
+          'method': 'GET',
+          'header': [],
+          'body': {
+            'mode': 'raw',
+            'raw': ''
+          },
+          'url': {
+            'raw': 'https://postman-echo.com/get?a={{xyz}}',
+            'protocol': 'https',
+            'host': [
+              'postman-echo',
+              'com'
+            ],
+            'path': [
+              'get'
+            ],
+            'query': [
+              {
+                'key': 'a',
+                'value': '{{xyz}}'
+              }
+            ]
+          }
+        }),
+        options = {};
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('"https://postman-echo.com/get?a={{xyz}}"');
+        expect(snippet).to.not.include('"https://postman-echo.com/get?a=%7B%7Bxyz%7D%7D"');
+      });
+    });
   });
 });
