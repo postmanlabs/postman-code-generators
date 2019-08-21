@@ -156,7 +156,7 @@ describe('Python- Requests converter', function () {
   it('should not have allow_redirects=False twice in generated snippet when' +
   ' followRedirect option is set as false', function () {
     var request = new sdk.Request(mainCollection.item[0].request),
-      options = { followRedirect: false };
+      options = { followRedirect: false, requestTimeout: 0 };
     convert(request, options, function (err, snippet) {
       if (err) {
         expect.fail(null, null, err);
