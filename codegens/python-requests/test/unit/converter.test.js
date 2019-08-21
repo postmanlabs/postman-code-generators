@@ -162,7 +162,7 @@ describe('Python- Requests converter', function () {
         expect.fail(null, null, err);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.not.include('allow_redirects=False, allow_redirects=false');
+      expect(snippet).to.not.include('allow_redirects = False, allow_redirects = false');
     });
   });
 
@@ -175,8 +175,8 @@ describe('Python- Requests converter', function () {
         expect.fail(null, null, err);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('allow_redirects=False');
-      expect(snippet).to.not.include('allow_redirects=false');
+      expect(snippet).to.include('allow_redirects = False');
+      expect(snippet).to.not.include('allow_redirects = false');
     });
   });
 
