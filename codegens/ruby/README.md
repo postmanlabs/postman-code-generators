@@ -21,11 +21,8 @@ It requires 3 mandatory parameters `request`, `callback` and `options`
 * `options` is an object with the following properties
 
     * `indentType` : can be `Tab` or `Space` (default: 'Space')
-
     * `indentCount` : Integer denoting the number of tabs/spaces required for indentation, range 0-8 (default : for indentType Tab : 2, for indentType Space : 4)
-
     * `trimRequestBody` : Trim request body fields (default: false)
-
     These plugin options will be used if no options are passed to the convert function.
 
 * `callback` : callback function with `error` and `snippet` parameters where snippet is the desired output
