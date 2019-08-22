@@ -175,7 +175,7 @@ module.exports = {
         }
         break;
       case 'file':
-        parsedBody = '<file contents here>';
+        parsedBody = '\'<file contents here>\'';
         break;
       default:
         parsedBody = '';
