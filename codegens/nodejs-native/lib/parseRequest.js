@@ -41,7 +41,9 @@ function generateMultipartFormData (requestbody) {
         const key = dataArrayElement.key.replace(/"/g, '\'');
 
         if (dataArrayElement.type === 'file') {
-          const filename = `filename=\\"${dataArrayElement.src}\\"`,
+          var pathArray = dataArrayElement.src.split('/'),
+            fileName = pathArray[pathArray.length - 1];
+          const filename = `filename=\\"${fileName}\\"`,
             contentType = 'Content-Type: \\"{Insert_File_Content_Type}\\"',
             fileContent = `fs.readFileSync('${dataArrayElement.src}')`;
 
