@@ -390,9 +390,7 @@ describe('Request Snippet', function () {
                 '$request->setRequestUrl(\'https://postman-echo.com/post\');\n' +
                 '$request->setRequestMethod(\'POST\');\n' +
                 '$body = new http\\Message\\Body;\n' +
-                '$body->addForm(array(), array(' +
-                '        array(\'name\' => \'\', \'type\' => \'content-type header\',' +
-                ' \'file\' => \'\', \'data\' => null)));\n' +
+                '$body->append(\'<file contents here>\');\n' +
                 '$request->setBody($body);\n' +
                 '$request->setOptions(array());\n' +
                 '$request->setHeaders(array(\n' +

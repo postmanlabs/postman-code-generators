@@ -80,6 +80,8 @@ function parseBody (requestbody, indentString, trimBody) {
       case 'urlencoded':
         return `qs.stringify({\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
                     '\n})';
+      case 'file':
+        return '"<file contents here>"';
       default:
         return '';
     }

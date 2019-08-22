@@ -79,8 +79,7 @@ self = module.exports = {
             });
             break;
           case 'file':
-            snippet += indent + `${form('--data-binary', format)}`;
-            snippet += ` "${sanitize(body.key, trim)}=@${sanitize(body.value, trim)}"`;
+            snippet += indent + `${form('-d', format)} "<file contents here>"`;
             break;
           default:
             snippet += `${form('-d', format)} ""`;

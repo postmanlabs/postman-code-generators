@@ -74,6 +74,8 @@ module.exports = function (request, indentation, bodyTrim) {
           requestBody += 'payload = \'\'\n';
         }
         return requestBody;
+      case 'file':
+        return 'payload = "<file contents here>"\n';
       default:
         return 'payload = \'\'\n';
     }

@@ -75,6 +75,7 @@ function parseRawBody (body, trim) {
   return `$body = "${sanitize(body.toString(), trim)}"\n`;
 }
 
+/* eslint-disable no-unused-vars*/
 /* istanbul ignore next */
 /**
  * Parses File data from request to powershell-restmethod syntax
@@ -101,6 +102,7 @@ function parseFileData (body, trim) {
   bodySnippet += '$body = $multipartContent\n';
   return bodySnippet;
 }
+/* eslint-enable no-unused-vars*/
 
 /**
  * Parses Body from request to powershell-restmethod syntax based on the body mode
@@ -119,7 +121,8 @@ function parseBody (body, trim) {
         return parseFormData(body.formdata, trim);
         /* istanbul ignore next */
       case 'file':
-        return parseFileData(body.file, trim);
+        // return parseFileData(body.file, trim);
+        return '$body = "<file contents here>"\n';
       default:
         return parseRawBody(body[body.mode], trim);
     }

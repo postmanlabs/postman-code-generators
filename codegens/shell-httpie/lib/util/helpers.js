@@ -177,7 +177,9 @@ module.exports = {
           parsedBody = requestBody ? `${Sanitize.quote(requestBody)}` : '';
         }
         break;
-
+      case 'file':
+        parsedBody = '\'<file contents here>\'';
+        break;
       default:
         parsedBody = '';
     }

@@ -54,13 +54,14 @@ module.exports = function (request, indentation, bodyTrim) {
         return requestBody;
 
       case 'file':
-        requestBody = `${indentation.repeat(2)}array('name' => '` +
-                    `${sanitize(request.body[request.body.mode].key, bodyTrim)}', ` +
-                    '\'type\' => \'content-type header\', ' +
-                    `'file' => '${sanitize(request.body[request.body.mode].src, bodyTrim)}', ` +
-                    '\'data\' => null)';
-        return `$body->addForm(array(), array(${requestBody}));\n`;
-
+        // requestBody = `${indentation.repeat(2)}array('name' => '` +
+        //             `${sanitize(request.body[request.body.mode].key, bodyTrim)}', ` +
+        //             `'type' => '${sanitize(request.body[request.body.mode].type, bodyTrim)}', ` +
+        //             `'file' => '${sanitize(request.body[request.body.mode].src, bodyTrim)}', ` +
+        //             '\'data\' => null)';
+        // return `$body->addForm(array(), array(${requestBody}));\n`;
+        requestBody = '$body->append(\'<file contents here>\');\n';
+        return requestBody;
       default:
         return requestBody;
     }
