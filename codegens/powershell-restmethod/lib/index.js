@@ -48,11 +48,13 @@ function parseFormData (body, trim) {
                             '$multipartContent.Add($stringContent)\n\n';
       }
       else {
+        var pathArray = data.src.split('/'),
+          fileName = pathArray[pathArray.length - 1];
         bodySnippet += `$multipartFile = '${data.src}'\n` +
                         '$FileStream = [System.IO.FileStream]::new($multipartFile, [System.IO.FileMode]::Open)\n' +
                         '$fileHeader = [System.Net.Http.Headers.ContentDispositionHeaderValue]::new("form-data")\n' +
                         `$fileHeader.Name = "${sanitize(data.key)}"\n` +
-                        `$fileHeader.FileName = "${sanitize(data.src, trim)}"\n` +
+                        `$fileHeader.FileName = "${sanitize(fileName, trim)}"\n` +
                         '$fileContent = [System.Net.Http.StreamContent]::new($FileStream)\n' +
                         '$fileContent.Headers.ContentDisposition = $fileHeader\n' +
                         '$multipartContent.Add($fileContent)\n\n';
