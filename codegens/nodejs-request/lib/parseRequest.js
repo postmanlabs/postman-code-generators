@@ -32,11 +32,13 @@ function extractFormData (dataArray, indentString, trimBody) {
              *      }
              *  }
              */
+      var pathArray = item.src.split('/'),
+        fileName = pathArray[pathArray.length - 1];
       accumalator.push([
         indentString.repeat(2) + `'${sanitize(item.key, trimBody)}': {`,
         indentString.repeat(3) + `'value': fs.createReadStream('${sanitize(item.src, trimBody)}'),`,
         indentString.repeat(3) + '\'options\': {',
-        indentString.repeat(4) + `'filename': '${sanitize(item.src, trimBody)}',`,
+        indentString.repeat(4) + `'filename': '${sanitize(fileName, trimBody)}',`,
         indentString.repeat(4) + '\'contentType\': null',
         indentString.repeat(3) + '}',
         indentString.repeat(2) + '}'
