@@ -48,7 +48,6 @@ function parseFormData (body, trim, indent) {
     if (!data.disabled) {
       if (data.type === 'file') {
         isFile = true;
-        bodySnippet += `${indent}// add your file name in the next statement in place of path\n`;
         bodySnippet += `${indent}file, err := os.Open("${data.src}")\n`;
         bodySnippet += `${indent}defer file.Close()\n`;
         bodySnippet += `${indent}part, err := writer.CreateFormFile("${sanitize(data.key, trim)}",` +
