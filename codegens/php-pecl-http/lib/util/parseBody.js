@@ -60,7 +60,7 @@ module.exports = function (request, indentation, bodyTrim) {
         //             `'file' => '${sanitize(request.body[request.body.mode].src, bodyTrim)}', ` +
         //             '\'data\' => null)';
         // return `$body->addForm(array(), array(${requestBody}));\n`;
-        requestBody = `${indentation.repeat(2)}<file contents here>\n`;
+        requestBody = '$body->append(\'<file contents here>\');\n';
         return requestBody;
       default:
         return requestBody;

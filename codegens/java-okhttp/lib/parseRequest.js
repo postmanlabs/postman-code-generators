@@ -75,7 +75,7 @@ function parseBody (requestBody, indentString, trimFields) {
         //                 indentString + `.addFormDataPart("file", "${requestBody[requestBody.mode].src}",\n` +
         //                 indentString + 'RequestBody.create(MediaType.parse("application/octet-stream"),\n' +
         //                 indentString + `new File("${requestBody[requestBody.mode].src}"))).build();\n`;
-        return '<file contents here>\n';
+        return 'RequestBody body = RequestBody.create(mediaType, "<file contents here>");\n';
       default:
         return 'RequestBody body = RequestBody.create(mediaType, "");\n';
     }

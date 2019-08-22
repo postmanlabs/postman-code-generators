@@ -69,7 +69,7 @@ function parseRawBody (body, trim) {
  * parses binamry file data
  */
 function parseFileData () {
-  var bodySnippet = '<file contents here>\n';
+  var bodySnippet = 'var file = "<file contents here>;"\n';
   return bodySnippet;
 }
 

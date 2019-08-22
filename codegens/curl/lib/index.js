@@ -79,7 +79,7 @@ self = module.exports = {
             });
             break;
           case 'file':
-            snippet += '<file contents here>';
+            snippet += indent + `${form('-d', format)} "<file contents here>"`;
             break;
           default:
             snippet += `${form('-d', format)} ""`;

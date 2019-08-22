@@ -67,11 +67,8 @@ function parseFormData (body, trim, indent) {
 /**
  * Parses file body from the Request
  *
- * @param {Object} body body object from request.
- * @param {boolean} trim trim body option
- * @param {string} indent indent string
  */
-function parseFile (body, trim, indent) {
+function parseFile () {
   // var bodySnippet = `payload := &bytes.Buffer{}\n${indent}writer := multipart.NewWriter(payload)\n`;
   // isFile = true;
   // bodySnippet += `${indent}// add your file name in the next statement in place of path\n`;
@@ -80,7 +77,7 @@ function parseFile (body, trim, indent) {
   // bodySnippet += `${indent}part, err := writer.CreateFormFile("file", filepath.Base(path))\n`;
   // bodySnippet += `${indent}_, err := io.Copy(part, file)\n`;
   // bodySnippet += `${indent}err := writer.Close()\n${indent}if err != nil {${indent}fmt.Println(err)}\n`;
-  var bodySnippet = `${indent}<file contents here>\n`;
+  var bodySnippet = 'payload := "<file contents here>"\n';
   return bodySnippet;
 }
 

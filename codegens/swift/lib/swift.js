@@ -86,7 +86,8 @@ function parseFile () {
   // bodySnippet += `${indent.repeat(2)}print("Failed to read from \\(String(describing: filename))")\n`;
   // bodySnippet += `${indent}}\n} else {\n`;
   // bodySnippet += `${indent}print("Failed to load file from app bundle \\(String(describing: filename))")\n}\n`;
-  var bodySnippet = '<file contents here>\n';
+  var bodySnippet = 'let parameters = "<file contents here>"\n';
+  bodySnippet += 'let postData = parameters.data(using: .utf8)';
   return bodySnippet;
 }
 

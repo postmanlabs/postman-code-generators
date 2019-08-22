@@ -91,10 +91,9 @@ function parseFormData (body, trim, indent) {
 /**
  * Parses file body from the Request
  *
- * @param {String} indent - indentation string
  * @returns {String} request body in the desired format
  */
-function parseFile (indent) {
+function parseFile () {
   // var bodySnippet = 'let load_file f =\n';
   // bodySnippet += `${indent}let ic = open_in f in\n`;
   // bodySnippet += `${indent}let n = in_channel_length ic in\n`;
@@ -103,7 +102,7 @@ function parseFile (indent) {
   // bodySnippet += `${indent}close_in ic;\n${indent}(s)\n\n`;
   // bodySnippet += 'let postData = ref "";;\n';
   // bodySnippet += 'postData := load_file("{Insert_File_Name}");;\n\n';
-  var bodySnippet = `${indent} <file contents here>\n`;
+  var bodySnippet = 'let postData = ref "<file contents here>";;\n\n';
   return bodySnippet;
 }
 

@@ -58,7 +58,7 @@ module.exports = function (request, indentation, bodyTrim) {
         return requestBody;
       case 'file':
         // return `payload = {open('${request.body[request.body.mode].src}', 'rb').read()\n}`;
-        return 'payload = \'<file contents here>\'\n';
+        return 'payload = "<file contents here>"\n';
       default:
         return 'payload = {}\n';
     }

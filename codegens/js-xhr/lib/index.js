@@ -65,7 +65,7 @@ function parseFile () {
   // var bodySnippet = 'var data = new FormData();\n';
   // bodySnippet += `data.append("${sanitize(body.key, trim)}", "${sanitize(body.src, trim)}", `;
   // bodySnippet += `"${sanitize(body.key, trim)}");\n`;
-  var bodySnippet = '<file contents here>\n';
+  var bodySnippet = 'var data = "<file contents here>";\n';
   return bodySnippet;
 }
 

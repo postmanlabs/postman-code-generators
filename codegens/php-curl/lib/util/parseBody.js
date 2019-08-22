@@ -53,7 +53,7 @@ module.exports = function (request, trimRequestBody, indentation) {
         // requestBody = `${indentation}CURLOPT_POSTFIELDS => array('file' => '@'`;
         // requestBody += `${sanitize(request.body[request.body.mode].src,
         //   request.body.mode, trimRequestBody)}'),\n`;
-        requestBody = `${indentation}<file contents here>\n`;
+        requestBody = `${indentation}CURLOPT_POSTFIELDS => "<file contents here>"\n`;
         return requestBody;
       default:
         return requestBody;

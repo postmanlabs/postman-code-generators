@@ -40,7 +40,7 @@ module.exports = function (request, trimRequestBody, indentation) {
                         `${indentation}"data": form\n`;
         return requestBody;
       case 'file':
-        requestBody = `${indentation}<file contents here>\n`;
+        requestBody = `${indentation} "data": "<file contents here>"\n`;
         return requestBody;
       default:
         return requestBody;

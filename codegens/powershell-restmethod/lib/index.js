@@ -108,7 +108,7 @@ function parseBody (body, trim) {
         /* istanbul ignore next */
       case 'file':
         // return parseFileData(body.file, trim);
-        return '<file contents here>';
+        return '$body = "<file contents here>"\n';
       default:
         return parseRawBody(body[body.mode], trim);
     }

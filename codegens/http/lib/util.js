@@ -154,7 +154,7 @@ function getBody (request, trimRequestBody) {
         return trimRequestBody ? requestBody.trim() : requestBody;
 
       case FILE:
-        return '<file contents here>';
+        return '"<file contents here>"';
       default:
         return requestBody;
     }

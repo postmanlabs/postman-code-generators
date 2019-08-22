@@ -55,7 +55,7 @@ module.exports = function (request, trimRequestBody, indentation) {
         // requestBody = `${indentation}--body-file = '@'`;
         // requestBody += `${sanitize(request.body[request.body.mode].src,
         //   request.body.mode, trimRequestBody)}'),\n`;
-        requestBody = `${indentation}<file contents here>\n`;
+        requestBody = `${indentation}--body-data '<file contents here>'\n`;
         return requestBody;
       default:
         return requestBody;

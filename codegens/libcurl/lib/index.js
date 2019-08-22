@@ -114,7 +114,7 @@ self = module.exports = {
           }
           break;
         case 'file':
-          snippet += indentString + '<file contents here>\n';
+          snippet += indentString + 'curl_easy_setopt(curl,CURLOPT_POSTFIELDS,"<file contents here>")\n';
           // `const char *data = "${sanitize(body.key, trim)}=@${sanitize(body.value, trim)}";\n`;
           // snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);\n';
           break;

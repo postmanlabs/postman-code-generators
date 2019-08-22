@@ -76,7 +76,7 @@ function parseBody (requestbody, indentString, trimBody) {
         // return 'formData: {\n' +
         //                 extractFormData(requestbody[requestbody.mode], indentString, trimBody) +
         //                 indentString + '}';
-        return '<file contents here>';
+        return 'body: "<file contents here>"\n';
       default:
         return '';
     }
