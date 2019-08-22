@@ -66,10 +66,9 @@ function parseRawBody (body, trim) {
 
 /* istanbul ignore next */
 /**
- *
- * @param {Object} body File body.
+ * parses binamry file data
  */
-function parseFileData (body) {
+function parseFileData () {
   var bodySnippet = '<file contents here>\n';
   return bodySnippet;
 }
