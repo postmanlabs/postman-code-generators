@@ -42,7 +42,9 @@ function parseFormData (body, trim) {
   _.forEach(body, function (data) {
     if (!data.disabled) {
       if (data.type === 'file') {
-        bodySnippet += `formdata.append("${sanitize(data.key, trim)}", fileInput.files[0], "${data.src}");\n`;
+        var pathArray = data.src.split('/'),
+          fileName = pathArray[pathArray.length - 1];
+        bodySnippet += `formdata.append("${sanitize(data.key, trim)}", fileInput.files[0], "${fileName}");\n`;
       }
       else {
         bodySnippet += `formdata.append("${sanitize(data.key, trim)}", "${sanitize(data.value, trim)}");\n`;
