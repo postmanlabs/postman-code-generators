@@ -60,10 +60,8 @@ function parseFormData (body, trim) {
 /**
  * Parses file body from the Request
  *
- * @param {*} body body object from request.
- * @param {*} trim trim body option
  */
-function parseFile (body, trim) {
+function parseFile () {
   // var bodySnippet = 'var data = new FormData();\n';
   // bodySnippet += `data.append("${sanitize(body.key, trim)}", "${sanitize(body.src, trim)}", `;
   // bodySnippet += `"${sanitize(body.key, trim)}");\n`;
