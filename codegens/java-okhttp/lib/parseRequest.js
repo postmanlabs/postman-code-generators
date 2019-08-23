@@ -34,7 +34,7 @@ function parseFormData (requestBody, indentString, trimFields) {
     }
     /* istanbul ignore next */
     if (data.type === 'file') {
-      var pathArray = data.src.split('/'),
+      var pathArray = data.src.split(path.sep),
         fileName = pathArray[pathArray.length - 1];
       body += indentString + '.addFormDataPart' +
                     `("${sanitize(data.key, trimFields)}","${sanitize(fileName, trimFields)}",\n` +

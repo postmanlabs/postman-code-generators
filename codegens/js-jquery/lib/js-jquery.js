@@ -45,7 +45,7 @@ function createForm (request, trimRequestBody) {
         return (`form.append("${sanitize(value.key, request.body.mode, trimRequestBody)}", "` +
                     `${sanitize(value.value, request.body.mode, trimRequestBody)}");`);
       }
-      var pathArray = value.src.split('/'),
+      var pathArray = value.src.split(path.sep),
         fileName = pathArray[pathArray.length - 1];
       return (`form.append("${sanitize(value.key, request.body.mode, trimRequestBody)}", fileInput.files[0], ` +
                     `"${sanitize(fileName, request.body.mode, trimRequestBody)}");`);

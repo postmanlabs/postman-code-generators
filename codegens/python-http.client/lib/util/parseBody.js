@@ -53,7 +53,7 @@ module.exports = function (request, indentation, bodyTrim) {
               requestBody += `dataList.append("${sanitize(data.value, 'form-data', true)}")\n`;
             }
             else {
-              var pathArray = data.src.split('/'),
+              var pathArray = data.src.split(path.sep),
                 fileName = pathArray[pathArray.length - 1];
               requestBody += `dataList.append('Content-Disposition: form-data; name=${sanitize(data.key, 'form-data', true)}; filename={0}'.format('${sanitize(fileName, 'formdata', true)}'))\n\n`; // eslint-disable-line max-len
               requestBody += `fileType = mimetypes.guess_type('${sanitize(data.src, 'formdata', true)}')[0] or 'application/octet-stream'\n`; // eslint-disable-line max-len

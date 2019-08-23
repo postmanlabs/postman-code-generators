@@ -41,7 +41,7 @@ function generateMultipartFormData (requestbody) {
         const key = dataArrayElement.key.replace(/"/g, '\'');
 
         if (dataArrayElement.type === 'file') {
-          var pathArray = dataArrayElement.src.split('/'),
+          var pathArray = dataArrayElement.src.split(path.sep),
             fileName = pathArray[pathArray.length - 1];
           const filename = `filename=\\"${fileName}\\"`,
             contentType = 'Content-Type: \\"{Insert_File_Content_Type}\\"',

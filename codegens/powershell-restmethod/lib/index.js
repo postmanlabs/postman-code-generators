@@ -48,7 +48,7 @@ function parseFormData (body, trim) {
                             '$multipartContent.Add($stringContent)\n\n';
       }
       else {
-        var pathArray = data.src.split('/'),
+        var pathArray = data.src.split(path.sep),
           fileName = pathArray[pathArray.length - 1];
         bodySnippet += `$multipartFile = '${data.src}'\n` +
                         '$FileStream = [System.IO.FileStream]::new($multipartFile, [System.IO.FileMode]::Open)\n' +
