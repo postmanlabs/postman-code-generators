@@ -252,5 +252,72 @@ describe('curl convert function', function () {
         }
       });
     });
+
+    it('should not encode queryParam unresolved variables and ' +
+    'leave it inside double parenthesis {{xyz}}', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'url': {
+          'raw': 'http://postman-echo.com/post?a={{xyz}}',
+          'protocol': 'http',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ],
+          'query': [
+            {
+              'key': 'a',
+              'value': '{{xyz}}'
+            }
+          ]
+        }
+      });
+      options = {};
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('http://postman-echo.com/post?a={{xyz}}');
+        expect(snippet).to.not.include('http://postman-echo.com/post?a=%7B%7Bxyz%7D%7D');
+      });
+    });
+
+    it('should encode queryParams other than unresolved variables', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'url': {
+          'raw': 'http://postman-echo.com/post?a=b c',
+          'protocol': 'http',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ],
+          'query': [
+            {
+              'key': 'a',
+              'value': 'b c'
+            }
+          ]
+        }
+      });
+      options = {};
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('http://postman-echo.com/post?a=b%20c');
+        expect(snippet).to.not.include('http://postman-echo.com/post?a=b c');
+      });
+    });
   });
 });

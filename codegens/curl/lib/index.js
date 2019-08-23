@@ -4,6 +4,40 @@ var sanitize = require('./util').sanitize,
   _ = require('./lodash'),
   self;
 
+/**
+ *
+ * @param {*} urlObject The request sdk request.url object
+ * @returns {String} final url string converted from parsing url object
+ */
+function getUrlStringfromUrlObject (urlObject) {
+  var url = '';
+  if (urlObject.protocol) {
+    url += (urlObject.protocol.endsWith('://') ? urlObject.protocol : urlObject.protocol + '://');
+  }
+  if (urlObject.auth && urlObject.auth.user) {
+    url = url + ((urlObject.auth.password) ?
+      // ==> username:password@
+      urlObject.auth.user + ':' + urlObject.auth.password : urlObject.auth.user) + '@';
+  }
+  if (urlObject.host) {
+    url += urlObject.getHost();
+  }
+  if (urlObject.port) {
+    url += ':' + urlObject.port.toString();
+  }
+  if (urlObject.path) {
+    url += urlObject.getPath();
+  }
+  if (urlObject.query && urlObject.query.count()) {
+    let queryString = urlObject.getQueryString({ ignoreDisabled: true, encode: true });
+    queryString && (url += '?' + queryString);
+  }
+  if (urlObject.hash) {
+    url += '#' + urlObject.hash;
+  }
+
+  return url;
+}
 self = module.exports = {
   convert: function (request, options, callback) {
 
@@ -12,7 +46,7 @@ self = module.exports = {
     }
     options = sanitizeOptions(options, self.getOptions());
 
-    var indent, trim, headersData, body, text, redirect, timeout, multiLine, format, snippet, silent;
+    var indent, trim, headersData, body, text, redirect, timeout, multiLine, format, snippet, silent, url;
     redirect = options.followRedirect;
     timeout = options.requestTimeout;
     multiLine = options.multiLine;
@@ -34,12 +68,12 @@ self = module.exports = {
     else {
       indent = ' ';
     }
-
+    url = getUrlStringfromUrlObject(request.url);
     if (request.method === 'HEAD') {
-      snippet += ` ${form('-I', format)} "${encodeURI(request.url.toString())}"`;
+      snippet += ` ${form('-I', format)} "${url}"`;
     }
     else {
-      snippet += ` ${form('-X', format)} ${request.method} "${encodeURI(request.url.toString())}"`;
+      snippet += ` ${form('-X', format)} ${request.method} "${url}"`;
     }
 
     headersData = request.getHeaders({ enabled: true });
