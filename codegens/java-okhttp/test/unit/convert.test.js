@@ -1,129 +1,10 @@
 var expect = require('chai').expect,
-  fs = require('fs'),
   sdk = require('postman-collection'),
-  exec = require('shelljs').exec,
-  newman = require('newman'),
-  parallel = require('async').parallel,
   sanitize = require('../../lib/util').sanitize,
   convert = require('../../lib/index').convert,
   getOptions = require('../../lib/index').getOptions,
-  mainCollection = require('./fixtures/testcollection/collection.json');
-
-/**
- * compiles and runs codesnippet then compare it with newman output
- *
- * @param {String} codeSnippet - code snippet that needed to run using java
- * @param {Object} collection - collection which will be run using newman
- * @param {Function} done - callback for async calls
- */
-function runSnippet (codeSnippet, collection, done) {
-  fs.writeFileSync('main.java', codeSnippet);
-
-  //  classpath of external libararies for java to compile 
-  var compile = 'javac -cp *: main.java',
-
-    //  bash command stirng for run compiled java file
-    run = 'java -cp *: main';
-
-  //  step by step process for compile, run code snippet, then comparing its output with newman
-  parallel([
-    function (callback) {
-      exec(compile, function (err, stdout, stderr) {
-        if (err) {
-          return callback(err);
-        }
-        if (stderr) {
-          return callback(stderr);
-        }
-        return exec(run, function (err, stdout, stderr) {
-          if (err) {
-            return callback(err);
-          }
-          if (stderr) {
-            return callback(stderr);
-          }
-          try {
-            stdout = JSON.parse(stdout);
-          }
-          catch (e) {
-            console.error(e);
-          }
-          return callback(null, stdout);
-        });
-      });
-    },
-    function (callback) {
-      newman.run({
-        collection: collection
-      }).on('request', function (err, summary) {
-        if (err) {
-          return callback(err);
-        }
-
-        var stdout = summary.response.stream.toString();
-        try {
-          stdout = JSON.parse(stdout);
-        }
-        catch (e) {
-          console.error(e);
-        }
-        return callback(null, stdout);
-      });
-    }
-  ], function (err, result) {
-    if (err) {
-      expect.fail(null, null, err);
-    }
-    else if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
-      expect(result[0].trim()).to.equal(result[1].trim());
-    }
-    else {
-      const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'clientIPAddress'],
-        headersTodelete = [
-          'accept-encoding',
-          'user-agent',
-          'cf-ray',
-          'x-request-id',
-          'x-request-start',
-          'connect-time',
-          'x-forwarded-for',
-          'content-type',
-          'content-length',
-          'accept',
-          'total-route-time',
-          'cookie',
-          'x-real-ip',
-          'kong-cloud-request-id',
-          'cache-control',
-          'postman-token',
-          'x-real-ip'
-        ];
-      if (result[0]) {
-        propertiesTodelete.forEach(function (property) {
-          delete result[0][property];
-        });
-        if (result[0].headers) {
-          headersTodelete.forEach(function (property) {
-            delete result[0].headers[property];
-          });
-        }
-      }
-      if (result[1]) {
-        propertiesTodelete.forEach(function (property) {
-          delete result[1][property];
-        });
-        if (result[1].headers) {
-          headersTodelete.forEach(function (property) {
-            delete result[1].headers[property];
-          });
-        }
-      }
-
-      expect(result[0]).deep.equal(result[1]);
-    }
-    return done();
-  });
-}
+  runSnippet = require('../../../../test/codegen/newman/newman.test').runSnippet,
+  mainCollection = require('../../../../test/codegen/newman/fixtures/testCollection.json');
 
 describe('okhttp convert function', function () {
   describe('convert for different request types', function () {
@@ -133,22 +14,31 @@ describe('okhttp convert function', function () {
                             'public static void main(String []args) throws IOException{\n',
       footerSnippet = 'System.out.println(response.body().string());\n}\n}\n';
 
-    mainCollection.item.forEach(function (item) {
+    mainCollection.item.forEach(function (item, index) {
       it(item.name, function (done) {
         var request = new sdk.Request(item.request),
-          collection = {
-            item: [
-              {
-                request: request.toJSON()
-              }
-            ]
+          testConfig = {
+            compileScript: 'javac -cp *: main.java',
+            runScript: 'java -cp *: main',
+            fileName: 'main.java'
           };
+
         convert(request, {indentCount: 3, indentType: 'Space'}, function (error, snippet) {
           if (error) {
             expect.fail(null, null, error);
             return;
           }
-          runSnippet(headerSnippet + snippet + footerSnippet, collection, done);
+          runSnippet(headerSnippet + snippet + footerSnippet, index, testConfig, function (err, result) {
+            if (err) {
+              expect.fail(null, null, err);
+            }
+            if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
+              expect(result[1].toString().trim()).to.include(result[0].toString().trim());
+            }
+
+            expect(result[0]).deep.equal(result[1]);
+            return done();
+          });
         });
       });
     });

@@ -1,150 +1,27 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  fs = require('fs'),
-  newman = require('newman'),
-  parallel = require('async').parallel,
-  exec = require('shelljs').exec,
   convert = require('../../index').convert,
+  runSnippet = require('../../../../test/codegen/newman/newman.test').runSnippet,
   getOptions = require('../../index').getOptions,
   sanitize = require('../../lib/util').sanitize,
-  mainCollection = require('./fixtures/testcollection/collection.json');
-
-/**
- * runs codesnippet then compare it with newman output
- *
- * @param {String} codeSnippet - Generated libcurl code snippet
- * @param {Object} collection - collection which will be run using newman
- * @param {Function} done - callback for async calls
- */
-function runSnippet (codeSnippet, collection, done) {
-  fs.writeFileSync('testFile.c', codeSnippet);
-
-  //  step by step process for compile, run code snippet, then comparing its output with newman
-  parallel([
-    function (callback) {
-      exec('`curl-config --cc --cflags` -o executableFile testFile.c `curl-config --libs`',
-        function (err, stdout, stderr) {
-          if (err) {
-            return callback(err);
-          }
-          if (stderr) {
-            return callback(stderr);
-          }
-
-          exec('./executableFile', function (err, stdout, stderr) {
-            if (err) {
-              return callback(err);
-            }
-            if (stderr) {
-              return callback(stderr);
-            }
-            // this because response also display response code at the end of response body
-            stdout = stdout.substring(0, stdout.length - 3);
-            try {
-              stdout = JSON.parse(stdout);
-            }
-            catch (e) {
-              console.error(e);
-            }
-
-            return callback(null, stdout);
-          });
-        });
-    },
-    function (callback) {
-      newman.run({
-        collection: collection
-      }).on('request', function (err, summary) {
-        if (err) {
-          return callback(err);
-        }
-
-        var stdout = summary.response.stream.toString();
-
-        try {
-          stdout = JSON.parse(stdout);
-        }
-        catch (e) {
-          console.error(e);
-        }
-
-        return callback(null, stdout);
-      });
-    }
-  ], function (err, result) {
-    if (err) {
-      expect.fail(null, null, err);
-    }
-    else if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
-      expect(result[0].toString().trim()).to.include(result[1].toString().trim());
-    }
-    else {
-      const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'clientIPAddress'],
-        headersTodelete = [
-          'accept-encoding',
-          'user-agent',
-          'cf-ray',
-          'x-request-id',
-          'x-request-start',
-          'connect-time',
-          'x-forwarded-for',
-          'content-type',
-          'kong-cloud-request-id',
-          'content-length',
-          'accept',
-          'total-route-time',
-          'cookie',
-          'cache-control',
-          'postman-token',
-          'x-real-ip'
-        ];
-
-      if (result[0]) {
-        propertiesTodelete.forEach(function (property) {
-          delete result[0][property];
-        });
-        if (result[0].headers) {
-          headersTodelete.forEach(function (property) {
-            delete result[0].headers[property];
-          });
-        }
-      }
-      if (result[1]) {
-        propertiesTodelete.forEach(function (property) {
-          delete result[1][property];
-        });
-        if (result[1].headers) {
-          headersTodelete.forEach(function (property) {
-            delete result[1].headers[property];
-          });
-        }
-      }
-
-      expect(result[0]).deep.equal(result[1]);
-    }
-
-    return done();
-  });
-}
+  mainCollection = require('../../../../test/codegen/newman/fixtures/testCollection.json');
 
 describe('libcurl convert function', function () {
   describe('convert for different request types', function () {
 
-    mainCollection.item.forEach(function (item) {
+    mainCollection.item.forEach(function (item, index) {
       it(item.name, function (done) {
         var request = new sdk.Request(item.request),
-          collection = {
-            item: [
-              {
-                request: request.toJSON()
-              }
-            ]
-          },
           options = {
             indentCount: 1,
             indentType: 'Tab',
             useMimeType: false,
             includeBoilerplate: true
+          },
+          testConfig = {
+            compileScript: '`curl-config --cc --cflags` -o executableFile testFile.c `curl-config --libs`',
+            runScript: './executableFile',
+            fileName: './executableFile'
           };
 
         convert(request, options, function (error, snippet) {
@@ -153,18 +30,17 @@ describe('libcurl convert function', function () {
 
             return;
           }
-          runSnippet(snippet, collection, function () {
-            fs.unlinkSync('./testFile.c', (err) => {
-              if (err) {
-                console.log('Unable to delete testFile.c');
-              }
-            });
-            fs.unlinkSync('./executableFile', (err) => {
-              if (err) {
-                console.log('Unable to deleted executable file');
-              }
-            });
-            done();
+
+          runSnippet(snippet, index, testConfig, function () {
+            if (err) {
+              expect.fail(null, null, err);
+            }
+            if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
+              expect(result[0].toString().trim()).to.include(result[1].toString().trim());
+            }
+
+            expect(result[0]).deep.equal(result[1]);
+            return done();
           });
         });
       });

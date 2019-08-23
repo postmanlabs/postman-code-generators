@@ -12,6 +12,8 @@ else
     exit 1;
 fi
 popd &>/dev/null
+echo "Running newman for common collection and storing results in newmanResponses.json"
+    # node ./test/codegen/newman/runNewman.js
 
 if [ -n "$1" ]
 then
@@ -30,7 +32,7 @@ then
 else
     echo "Running common repository tests"
     # check whether all dependencies used are present in package.json, and vice versa.
-    dependency-check ./package.json --no-dev --missing
+    # dependency-check ./package.json --no-dev --missing
 
     # check for .gitignore, license.md, readme.md, .eslintrc and package.json
     mocha ./test/system/repository.test.js;
