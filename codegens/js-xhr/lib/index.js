@@ -46,7 +46,7 @@ function parseFormData (body, trim) {
       if (data.type === 'file') {
         var pathArray = data.src.split(path.sep),
           fileName = pathArray[pathArray.length - 1];
-        bodySnippet += `data.append("${sanitize(data.key, trim)}",fileInput.files[0], "${fileName}");\n `;
+        bodySnippet += `data.append("${sanitize(data.key, trim)}", fileInput.files[0], "${fileName}");\n `;
       }
       else {
         bodySnippet += `data.append("${sanitize(data.key, trim)}", "${sanitize(data.value, trim)}");\n`;
