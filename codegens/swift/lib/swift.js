@@ -3,6 +3,41 @@ var _ = require('./lodash'),
   sanitizeOptions = require('./util').sanitizeOptions,
   self;
 
+  /**
+ *
+ * @param {*} urlObject The request sdk request.url object
+ * @returns {String} final url string converted from parsing url object
+ */
+function getUrlStringfromUrlObject (urlObject) {
+  var url = '';
+  if (urlObject.protocol) {
+    url += (urlObject.protocol.endsWith('://') ? urlObject.protocol : urlObject.protocol + '://');
+  }
+  if (urlObject.auth && urlObject.auth.user) {
+    url = url + ((urlObject.auth.password) ?
+      // ==> username:password@
+      urlObject.auth.user + ':' + urlObject.auth.password : urlObject.auth.user) + '@';
+  }
+  if (urlObject.host) {
+    url += urlObject.getHost();
+  }
+  if (urlObject.port) {
+    url += ':' + urlObject.port.toString();
+  }
+  if (urlObject.path) {
+    url += urlObject.getPath();
+  }
+  if (urlObject.query && urlObject.query.count()) {
+    let queryString = urlObject.getQueryString({ ignoreDisabled: true, encode: true });
+    queryString && (url += '?' + queryString);
+  }
+  if (urlObject.hash) {
+    url += '#' + urlObject.hash;
+  }
+
+  return url;
+}
+
 /**
  * Parses Raw data from request to fetch syntax
  *
@@ -228,7 +263,7 @@ self = module.exports = {
     timeout = options.requestTimeout;
     // followRedirect = options.followRedirect;
     trim = options.trimRequestBody;
-    finalUrl = encodeURI(request.url.toString());
+    finalUrl = getUrlStringfromUrlObject(request.url);
 
     bodySnippet = parseBody(requestBody, trim, indent);
 
