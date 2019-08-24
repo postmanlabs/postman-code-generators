@@ -1,6 +1,7 @@
 var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
-  sanitizeOptions = require('./util').sanitizeOptions;
+  sanitizeOptions = require('./util').sanitizeOptions,
+  path = require('path');
 
 /**
  * Parses URLEncoded body from request

@@ -1,5 +1,6 @@
 var _ = require('../lodash'),
-  sanitize = require('./sanitize').sanitize;
+  sanitize = require('./sanitize').sanitize,
+  path = require('path');
 
 /**
  * Used to parse the body of the postman SDK-request and return in the desired format
