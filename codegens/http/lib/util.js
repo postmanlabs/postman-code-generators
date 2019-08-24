@@ -1,4 +1,5 @@
-let _ = require('./lodash');
+let _ = require('./lodash'),
+  path = require('path');
 
 const FORM_DATA_BOUNDARY = '----WebKitFormBoundary7MA4YWxkTrZu0gW',
   RAW = 'raw',
@@ -217,7 +218,7 @@ function getBody (request, trimRequestBody) {
               requestBody += `\n${(trimRequestBody ? property.value.trim() : property.value)}\n`;
             }
             else if (property.type === 'file') {
-              var pathArray = property.src.split('/'),
+              var pathArray = property.src.split(path.sep),
                 fileName = pathArray[pathArray.length - 1],
                 fileExtension = fileName.split('.')[1];
               requestBody += 'Content-Disposition: form-data; name="';
