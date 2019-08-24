@@ -2,7 +2,7 @@ var _ = require('./lodash'),
   parseBody = require('./util/parseBody'),
   sanitize = require('./util/sanitize').sanitize,
   sanitizeOptions = require('./util/sanitize').sanitizeOptions,
-  path = require('path');
+  path = require('path'),
   self;
 
 /**
