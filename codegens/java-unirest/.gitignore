@@ -1,3 +1,6 @@
+main.java
+*.jar
+
 .DS_Store
 # Logs
 logs
