@@ -6,6 +6,7 @@ var expect = require('chai').expect,
   fs = require('fs'),
   convert = require('../../index').convert,
   sanitize = require('../../lib/util').sanitize,
+  getUrlStringfromUrlObject = require('../../lib/util').getUrlStringfromUrlObject,
   getOptions = require('../../index').getOptions,
   mainCollection = require('./fixtures/testcollection/collection.json');
 
@@ -253,6 +254,111 @@ describe('Swift Converter', function () {
         expect(snippet).to.include('http://postman-echo.com/post?a=b%20c');
         expect(snippet).to.not.include('http://postman-echo.com/post?a=b c');
       });
+    });
+  });
+
+  describe('getUrlStringfromUrlObject function', function () {
+    var rawUrl, urlObject, outputUrlString;
+
+    it('should return empty string for an url object for an empty url or if no url object is passed', function () {
+      rawUrl = '';
+      urlObject = new sdk.Url(rawUrl);
+      outputUrlString = getUrlStringfromUrlObject(urlObject);
+      expect(outputUrlString).to.be.empty;
+      outputUrlString = getUrlStringfromUrlObject();
+      expect(outputUrlString).to.be.empty;
+    });
+
+    it('should add protocol if present in the url object', function () {
+      rawUrl = 'https://postman-echo.com';
+      urlObject = new sdk.Url(rawUrl);
+      outputUrlString = getUrlStringfromUrlObject(urlObject);
+      expect(outputUrlString).to.equal(rawUrl);
+    });
+
+    it('should add the auth information if present in the url object', function () {
+      rawUrl = 'https://user:password@postman-echo.com';
+      urlObject = new sdk.Url(rawUrl);
+      outputUrlString = getUrlStringfromUrlObject(urlObject);
+      expect(outputUrlString).to.equal(rawUrl);
+    });
+
+    it('should not add the auth information if user isn\'t present but' +
+    ' password is present in the url object', function () {
+      rawUrl = 'https://:password@postman-echo.com';
+      urlObject = new sdk.Url(rawUrl);
+      outputUrlString = getUrlStringfromUrlObject(urlObject);
+      expect(outputUrlString).to.not.include(':password');
+    });
+
+    it('should add host if present in the url object', function () {
+      rawUrl = 'https://postman-echo.com';
+      urlObject = new sdk.Url(rawUrl);
+      outputUrlString = getUrlStringfromUrlObject(urlObject);
+      expect(outputUrlString).to.equal(rawUrl);
+    });
+
+    it('should add port if present in the url object', function () {
+      rawUrl = 'https://postman-echo.com:8080';
+      urlObject = new sdk.Url(rawUrl);
+      outputUrlString = getUrlStringfromUrlObject(urlObject);
+      expect(outputUrlString).to.equal(rawUrl);
+    });
+
+    it('should add path if present in the url object', function () {
+      rawUrl = 'https://postman-echo.com/get';
+      urlObject = new sdk.Url(rawUrl);
+      outputUrlString = getUrlStringfromUrlObject(urlObject);
+      expect(outputUrlString).to.equal(rawUrl);
+    });
+
+    describe('queryParams', function () {
+
+      it('should not encode unresolved query params', function () {
+        rawUrl = 'https://postman-echo.com/get?key={{value}}';
+        urlObject = new sdk.Url(rawUrl);
+        outputUrlString = getUrlStringfromUrlObject(urlObject);
+        expect(outputUrlString).to.not.include('key=%7B%7Bvalue%7B%7B');
+        expect(outputUrlString).to.equal(rawUrl);
+      });
+
+      it('should encode query params other than unresolved variables', function () {
+        rawUrl = 'https://postman-echo.com/get?key=\'a b c\'';
+        urlObject = new sdk.Url(rawUrl);
+        outputUrlString = getUrlStringfromUrlObject(urlObject);
+        expect(outputUrlString).to.not.include('key=\'a b c\'');
+        expect(outputUrlString).to.equal('https://postman-echo.com/get?key=%27a%20b%20c%27');
+      });
+
+      it('should not encode unresolved query params and ' +
+      'encode every other query param, both present together', function () {
+        rawUrl = 'https://postman-echo.com/get?key1={{value}}&key2=\'a b c\'';
+        urlObject = new sdk.Url(rawUrl);
+        outputUrlString = getUrlStringfromUrlObject(urlObject);
+        expect(outputUrlString).to.not.include('key1=%7B%7Bvalue%7B%7B');
+        expect(outputUrlString).to.not.include('key2=\'a b c\'');
+        expect(outputUrlString).to.equal('https://postman-echo.com/get?key1={{value}}&key2=%27a%20b%20c%27');
+      });
+
+      it('should discard disabled query params', function () {
+        urlObject = new sdk.Url({
+          protocol: 'https',
+          host: 'postman-echo.com',
+          query: [
+            { key: 'foo', value: 'bar' },
+            { key: 'alpha', value: 'beta', disabled: true }
+          ]
+        });
+        outputUrlString = getUrlStringfromUrlObject(urlObject);
+        expect(outputUrlString).to.equal('https://postman-echo.com?foo=bar');
+      });
+    });
+
+    it('should add hash if present in the url object', function () {
+      rawUrl = 'https://postmanm-echo.com/get#hash';
+      urlObject = new sdk.Url(rawUrl);
+      outputUrlString = getUrlStringfromUrlObject(urlObject);
+      expect(outputUrlString).to.equal(rawUrl);
     });
   });
 
