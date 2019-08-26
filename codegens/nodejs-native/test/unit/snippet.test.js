@@ -1,37 +1,45 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  runSnippet = require('../../../../test/codegen/newman/newman.test').runSnippet,
-  convert = require('../../lib/index').convert,
-  mainCollection = require('../../../../test/codegen/newman/fixtures/testCollection.json');
+  newmanTestUtil = require('../../../../test/codegen/newman/newmanTestUtil'),
+  async = require('async'),
+  convert = require('../../lib/index').convert;
 
 describe('nodejs-native convert function', function () {
-  mainCollection.item.forEach(function (item, index) {
-    it(item.name, function (done) {
-      var request = new sdk.Request(item.request);
+  var options = {indentCount: 2, indentType: 'Space'},
+    testConfig = {compileScript: null, runScript: 'node run.js', fileName: 'run.js'},
+    header = '/* eslint-disable */\n';
 
-      convert(request, {indentCount: 2, indentType: 'Space'}, function (error, snippet) {
+  async.waterfall([
+    function (next) {
+      newmanTestUtil.generateSnippet(convert, options, function (error, snippets) {
         if (error) {
           expect.fail(null, null, error);
-          return;
+          return next(error);
         }
-        //  disabling eslint for test file
-        snippet = '/* eslint-disable */\n' + snippet;
 
-        runSnippet(snippet, index,
-          {compileScript: null, runScript: 'node run.js', fileName: 'run.js'}, function (err, result) {
-            if (err) {
-              expect.fail(null, null, err);
-            }
-            if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
-              expect(result[1].toString().trim()).to.include(result[0].toString().trim());
-            }
-
-            expect(result[0]).deep.equal(result[1]);
-            return done();
-          });
+        return next(null, snippets);
       });
-    });
-  });
+    },
+    function (snippets, next) {
+      snippets.forEach((item, index) => {
+        it(item.name, function (done) {
+          newmanTestUtil.runSnippet(header + item.snippet, index, testConfig,
+            function (err, result) {
+              if (err) {
+                expect.fail(null, null, err);
+              }
+              if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
+                expect(result[0].toString().trim()).to.include(result[1].toString().trim());
+              }
+
+              expect(result[0]).deep.equal(result[1]);
+              return done(null);
+            });
+        });
+      });
+      return next(null);
+    }
+  ]);
 
   it('should sustain path variables when request has no path and has query params', function () {
     var request = new sdk.Request({

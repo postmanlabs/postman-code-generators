@@ -1,10 +1,10 @@
 var expect = require('chai').expect,
   path = require('path'),
   sdk = require('postman-collection'),
-  runSnippet = require('../../../../test/codegen/newman/newman.test').runSnippet,
-
+  newmanTestUtil = require('../../../../test/codegen/newman/newmanTestUtil'),
+  async = require('async'),
   convert = require('../../lib/index').convert,
-  mainCollection = require('../../../../test/codegen/newman/fixtures/testCollection2.json'),
+  mainCollection = require('../../../../test/codegen/newman/fixtures/testCollection.json'),
   testCollection = require('./fixtures/testcollection/collectionForEdge.json'),
   getOptions = require('../../lib/index').getOptions,
   testResponse = require('./fixtures/testresponse.json'),
@@ -18,45 +18,52 @@ describe('csharp restsharp function', function () {
                             'namespace HelloWorldApplication {\n' +
                             'class HelloWorld {\n' +
                             'static void Main(string[] args) {\n',
-      footerSnippet = '}\n}\n}\n';
-
-    mainCollection.item.forEach(function (item, index) {
-      it(item.name, function (done) {
-        var request = new sdk.Request(item.request),
-          depedenciesPath = path.resolve(__dirname, 'fixtures/dependencies'),
-          testConfig = {
-            compileScript: `mcs -reference:${depedenciesPath}/RestSharp.dll` +
-            ` -out:${depedenciesPath}/main.exe ${depedenciesPath}/main.cs`,
-            runScript: `mono  ${depedenciesPath}/main.exe`,
-            fileName: `${depedenciesPath}/main.cs`
-          },
-          options = {
-            indentCount: 1,
-            indentType: 'Tab',
-            followRedirect: true,
-            trimRequestBody: true,
-            requestTimeout: 5000
-          };
-        convert(request, options, function (error, snippet) {
+      footerSnippet = '}\n}\n}\n',
+      depedenciesPath = path.resolve(__dirname, 'fixtures/dependencies'),
+      testConfig = {
+        compileScript: `mcs -reference:${depedenciesPath}/RestSharp.dll` +
+        ` -out:${depedenciesPath}/main.exe ${depedenciesPath}/main.cs`,
+        runScript: `mono  ${depedenciesPath}/main.exe`,
+        fileName: `${depedenciesPath}/main.cs`
+      },
+      options = {
+        indentCount: 1,
+        indentType: 'Tab',
+        followRedirect: true,
+        trimRequestBody: true,
+        requestTimeout: 5000
+      };
+    async.waterfall([
+      function (next) {
+        newmanTestUtil.generateSnippet(convert, options, function (error, snippets) {
           if (error) {
             expect.fail(null, null, error);
-            return;
+            return next(error);
           }
-          runSnippet(headerSnippet + snippet + footerSnippet, index, testConfig, function (err, result) {
-            if (err) {
-              expect.fail(null, null, err);
-            }
-            if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
-              expect(result[0].toString().trim()).to.include(result[1].toString().trim());
-            }
 
-            expect(result[0]).deep.equal(result[1]);
-            return done();
+          return next(null, snippets);
+        });
+      },
+      function (snippets, next) {
+        snippets.forEach((item, index) => {
+          it(item.name, function (done) {
+            newmanTestUtil.runSnippet(headerSnippet + item.snippet + footerSnippet, index, testConfig,
+              function (err, result) {
+                if (err) {
+                  expect.fail(null, null, err);
+                }
+                if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
+                  expect(result[0].toString().trim()).to.include(result[1].toString().trim());
+                }
+
+                expect(result[0]).deep.equal(result[1]);
+                return done(null);
+              });
           });
         });
-      });
-      return false;
-    });
+        return next(null);
+      }
+    ]);
   });
 
   describe('csharp-restsharp convert function', function () {

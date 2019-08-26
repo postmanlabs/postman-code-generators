@@ -1,44 +1,54 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  runSnippet = require('../../../../test/codegen/newman/newman.test').runSnippet,
-  convert = require('../../index').convert,
-  mainCollection = require('../../../../test/codegen/newman/fixtures/testCollection.json');
+  newmanTestUtil = require('../../../../test/codegen/newman/newmanTestUtil'),
+  async = require('async'),
+  convert = require('../../index').convert;
+  // mainCollection = require('../../../../test/codegen/newman/fixtures/testCollection.json');
 
 describe('curl convert function', function () {
   describe('convert for different request types', function () {
-    mainCollection.item.forEach(function (item, index) {
-      it(item.name, function (done) {
-        var request = new sdk.Request(item.request),
-          options = {
-            indentCount: 3,
-            indentType: 'Space',
-            requestTimeout: 200,
-            multiLine: true,
-            followRedirect: true,
-            longFormat: true,
-            silent: true,
-            lineContinuationCharacter: '\\'
-          };
-        convert(request, options, function (error, snippet) {
+    var testConfig = {compileScript: null, runScript: null, fileName: null},
+      options = {
+        indentCount: 3,
+        indentType: 'Space',
+        requestTimeout: 200,
+        multiLine: true,
+        followRedirect: true,
+        longFormat: true,
+        silent: true,
+        lineContinuationCharacter: '\\'
+      };
+    async.waterfall([
+      function (next) {
+        newmanTestUtil.generateSnippet(convert, options, function (error, snippets) {
           if (error) {
             expect.fail(null, null, error);
-            return;
+            return next(error);
           }
-          runSnippet(snippet, index, {compileScript: null, runScript: null, fileName: null}, function (err, result) {
-            if (err) {
-              expect.fail(null, null, err);
-            }
-            if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
-              expect(result[0].toString().trim()).to.include(result[1].toString().trim());
-            }
 
-            expect(result[0]).deep.equal(result[1]);
-            return done();
-          });
-
+          return next(null, snippets);
         });
-      });
-    });
+      },
+      function (snippets, next) {
+        snippets.forEach((item, index) => {
+          it(item.name, function (done) {
+            newmanTestUtil.runSnippet(item.snippet, index, testConfig,
+              function (err, result) {
+                if (err) {
+                  expect.fail(null, null, err);
+                }
+                if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
+                  expect(result[0].toString().trim()).to.include(result[1].toString().trim());
+                }
+
+                expect(result[0]).deep.equal(result[1]);
+                return done(null);
+              });
+          });
+        });
+        return next(null);
+      }
+    ]);
   });
 
   describe('Convert function', function () {

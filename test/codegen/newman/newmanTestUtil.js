@@ -1,8 +1,8 @@
 var fs = require('fs'),
   exec = require('shelljs').exec,
-  // sdk = require('postman-collection'),
+  sdk = require('postman-collection'),
   newmanResponses = require('./newmanResponses.json'),
-  // testCollection = require('./fixtures/testCollection.json'),
+  testCollection = require('./fixtures/testCollection.json'),
   async = require('async');
 
 module.exports = {
@@ -18,13 +18,12 @@ module.exports = {
     if (testConfig.fileName) {
       fs.writeFileSync(testConfig.fileName, codeSnippet);
     }
-    console.log(index);
     //  bash command string for compiling codeSnippet
     var compile = testConfig.compileScript ? testConfig.compileScript : null,
       //  bash command stirng for run compiled file file
       run = testConfig.runScript ? testConfig.runScript : codeSnippet;
 
-    //  step by step process for compile, run code snippet, then comparing its output with newman
+    //  step by step process for compile, run code snippet
     async.waterfall([
       function compileCodeSnippet (next) {
         if (compile) {
@@ -120,27 +119,30 @@ module.exports = {
       return callback(null, result);
 
     });
+  },
+
+  generateSnippet: function (convert, options, callback) {
+    // check if convert is a function, and options is an object
+
+    async.map(testCollection.item, function (item, cb) {
+      var request = new sdk.Request(item.request);
+
+      convert(request, options, function (err, snippet) {
+        if (err) {
+          return cb(err);
+        }
+
+        return cb(null, {
+          name: item.name,
+          snippet: snippet
+        });
+      });
+    }, function (err, snippets) {
+      if (err) {
+        return callback(err);
+      }
+
+      return callback(null, snippets);
+    });
   }
-
-  // generateSnippet: function (convert, options, callback) {
-  //   // check if convert is a function, and options is an object
-
-  //   async.map(testCollection.item, function (item, cb) {
-  //     var request = new sdk.Request(item.request);
-
-  //     convert(request, options, function (err, snippet) {
-  //       if (err) {
-  //         return cb(err);
-  //       }
-
-  //       return cb(null, snippet);
-  //     });
-  //   }, function (err, snippets) {
-  //     if (err) {
-  //       return callback(err);
-  //     }
-
-  //     return callback(null, snippets);
-  //   });
-  // }
 };
