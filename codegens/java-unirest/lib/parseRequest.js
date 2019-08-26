@@ -12,6 +12,9 @@ var _ = require('./lodash'),
  */
 function getUrlStringfromUrlObject (urlObject) {
   var url = '';
+  if (!urlObject) {
+    return url;
+  }
   if (urlObject.protocol) {
     url += (urlObject.protocol.endsWith('://') ? urlObject.protocol : urlObject.protocol + '://');
   }
