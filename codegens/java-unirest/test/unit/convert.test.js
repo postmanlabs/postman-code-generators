@@ -1,156 +1,55 @@
 var expect = require('chai').expect,
-  fs = require('fs'),
   sdk = require('postman-collection'),
-  exec = require('shelljs').exec,
-  newman = require('newman'),
-  parallel = require('async').parallel,
-
+  async = require('async'),
   convert = require('../../lib/index').convert,
   sanitize = require('../../lib/util').sanitize,
   getOptions = require('../../index').getOptions,
+  newmanTestUtil = require('../../../../test/codegen/newman/newmanTestUtil'),
   mainCollection = require('./fixtures/testcollection/collection.json');
-
-/**
- * compiles and runs codesnippet then compare it with newman output
- *
- * @param {String} codeSnippet - code snippet that needed to run using java
- * @param {Object} collection - collection which will be run using newman
- * @param {Function} done - callback for async calls
- */
-function runSnippet (codeSnippet, collection, done) {
-  fs.writeFileSync('main.java', codeSnippet);
-
-  //  classpath of external libararies for java to compile
-  var compile = 'javac -cp *: main.java',
-
-    //  bash command stirng for run compiled java file
-    run = 'java -cp *: main';
-
-  //  step by step process for compile, run code snippet, then comparing its output with newman
-  parallel([
-    function (callback) {
-      exec(compile, function (err, stdout, stderr) {
-        if (err) {
-          return callback(err);
-        }
-        if (stderr) {
-          return callback(stderr);
-        }
-        return exec(run, function (err, stdout, stderr) {
-          if (err) {
-            return callback(err);
-          }
-          if (stderr) {
-            return callback(stderr);
-          }
-          try {
-            stdout = JSON.parse(stdout);
-          }
-          catch (e) {
-            console.error(e);
-          }
-          return callback(null, stdout);
-        });
-      });
-    },
-    function (callback) {
-      newman.run({
-        collection: collection
-      }).on('request', function (err, summary) {
-        if (err) {
-          return callback(err);
-        }
-
-        var stdout = summary.response.stream.toString();
-        try {
-          stdout = JSON.parse(stdout);
-        }
-        catch (e) {
-          console.error(e);
-        }
-        return callback(null, stdout);
-      });
-    }
-  ], function (err, result) {
-    if (err) {
-      expect.fail(null, null, err);
-    }
-    else if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
-      expect(result[0].trim()).to.equal(result[1].trim());
-    }
-    else {
-      const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'clientIPAddress'],
-        headersTodelete = [
-          'accept-encoding',
-          'user-agent',
-          'cf-ray',
-          'x-request-id',
-          'x-request-start',
-          'connect-time',
-          'x-forwarded-for',
-          'content-type',
-          'content-length',
-          'accept',
-          'total-route-time',
-          'cookie',
-          'cache-control',
-          'postman-token',
-          'x-real-ip'
-        ];
-      if (result[0]) {
-        propertiesTodelete.forEach(function (property) {
-          delete result[0][property];
-        });
-        if (result[0].headers) {
-          headersTodelete.forEach(function (property) {
-            delete result[0].headers[property];
-          });
-        }
-      }
-      if (result[1]) {
-        propertiesTodelete.forEach(function (property) {
-          delete result[1][property];
-        });
-        if (result[1].headers) {
-          headersTodelete.forEach(function (property) {
-            delete result[1].headers[property];
-          });
-        }
-      }
-
-      expect(result[0]).deep.equal(result[1]);
-    }
-    return done();
-  });
-}
 
 describe('java unirest convert function for test collection', function () {
   var headerSnippet = 'import com.mashape.unirest.http.*;\n' +
                         'import java.io.*;\n' +
                         'public class main {\n' +
                         'public static void main(String []args) throws Exception{\n',
-    footerSnippet = 'System.out.println(response.getBody());\n}\n}\n';
-
-  mainCollection.item.forEach(function (item) {
-    // Skipping tests for CI
-    it(item.name, function (done) {
-      var request = new sdk.Request(item.request),
-        collection = {
-          item: [
-            {
-              request: request.toJSON()
-            }
-          ]
-        };
-      convert(request, {indentCount: 3, indentType: 'Space'}, function (error, snippet) {
+    footerSnippet = 'System.out.println(response.getBody());\n}\n}\n',
+    testConfig = {
+      runSnippet: 'java -cp *: main',
+      compileSnippet: 'javac -cp *: main.java',
+      fileName: 'main.java'
+    },
+    options = {indentCount: 3, indentType: 'Space'};
+  async.waterfall([
+    function (next) {
+      newmanTestUtil.generateSnippet(convert, options, function (error, snippets) {
         if (error) {
           expect.fail(null, null, error);
-          return;
+          return next(error);
         }
-        runSnippet(headerSnippet + snippet + footerSnippet, collection, done);
+
+        return next(null, snippets);
       });
-    });
-  });
+    },
+    function (snippets, next) {
+      snippets.forEach((item, index) => {
+        it(item.name, function (done) {
+          newmanTestUtil.runSnippet(headerSnippet + item.snippet + footerSnippet, index, testConfig,
+            function (err, result) {
+              if (err) {
+                expect.fail(null, null, err);
+              }
+              if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
+                expect(result[0].toString().trim()).to.include(result[1].toString().trim());
+              }
+
+              expect(result[0]).deep.equal(result[1]);
+              return done(null);
+            });
+        });
+      });
+      return next(null);
+    }
+  ]);
   describe('convert function', function () {
     var request,
       reqObject,
