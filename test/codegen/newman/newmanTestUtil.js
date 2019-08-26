@@ -94,7 +94,8 @@ module.exports = {
           'cookie',
           'kong-cloud-request-id',
           'cache-control',
-          'postman-token'
+          'postman-token',
+          'accept-language'
         ];
       if (result[0]) {
         propertiesTodelete.forEach(function (property) {
