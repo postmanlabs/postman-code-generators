@@ -77,7 +77,7 @@ function parseFile () {
   // bodySnippet += `${indent}part, err := writer.CreateFormFile("file", filepath.Base(path))\n`;
   // bodySnippet += `${indent}_, err := io.Copy(part, file)\n`;
   // bodySnippet += `${indent}err := writer.Close()\n${indent}if err != nil {${indent}fmt.Println(err)}\n`;
-  var bodySnippet = 'payload := "<file contents here>"\n';
+  var bodySnippet = 'payload := strings.NewReader("<file contents here>")\n';
   return bodySnippet;
 }
 
@@ -130,7 +130,7 @@ self = module.exports = {
     }
     options = sanitizeOptions(options, self.getOptions());
 
-    var codeSnippet, indent, trim, timeout, followRedirect,
+    var codeSnippet, indent, trim, timeout, followRedirect, isContentTypeHeaderPresent,
       bodySnippet = '',
       responseSnippet = '',
       headerSnippet = '';
@@ -193,10 +193,17 @@ self = module.exports = {
     if (headerSnippet !== '') {
       codeSnippet += headerSnippet + '\n';
     }
-    if (request.body && (request.body.toJSON().mode === 'formdata' || request.body.toJSON().mode === 'file')) {
+    _.forEach(request.getHeaders({enabled: true}), function (header) {
+      if (header.key === 'Content-Type') {
+        isContentTypeHeaderPresent = true;
+      }
+    });
+    if (request.body && (request.body.toJSON().mode === 'formdata')) {
       codeSnippet += `${indent}req.Header.Set("Content-Type", writer.FormDataContentType())\n`;
     }
-
+    if (request.body.toJSON().mode === 'file' && !isContentTypeHeaderPresent) {
+      codeSnippet += `${indent}req.Header.Set("Content-Type", "text/plain")\n`;
+    }
     responseSnippet = `${indent}res, err := client.Do(req)\n`;
     responseSnippet += `${indent}defer res.Body.Close()\n${indent}body, err := ioutil.ReadAll(res.Body)\n\n`;
     responseSnippet += `${indent}fmt.Println(string(body))\n}`;
