@@ -3,6 +3,7 @@ var expect = require('chai').expect,
   sanitize = require('../../lib/util').sanitize,
   convert = require('../../lib/index').convert,
   getOptions = require('../../lib/index').getOptions,
+  async = require('async'),
   newmanTestUtil = require('../../../../test/codegen/newman/newmanTestUtil'),
   mainCollection = require('../../../../test/codegen/newman/fixtures/testCollection.json');
 
