@@ -31,8 +31,9 @@ describe('nodejs-native convert function', function () {
               if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
                 expect(result[0].toString().trim()).to.include(result[1].toString().trim());
               }
-
-              expect(result[0]).deep.equal(result[1]);
+              else {
+                expect(result[0]).deep.equal(result[1]);
+              }
               return done(null);
             });
         });
