@@ -11,7 +11,7 @@ self = module.exports = {
     }
     options = sanitizeOptions(options, self.getOptions());
 
-    var trim, headersData, body, text, isContentTypeHeaderPresent,
+    var trim, headersData, body, text,
       snippet = '',
       formCheck,
       formdataString = '',
@@ -43,19 +43,19 @@ self = module.exports = {
     snippet += indentString + `curl_easy_setopt(curl, CURLOPT_DEFAULT_PROTOCOL, "${protocol}");\n`;
     snippet += indentString + 'struct curl_slist *headers = NULL;\n';
     headersData = request.getHeaders({ enabled: true });
+    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
+    }
     _.forEach(headersData, function (value, key) {
-      if (key === 'Content-Type') {
-        isContentTypeHeaderPresent = true;
-      }
       snippet += indentString + `headers = curl_slist_append(headers, "${sanitize(key)}: ${sanitize(value)}");\n`;
     });
     body = request.body.toJSON();
     if (body.mode && body.mode === 'formdata' && !options.useMimeType) {
       snippet += indentString + 'headers = curl_slist_append(headers, "content-type:' +
                 ` multipart/form-data; boundary=${BOUNDARY}");\n`;
-    }
-    if (body.mode && body.mode === 'file' && !isContentTypeHeaderPresent) {
-      snippet += indentString + 'headers = curl_slist_append(headers, "content-type: text/plain");\n';
     }
     snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);\n';
     // request body

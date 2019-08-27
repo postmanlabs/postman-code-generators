@@ -16,8 +16,7 @@ function makeSnippet (request, indentString, options) {
   var nativeModule = (request.url.protocol === 'http' ? 'http' : 'https'),
     snippet = `var ${nativeModule} = require('${nativeModule}');\n\n`,
     optionsArray = [],
-    postData = [],
-    isContentTypeHeaderPresent;
+    postData = [];
 
   if (options.followRedirect) {
     snippet = `var ${nativeModule} = require('follow-redirects').${nativeModule};\n\n`;
@@ -44,6 +43,12 @@ function makeSnippet (request, indentString, options) {
   if (request.body && request.body[request.body.mode]) {
     postData.push(parseRequest.parseBody(request.body.toJSON(), indentString, options.trimRequestBody));
   }
+  if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+    request.addHeader({
+      key: 'Content-Type',
+      value: 'text/plain'
+    });
+  }
 
   parseRequest.parseURLVariable(request);
 
@@ -51,11 +56,6 @@ function makeSnippet (request, indentString, options) {
   optionsArray.push(parseRequest.parseHost(request, indentString));
   optionsArray.push(parseRequest.parsePath(request, indentString));
   optionsArray.push(parseRequest.parseHeader(request, indentString));
-  _.forEach(request.getHeaders({ enabled: true}), (header) => {
-    if (header.key === 'Content-Type') {
-      isContentTypeHeaderPresent = true;
-    }
-  });
   if (options.followRedirect) {
     optionsArray.push(indentString + '\'maxRedirects\': 20');
   }
@@ -91,10 +91,6 @@ function makeSnippet (request, indentString, options) {
     if (request.body.mode === 'formdata') {
       snippet += 'req.setHeader(\'content-type\',' +
             ' \'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW\');\n\n';
-    }
-
-    if (request.body.mode === 'file' && !isContentTypeHeaderPresent) {
-      snippet += 'req.setHeader(\'content-type\', \'text/plain\');\n\n';
     }
 
     snippet += 'req.write(postData);\n\n';

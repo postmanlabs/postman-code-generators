@@ -130,7 +130,7 @@ self = module.exports = {
     }
     options = sanitizeOptions(options, self.getOptions());
 
-    var codeSnippet, indent, trim, timeout, followRedirect, isContentTypeHeaderPresent,
+    var codeSnippet, indent, trim, timeout, followRedirect,
       bodySnippet = '',
       responseSnippet = '',
       headerSnippet = '';
@@ -189,15 +189,16 @@ self = module.exports = {
       codeSnippet += `${indent}req, err := http.NewRequest(method, url, nil)\n\n`;
     }
     codeSnippet += `${indent}if err != nil {\n${indent.repeat(2)}fmt.Println(err)\n${indent}}\n`;
+    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
+    }
     headerSnippet = parseHeaders(request.getHeaders({enabled: true}), indent);
     if (headerSnippet !== '') {
       codeSnippet += headerSnippet + '\n';
     }
-    _.forEach(request.getHeaders({enabled: true}), function (header) {
-      if (header.key === 'Content-Type') {
-        isContentTypeHeaderPresent = true;
-      }
-    });
     if (request.body && (request.body.toJSON().mode === 'formdata')) {
       codeSnippet += `${indent}req.Header.Set("Content-Type", writer.FormDataContentType())\n`;
     }

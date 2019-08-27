@@ -14,8 +14,7 @@ var _ = require('./lodash'),
  */
 function makeSnippet (request, indentString, options) {
   var snippet = 'var request = require(\'request\');\n',
-    optionsArray = [],
-    isContentTypeHeaderPresent;
+    optionsArray = [];
 
   snippet += 'var fs = require(\'fs\')\n';
   snippet += 'var options = {\n';
@@ -31,19 +30,11 @@ function makeSnippet (request, indentString, options) {
      */
   optionsArray.push(indentString + `'method': '${request.method}'`);
   optionsArray.push(indentString + `'url': '${sanitize(request.url.toString())}'`);
-
-  if (request.body && request.body.mode === 'file') {
-    _.forEach(request.getHeaders({enabled: true}), (header) => {
-      if (header.key === 'Content-Type') {
-        isContentTypeHeaderPresent = true;
-      }
+  if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+    request.addHeader({
+      key: 'Content-Type',
+      value: 'text/plain'
     });
-    if (!isContentTypeHeaderPresent) {
-      request.addHeader({
-        key: 'Content-Type',
-        value: 'text/plain'
-      });
-    }
   }
   optionsArray.push(parseRequest.parseHeader(request, indentString));
 
