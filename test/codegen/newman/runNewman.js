@@ -6,7 +6,7 @@ const collection = require('../newman/fixtures/testCollection.json'),
   PATH_TO_NEWMAN_REPONSES = path.resolve(__dirname, '../newman/newmanResponses.json');
 
 /**
- * compiles and runs codesnippet then compare it with newman output
+ * Runs a collection using newman
  *
  * @param {Object} collection - collection which will be run using newman
  * @param {Function} done - callback for async calls
@@ -14,6 +14,11 @@ const collection = require('../newman/fixtures/testCollection.json'),
 function runNewman (collection, done) {
   newman.run({
     collection: collection
+  }).on('beforeItem', function (err, summary) {
+    if (err) {
+      return done(err);
+    }
+    console.log('Sending request: ' + summary.item.name);
   }).on('request', function (err, summary) {
     if (err) {
       return done(err);
@@ -28,6 +33,7 @@ function runNewman (collection, done) {
     }
 
     responses.push(stdout);
+    console.log('Done: ' + summary.item.name);
   }).on('done', function (err) {
     if (err) {
       return done(err);
@@ -37,7 +43,7 @@ function runNewman (collection, done) {
         console.log(err);
       }
     });
-    return done(null, 'done');
+    return done(null, 'Newman run complete with no errors');
   });
 }
 
