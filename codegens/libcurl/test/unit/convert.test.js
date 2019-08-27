@@ -1,50 +1,57 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
   convert = require('../../index').convert,
-  runSnippet = require('../../../../test/codegen/newman/newman.test').runSnippet,
+  async = require('async'),
+  newmanTestUtil = require('../../../../test/codegen/newman/newmanTestUtil'),
   getOptions = require('../../index').getOptions,
   sanitize = require('../../lib/util').sanitize,
   mainCollection = require('../../../../test/codegen/newman/fixtures/testCollection.json');
 
 describe('libcurl convert function', function () {
   describe('convert for different request types', function () {
-
-    mainCollection.item.forEach(function (item, index) {
-      it(item.name, function (done) {
-        var request = new sdk.Request(item.request),
-          options = {
-            indentCount: 1,
-            indentType: 'Tab',
-            useMimeType: false,
-            includeBoilerplate: true
-          },
-          testConfig = {
-            compileScript: '`curl-config --cc --cflags` -o executableFile testFile.c `curl-config --libs`',
-            runScript: './executableFile',
-            fileName: './executableFile'
-          };
-
-        convert(request, options, function (error, snippet) {
+    var options = {
+        indentCount: 1,
+        indentType: 'Tab',
+        useMimeType: false,
+        includeBoilerplate: true
+      },
+      testConfig = {
+        compileScript: '`curl-config --cc --cflags` -o executableFile testFile.c `curl-config --libs`',
+        runScript: './executableFile',
+        fileName: 'testFile.c'
+      };
+    async.waterfall([
+      function (next) {
+        newmanTestUtil.generateSnippet(convert, options, function (error, snippets) {
           if (error) {
             expect.fail(null, null, error);
-
-            return;
+            return next(error);
           }
 
-          runSnippet(snippet, index, testConfig, function () {
-            if (err) {
-              expect.fail(null, null, err);
-            }
-            if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
-              expect(result[0].toString().trim()).to.include(result[1].toString().trim());
-            }
-
-            expect(result[0]).deep.equal(result[1]);
-            return done();
+          return next(null, snippets);
+        });
+      },
+      function (snippets, next) {
+        snippets.forEach((item, index) => {
+          it(item.name, function (done) {
+            newmanTestUtil.runSnippet(item.snippet, index, testConfig,
+              function (err, result) {
+                if (err) {
+                  expect.fail(null, null, err);
+                }
+                if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
+                  expect(result[0].toString().trim()).to.include(result[1].toString().trim());
+                }
+                else {
+                  expect(result[0]).deep.equal(result[1]);
+                }
+                return done(null);
+              });
           });
         });
-      });
-    });
+        return next(null);
+      }
+    ]);
   });
   describe('convert function', function () {
 
