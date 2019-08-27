@@ -51,7 +51,6 @@ module.exports = function (request, trimRequestBody) {
         return requestBody;
       case 'file':
         requestBody = 'request.body = "<file contents here>"\n';
-        // TODO find out how and implement
         return requestBody;
       default:
         return requestBody;
