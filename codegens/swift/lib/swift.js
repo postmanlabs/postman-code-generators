@@ -137,10 +137,6 @@ function parseHeaders (headers, mode) {
     headerSnippet += 'request.addValue("multipart/form-data; ';
     headerSnippet += 'boundary=\\(boundary)", forHTTPHeaderField: "Content-Type")\n';
   }
-  /* istanbul ignore next */
-  else if (mode === 'file') {
-    headerSnippet += 'request.addValue("{Insert_File_Content_Type}", forHTTPHeaderField: "Content-Type")\n';
-  }
   return headerSnippet;
 }
 
@@ -241,6 +237,12 @@ self = module.exports = {
     }
     codeSnippet += `var request = URLRequest(url: URL(string: "${finalUrl}")!,` +
          `timeoutInterval: ${timeout ? timeout : 'Double.infinity'})\n`;
+    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
+    }
     headerSnippet = parseHeaders(request.getHeaders({ enabled: true }), (request.body ? request.body.mode : 'raw'));
     if (headerSnippet !== '') {
       codeSnippet += headerSnippet + '\n';
