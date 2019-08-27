@@ -103,6 +103,12 @@ self = module.exports = {
     snippet += 'import requests\n\n';
     snippet += `url = "${sanitize(request.url.toString(), 'url')}"\n\n`;
     snippet += `${parseBody(request.toJSON(), indentation, options.trimRequestBody)}`;
+    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
+    }
     snippet += `${getheaders(request, indentation)}\n`;
     snippet += `response = requests.request("${request.method}", url, headers=headers`;
 
