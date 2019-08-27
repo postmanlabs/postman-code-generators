@@ -11,7 +11,7 @@ self = module.exports = {
     }
     options = sanitizeOptions(options, self.getOptions());
 
-    var trim, headersData, body, text,
+    var trim, headersData, body, text, isContentTypeHeaderPresent,
       snippet = '',
       formCheck,
       formdataString = '',
@@ -44,12 +44,18 @@ self = module.exports = {
     snippet += indentString + 'struct curl_slist *headers = NULL;\n';
     headersData = request.getHeaders({ enabled: true });
     _.forEach(headersData, function (value, key) {
+      if (key === 'Content-Type') {
+        isContentTypeHeaderPresent = true;
+      }
       snippet += indentString + `headers = curl_slist_append(headers, "${sanitize(key)}: ${sanitize(value)}");\n`;
     });
     body = request.body.toJSON();
     if (body.mode && body.mode === 'formdata' && !options.useMimeType) {
       snippet += indentString + 'headers = curl_slist_append(headers, "content-type:' +
                 ` multipart/form-data; boundary=${BOUNDARY}");\n`;
+    }
+    if (body.mode && body.mode === 'file' && !isContentTypeHeaderPresent) {
+      snippet += indentString + 'headers = curl_slist_append(headers, "content-type: text/plain");\n';
     }
     snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);\n';
     // request body
@@ -114,7 +120,7 @@ self = module.exports = {
           }
           break;
         case 'file':
-          snippet += indentString + 'curl_easy_setopt(curl,CURLOPT_POSTFIELDS,"<file contents here>")\n';
+          snippet += indentString + 'curl_easy_setopt(curl,CURLOPT_POSTFIELDS,"<file contents here>");\n';
           // `const char *data = "${sanitize(body.key, trim)}=@${sanitize(body.value, trim)}";\n`;
           // snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);\n';
           break;
