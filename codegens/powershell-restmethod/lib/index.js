@@ -66,27 +66,11 @@ function parseRawBody (body, trim) {
 /**
  * Parses File data from request to powershell-restmethod syntax
  *
- * @param {Object} body File body
+ * @param {Object} src File path
  * @param {boolean} trim trim body option
  */
-function parseFileData (body, trim) {
-  var bodySnippet = '$multipartContent = [System.Net.Http.MultipartFormDataContent]::new()\n';
-  _.forEach(body, function (data) {
-    if (!data.disabled) {
-      bodySnippet += `$multipartFile = "${data.src}"\n` +
-            '$FileStream = [System.IO.FileStream]::new($multipartFile, [System.IO.FileMode]::Open)\n' +
-            '$fileHeader = [System.Net.Http.Headers.ContentDispositionHeaderValue]::new("form-data")\n' +
-            '$fileHeader.Name = "Form data field name"\n' +
-            `$fileHeader.FileName = "${sanitize(data.key, trim)}"\n` +
-            '$fileContent = [System.Net.Http.StreamContent]::new($FileStream)\n' +
-            '$fileContent.Headers.ContentDisposition = $fileHeader\n' +
-            '$fileContent.Headers.ContentType = ' +
-            '[System.Net.Http.Headers.MediaTypeHeaderValue]::Parse("Content-Type Header")\n' +
-            '$multipartContent.Add($fileContent)\n\n';
-    }
-  });
-  bodySnippet += '$body = $multipartContent\n';
-  return bodySnippet;
+function parseFileData (src, trim) {
+  return '$body = "<file-contents-here>"\n';
 }
 /* eslint-enable no-unused-vars*/
 
@@ -107,8 +91,7 @@ function parseBody (body, trim) {
         return parseFormData(body.formdata, trim);
         /* istanbul ignore next */
       case 'file':
-        // return parseFileData(body.file, trim);
-        return '$body = "<file contents here>"\n';
+        return parseFileData(body.file, trim);
       default:
         return parseRawBody(body[body.mode], trim);
     }
@@ -187,6 +170,12 @@ function convert (request, options, callback) {
     codeSnippet = '',
     headerSnippet = '',
     bodySnippet = '';
+  if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+    request.addHeader({
+      key: 'Content-Type',
+      value: 'text/plain'
+    });
+  }
 
   headers = request.getHeaders({enabled: true});
   headerSnippet = parseHeaders(headers);
