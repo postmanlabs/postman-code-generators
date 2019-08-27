@@ -124,6 +124,12 @@ self = module.exports = {
     jQueryCode += `${indent}"url": "${sanitize(request.url.toString(), 'url')}",\n`;
     jQueryCode += `${indent}"method": "${request.method}",\n`;
     jQueryCode += `${indent}"timeout": ${options.requestTimeout},\n`;
+    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
+    }
     jQueryCode += `${getHeaders(request, indent)}`;
     jQueryCode += `${parseBody(request.toJSON(), options.trimRequestBody, indent)}};\n\n`;
     jQueryCode += `$.ajax(settings).done(function (response) {\n${indent}console.log(response);\n});`;
