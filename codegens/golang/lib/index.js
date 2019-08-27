@@ -202,9 +202,6 @@ self = module.exports = {
     if (request.body && (request.body.toJSON().mode === 'formdata')) {
       codeSnippet += `${indent}req.Header.Set("Content-Type", writer.FormDataContentType())\n`;
     }
-    if (request.body.toJSON().mode === 'file' && !isContentTypeHeaderPresent) {
-      codeSnippet += `${indent}req.Header.Set("Content-Type", "text/plain")\n`;
-    }
     responseSnippet = `${indent}res, err := client.Do(req)\n`;
     responseSnippet += `${indent}defer res.Body.Close()\n${indent}body, err := ioutil.ReadAll(res.Body)\n\n`;
     responseSnippet += `${indent}fmt.Println(string(body))\n}`;
