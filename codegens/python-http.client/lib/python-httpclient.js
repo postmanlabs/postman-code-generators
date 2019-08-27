@@ -130,6 +130,12 @@ self = module.exports = {
     snippet += `conn = http.client.HTTPSConnection("${request.url.host ? request.url.host.join('.') : ''}"`;
     snippet += options.requestTimeout !== 0 ? `, timeout = ${options.requestTimeout})\n` : ')\n';
     snippet += parseBody(request.toJSON(), indentation, options.requestBodyTrim);
+    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
+    }
     snippet += getheaders(request, indentation);
     snippet += `conn.request("${request.method}", "${getUrlPathWithQuery(request.url)}", payload, headers)\n`;
     snippet += 'res = conn.getresponse()\n';
