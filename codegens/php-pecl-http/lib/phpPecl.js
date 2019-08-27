@@ -113,6 +113,12 @@ self = module.exports = {
     snippet += options.requestTimeout === 0 ? '' : `'connecttimeout' => ${options.requestTimeout}`;
     snippet += options.followRedirect ? '' : ', \'redirect\' => false';
     snippet += '));\n';
+    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
+    }
     snippet += `${getHeaders(request, indentation)}\n`;
     snippet += '$client->enqueue($request)->send();\n';
     snippet += '$response = $client->getResponse();\n';
