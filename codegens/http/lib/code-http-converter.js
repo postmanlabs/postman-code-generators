@@ -31,6 +31,12 @@ function convert (request, options, callback) {
   options = utils.sanitizeOptions(options, getOptions());
   snippet = `${request.method} ${utils.getEndPoint(request)} HTTP/1.1\n`;
   snippet += `Host: ${utils.getHost(request)}\n`;
+  if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+    request.addHeader({
+      key: 'Content-Type',
+      value: 'text/plain'
+    });
+  }
   snippet += `${utils.getHeaders(request)}\n`;
   snippet += `\n${utils.getBody(request, options.trimRequestBody)}`;
 
