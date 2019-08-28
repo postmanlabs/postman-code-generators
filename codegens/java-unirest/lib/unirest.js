@@ -16,7 +16,7 @@ const SUPPORTED_METHODS = ['GET', 'POST', 'PUT', 'HEAD', 'PATCH', 'DELETE', 'OPT
  */
 function makeSnippet (request, indentString, options) {
   var snippet = '',
-    urlString = encodeURI(request.url.toString());
+    urlString = parseRequest.getUrlStringfromUrlObject(request.url);
 
   if (options.requestTimeout > 0) {
     snippet += `Unirest.setTimeouts(0, ${options.requestTimeout});\n`;

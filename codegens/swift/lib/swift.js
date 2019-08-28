@@ -1,6 +1,7 @@
 var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
+  getUrlStringfromUrlObject = require('./util').getUrlStringfromUrlObject,
   self;
 
 /**
@@ -228,7 +229,7 @@ self = module.exports = {
     timeout = options.requestTimeout;
     // followRedirect = options.followRedirect;
     trim = options.trimRequestBody;
-    finalUrl = encodeURI(request.url.toString());
+    finalUrl = getUrlStringfromUrlObject(request.url);
 
     bodySnippet = parseBody(requestBody, trim, indent);
 
