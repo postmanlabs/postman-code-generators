@@ -288,6 +288,12 @@ self = module.exports = {
     trim = options.trimRequestBody;
     finalUrl = encodeURI(request.url.toString());
     methodArg = getMethodArg(request.method);
+    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
+    }
     headerSnippet += parseHeaders(requestBodyMode, request.getHeaders({enabled: true}), indent);
     bodySnippet = parseBody(requestBody, trim, indent);
 

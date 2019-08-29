@@ -104,9 +104,7 @@ self = module.exports = {
             snippet += request.method + GAP + url + (parsedHeaders ? (' \\\n' + parsedHeaders) : '');
             break;
           case FILE:
-            if (parsedBody) {
-              snippet += 'printf ' + parsedBody + '| ';
-            }
+            snippet += `cat ${parsedBody} | `;
             snippet += 'http ' + handleRedirect(options.followRedirect) + handleRequestTimeout(timeout);
             snippet += request.method + GAP + url + (parsedHeaders ? (' \\\n' + parsedHeaders) : '');
             break;

@@ -43,6 +43,12 @@ self = module.exports = {
     snippet += indentString + `curl_easy_setopt(curl, CURLOPT_DEFAULT_PROTOCOL, "${protocol}");\n`;
     snippet += indentString + 'struct curl_slist *headers = NULL;\n';
     headersData = request.getHeaders({ enabled: true });
+    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
+    }
     _.forEach(headersData, function (value, key) {
       snippet += indentString + `headers = curl_slist_append(headers, "${sanitize(key)}: ${sanitize(value)}");\n`;
     });
@@ -114,7 +120,7 @@ self = module.exports = {
           }
           break;
         case 'file':
-          snippet += indentString + 'curl_easy_setopt(curl,CURLOPT_POSTFIELDS,"<file contents here>")\n';
+          snippet += indentString + 'curl_easy_setopt(curl,CURLOPT_POSTFIELDS,"<file contents here>");\n';
           // `const char *data = "${sanitize(body.key, trim)}=@${sanitize(body.value, trim)}";\n`;
           // snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);\n';
           break;

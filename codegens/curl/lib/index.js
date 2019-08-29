@@ -12,7 +12,8 @@ self = module.exports = {
     }
     options = sanitizeOptions(options, self.getOptions());
 
-    var indent, trim, headersData, body, text, redirect, timeout, multiLine, format, snippet, silent;
+    var indent, trim, headersData, body, text, redirect, timeout, multiLine,
+      format, snippet, silent;
     redirect = options.followRedirect;
     timeout = options.requestTimeout;
     multiLine = options.multiLine;
@@ -42,6 +43,12 @@ self = module.exports = {
       snippet += ` ${form('-X', format)} ${request.method} "${encodeURI(request.url.toString())}"`;
     }
 
+    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
+    }
     headersData = request.getHeaders({ enabled: true });
     _.forEach(headersData, function (value, key) {
       snippet += indent + `${form('-H', format)} "${sanitize(key, trim)}: ${sanitize(value, trim)}"`;
@@ -79,7 +86,8 @@ self = module.exports = {
             });
             break;
           case 'file':
-            snippet += indent + `${form('-d', format)} "<file contents here>"`;
+            snippet += indent + `${form('--data-binary', format)}`;
+            snippet += ` "@${sanitize(body[body.mode].src, trim)}"`;
             break;
           default:
             snippet += `${form('-d', format)} ""`;
