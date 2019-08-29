@@ -424,7 +424,7 @@ describe('Request Snippet', function () {
                 '$body = new http\\Message\\Body;\n' +
                 '$body->addForm(array(\n\n' +
                 '), array(        array(' +
-                '\'name\' => \'test-file\', \'type\' => \'content-type header\',' +
+                '\'name\' => \'test-file\', \'type\' => \'<Content-type header>\',' +
                 ' \'file\' => \'\', \'data\' => null)));\n' +
                 '$request->setBody($body);\n' +
                 '$request->setOptions(array());\n\n' +

@@ -48,11 +48,12 @@ function parseFormData (body, trim, indent) {
     if (!data.disabled) {
       if (data.type === 'file') {
         isFile = true;
-        bodySnippet += `${indent}file, err := os.Open("${data.src}")\n`;
+        bodySnippet += `${indent}file, err_file := os.Open("${data.src}")\n`;
         bodySnippet += `${indent}defer file.Close()\n`;
-        bodySnippet += `${indent}part, err := writer.CreateFormFile("${sanitize(data.key, trim)}",` +
+        bodySnippet += `${indent}part, err_file := writer.CreateFormFile("${sanitize(data.key, trim)}",` +
                         `filepath.Base("${data.src}"))\n`;
-        bodySnippet += `${indent}_, err = io.Copy(part, file)\n`;
+        bodySnippet += `${indent}_, err_file = io.Copy(part, file)\n`;
+        bodySnippet += `${indent}if err_file !=nil {\n${indent.repeat(2)}fmt.Println(err_file)\n${indent}}\n`;
       }
       else {
         bodySnippet += `${indent}_ = writer.WriteField("${sanitize(data.key, trim)}",`;
@@ -60,12 +61,8 @@ function parseFormData (body, trim, indent) {
       }
     }
   });
-  if (isFile) {
-    bodySnippet += `${indent}err = writer.Close()\n${indent}if err != nil {${indent}fmt.Println(err)}\n`;
-  }
-  else {
-    bodySnippet += `${indent}err := writer.Close()\n${indent}if err != nil {${indent}fmt.Println(err)}\n`;
-  }
+  bodySnippet += `${indent}err := writer.Close()\n${indent}if err != nil ` +
+  `{\n${indent.repeat(2)}fmt.Println(err)\n${indent}}\n`;
   return bodySnippet;
 }
 

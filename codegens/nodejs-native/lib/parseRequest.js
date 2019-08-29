@@ -1,6 +1,7 @@
 const _ = require('./lodash'),
 
-  sanitize = require('./util').sanitize;
+  sanitize = require('./util').sanitize,
+  path = require('path');
 
 /**
  * parses body of request when type of the request body is formdata or urlencoded and
@@ -41,7 +42,7 @@ function generateMultipartFormData (requestbody) {
         const key = dataArrayElement.key.replace(/"/g, '\'');
 
         if (dataArrayElement.type === 'file') {
-          var pathArray = dataArrayElement.src.split('/'),
+          var pathArray = dataArrayElement.src.split(path.sep),
             fileName = pathArray[pathArray.length - 1];
           const filename = `filename=\\"${fileName}\\"`,
             contentType = 'Content-Type: \\"{Insert_File_Content_Type}\\"',

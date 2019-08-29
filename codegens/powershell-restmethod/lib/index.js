@@ -1,6 +1,7 @@
 var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
-  sanitizeOptions = require('./util').sanitizeOptions;
+  sanitizeOptions = require('./util').sanitizeOptions,
+  path = require('path');
 const VALID_METHODS = ['DEFAULT',
   'DELETE',
   'GET',
@@ -41,23 +42,23 @@ function parseFormData (body, trim) {
     if (!data.disabled) {
       if (data.type === 'text') {
         bodySnippet += '$stringHeader = ' +
-                            '[System.Net.Http.Headers.ContentDispositionHeaderValue]::new("form-data")\n' +
-                            `$stringHeader.Name = "${sanitize(data.key, trim)}"\n` +
-                            `$StringContent = [System.Net.Http.StringContent]::new("${sanitize(data.value, trim)}")\n` +
-                            '$StringContent.Headers.ContentDisposition = $stringHeader\n' +
-                            '$multipartContent.Add($stringContent)\n\n';
+          '[System.Net.Http.Headers.ContentDispositionHeaderValue]::new("form-data")\n' +
+          `$stringHeader.Name = "${sanitize(data.key, trim)}"\n` +
+          `$StringContent = [System.Net.Http.StringContent]::new("${sanitize(data.value, trim)}")\n` +
+          '$StringContent.Headers.ContentDisposition = $stringHeader\n' +
+          '$multipartContent.Add($stringContent)\n\n';
       }
       else {
-        var pathArray = data.src.split('/'),
+        var pathArray = data.src.split(path.sep),
           fileName = pathArray[pathArray.length - 1];
         bodySnippet += `$multipartFile = '${data.src}'\n` +
-                        '$FileStream = [System.IO.FileStream]::new($multipartFile, [System.IO.FileMode]::Open)\n' +
-                        '$fileHeader = [System.Net.Http.Headers.ContentDispositionHeaderValue]::new("form-data")\n' +
-                        `$fileHeader.Name = "${sanitize(data.key)}"\n` +
-                        `$fileHeader.FileName = "${sanitize(fileName, trim)}"\n` +
-                        '$fileContent = [System.Net.Http.StreamContent]::new($FileStream)\n' +
-                        '$fileContent.Headers.ContentDisposition = $fileHeader\n' +
-                        '$multipartContent.Add($fileContent)\n\n';
+          '$FileStream = [System.IO.FileStream]::new($multipartFile, [System.IO.FileMode]::Open)\n' +
+          '$fileHeader = [System.Net.Http.Headers.ContentDispositionHeaderValue]::new("form-data")\n' +
+          `$fileHeader.Name = "${sanitize(data.key)}"\n` +
+          `$fileHeader.FileName = "${sanitize(fileName, trim)}"\n` +
+          '$fileContent = [System.Net.Http.StreamContent]::new($FileStream)\n' +
+          '$fileContent.Headers.ContentDisposition = $fileHeader\n' +
+          '$multipartContent.Add($fileContent)\n\n';
       }
     }
   });
@@ -88,15 +89,15 @@ function parseFileData (body, trim) {
   _.forEach(body, function (data) {
     if (!data.disabled) {
       bodySnippet += `$multipartFile = "${data.src}"\n` +
-            '$FileStream = [System.IO.FileStream]::new($multipartFile, [System.IO.FileMode]::Open)\n' +
-            '$fileHeader = [System.Net.Http.Headers.ContentDispositionHeaderValue]::new("form-data")\n' +
-            '$fileHeader.Name = "Form data field name"\n' +
-            `$fileHeader.FileName = "${sanitize(data.key, trim)}"\n` +
-            '$fileContent = [System.Net.Http.StreamContent]::new($FileStream)\n' +
-            '$fileContent.Headers.ContentDisposition = $fileHeader\n' +
-            '$fileContent.Headers.ContentType = ' +
-            '[System.Net.Http.Headers.MediaTypeHeaderValue]::Parse("Content-Type Header")\n' +
-            '$multipartContent.Add($fileContent)\n\n';
+        '$FileStream = [System.IO.FileStream]::new($multipartFile, [System.IO.FileMode]::Open)\n' +
+        '$fileHeader = [System.Net.Http.Headers.ContentDispositionHeaderValue]::new("form-data")\n' +
+        '$fileHeader.Name = "Form data field name"\n' +
+        `$fileHeader.FileName = "${sanitize(data.key, trim)}"\n` +
+        '$fileContent = [System.Net.Http.StreamContent]::new($FileStream)\n' +
+        '$fileContent.Headers.ContentDisposition = $fileHeader\n' +
+        '$fileContent.Headers.ContentType = ' +
+        '[System.Net.Http.Headers.MediaTypeHeaderValue]::Parse("Content-Type Header")\n' +
+        '$multipartContent.Add($fileContent)\n\n';
     }
   });
   bodySnippet += '$body = $multipartContent\n';

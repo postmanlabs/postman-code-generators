@@ -44,7 +44,7 @@ module.exports = function (request, indentation, bodyTrim) {
           });
           bodyFileMap = _.map(_.filter(enabledBodyList, {'type': 'file'}), function (value) {
             return (`${indentation.repeat(2)}array('name' => '${sanitize(value.key, bodyTrim)}', ` +
-                            '\'type\' => \'content-type header\', ' +
+                            '\'type\' => \'<Content-type header>\', ' +
                             `'file' => '${sanitize(value.src, bodyTrim)}', ` +
                             '\'data\' => null)');
           });

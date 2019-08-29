@@ -135,7 +135,6 @@ describe('Ruby converter', function () {
         };
       convert(request, {indentType: 'Space',
         indentCount: 4,
-        requestTimeout: 1000,
         trimRequestBody: false,
         addCacheHeader: false,
         followRedirect: true}, function (err, snippet) {

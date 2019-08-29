@@ -1,6 +1,7 @@
 var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
-  sanitizeOptions = require('./util').sanitizeOptions;
+  sanitizeOptions = require('./util').sanitizeOptions,
+  path = require('path');
 
 /**
  * Parses URLEncoded body from request
@@ -44,9 +45,9 @@ function parseFormData (body, trim) {
       /* istanbul ignore next */
       /* ignoring because the file src is not stored in postman collection" */
       if (data.type === 'file') {
-        var pathArray = data.src.split('/'),
+        var pathArray = data.src.split(path.sep),
           fileName = pathArray[pathArray.length - 1];
-        bodySnippet += `data.append("${sanitize(data.key, trim)}",fileInput.files[0], "${fileName}");\n `;
+        bodySnippet += `data.append("${sanitize(data.key, trim)}", fileInput.files[0], "${fileName}");\n `;
       }
       else {
         bodySnippet += `data.append("${sanitize(data.key, trim)}", "${sanitize(data.value, trim)}");\n`;
