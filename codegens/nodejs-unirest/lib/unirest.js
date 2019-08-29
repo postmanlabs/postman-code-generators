@@ -76,7 +76,7 @@ function getOptions () {
       name: 'Body trim',
       id: 'trimRequestBody',
       type: 'boolean',
-      default: true,
+      default: false,
       description: 'Trim request body fields'
     }
   ];
