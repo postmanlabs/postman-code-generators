@@ -153,4 +153,31 @@ describe('Python- Requests converter', function () {
       .to.throw('Python-Requests~convert: Callback is not a function');
   });
 
+  it('should not have allow_redirects=False twice in generated snippet when' +
+  ' followRedirect option is set as false', function () {
+    var request = new sdk.Request(mainCollection.item[0].request),
+      options = { followRedirect: false, requestTimeout: 0 };
+    convert(request, options, function (err, snippet) {
+      if (err) {
+        expect.fail(null, null, err);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.not.include('allow_redirects = False, allow_redirects = false');
+    });
+  });
+
+  it('should have correct boolean value for allow_redirects(False, uppercased F) in generated snippet when' +
+  ' followRedirect option is set as false', function () {
+    var request = new sdk.Request(mainCollection.item[0].request),
+      options = { followRedirect: false };
+    convert(request, options, function (err, snippet) {
+      if (err) {
+        expect.fail(null, null, err);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('allow_redirects = False');
+      expect(snippet).to.not.include('allow_redirects = false');
+    });
+  });
+
 });

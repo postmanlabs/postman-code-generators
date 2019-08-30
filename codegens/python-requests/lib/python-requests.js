@@ -108,9 +108,8 @@ self = module.exports = {
 
     snippet += request.body && request.body.mode && request.body.mode === 'formdata' ?
       ', data = payload, files = files' : ', data = payload';
-    snippet += !options.followRedirect ? ', allow_redirects=False' : '';
+    snippet += !options.followRedirect ? ', allow_redirects = False' : '';
     snippet += options.requestTimeout !== 0 ? `, timeout=${options.requestTimeout}` : '';
-    snippet += options.followRedirect ? '' : ', allow_redirects=false';
     snippet += ')\n\n';
     snippet += 'print(response.text.encode(\'utf8\'))\n';
 
