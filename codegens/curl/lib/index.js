@@ -1,5 +1,6 @@
 var sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
+  getUrlStringfromUrlObject = require('./util').getUrlStringfromUrlObject,
   form = require('./util').form,
   _ = require('./lodash'),
   self;
@@ -12,7 +13,7 @@ self = module.exports = {
     }
     options = sanitizeOptions(options, self.getOptions());
 
-    var indent, trim, headersData, body, text, redirect, timeout, multiLine, format, snippet, silent;
+    var indent, trim, headersData, body, text, redirect, timeout, multiLine, format, snippet, silent, url;
     redirect = options.followRedirect;
     timeout = options.requestTimeout;
     multiLine = options.multiLine;
@@ -34,12 +35,12 @@ self = module.exports = {
     else {
       indent = ' ';
     }
-
+    url = getUrlStringfromUrlObject(request.url);
     if (request.method === 'HEAD') {
-      snippet += ` ${form('-I', format)} "${encodeURI(request.url.toString())}"`;
+      snippet += ` ${form('-I', format)} "${url}"`;
     }
     else {
-      snippet += ` ${form('-X', format)} ${request.method} "${encodeURI(request.url.toString())}"`;
+      snippet += ` ${form('-X', format)} ${request.method} "${url}"`;
     }
 
     headersData = request.getHeaders({ enabled: true });

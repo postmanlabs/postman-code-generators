@@ -16,7 +16,7 @@ const SUPPORTED_METHODS = ['GET', 'POST', 'PUT', 'HEAD', 'PATCH', 'DELETE', 'OPT
  */
 function makeSnippet (request, indentString, options) {
   var snippet = '',
-    urlString = encodeURI(request.url.toString());
+    urlString = parseRequest.getUrlStringfromUrlObject(request.url);
 
   if (options.requestTimeout > 0) {
     snippet += `Unirest.setTimeouts(0, ${options.requestTimeout});\n`;
@@ -96,7 +96,7 @@ function getOptions () {
       name: 'Trim request body fields',
       id: 'trimRequestBody',
       type: 'boolean',
-      default: true,
+      default: false,
       description: 'Remove white space and additional lines that may affect the server\'s response'
     }
   ];

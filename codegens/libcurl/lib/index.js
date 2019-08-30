@@ -124,11 +124,6 @@ self = module.exports = {
     }
 
     snippet += indentString + 'res = curl_easy_perform(curl);\n';
-    snippet += indentString + 'if(res == CURLE_OK) {\n';
-    snippet += indentString.repeat(2) + 'long response_code;\n';
-    snippet += indentString.repeat(2) + 'curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);\n';
-    snippet += indentString.repeat(2) + 'if(!res && response_code) printf("%03ld", response_code);\n';
-    snippet += indentString + '}\n';
     if (body.mode === 'formdata' && options.useMimeType) {
       snippet += indentString + 'curl_mime_free(mime);\n';
     }
@@ -174,7 +169,7 @@ self = module.exports = {
         name: 'Trim request body fields',
         id: 'trimRequestBody',
         type: 'boolean',
-        default: true,
+        default: false,
         description: 'Remove white space and additional lines that may affect the server\'s response'
       },
       {

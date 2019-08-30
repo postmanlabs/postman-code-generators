@@ -77,7 +77,7 @@ function getOptions () {
       name: 'Trim request body fields',
       id: 'trimRequestBody',
       type: 'boolean',
-      default: true,
+      default: false,
       description: 'Remove white space and additional lines that may affect the server\'s response'
     }
   ];

@@ -1,6 +1,7 @@
 var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
+  getUrlStringfromUrlObject = require('./util').getUrlStringfromUrlObject,
   self;
 
 /**
@@ -179,7 +180,7 @@ self = module.exports = {
         name: 'Trim request body fields',
         id: 'trimRequestBody',
         type: 'boolean',
-        default: true,
+        default: false,
         description: 'Remove white space and additional lines that may affect the server\'s response'
       },
       {
@@ -229,7 +230,7 @@ self = module.exports = {
     timeout = options.requestTimeout;
     // followRedirect = options.followRedirect;
     trim = options.trimRequestBody;
-    finalUrl = encodeURI(request.url.toString());
+    finalUrl = getUrlStringfromUrlObject(request.url);
 
     bodySnippet = parseBody(requestBody, trim, indent);
 

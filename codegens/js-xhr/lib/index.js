@@ -143,7 +143,7 @@ function getOptions () {
       name: 'Trim request body fields',
       id: 'trimRequestBody',
       type: 'boolean',
-      default: true,
+      default: false,
       description: 'Remove white space and additional lines that may affect the server\'s response'
     }
   ];
@@ -172,7 +172,7 @@ function convert (request, options, callback) {
   indent = indent.repeat(options.indentCount);
   trim = options.trimRequestBody;
 
-  bodySnippet = parseBody(request.body.toJSON(), trim, indent);
+  bodySnippet = request.body ? parseBody(request.body.toJSON(), trim, indent) : '';
 
   codeSnippet += bodySnippet + '\n';
 
@@ -195,7 +195,7 @@ function convert (request, options, callback) {
 
   codeSnippet += headerSnippet + '\n';
 
-  codeSnippet += 'xhr.send(data);';
+  codeSnippet += request.body ? 'xhr.send(data)' : 'xhr.send();';
   callback(null, codeSnippet);
 }
 
