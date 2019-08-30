@@ -95,7 +95,8 @@ module.exports = {
           'kong-cloud-request-id',
           'cache-control',
           'postman-token',
-          'accept-language'
+          'accept-language',
+          'x-forwarded-port'
         ];
       if (result[0]) {
         propertiesTodelete.forEach(function (property) {
