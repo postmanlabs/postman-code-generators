@@ -254,7 +254,7 @@ describe('js-xhr convert function', function () {
             'com'
           ],
           'path': [
-            'post'
+            'get'
           ]
         },
         'description': 'Request without a body'
