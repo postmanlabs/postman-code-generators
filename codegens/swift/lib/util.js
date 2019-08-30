@@ -19,7 +19,7 @@ function sanitize (inputString, escapeCharFor, inputTrim) {
       case 'urlencoded':
         return escape(inputString);
       case 'formdata':
-        return inputString.replace(/{/g, '[').replace(/}/g, ']');
+        return inputString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
         /* istanbul ignore next */
       case 'file':
         return inputString.replace(/{/g, '[').replace(/}/g, ']');
