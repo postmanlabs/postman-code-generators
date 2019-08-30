@@ -242,6 +242,47 @@ describe('js-xhr convert function', function () {
       });
     });
   });
+
+  describe('Request with no body', function () {
+    var req = {
+        'method': 'GET',
+        'url': {
+          'raw': 'https://postman-echo.com/get',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'get'
+          ]
+        },
+        'description': 'Request without a body'
+      },
+
+      request = new sdk.Request(req),
+      options = {
+        indentCount: 2,
+        indentType: 'Space'
+      };
+    convert(request, options, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+        return;
+      }
+
+      it('should not be empty', function () {
+        expect(snippet).not.to.equal('');
+      });
+      it('should not contain var data =', function () {
+        expect(snippet).to.deep.not.include('var data =');
+      });
+      it('should contain xhr.send();', function () {
+        expect(snippet).to.deep.include('xhr.send();');
+      });
+    });
+  });
+
   describe('getOptions function', function () {
     var options = getOptions();
     it('should return an array of specific options', function () {
