@@ -297,8 +297,8 @@ describe('js-xhr convert function', function () {
     it('should have 0 as default request timeout ', function () {
       expect(options[2].default).to.equal(0);
     });
-    it('should have default body trim set as true', function () {
-      expect(options[3].default).to.equal(true);
+    it('should have default body trim set as false', function () {
+      expect(options[3].default).to.equal(false);
     });
   });
   describe('convert function', function () {
