@@ -34,8 +34,7 @@ describe('Request Snippet', function () {
                 '    \'testing\' => \'\\\'singlequotes\\\'\',\n    \'TEST\' => \'"doublequotes"\'\n));\n' +
                 '$client->enqueue($request)->send();\n' +
                 '$response = $client->getResponse();\n' +
-                'echo $response->getBody();\n' +
-                '?>';
+                'echo $response->getBody();\n';
         expect((snippet)).to.equal(outputSnippet);
         finish();
       });
@@ -67,8 +66,7 @@ describe('Request Snippet', function () {
                 '    \'TEST\' => \'@#$%^&*()\',\n    \'more\' => \',./\\\';[]}{":?><|\'\n));\n' +
                 '$client->enqueue($request)->send();\n' +
                 '$response = $client->getResponse();\n' +
-                'echo $response->getBody();\n' +
-                '?>';
+                'echo $response->getBody();\n';
         expect((snippet)).to.equal(outputSnippet);
         finish();
       });
@@ -98,8 +96,7 @@ describe('Request Snippet', function () {
                 '    \'not-disabled-header\' => \'ENABLED\'\n));\n' +
                 '$client->enqueue($request)->send();\n' +
                 '$response = $client->getResponse();\n' +
-                'echo $response->getBody();\n' +
-                '?>';
+                'echo $response->getBody();\n';
         expect((snippet)).to.equal(outputSnippet);
         finish();
       });
@@ -127,8 +124,7 @@ describe('Request Snippet', function () {
                 '$request->setRequestMethod(\'GET\');\n$request->setOptions(array());\n\n' +
                 '$client->enqueue($request)->send();\n' +
                 '$response = $client->getResponse();\n' +
-                'echo $response->getBody();\n' +
-                '?>';
+                'echo $response->getBody();\n';
         expect((snippet)).to.equal(outputSnippet);
         finish();
       });
@@ -162,8 +158,7 @@ describe('Request Snippet', function () {
                 '$request->setBody($body);\n$request->setOptions(array());\n\n' +
                 '$client->enqueue($request)->send();\n' +
                 '$response = $client->getResponse();\n' +
-                'echo $response->getBody();\n' +
-                '?>';
+                'echo $response->getBody();\n';
         expect((snippet)).to.equal(outputSnippet);
         finish();
       });
@@ -192,8 +187,7 @@ describe('Request Snippet', function () {
                 '$request->setRequestMethod(\'POST\');\n$request->setOptions(array());\n\n' +
                 '$client->enqueue($request)->send();\n' +
                 '$response = $client->getResponse();\n' +
-                'echo $response->getBody();\n' +
-                '?>';
+                'echo $response->getBody();\n';
         expect((snippet)).to.equal(outputSnippet);
         finish();
       });
@@ -227,8 +221,7 @@ describe('Request Snippet', function () {
                 '$request->setHeaders(array(\n    \'Content-Type\' => \'application/x-www-form-urlencoded\'\n));\n' +
                 '$client->enqueue($request)->send();\n' +
                 '$response = $client->getResponse();\n' +
-                'echo $response->getBody();\n' +
-                '?>';
+                'echo $response->getBody();\n';
         expect((snippet)).to.equal(outputSnippet);
         finish();
       });
@@ -261,8 +254,7 @@ describe('Request Snippet', function () {
                 '$request->setHeaders(array(\n    \'Content-Type\' => \'application/x-www-form-urlencoded\'\n));\n' +
                 '$client->enqueue($request)->send();\n' +
                 '$response = $client->getResponse();\n' +
-                'echo $response->getBody();\n' +
-                '?>';
+                'echo $response->getBody();\n';
         expect((snippet)).to.equal(outputSnippet);
         finish();
       });
@@ -293,8 +285,7 @@ describe('Request Snippet', function () {
                 '    \'Content-Type\' => \'application/json\'\n));\n' +
                 '$client->enqueue($request)->send();\n' +
                 '$response = $client->getResponse();\n' +
-                'echo $response->getBody();\n' +
-                '?>';
+                'echo $response->getBody();\n';
         expect((snippet)).to.equal(outputSnippet);
         finish();
       });
@@ -325,8 +316,7 @@ describe('Request Snippet', function () {
                 '    \'Content-Type\' => \'application/javascript\'\n));\n' +
                 '$client->enqueue($request)->send();\n' +
                 '$response = $client->getResponse();\n' +
-                'echo $response->getBody();\n' +
-                '?>';
+                'echo $response->getBody();\n';
         expect((snippet)).to.equal(outputSnippet);
         finish();
       });
@@ -357,8 +347,7 @@ describe('Request Snippet', function () {
                 '$request->setHeaders(array(\n    \'Content-Type\' => \'text/xml\'\n));\n' +
                 '$client->enqueue($request)->send();\n' +
                 '$response = $client->getResponse();\n' +
-                'echo $response->getBody();\n' +
-                '?>';
+                'echo $response->getBody();\n';
         expect((snippet)).to.equal(outputSnippet);
         finish();
       });
@@ -389,8 +378,7 @@ describe('Request Snippet', function () {
                 '    \'Content-Type\' => \'text/html\'\n));\n' +
                 '$client->enqueue($request)->send();\n' +
                 '$response = $client->getResponse();\n' +
-                'echo $response->getBody();\n' +
-                '?>';
+                'echo $response->getBody();\n';
         expect((snippet)).to.equal(outputSnippet);
         finish();
       });
@@ -424,8 +412,7 @@ describe('Request Snippet', function () {
                 '));\n' +
                 '$client->enqueue($request)->send();\n' +
                 '$response = $client->getResponse();\n' +
-                'echo $response->getBody();\n' +
-                '?>';
+                'echo $response->getBody();\n';
         expect((snippet)).to.equal(outputSnippet);
         finish();
       });
@@ -457,8 +444,7 @@ describe('Request Snippet', function () {
                 '$request->setOptions(array());\n\n' +
                 '$client->enqueue($request)->send();\n' +
                 '$response = $client->getResponse();\n' +
-                'echo $response->getBody();\n' +
-                '?>';
+                'echo $response->getBody();\n';
         expect((snippet)).to.equal(outputSnippet);
         finish();
       });
@@ -498,6 +484,19 @@ describe('Request Snippet', function () {
   it('should throw an error when callback is not function', function () {
     expect(function () { convert({}, {}); })
       .to.throw('Php-Pecl(HTTP)~convert: Callback is not a function');
+  });
+
+  it('should not have script closing tag ?>', function () {
+    var collection = new sdk.Collection(JSON.parse(
+        fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
+      request = collection.items.members[0].request;
+    convert(request, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet.endsWith('?>')).to.be.false;
+    });
   });
 
   describe('parseBody function', function () {
