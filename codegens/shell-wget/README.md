@@ -20,13 +20,9 @@ It requires 3 mandatory parameters `request`, `callback` and `options`
 * `options` is an object with the following properties
 
     * `indentType` : can be `Tab` or `Space` (default: 'Space')
-
     * `indentCount` : Integer denoting the number of tabs/spaces required for indentation, range 0-8 (default : for indentType Tab : 2, for indentType Space : 4)
-    
     * `requestTimeout` : Integer denoting time after which the request will bail out in milli-seconds (default: 0 -> never bail out)
-
     * `trimRequestBody` : Trim request body fields (default: false)
-
     * `followRedirect` : Boolean denoting whether to redirect a request (default: true)
 
     These plugin options will be used if no options are passed to the convert function.
