@@ -16,7 +16,7 @@ function makeSnippet (request, indentString, options) {
   var snippet = 'var request = require(\'request\');\n',
     optionsArray = [];
 
-  snippet += 'var fs = require(\'fs\')\n';
+  snippet += 'var fs = require(\'fs\');\n';
   snippet += 'var options = {\n';
 
   /**
@@ -45,7 +45,7 @@ function makeSnippet (request, indentString, options) {
     optionsArray.push(indentString + 'followRedirect: false');
   }
   snippet += optionsArray.join(',\n') + '\n';
-  snippet += '}\n';
+  snippet += '};\n';
 
   snippet += 'request(options, function (error, response) { \n';
   snippet += indentString + 'if (error) throw new Error(error);\n';
