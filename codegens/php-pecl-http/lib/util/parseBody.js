@@ -49,7 +49,7 @@ module.exports = function (request, indentation, bodyTrim) {
                             '\'data\' => null)');
           });
           requestBody = `$body->addForm(array(\n${bodyDataMap.join(',\n')}\n), ` +
-                        `array(${bodyFileMap.join(',\n')}));\n`;
+                        `array(\n${bodyFileMap.join(',\n')}\n));\n`;
         }
         return requestBody;
 

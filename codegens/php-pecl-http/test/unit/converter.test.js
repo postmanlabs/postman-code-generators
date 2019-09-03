@@ -149,7 +149,7 @@ describe('Request Snippet', function () {
                 '    \'pl\' => \'\\\'a\\\'\',\n    \'qu\' => \'"b"\',\n    ' +
                 '\'hdjkljh\' => \'c\',\n    \'sa\' => \'d\',\n' +
                 '    \'Special\' => \'!@#$%&*()^_+=`~\',\n    ' +
-                '\'more\' => \',./\\\';[]}{":?><|\\\\\\\\\'\n), array());\n' +
+                '\'more\' => \',./\\\';[]}{":?><|\\\\\\\\\'\n), array(\n\n));\n' +
                 '$request->setBody($body);\n$request->setOptions(array());\n\n' +
                 '$client->enqueue($request)->send();\n' +
                 '$response = $client->getResponse();\n' +
@@ -425,9 +425,9 @@ describe('Request Snippet', function () {
                 '$request->setRequestMethod(\'POST\');\n' +
                 '$body = new http\\Message\\Body;\n' +
                 '$body->addForm(array(\n\n' +
-                '), array(        array(' +
+                '), array(\n        array(' +
                 '\'name\' => \'test-file\', \'type\' => \'<Content-type header>\',' +
-                ' \'file\' => \'\', \'data\' => null)));\n' +
+                ' \'file\' => \'\', \'data\' => null)\n));\n' +
                 '$request->setBody($body);\n' +
                 '$request->setOptions(array());\n\n' +
                 '$client->enqueue($request)->send();\n' +
