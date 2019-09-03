@@ -27,10 +27,10 @@ module.exports = {
     async.waterfall([
       function compileCodeSnippet (next) {
         if (compile) {
-          return exec(compile, function (err, stdout, stderr) {
-            if (err) {
+          return exec(compile, function (code, stdout, stderr) {
+            if (code) {
               return next(JSON.stringify({
-                error: err,
+                exitCode: code,
                 message: 'Compile error'
               }));
             }
@@ -49,10 +49,9 @@ module.exports = {
 
       function runCodeSnippet (next) {
         if (run) {
-          return exec(run, function (err, stdout, stderr) {
-
-            if (err) {
-              return next(err);
+          return exec(run, function (code, stdout, stderr) {
+            if (code) {
+              return next(code);
             }
             if (stderr) {
               return next(stderr);
