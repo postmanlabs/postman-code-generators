@@ -16,7 +16,7 @@ function makeSnippet (request, indentString, options) {
   var snippet = 'var request = require(\'request\');\n',
     optionsArray = [];
 
-  snippet += 'var fs = require(\'fs\')\n';
+  snippet += 'var fs = require(\'fs\');\n';
   snippet += 'var options = {\n';
 
   /**
@@ -45,7 +45,7 @@ function makeSnippet (request, indentString, options) {
     optionsArray.push(indentString + 'followRedirect: false');
   }
   snippet += optionsArray.join(',\n') + '\n';
-  snippet += '}\n';
+  snippet += '};\n';
 
   snippet += 'request(options, function (error, response) { \n';
   snippet += indentString + 'if (error) throw new Error(error);\n';
@@ -63,40 +63,41 @@ function makeSnippet (request, indentString, options) {
 function getOptions () {
   return [
     {
-      name: 'Indent count',
+      name: 'Set indentation count',
       id: 'indentCount',
       type: 'positiveInteger',
       default: 2,
-      description: 'Number of indentation characters to add per code level'
+      description: 'Set the number of indentation characters to add per code level'
     },
     {
-      name: 'Indent type',
+      name: 'Set indentation type',
       id: 'indentType',
       type: 'enum',
       availableOptions: ['Tab', 'Space'],
       default: 'Space',
-      description: 'Character used for indentation'
+      description: 'Select the character used to indent lines of code'
     },
     {
-      name: 'Request timeout',
+      name: 'Set request timeout',
       id: 'requestTimeout',
       type: 'positiveInteger',
       default: 0,
-      description: 'How long the request should wait for a response before timing out (milliseconds)'
+      description: 'Set number of milliseconds the request should wait for a response' +
+    ' before timing out (use 0 for infinity)'
     },
     {
-      name: 'Follow redirect',
+      name: 'Follow redirects',
       id: 'followRedirect',
       type: 'boolean',
       default: true,
       description: 'Automatically follow HTTP redirects'
     },
     {
-      name: 'Body trim',
+      name: 'Trim request body fields',
       id: 'trimRequestBody',
       type: 'boolean',
-      default: true,
-      description: 'Trim request body fields'
+      default: false,
+      description: 'Remove white space and additional lines that may affect the server\'s response'
     }
   ];
 }

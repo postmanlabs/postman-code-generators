@@ -155,6 +155,47 @@ describe('js-xhr convert function', function () {
       });
     });
   });
+
+  describe('Request with no body', function () {
+    var req = {
+        'method': 'GET',
+        'url': {
+          'raw': 'https://postman-echo.com/get',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'get'
+          ]
+        },
+        'description': 'Request without a body'
+      },
+
+      request = new sdk.Request(req),
+      options = {
+        indentCount: 2,
+        indentType: 'Space'
+      };
+    convert(request, options, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+        return;
+      }
+
+      it('should not be empty', function () {
+        expect(snippet).not.to.equal('');
+      });
+      it('should not contain var data =', function () {
+        expect(snippet).to.deep.not.include('var data =');
+      });
+      it('should contain xhr.send();', function () {
+        expect(snippet).to.deep.include('xhr.send();');
+      });
+    });
+  });
+
   describe('getOptions function', function () {
     var options = getOptions();
     it('should return an array of specific options', function () {
@@ -169,8 +210,8 @@ describe('js-xhr convert function', function () {
     it('should have 0 as default request timeout ', function () {
       expect(options[2].default).to.equal(0);
     });
-    it('should have default body trim set as true', function () {
-      expect(options[3].default).to.equal(true);
+    it('should have default body trim set as false', function () {
+      expect(options[3].default).to.equal(false);
     });
   });
   describe('convert function', function () {

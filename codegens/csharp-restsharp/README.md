@@ -14,9 +14,9 @@ Convert function will take three parameters
 
 * `options`- options is an object which can have following properties
     * `indentType`- Character used for indentation
-    * `indentCount`- Number of indentation characters to add per code level
+    * `indentCount`- The number of indentation characters to add per code level
     * `includeBoilerplate` - Include class definition and import statements in snippet
-    * `requestTimeout` : How long the request should wait for a response before timing out (milliseconds)
+    * `requestTimeout` : The number of milliseconds the request should wait for a response before timing out (use 0 for infinity)
     * `trimRequestBody` : Trim request body fields
     * `followRedirect` : Automatically follow HTTP redirects
 

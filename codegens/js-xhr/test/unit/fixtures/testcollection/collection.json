@@ -47,7 +47,6 @@
 						"disabled": true
 					}
 				],
-				"body": {},
 				"url": {
 					"raw": "https://postman-echo.com/headers",
 					"protocol": "https",

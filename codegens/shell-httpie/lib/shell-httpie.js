@@ -17,14 +17,15 @@ self = module.exports = {
   getOptions: function () {
     return [
       {
-        name: 'Request timeout',
+        name: 'Set request timeout',
         id: 'requestTimeout',
         type: 'positiveInteger',
         default: 0,
-        description: 'How long the request should wait for a response before timing out (milliseconds)'
+        description: 'Set number of milliseconds the request should wait for a response' +
+    ' before timing out (use 0 for infinity)'
       },
       {
-        name: 'Follow redirect',
+        name: 'Follow redirects',
         id: 'followRedirect',
         type: 'boolean',
         default: true,

@@ -140,25 +140,26 @@ function parseHeaders (headers) {
 function getOptions () {
   return [
     {
-      name: 'Request timeout',
+      name: 'Set request timeout',
       id: 'requestTimeout',
       type: 'positiveInteger',
       default: 0,
-      description: 'How long the request should wait for a response before timing out (milliseconds)'
+      description: 'Set number of milliseconds the request should wait for a response' +
+    ' before timing out (use 0 for infinity)'
     },
     {
-      name: 'Follow redirect',
+      name: 'Follow redirects',
       id: 'followRedirect',
       type: 'boolean',
       default: true,
       description: 'Automatically follow HTTP redirects'
     },
     {
-      name: 'Body trim',
+      name: 'Trim request body fields',
       id: 'trimRequestBody',
       type: 'boolean',
-      default: true,
-      description: 'Trim request body fields'
+      default: false,
+      description: 'Remove white space and additional lines that may affect the server\'s response'
     }
   ];
 }
