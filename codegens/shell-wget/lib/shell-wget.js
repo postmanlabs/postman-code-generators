@@ -111,7 +111,7 @@ self = module.exports = {
     indentation = identity.repeat(options.indentCount);
     // concatenation and making up the final string
 
-    snippet = 'wget --no-check-certificate --quiet \\\n';
+    snippet = 'wget --no-check-certificate \\\n';
     snippet += `${indentation}--method ${request.method} \\\n`;
     // console.log(getHeaders(request, indentation));
     // Shell-wget accepts timeout in seconds (conversion from milli-seconds to seconds)
@@ -127,8 +127,7 @@ self = module.exports = {
     }
     snippet += `${getHeaders(request, indentation)}\n`;
     snippet += `${parseBody(request.toJSON(), options.trimRequestBody, indentation)}`;
-    snippet += `${indentation}--output-document=shellWget.txt \\\n`;
-    snippet += `${indentation}- '${request.url.toString()}'`;
+    snippet += `${indentation} '${request.url.toString()}'`;
 
     return callback(null, snippet);
   }

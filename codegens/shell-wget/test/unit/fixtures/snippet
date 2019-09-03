@@ -1,7 +1,0 @@
-wget --no-check-certificate --quiet \
-    --method LINK \
-    --header 'Content-Type: text/plain' \
-    --body-data 'Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.
-Maecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat.' \
-    --output-document=shellWget.txt \
-    - 'https://mockbin.org/request'
