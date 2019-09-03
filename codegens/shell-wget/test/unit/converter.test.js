@@ -1,144 +1,47 @@
 var expect = require('chai').expect,
-  fs = require('fs'),
   sdk = require('postman-collection'),
-  exec = require('shelljs').exec,
-  newman = require('newman'),
-  parallel = require('async').parallel,
+  async = require('async'),
   sanitize = require('../../lib/util/sanitize').sanitize,
+  newmanTestUtil = require('../../../../test/codegen/newman/newmanTestUtil'),
   convert = require('../../lib/index').convert,
   getOptions = require('../../lib/index').getOptions,
   mainCollection = require('../unit/fixtures/sample_collection.json');
 
-// properties and headers to delete from newman reponse and cli response
-const propertiesTodelete = ['cookies', 'headersSize', 'startedDateTime', 'json', 'data', 'clientIPAddress'],
-  headersTodelete = [
-    'accept-encoding',
-    'user-agent',
-    'cf-ray',
-    'x-request-id',
-    'x-request-start',
-    'x-real-ip',
-    'connect-time',
-    'x-forwarded-for',
-    'content-type',
-    'content-length',
-    'accept',
-    'cookie',
-    'total-route-time',
-    'kong-cloud-request-id',
-    'cache-control',
-    'postman-token'
-  ];
-
-/**
- * Executes codesnippet and compares output with newman response
- *
- * @param {String} codeSnippet - code snippet from convert function
- * @param {Object} collection - sample collection
- * @param {Function} done - callback for async calls
- */
-function runSnippet (codeSnippet, collection, done) {
-  fs.writeFile('test/unit/fixtures/snippet', codeSnippet, function (err) {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    parallel([
-      function (callback) {
-        exec(codeSnippet, function () {
-          fs.readFile('./shellWget.txt', function read (err, data) {
-            if (err) {
-              throw err;
-            }
-            callback(null, data);
-          });
-        });
-      },
-      function (callback) {
-        newman.run({
-          collection: collection
-        }).on('request', function (err, summary) {
-          if (err) {
-            return callback(err);
-          }
-
-          var stdout = summary.response.stream.toString();
-          try {
-            stdout = JSON.parse(stdout);
-          }
-          catch (e) {
-            console.error(e);
-          }
-          callback(null, stdout);
-        });
-      }
-    ], function (err, result) {
-      if (err) {
-        expect.fail(null, null, err);
-      }
-      else if (typeof result[1] !== 'object' && typeof result[0] !== 'object') {
-        expect(result[0].trim()).to.equal(result[1].trim());
-      }
-      else {
-        result[0] = JSON.parse(result[0]);
-        if (result[0]) {
-          propertiesTodelete.forEach(function (property) {
-            delete result[0][property];
-          });
-          if (result[0].headers) {
-            headersTodelete.forEach(function (property) {
-              delete result[0].headers[property];
-            });
-          }
-          if (result[0].url) {
-            result[0].url = unescape(result[0].url);
-          }
-        }
-        if (result[1]) {
-          propertiesTodelete.forEach(function (property) {
-            delete result[1][property];
-          });
-          if (result[1].headers) {
-            headersTodelete.forEach(function (property) {
-              delete result[1].headers[property];
-            });
-          }
-          if (result[1].url) {
-            result[1].url = unescape(result[1].url);
-          }
-        }
-        expect(result[0]).deep.equal(result[1]);
-      }
-      done();
-    });
-  });
-}
-
 describe('Shell-Wget converter', function () {
-  mainCollection.item.forEach(function (item) {
-    it(item.name, function (done) {
-      var request = new sdk.Request(item.request),
-        collection = {
-          item: [
-            {
-              request: request.toJSON()
-            }
-          ]
-        };
-      convert(request, {indentType: 'Space',
-        indentCount: 4,
-        requestTimeout: 0,
-        trimRequestBody: false,
-        addCacheHeader: false,
-        followRedirect: true}, function (err, snippet) {
-        if (err) {
-          console.error(err);
+  var options = {
+    indentType: 'Space',
+    indentCount: 2
+  };
+  async.waterfall([
+    function (next) {
+      newmanTestUtil.generateSnippet(convert, options, function (error, snippets) {
+        if (error) {
+          return next(error);
         }
-        runSnippet(snippet, collection, done);
+        return next(null, snippets);
       });
-
-    });
-  });
+    },
+    function (snippets, next) {
+      snippets.forEach((item, index) => {
+        it(item.name, function (done) {
+          newmanTestUtil.runSnippet(item.snippet + ' -qO-', index, {fileName: null},
+            function (err, result) {
+              if (err) {
+                expect.fail(null, null, err);
+              }
+              if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
+                expect(result[0].toString().trim()).to.include(result[1].toString().trim());
+              }
+              else {
+                expect(result[0]).deep.equal(result[1]);
+              }
+              return done(null);
+            });
+        });
+      });
+      return next(null);
+    }
+  ]);
 
   describe('convert function', function () {
     var request = new sdk.Request(mainCollection.item[0].request),
