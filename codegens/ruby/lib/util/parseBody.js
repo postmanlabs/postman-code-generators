@@ -3,9 +3,9 @@ var _ = require('../lodash'),
 
 /**
  * Used to parse the body of the postman SDK-request and return in the desired format
- * 
+ *
  * @param  {Object} request - postman SDK-request object
- * @param  {Boolean} trimRequestBody - whether to trim request body fields 
+ * @param  {Boolean} trimRequestBody - whether to trim request body fields
  * @returns {String} - request body
  */
 module.exports = function (request, trimRequestBody) {
@@ -35,19 +35,16 @@ module.exports = function (request, trimRequestBody) {
       case 'formdata':
         enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
         if (!_.isEmpty(enabledBodyList)) {
-          bodyMap = _.map(enabledBodyList, function (value) {
-            if (value.type === 'text') {
-              return (`------WebKitFormBoundary7MA4YWxkTrZu0gW\\r\\nContent-Disposition: form-data; name="${sanitize(value.key, request.body.mode, trimRequestBody)}"` + // eslint-disable-line max-len
-                                `\\r\\n\\r\\n${sanitize(value.value, request.body.mode, trimRequestBody)}\\r\\n`);
+          bodyMap = _.map(enabledBodyList, function (data) {
+            if (data.type === 'text') {
+              return `['${sanitize(data.key, 'formdata', trimRequestBody)}',` +
+              ` '${sanitize(data.value, 'formdata', trimRequestBody)}']`;
             }
-            else if (value.type === 'file') {
-              return `"${sanitize(value.key, request.body.mode, trimRequestBody)}"' = ` +
-                            `'${sanitize(value.src, request.body.mode, trimRequestBody)}')`;
-            }
+            return `['${sanitize(data.key, 'formdata', trimRequestBody)}', File.open('${data.src}')]`;
           });
-          requestBody = 'request["content-type"] = \'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW\'\n'; // eslint-disable-line max-len
-          requestBody += `request.body = "${sanitize(bodyMap.join(''), 'doubleQuotes')}------WebKitFormBoundary7MA4YWxkTrZu0gW--"\n`; // eslint-disable-line max-len
         }
+        requestBody = `form_data = [${bodyMap.join(',')}]\n`;
+        requestBody += 'request.set_form form_data, \'multipart/form-data\'';
         return requestBody;
       case 'file':
         // TODO find out how and implement

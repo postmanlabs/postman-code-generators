@@ -4,10 +4,10 @@ var _ = require('./lodash'),
 
 
 /**
- * parses body of request when mode of body is formdata and 
+ * parses body of request when mode of body is formdata and
  * returns code snippet for nodejs to send body
  *
- * @param {Array<Object>} bodyArray - array containing body elements of request 
+ * @param {Array<Object>} bodyArray - array containing body elements of request
  * @param {String} indentString - string required for indentation
  * @param {Boolean} trimBody - indicates whether to trim body fields or not
  */
@@ -29,10 +29,10 @@ function parseMultipart (bodyArray, indentString, trimBody) {
 }
 
 /**
- * parses body of request when mode of body is urlencoded and 
+ * parses body of request when mode of body is urlencoded and
  * returns code snippet for nodejs to send body
  *
- * @param {Array<Object>} bodyArray - data containing body elements of request 
+ * @param {Array<Object>} bodyArray - data containing body elements of request
  * @param {String} indentString - string required for indentation
  * @param {Boolean} trimBody - indicates whether to trim body fields or not
  */
@@ -49,7 +49,7 @@ function parseFormdata (bodyArray, indentString, trimBody) {
 
 /**
  * Parses body object based on mode of body and converts into nodejs(unirest) code snippet
- * 
+ *
  * @param {Object} requestbody - json object representing body of request
  * @param {String} indentString - string required for indentation
  * @param {Boolean} trimBody - indicates whether to trim body fields or not
@@ -59,7 +59,7 @@ function parseBody (requestbody, indentString, trimBody) {
   if (requestbody) {
     switch (requestbody.mode) {
       case 'raw':
-        return '.send(' + JSON.stringify(requestbody[requestbody.mode]) + ')\n';
+        return indentString + '.send(' + JSON.stringify(requestbody[requestbody.mode]) + ')\n';
       case 'urlencoded':
         return parseFormdata(requestbody[requestbody.mode], indentString, trimBody);
       case 'formdata':
@@ -75,25 +75,25 @@ function parseBody (requestbody, indentString, trimBody) {
 }
 
 /**
- * parses header of request object and returns code snippet of nodejs unirest to add header 
- * 
+ * parses header of request object and returns code snippet of nodejs unirest to add header
+ *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required in code snippet
- * @returns {String} - code snippet of nodejs unirest to add header 
+ * @returns {String} - code snippet of nodejs unirest to add header
  */
 function parseHeader (request, indentString) {
   var headerObject = request.getHeaders({enabled: true}),
     headerSnippet = '';
 
   if (!_.isEmpty(headerObject)) {
-    headerSnippet += '.headers({\n';
+    headerSnippet += indentString + '.headers({\n';
 
     headerSnippet += _.reduce(Object.keys(headerObject), function (accumalator, key) {
-      accumalator.push(indentString + `'${sanitize(key)}': '${sanitize(headerObject[key])}'`);
+      accumalator.push(indentString.repeat(2) + `'${sanitize(key)}': '${sanitize(headerObject[key])}'`);
       return accumalator;
     }, []).join(',\n') + '\n';
 
-    headerSnippet += '})\n';
+    headerSnippet += indentString + '})\n';
   }
   return headerSnippet;
 }
