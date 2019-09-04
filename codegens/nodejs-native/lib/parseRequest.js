@@ -1,12 +1,13 @@
 const _ = require('./lodash'),
 
-  sanitize = require('./util').sanitize;
+  sanitize = require('./util').sanitize,
+  path = require('path');
 
 /**
- * parses body of request when type of the request body is formdata or urlencoded and 
+ * parses body of request when type of the request body is formdata or urlencoded and
  * returns code snippet for nodejs to add body
  *
- * @param {Array<Object>} dataArray - array containing body elements of request 
+ * @param {Array<Object>} dataArray - array containing body elements of request
  * @param {String} indentString - string required for indentation
  * @param {Boolean} trimBody - indicates whether to trim body or not
  */
@@ -28,6 +29,11 @@ function extractFormData (dataArray, indentString, trimBody) {
   return snippetString.join(',\n');
 }
 
+/**
+ * Generates multipart form data snippet
+ *
+ * @param {*} requestbody
+ */
 function generateMultipartFormData (requestbody) {
   const boundary = '------WebKitFormBoundary7MA4YWxkTrZu0gW\\r\\nContent-Disposition: form-data; ',
     dataArray = requestbody[requestbody.mode],
@@ -36,12 +42,14 @@ function generateMultipartFormData (requestbody) {
         const key = dataArrayElement.key.replace(/"/g, '\'');
 
         if (dataArrayElement.type === 'file') {
-          const filename = 'filename=\\"{Insert_File_Name}\\"',
+          var pathArray = dataArrayElement.src.split(path.sep),
+            fileName = pathArray[pathArray.length - 1];
+          const filename = `filename=\\"${fileName}\\"`,
             contentType = 'Content-Type: \\"{Insert_File_Content_Type}\\"',
-            fileContent = '{Insert_File_Content}';
+            fileContent = `fs.readFileSync('${dataArrayElement.src}')`;
 
           // eslint-disable-next-line max-len
-          accumalator.push(`name=\\"${key}\\"; ${filename}\\r\\n${contentType}\\r\\n\\r\\n${fileContent}\\r\\n`);
+          accumalator.push(`name=\\"${key}\\"; ${filename}\\r\\n${contentType}\\r\\n\\r\\n" + ${fileContent} + "\\r\\n`);
         }
         else {
           // eslint-disable-next-line no-useless-escape
@@ -58,7 +66,7 @@ function generateMultipartFormData (requestbody) {
 
 /**
  * Parses body object based on mode of body and returns code snippet
- * 
+ *
  * @param {Object} requestbody - json object for body of request
  * @param {String} indentString - string for indentation
  * @param {Boolean} trimBody - indicates whether to trim body fields or not
@@ -81,11 +89,11 @@ function parseBody (requestbody, indentString, trimBody) {
 }
 
 /**
- * parses header of request object and returns code snippet of nodejs native to add header 
- * 
+ * parses header of request object and returns code snippet of nodejs native to add header
+ *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required in code snippet
- * @returns {String} - code snippet of nodejs native to add header 
+ * @returns {String} - code snippet of nodejs native to add header
  */
 function parseHeader (request, indentString) {
   var headerObject = request.getHeaders({enabled: true}),
@@ -109,11 +117,11 @@ function parseHeader (request, indentString) {
 }
 
 /**
- * parses host of request object and returns code snippet of nodejs native to add hostname 
- * 
+ * parses host of request object and returns code snippet of nodejs native to add hostname
+ *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required in code snippet
- * @returns {String} - code snippet of nodejs native to add hostname 
+ * @returns {String} - code snippet of nodejs native to add hostname
  */
 function parseHost (request, indentString) {
   var hostArray = _.get(request, 'url.host', []),
@@ -132,11 +140,11 @@ function parseHost (request, indentString) {
 }
 
 /**
- * parses path of request object and returns code snippet of nodejs native to add path 
- * 
+ * parses path of request object and returns code snippet of nodejs native to add path
+ *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required in code snippet
- * @returns {String} - code snippet of nodejs native to add path 
+ * @returns {String} - code snippet of nodejs native to add path
  */
 function parsePath (request, indentString) {
   var pathArray = _.get(request, 'url.path'),
@@ -175,9 +183,9 @@ function parsePath (request, indentString) {
 }
 
 /**
- * parses variable of request url object and sets hostname, path and query in request object 
- * 
- * @param {Object} request - Postman SDK request object 
+ * parses variable of request url object and sets hostname, path and query in request object
+ *
+ * @param {Object} request - Postman SDK request object
  */
 function parseURLVariable (request) {
   const variableArray = _.get(request.toJSON(), 'url.variable', []);

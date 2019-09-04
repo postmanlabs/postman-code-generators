@@ -28,10 +28,10 @@ function makeSnippet (request, indentString, options) {
     snippet += indentString + '.followRedirect(false)\n';
   }
 
-  snippet += '.end(function (res) { \n';
-  snippet += indentString + 'if (res.error) throw new Error(res.error); \n';
-  snippet += indentString + 'console.log(res.raw_body);\n';
-  snippet += '});\n';
+  snippet += indentString + '.end(function (res) { \n';
+  snippet += indentString.repeat(2) + 'if (res.error) throw new Error(res.error); \n';
+  snippet += indentString.repeat(2) + 'console.log(res.raw_body);\n';
+  snippet += indentString + '});\n';
 
   return snippet;
 }

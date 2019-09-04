@@ -3,10 +3,10 @@ var _ = require('../lodash'),
 
 /**
  * Used to parse the body of the postman SDK-request and return in the desired format
- * 
+ *
  * @param  {Object} request - postman SDK-request object
  * @param  {String} indentation - used for indenting snippet's structure
- * @param  {Boolean} bodyTrim - whether to trim request body fields 
+ * @param  {Boolean} bodyTrim - whether to trim request body fields
  * @returns {String} - request body
  */
 module.exports = function (request, indentation, bodyTrim) {
@@ -48,7 +48,7 @@ module.exports = function (request, indentation, bodyTrim) {
                             `'${sanitize(value.value, request.body.mode, bodyTrim)}'`);
           });
           bodyFileMap = _.map(_.filter(enabledBodyList, {'type': 'file'}), function (value) {
-            return `('${value.key}': open('${sanitize(value.src, request.body.mode, bodyTrim)}','rb')`;
+            return `'${value.key}': open('${sanitize(value.src, request.body.mode, bodyTrim)}','rb')`;
           });
           requestBody = `payload = {${bodyDataMap.join(',\n')}}\nfiles = {${bodyFileMap.join(',')}}\n`;
         }

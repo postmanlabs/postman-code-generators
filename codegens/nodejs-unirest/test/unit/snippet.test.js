@@ -64,9 +64,10 @@ describe('nodejs unirest convert function', function () {
         expect(snippet).to.be.a('string');
         snippetArray = snippet.split('\n');
         for (var i = 0; i < snippetArray.length; i++) {
-          if (snippetArray[i] === '.headers({') { line_no = i + 1; }
+          if (snippetArray[i] === '\t.headers({') { line_no = i + 1; }
         }
         expect(snippetArray[line_no].charAt(0)).to.equal('\t');
+        expect(snippetArray[line_no].charAt(1)).to.equal('\t');
       });
     });
 

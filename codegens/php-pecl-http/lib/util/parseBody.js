@@ -44,19 +44,19 @@ module.exports = function (request, indentation, bodyTrim) {
           });
           bodyFileMap = _.map(_.filter(enabledBodyList, {'type': 'file'}), function (value) {
             return (`${indentation.repeat(2)}array('name' => '${sanitize(value.key, bodyTrim)}', ` +
-                            `'type' => '${sanitize(value.type, bodyTrim)}', ` +
+                            '\'type\' => \'<Content-type header>\', ' +
                             `'file' => '${sanitize(value.src, bodyTrim)}', ` +
                             '\'data\' => null)');
           });
           requestBody = `$body->addForm(array(\n${bodyDataMap.join(',\n')}\n), ` +
-                        `array(${bodyFileMap.join(',\n')}));\n`;
+                        `array(\n${bodyFileMap.join(',\n')}\n));\n`;
         }
         return requestBody;
 
       case 'file':
         requestBody = `${indentation.repeat(2)}array('name' => '` +
                     `${sanitize(request.body[request.body.mode].key, bodyTrim)}', ` +
-                    `'type' => '${sanitize(request.body[request.body.mode].type, bodyTrim)}', ` +
+                    '\'type\' => \'content-type header\', ' +
                     `'file' => '${sanitize(request.body[request.body.mode].src, bodyTrim)}', ` +
                     '\'data\' => null)';
         return `$body->addForm(array(), array(${requestBody}));\n`;

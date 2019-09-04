@@ -46,7 +46,7 @@ self = module.exports = {
     _.forEach(headersData, function (value, key) {
       snippet += indentString + `headers = curl_slist_append(headers, "${sanitize(key)}: ${sanitize(value)}");\n`;
     });
-    body = request.body.toJSON();
+    body = request.body ? request.body.toJSON() : {};
     if (body.mode && body.mode === 'formdata' && !options.useMimeType) {
       snippet += indentString + 'headers = curl_slist_append(headers, "content-type:' +
                 ` multipart/form-data; boundary=${BOUNDARY}");\n`;
