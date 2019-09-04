@@ -20,7 +20,7 @@ function getheaders (request, indentation) {
       return `${indentation}'${sanitize(key, 'header')}': ` +
             `'${sanitize(headerObject[key], 'header')}'`;
     });
-    return `headers ={\n${headerMap.join(',\n')}}\n`;
+    return `headers = {\n${headerMap.join(',\n')}\n}\n`;
   }
   return 'headers= {}\n';
 }
