@@ -15,7 +15,7 @@ self = module.exports = {
 
     var indent, trim, headersData, body, text, redirect, timeout, multiLine,
       format, snippet, silent, url;
-    
+
     redirect = options.followRedirect;
     timeout = options.requestTimeout;
     multiLine = options.multiLine;
