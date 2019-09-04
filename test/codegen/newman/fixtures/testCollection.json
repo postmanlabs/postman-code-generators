@@ -263,45 +263,6 @@
 			"response": []
 		},
 		{
-			"name": "Resolve URL (Quotes + Special Characters) Copy",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "https://postman-echo.com/:action?a=!@$^*()_-`%26&b=,./';[]}{\":/?><||",
-					"protocol": "https",
-					"host": [
-						"postman-echo",
-						"com"
-					],
-					"path": [
-						":action"
-					],
-					"query": [
-						{
-							"key": "a",
-							"value": "!@$^*()_-`%26"
-						},
-						{
-							"key": "b",
-							"value": ",./';[]}{\":/?><||"
-						}
-					],
-					"variable": [
-						{
-							"key": "action",
-							"value": "post"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "POST Raw Text",
 			"event": [
 				{
@@ -591,50 +552,6 @@
 					]
 				},
 				"description": "The HTTP `POST` request method is meant to transfer data to a server \n(and elicit a response). What data is returned depends on the implementation\nof the server.\n\nA `POST` request can pass parameters to the server using \"Query String \nParameters\", as well as the Request Body. For example, in the following request,\n\n> POST /hi/there?hand=wave\n>\n> <request-body>\n\nThe parameter \"hand\" has the value \"wave\". The request body can be in multiple\nformats. These formats are defined by the MIME type of the request. The MIME \nType can be set using the ``Content-Type`` HTTP header. The most commonly used \nMIME types are:\n\n* `multipart/form-data`\n* `application/x-www-form-urlencoded`\n* `application/json`\n\nThis endpoint echoes the HTTP headers, request parameters, the contents of\nthe request body and the complete URI requested."
-			},
-			"response": []
-		},
-		{
-			"name": "Resolve URL",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "https://postman-echo.com/:action?a=''&b=\"\"",
-					"protocol": "https",
-					"host": [
-						"postman-echo",
-						"com"
-					],
-					"path": [
-						":action"
-					],
-					"query": [
-						{
-							"key": "a",
-							"value": "''"
-						},
-						{
-							"key": "b",
-							"value": "\"\""
-						},
-						{
-							"key": "more",
-							"value": "",
-							"disabled": true
-						}
-					],
-					"variable": [
-						{
-							"key": "action",
-							"value": "post"
-						}
-					]
-				}
 			},
 			"response": []
 		},
