@@ -140,6 +140,22 @@ function parseHost (request, indentString) {
 }
 
 /**
+ * parses port of request object and returns code snippet of nodejs native to add port
+ *
+ * @param {Object} request - Postman SDK request object
+ * @param {String} indentString - indentation required in code snippet
+ * @returns {String} - code snippet of nodejs native to add port
+ */
+function parsePort (request, indentString) {
+  var port = _.get(request, 'url.port', ''),
+    portSnippet = '';
+  if (port) {
+    portSnippet += `${indentString}'port': ${port}`;
+  }
+  return portSnippet;
+}
+
+/**
  * parses path of request object and returns code snippet of nodejs native to add path
  *
  * @param {Object} request - Postman SDK request object
@@ -219,6 +235,7 @@ module.exports = {
   parseBody: parseBody,
   parseHeader: parseHeader,
   parseHost: parseHost,
+  parsePort: parsePort,
   parsePath: parsePath,
   parseURLVariable: parseURLVariable
 };

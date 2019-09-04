@@ -180,4 +180,31 @@ describe('nodejs-native convert function', function () {
       expect(snippet).to.include('\'path\': \'/?query1=1&query2=2\'');
     });
   });
+
+  it('should add port in the options when host has port specified', function () {
+    var request = new sdk.Request({
+        'method': 'GET',
+        'header': [],
+        'url': {
+          'raw': 'https://localhost:3000/getSelfBody',
+          'protocol': 'https',
+          'host': [
+            'localhost'
+          ],
+          'port': '3000',
+          'path': [
+            'getSelfBody'
+          ]
+        }
+      }),
+      options = {};
+    convert(request, options, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      console.log(snippet);
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('\'port\': 3000');
+    });
+  });
 });
