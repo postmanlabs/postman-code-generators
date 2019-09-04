@@ -154,20 +154,12 @@ function parseHeaders (bodyMode, headers, indent) {
       headerSnippet += `"${sanitize(value, 'header')}"\n`;
     });
   }
-  if (bodyMode === 'formdata' || bodyMode === 'file') {
+  if (bodyMode === 'formdata') {
     if (headerSnippet === '') {
       headerSnippet += `${indent}let headers = Header.init ()\n`;
     }
-    if (bodyMode === 'formdata') {
-      headerSnippet += `${indent.repeat(2)}|> fun h -> Header.add h "content-type" "multipart/form-data;`;
-      headerSnippet += ' boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"\n';
-    }
-    // Ignoring next part as this header is specific to body type file. and there is no test for it.
-    /* istanbul ignore next */
-    else {
-      headerSnippet += `${indent.repeat(2)}|> fun h -> Header.add h "content-type"`;
-      headerSnippet += ' "{Insert_File_Content_Type}"\n';
-    }
+    headerSnippet += `${indent.repeat(2)}|> fun h -> Header.add h "content-type" "multipart/form-data;`;
+    headerSnippet += ' boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"\n';
   }
   return headerSnippet;
 }
