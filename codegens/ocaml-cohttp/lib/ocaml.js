@@ -53,7 +53,7 @@ function parseFormData (body, trim, indent) {
 
         /* istanbul ignore next */
         if (data.type === 'file') {
-          const filename = 'filename';
+          const filename = data.src;
           accumalator.push(`${indent}[| ("name", "${key}"); ("fileName", "${filename}") |]`);
         }
         else {
@@ -79,9 +79,13 @@ function parseFormData (body, trim, indent) {
   bodySnippet += `${indent.repeat(2)}postData := !postData ^ accum ^ "\\r\\n\\r\\n" ^ paramValue ^ "\\r\\n";\n`;
   bodySnippet += `${indent})\n`;
   bodySnippet += `${indent}else if paramType = "fileName" then (\n`;
-  bodySnippet += `${indent.repeat(2)}postData := !postData ^ accum ^ "; filename=\\"{your filepath}\\"\\r\\n";\n`;
-  bodySnippet += `${indent.repeat(2)}postData := !postData ^ "Content-Type: {your file's content-type}`;
-  bodySnippet += `\\r\\n\\r\\n\\r\\n";\n${indent})\n`;
+  bodySnippet += `${indent.repeat(2)}let (_, filepath) = parameters.(x).(1) in\n`;
+  bodySnippet += `${indent.repeat(2)}postData := !postData ^ accum ^ "; filename=\\""^ filepath ^"\\"\\r\\n";\n`;
+  bodySnippet += `${indent.repeat(2)}let ch = open_in filepath in\n`;
+  bodySnippet += `${indent.repeat(3)}let fileContent = really_input_string ch (in_channel_length ch) in\n`;
+  bodySnippet += `${indent.repeat(3)}close_in ch;\n`;
+  bodySnippet += `${indent.repeat(2)}postData := !postData ^ "Content-Type: {content-type header}`;
+  bodySnippet += `\\r\\n\\r\\n"^ fileContent ^"\\r\\n";\n${indent})\n`;
   bodySnippet += 'done;;\n';
   bodySnippet += 'postData := !postData ^ "--" ^ boundary ^ "--"\n\n';
   return bodySnippet;

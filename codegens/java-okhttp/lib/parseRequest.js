@@ -1,6 +1,7 @@
 
 var _ = require('./lodash'),
-  sanitize = require('./util').sanitize;
+  sanitize = require('./util').sanitize,
+  path = require('path');
 
 /**
  * parses body of request and returns urlencoded string
@@ -34,10 +35,12 @@ function parseFormData (requestBody, indentString, trimFields) {
     }
     /* istanbul ignore next */
     if (data.type === 'file') {
+      var pathArray = data.src.split(path.sep),
+        fileName = pathArray[pathArray.length - 1];
       body += indentString + '.addFormDataPart' +
-                    `("${sanitize(data.key, trimFields)}","${sanitize(data.src, trimFields)}",\n` +
-                    indentString + 'RequestBody.create(MediaType.parse("application/octet-stream"),\n' +
-                    indentString + `new File("${sanitize(data.src)}")))\n`;
+                    `("${sanitize(data.key, trimFields)}","${sanitize(fileName, trimFields)}",\n` +
+                    indentString.repeat(2) + 'RequestBody.create(MediaType.parse("application/octet-stream"),\n' +
+                    indentString.repeat(2) + `new File("${sanitize(data.src)}")))\n`;
     }
     else {
       !data.value && (data.value = '');

@@ -14,14 +14,14 @@ var self;
  */
 function makeSnippet (request, indentString, options) {
   var nativeModule = (request.url.protocol === 'http' ? 'http' : 'https'),
-    snippet = `var ${nativeModule} = require('${nativeModule}');\n\n`,
+    snippet = `var ${nativeModule} = require('${nativeModule}');\n`,
     optionsArray = [],
     postData = [];
 
   if (options.followRedirect) {
-    snippet = `var ${nativeModule} = require('follow-redirects').${nativeModule};\n\n`;
+    snippet = `var ${nativeModule} = require('follow-redirects').${nativeModule};\n`;
   }
-
+  snippet += 'var fs = require(\'fs\');\n\n';
   if (_.get(request, 'body.mode') && request.body.mode === 'urlencoded') {
     snippet += 'var qs = require(\'querystring\');\n\n';
   }
@@ -103,7 +103,6 @@ function makeSnippet (request, indentString, options) {
   }
 
   snippet += 'req.end();';
-
   return snippet;
 }
 

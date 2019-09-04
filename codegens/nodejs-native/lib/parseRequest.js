@@ -1,6 +1,7 @@
 const _ = require('./lodash'),
 
-  sanitize = require('./util').sanitize;
+  sanitize = require('./util').sanitize,
+  path = require('path');
 
 /**
  * parses body of request when type of the request body is formdata or urlencoded and
@@ -28,6 +29,11 @@ function extractFormData (dataArray, indentString, trimBody) {
   return snippetString.join(',\n');
 }
 
+/**
+ * Generates multipart form data snippet
+ *
+ * @param {*} requestbody
+ */
 function generateMultipartFormData (requestbody) {
   const boundary = '------WebKitFormBoundary7MA4YWxkTrZu0gW\\r\\nContent-Disposition: form-data; ',
     dataArray = requestbody[requestbody.mode],
@@ -36,12 +42,14 @@ function generateMultipartFormData (requestbody) {
         const key = dataArrayElement.key.replace(/"/g, '\'');
 
         if (dataArrayElement.type === 'file') {
-          const filename = 'filename=\\"{Insert_File_Name}\\"',
+          var pathArray = dataArrayElement.src.split(path.sep),
+            fileName = pathArray[pathArray.length - 1];
+          const filename = `filename=\\"${fileName}\\"`,
             contentType = 'Content-Type: \\"{Insert_File_Content_Type}\\"',
-            fileContent = '{Insert_File_Content}';
+            fileContent = `fs.readFileSync('${dataArrayElement.src}')`;
 
           // eslint-disable-next-line max-len
-          accumalator.push(`name=\\"${key}\\"; ${filename}\\r\\n${contentType}\\r\\n\\r\\n${fileContent}\\r\\n`);
+          accumalator.push(`name=\\"${key}\\"; ${filename}\\r\\n${contentType}\\r\\n\\r\\n" + ${fileContent} + "\\r\\n`);
         }
         else {
           // eslint-disable-next-line no-useless-escape

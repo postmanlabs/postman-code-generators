@@ -59,7 +59,7 @@ function parseBody (requestbody, indentString, trimBody) {
   if (requestbody) {
     switch (requestbody.mode) {
       case 'raw':
-        return '.send(' + JSON.stringify(requestbody[requestbody.mode]) + ')\n';
+        return indentString + '.send(' + JSON.stringify(requestbody[requestbody.mode]) + ')\n';
       case 'urlencoded':
         return parseFormdata(requestbody[requestbody.mode], indentString, trimBody);
       case 'formdata':
@@ -86,14 +86,14 @@ function parseHeader (request, indentString) {
     headerSnippet = '';
 
   if (!_.isEmpty(headerObject)) {
-    headerSnippet += '.headers({\n';
+    headerSnippet += indentString + '.headers({\n';
 
     headerSnippet += _.reduce(Object.keys(headerObject), function (accumalator, key) {
-      accumalator.push(indentString + `'${sanitize(key)}': '${sanitize(headerObject[key])}'`);
+      accumalator.push(indentString.repeat(2) + `'${sanitize(key)}': '${sanitize(headerObject[key])}'`);
       return accumalator;
     }, []).join(',\n') + '\n';
 
-    headerSnippet += '})\n';
+    headerSnippet += indentString + '})\n';
   }
   return headerSnippet;
 }

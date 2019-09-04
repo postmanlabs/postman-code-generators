@@ -48,7 +48,7 @@ module.exports = function (request, indentation, bodyTrim) {
                             `'${sanitize(value.value, request.body.mode, bodyTrim)}'`);
           });
           bodyFileMap = _.map(_.filter(enabledBodyList, {'type': 'file'}), function (value) {
-            return `('${value.key}': open('${sanitize(value.src, request.body.mode, bodyTrim)}','rb')`;
+            return `'${value.key}': open('${sanitize(value.src, request.body.mode, bodyTrim)}','rb')`;
           });
           requestBody = `payload = {${bodyDataMap.join(',\n')}}\nfiles = {${bodyFileMap.join(',')}}\n`;
         }

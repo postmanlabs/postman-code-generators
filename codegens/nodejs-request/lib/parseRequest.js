@@ -1,6 +1,7 @@
 var _ = require('./lodash'),
 
-  sanitize = require('./util').sanitize;
+  sanitize = require('./util').sanitize,
+  path = require('path');
 
 /**
  * parses body of request when type of the request body is formdata or urlencoded and
@@ -32,11 +33,13 @@ function extractFormData (dataArray, indentString, trimBody) {
              *      }
              *  }
              */
+      var pathArray = item.src.split(path.sep),
+        fileName = pathArray[pathArray.length - 1];
       accumalator.push([
         indentString.repeat(2) + `'${sanitize(item.key, trimBody)}': {`,
         indentString.repeat(3) + `'value': fs.createReadStream('${sanitize(item.src, trimBody)}'),`,
         indentString.repeat(3) + '\'options\': {',
-        indentString.repeat(4) + `'filename': '${sanitize(item.src, trimBody)}',`,
+        indentString.repeat(4) + `'filename': '${sanitize(fileName, trimBody)}',`,
         indentString.repeat(4) + '\'contentType\': null',
         indentString.repeat(3) + '}',
         indentString.repeat(2) + '}'

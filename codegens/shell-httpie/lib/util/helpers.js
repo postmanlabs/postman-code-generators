@@ -155,10 +155,13 @@ module.exports = {
       case FORM_DATA:
         if (Array.isArray(requestBody.members) && requestBody.members.length) {
           parsedBody = requestBody.members.map((param) => {
-            if (typeof param.value === 'string') {
-              return ' ' + Sanitize.quote(param.key) + '=' + Sanitize.quote(param.value);
+            if (param.type === 'text') {
+              if (typeof param.value === 'string') {
+                return ' ' + Sanitize.quote(param.key) + '=' + Sanitize.quote(param.value);
+              }
+              return ' ' + param.key + ':=' + param.value;
             }
-            return ' ' + param.key + ':=' + param.value;
+            return ' ' + Sanitize.quote(param.key) + '@' + param.src;
           }).join(' \\\n');
         }
         else {
