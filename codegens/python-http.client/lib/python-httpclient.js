@@ -130,6 +130,7 @@ self = module.exports = {
     snippet += 'import http.client\n';
     snippet += 'import mimetypes\n';
     snippet += `conn = http.client.HTTPSConnection("${request.url.host ? request.url.host.join('.') : ''}"`;
+    snippet += request.url.port ? `, ${request.url.port}` : '';
     snippet += options.requestTimeout !== 0 ? `, timeout = ${options.requestTimeout})\n` : ')\n';
     snippet += parseBody(request.toJSON(), indentation, options.requestBodyTrim);
     snippet += getheaders(request, indentation);
