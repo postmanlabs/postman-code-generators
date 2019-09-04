@@ -39,7 +39,12 @@ function makeSnippet (request, indentString, options) {
      */
   optionsArray.push(indentString + `'method': '${request.method}'`);
   optionsArray.push(indentString + `'url': '${sanitize(request.url.toString())}'`);
-
+  if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+    request.addHeader({
+      key: 'Content-Type',
+      value: 'text/plain'
+    });
+  }
   optionsArray.push(parseRequest.parseHeader(request, indentString));
 
   if (request.body && request.body[request.body.mode]) {

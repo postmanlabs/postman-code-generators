@@ -43,6 +43,12 @@ function makeSnippet (request, indentString, options) {
   if (request.body && request.body[request.body.mode]) {
     postData.push(parseRequest.parseBody(request.body.toJSON(), indentString, options.trimRequestBody));
   }
+  if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+    request.addHeader({
+      key: 'Content-Type',
+      value: 'text/plain'
+    });
+  }
 
   parseRequest.parseURLVariable(request);
 
@@ -53,7 +59,6 @@ function makeSnippet (request, indentString, options) {
   }
   optionsArray.push(parseRequest.parsePath(request, indentString));
   optionsArray.push(parseRequest.parseHeader(request, indentString));
-
   if (options.followRedirect) {
     optionsArray.push(indentString + '\'maxRedirects\': 20');
   }

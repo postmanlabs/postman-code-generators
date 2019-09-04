@@ -95,18 +95,18 @@ function parseFormData (body, trim, indent) {
 /**
  * Parses file body from the Request
  *
- * @param {String} indent - indentation string
  * @returns {String} request body in the desired format
  */
-function parseFile (indent) {
-  var bodySnippet = 'let load_file f =\n';
-  bodySnippet += `${indent}let ic = open_in f in\n`;
-  bodySnippet += `${indent}let n = in_channel_length ic in\n`;
-  bodySnippet += `${indent}let s = Bytes.create n in\n`;
-  bodySnippet += `${indent}really_input ic s 0 n;\n`;
-  bodySnippet += `${indent}close_in ic;\n${indent}(s)\n\n`;
-  bodySnippet += 'let postData = ref "";;\n';
-  bodySnippet += 'postData := load_file("{Insert_File_Name}");;\n\n';
+function parseFile () {
+  // var bodySnippet = 'let load_file f =\n';
+  // bodySnippet += `${indent}let ic = open_in f in\n`;
+  // bodySnippet += `${indent}let n = in_channel_length ic in\n`;
+  // bodySnippet += `${indent}let s = Bytes.create n in\n`;
+  // bodySnippet += `${indent}really_input ic s 0 n;\n`;
+  // bodySnippet += `${indent}close_in ic;\n${indent}(s)\n\n`;
+  // bodySnippet += 'let postData = ref "";;\n';
+  // bodySnippet += 'postData := load_file("{Insert_File_Name}");;\n\n';
+  var bodySnippet = 'let postData = ref "<file contents here>";;\n\n';
   return bodySnippet;
 }
 
@@ -289,6 +289,12 @@ self = module.exports = {
     trim = options.trimRequestBody;
     finalUrl = encodeURI(request.url.toString());
     methodArg = getMethodArg(request.method);
+    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
+    }
     headerSnippet += parseHeaders(requestBodyMode, request.getHeaders({enabled: true}), indent);
     bodySnippet = parseBody(requestBody, trim, indent);
 

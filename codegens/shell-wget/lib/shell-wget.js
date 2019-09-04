@@ -137,6 +137,12 @@ self = module.exports = {
     if (typeof options.followRedirect === 'boolean' && !options.followRedirect) {
       snippet += `${indentation}--max-redirect=0 \\\n`;
     }
+    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
+    }
     snippet += `${getHeaders(request, indentation)}\n`;
     snippet += `${parseBody(request.toJSON(), options.trimRequestBody, indentation)}`;
     snippet += `${indentation}--output-document=shellWget.txt \\\n`;

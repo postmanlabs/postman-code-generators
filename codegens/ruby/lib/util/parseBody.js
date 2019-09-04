@@ -47,7 +47,7 @@ module.exports = function (request, trimRequestBody) {
         requestBody += 'request.set_form form_data, \'multipart/form-data\'';
         return requestBody;
       case 'file':
-        // TODO find out how and implement
+        requestBody = 'request.body = "<file contents here>"\n';
         return requestBody;
       default:
         return requestBody;

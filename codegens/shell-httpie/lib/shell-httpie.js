@@ -6,7 +6,8 @@ var _ = require('./lodash'),
 const GAP = ' ',
   URLENCODED = 'urlencoded',
   FORM_DATA = 'formdata',
-  RAW = 'raw';
+  RAW = 'raw',
+  FILE = 'file';
 
 self = module.exports = {
   /**
@@ -103,7 +104,11 @@ self = module.exports = {
             snippet += 'http ' + handleRedirect(options.followRedirect) + handleRequestTimeout(timeout);
             snippet += request.method + GAP + url + (parsedHeaders ? (' \\\n' + parsedHeaders) : '');
             break;
-
+          case FILE:
+            snippet += `cat ${parsedBody} | `;
+            snippet += 'http ' + handleRedirect(options.followRedirect) + handleRequestTimeout(timeout);
+            snippet += request.method + GAP + url + (parsedHeaders ? (' \\\n' + parsedHeaders) : '');
+            break;
           default:
             return callback('Shell-Httpie~convert: Not a valid Content-Type in request body', null);
         }

@@ -69,19 +69,17 @@ function parseFormData (body, trim, indent) {
 /**
  * Parses file body from the Request
  *
- * @param {Object} body body object from request.
- * @param {boolean} trim trim body option
- * @param {string} indent indent string
  */
-function parseFile (body, trim, indent) {
-  var bodySnippet = `payload := &bytes.Buffer{}\n${indent}writer := multipart.NewWriter(payload)\n`;
-  isFile = true;
-  bodySnippet += `${indent}// add your file name in the next statement in place of path\n`;
-  bodySnippet += `${indent}file, err := os.Open(path)\n`;
-  bodySnippet += `${indent}defer file.Close()\n`;
-  bodySnippet += `${indent}part, err := writer.CreateFormFile("file", filepath.Base(path))\n`;
-  bodySnippet += `${indent}_, err := io.Copy(part, file)\n`;
-  bodySnippet += `${indent}err := writer.Close()\n${indent}if err != nil {${indent}fmt.Println(err)}\n`;
+function parseFile () {
+  // var bodySnippet = `payload := &bytes.Buffer{}\n${indent}writer := multipart.NewWriter(payload)\n`;
+  // isFile = true;
+  // bodySnippet += `${indent}// add your file name in the next statement in place of path\n`;
+  // bodySnippet += `${indent}file, err := os.Open(path)\n`;
+  // bodySnippet += `${indent}defer file.Close()\n`;
+  // bodySnippet += `${indent}part, err := writer.CreateFormFile("file", filepath.Base(path))\n`;
+  // bodySnippet += `${indent}_, err := io.Copy(part, file)\n`;
+  // bodySnippet += `${indent}err := writer.Close()\n${indent}if err != nil {${indent}fmt.Println(err)}\n`;
+  var bodySnippet = 'payload := strings.NewReader("<file contents here>")\n';
   return bodySnippet;
 }
 
@@ -194,14 +192,19 @@ self = module.exports = {
       codeSnippet += `${indent}req, err := http.NewRequest(method, url, nil)\n\n`;
     }
     codeSnippet += `${indent}if err != nil {\n${indent.repeat(2)}fmt.Println(err)\n${indent}}\n`;
+    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
+    }
     headerSnippet = parseHeaders(request.getHeaders({enabled: true}), indent);
     if (headerSnippet !== '') {
       codeSnippet += headerSnippet + '\n';
     }
-    if (request.body && (request.body.toJSON().mode === 'formdata' || request.body.toJSON().mode === 'file')) {
+    if (request.body && (request.body.toJSON().mode === 'formdata')) {
       codeSnippet += `${indent}req.Header.Set("Content-Type", writer.FormDataContentType())\n`;
     }
-
     responseSnippet = `${indent}res, err := client.Do(req)\n`;
     responseSnippet += `${indent}defer res.Body.Close()\n${indent}body, err := ioutil.ReadAll(res.Body)\n\n`;
     responseSnippet += `${indent}fmt.Println(string(body))\n}`;
