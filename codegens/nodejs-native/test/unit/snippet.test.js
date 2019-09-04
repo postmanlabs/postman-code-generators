@@ -202,7 +202,6 @@ describe('nodejs-native convert function', function () {
       if (error) {
         expect.fail(null, null, error);
       }
-      console.log(snippet);
       expect(snippet).to.be.a('string');
       expect(snippet).to.include('\'port\': 3000');
     });
