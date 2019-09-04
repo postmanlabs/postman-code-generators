@@ -301,6 +301,7 @@ describe('nodejs-request convert function', function () {
         });
       });
     });
+
     it('should return snippet with no trailing comma when requestTimeout ' +
       'is set to non zero and followRedirect as true', function () {
       request = new sdk.Request(mainCollection.item[0].request);
@@ -337,6 +338,48 @@ describe('nodejs-request convert function', function () {
         expect(snippet).to.be.a('string');
         expect(snippet).to.not.include('timeout: 1000,,');
         expect(snippet).to.include('timeout: 1000,\n followRedirect: false');
+      });
+    });
+
+    it('should not require unused fs', function () {
+      request = new sdk.Request({
+        'url': 'https://postman-echo.com/get',
+        'method': 'GET',
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        }
+      });
+      convert(request, {}, (error, snippet) => {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.not.include('var fs = require(\'fs\')');
+      });
+    });
+
+    it('should add fs for form-data file upload', function () {
+      request = new sdk.Request({
+        'url': 'https://postman-echo.com/post',
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'fileName',
+              'src': '/some/path/file.txt',
+              'type': 'file'
+            }
+          ]
+        }
+      });
+      convert(request, {}, (error, snippet) => {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('var fs = require(\'fs\')');
       });
     });
 
