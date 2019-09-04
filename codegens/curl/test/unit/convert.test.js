@@ -198,7 +198,7 @@ describe('curl convert function', function () {
         if (error) {
           expect.fail(null, null, error);
         }
-        expect(snippet).to.include('-H \'foo: "bar"\'');
+        expect(snippet).to.include("-H 'foo: \"bar\"'"); // eslint-disable-line quotes
       });
     });
 
@@ -223,7 +223,7 @@ describe('curl convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('GET \'https://google.com\'');
+        expect(snippet).to.include("GET 'https://google.com'"); // eslint-disable-line quotes
       });
     });
 
