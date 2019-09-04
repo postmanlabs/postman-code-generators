@@ -2,8 +2,8 @@ var expect = require('chai').expect,
   sdk = require('postman-collection'),
   newmanTestUtil = require('../../../../test/codegen/newman/newmanTestUtil'),
   async = require('async'),
-  convert = require('../../index').convert;
-  // mainCollection = require('../../../../test/codegen/newman/fixtures/testCollection.json');
+  convert = require('../../index').convert,
+  getUrlStringfromUrlObject = require('../../lib/util').getUrlStringfromUrlObject;
 
 describe('curl convert function', function () {
   describe('convert for different request types', function () {
