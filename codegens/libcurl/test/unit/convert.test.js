@@ -38,8 +38,6 @@ function runSnippet (codeSnippet, collection, done) {
             if (stderr) {
               return callback(stderr);
             }
-            // this because response also display response code at the end of response body
-            stdout = stdout.substring(0, stdout.length - 3);
             try {
               stdout = JSON.parse(stdout);
             }

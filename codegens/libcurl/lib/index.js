@@ -52,7 +52,7 @@ self = module.exports = {
     _.forEach(headersData, function (value, key) {
       snippet += indentString + `headers = curl_slist_append(headers, "${sanitize(key)}: ${sanitize(value)}");\n`;
     });
-    body = request.body.toJSON();
+    body = request.body ? request.body.toJSON() : {};
     if (body.mode && body.mode === 'formdata' && !options.useMimeType) {
       snippet += indentString + 'headers = curl_slist_append(headers, "content-type:' +
                 ` multipart/form-data; boundary=${BOUNDARY}");\n`;
@@ -130,11 +130,6 @@ self = module.exports = {
     }
 
     snippet += indentString + 'res = curl_easy_perform(curl);\n';
-    snippet += indentString + 'if(res == CURLE_OK) {\n';
-    snippet += indentString.repeat(2) + 'long response_code;\n';
-    snippet += indentString.repeat(2) + 'curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);\n';
-    snippet += indentString.repeat(2) + 'if(!res && response_code) printf("%03ld", response_code);\n';
-    snippet += indentString + '}\n';
     if (body.mode === 'formdata' && options.useMimeType) {
       snippet += indentString + 'curl_mime_free(mime);\n';
     }
@@ -162,26 +157,26 @@ self = module.exports = {
         description: 'The protocol to be used to make the request'
       },
       {
-        name: 'Indent count',
+        name: 'Set indentation count',
         id: 'indentCount',
         type: 'positiveInteger',
         default: 2,
-        description: 'Number of indentation characters to add per code level'
+        description: 'Set the number of indentation characters to add per code level'
       },
       {
-        name: 'Indent type',
+        name: 'Set indentation type',
         id: 'indentType',
         type: 'enum',
         availableOptions: ['Tab', 'Space'],
         default: 'Space',
-        description: 'Character used for indentation'
+        description: 'Select the character used to indent lines of code'
       },
       {
-        name: 'Body trim',
+        name: 'Trim request body fields',
         id: 'trimRequestBody',
         type: 'boolean',
-        default: true,
-        description: 'Trim request body fields'
+        default: false,
+        description: 'Remove white space and additional lines that may affect the server\'s response'
       },
       {
         name: 'Use curl_mime',
@@ -191,11 +186,12 @@ self = module.exports = {
         description: 'Use curl_mime to send multipart/form-data requests'
       },
       {
-        name: 'Request timeout',
+        name: 'Set request timeout',
         id: 'requestTimeout',
         type: 'positiveInteger',
         default: 0,
-        description: 'How long the request should wait for a response before timing out (milliseconds)'
+        description: 'Set number of milliseconds the request should wait for a response' +
+    ' before timing out (use 0 for infinity)'
       }
     ];
   }

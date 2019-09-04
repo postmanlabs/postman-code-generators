@@ -9,17 +9,17 @@ let utils = require('./util');
  */
 function getOptions () {
   return [{
-    name: 'Body trim',
+    name: 'Trim request body fields',
     id: 'trimRequestBody',
     type: 'boolean',
-    default: true,
-    description: 'Trim request body fields'
+    default: false,
+    description: 'Remove white space and additional lines that may affect the server\'s response'
   }];
 }
 
 /**
  * Converts a Postman SDK request to HTTP message
- * 
+ *
  * @param {Object} request - Postman SDK request
  * @param {Object} options - Options for converter
  * @param {Boolean} options.trimRequestBody - determines whether to trim the body or not

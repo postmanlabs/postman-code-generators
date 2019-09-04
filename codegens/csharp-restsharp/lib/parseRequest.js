@@ -50,7 +50,7 @@ function parseContentType (request) {
  * @returns {String} code snippet of csharp-restsharp parsed from request object
  */
 function parseBody (request, trimFields) {
-  var requestBody = request.body.toJSON();
+  var requestBody = request.body ? request.body.toJSON() : {};
   if (!_.isEmpty(requestBody)) {
     switch (requestBody.mode) {
       case 'urlencoded':

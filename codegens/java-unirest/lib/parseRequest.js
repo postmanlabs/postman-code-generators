@@ -3,6 +3,47 @@ var _ = require('./lodash'),
   sanitize = require('./util').sanitize;
 
 /**
+ *
+ * @param {*} urlObject The request sdk request.url object
+ * @returns {String} The final string after parsing all the parameters of the url including 
+ * protocol, auth, host, port, path, query, hash
+ * This will be used because the url.toString() method returned the URL with non encoded query string
+ * and hence a manual call is made to getQueryString() method with encode option set as true.
+ */
+function getUrlStringfromUrlObject (urlObject) {
+  var url = '';
+  if (!urlObject) {
+    return url;
+  }
+  if (urlObject.protocol) {
+    url += (urlObject.protocol.endsWith('://') ? urlObject.protocol : urlObject.protocol + '://');
+  }
+  if (urlObject.auth && urlObject.auth.user) {
+    url = url + ((urlObject.auth.password) ?
+      // ==> username:password@
+      urlObject.auth.user + ':' + urlObject.auth.password : urlObject.auth.user) + '@';
+  }
+  if (urlObject.host) {
+    url += urlObject.getHost();
+  }
+  if (urlObject.port) {
+    url += ':' + urlObject.port.toString();
+  }
+  if (urlObject.path) {
+    url += urlObject.getPath();
+  }
+  if (urlObject.query && urlObject.query.count()) {
+    let queryString = urlObject.getQueryString({ ignoreDisabled: true, encode: true });
+    queryString && (url += '?' + queryString);
+  }
+  if (urlObject.hash) {
+    url += '#' + urlObject.hash;
+  }
+
+  return url;
+}
+
+/**
  * parses form data from request body and returns codesnippet in java unirest
  *
  * @param {Object} requestbody - JSON object acquired by request.body.JSON()
@@ -75,5 +116,6 @@ function parseHeader (request, indentString) {
 
 module.exports = {
   parseBody: parseBody,
-  parseHeader: parseHeader
+  parseHeader: parseHeader,
+  getUrlStringfromUrlObject: getUrlStringfromUrlObject
 };

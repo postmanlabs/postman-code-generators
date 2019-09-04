@@ -1,5 +1,6 @@
 var sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
+  getUrlStringfromUrlObject = require('./util').getUrlStringfromUrlObject,
   form = require('./util').form,
   _ = require('./lodash'),
   self;
@@ -13,7 +14,8 @@ self = module.exports = {
     options = sanitizeOptions(options, self.getOptions());
 
     var indent, trim, headersData, body, text, redirect, timeout, multiLine,
-      format, snippet, silent;
+      format, snippet, silent, url;
+    
     redirect = options.followRedirect;
     timeout = options.requestTimeout;
     multiLine = options.multiLine;
@@ -35,12 +37,12 @@ self = module.exports = {
     else {
       indent = ' ';
     }
-
+    url = getUrlStringfromUrlObject(request.url);
     if (request.method === 'HEAD') {
-      snippet += ` ${form('-I', format)} "${encodeURI(request.url.toString())}"`;
+      snippet += ` ${form('-I', format)} "${url}"`;
     }
     else {
-      snippet += ` ${form('-X', format)} ${request.method} "${encodeURI(request.url.toString())}"`;
+      snippet += ` ${form('-X', format)} ${request.method} "${url}"`;
     }
 
     if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
@@ -99,14 +101,14 @@ self = module.exports = {
   getOptions: function () {
     return [
       {
-        name: 'Multiline snippet',
+        name: 'Generate multiline snippet',
         id: 'multiLine',
         type: 'boolean',
         default: true,
         description: 'Split cURL command across multiple lines'
       },
       {
-        name: 'Long form options',
+        name: 'Use long form options',
         id: 'longFormat',
         type: 'boolean',
         default: true,
@@ -118,35 +120,37 @@ self = module.exports = {
         availableOptions: ['\\', '^'],
         type: 'enum',
         default: '\\',
-        description: 'Character that should be used to split lines in a multiline snippet'
+        description: 'Set a character used to mark the continuation of a statement on the next line ' +
+          '(generally, \\ for OSX/Linux, ^ for Windows)'
       },
       {
-        name: 'Request timeout',
+        name: 'Set request timeout',
         id: 'requestTimeout',
         type: 'positiveInteger',
         default: 0,
-        description: 'How long the request should wait for a response before timing out (milliseconds)'
+        description: 'Set number of milliseconds the request should wait for a response before ' +
+          'timing out (use 0 for infinity)'
       },
       {
-        name: 'Follow redirect',
+        name: 'Follow redirects',
         id: 'followRedirect',
         type: 'boolean',
         default: true,
         description: 'Automatically follow HTTP redirects'
       },
       {
-        name: 'Body trim',
+        name: 'Trim request body fields',
         id: 'trimRequestBody',
         type: 'boolean',
         default: false,
-        description: 'Trim request body fields'
+        description: 'Remove white space and additional lines that may affect the server\'s response'
       },
       {
-        name: 'Silent',
+        name: 'Use Silent Mode',
         id: 'silent',
         type: 'boolean',
         default: false,
-        description: 'Use cURL\'s silent mode in the generated snippet'
+        description: 'Display the requested data without showing the cURL progress meter or error messages'
       }
     ];
   }
