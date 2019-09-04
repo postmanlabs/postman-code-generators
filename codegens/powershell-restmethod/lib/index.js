@@ -189,7 +189,7 @@ function convert (request, options, callback) {
   headers = request.getHeaders({enabled: true});
   headerSnippet = parseHeaders(headers);
 
-  body = request.body.toJSON();
+  body = request.body ? request.body.toJSON() : {};
   bodySnippet = parseBody(body, trim);
 
   if (headerSnippet !== '') {
