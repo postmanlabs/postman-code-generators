@@ -54,6 +54,9 @@ function makeSnippet (request, indentString, options) {
 
   optionsArray.push(indentString + `'method': '${request.method}'`);
   optionsArray.push(parseRequest.parseHost(request, indentString));
+  if (request.url.port) {
+    optionsArray.push(parseRequest.parsePort(request, indentString));
+  }
   optionsArray.push(parseRequest.parsePath(request, indentString));
   optionsArray.push(parseRequest.parseHeader(request, indentString));
   if (options.followRedirect) {

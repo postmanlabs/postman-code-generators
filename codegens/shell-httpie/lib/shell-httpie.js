@@ -72,7 +72,7 @@ self = module.exports = {
     options = sanitizeOptions(options, self.getOptions());
 
     Helpers.parseURLVariable(request);
-    url = Helpers.addHost(request) + Helpers.addPathandQuery(request);
+    url = Helpers.addHost(request) + Helpers.addPort(request) + Helpers.addPathandQuery(request);
     timeout = options.requestTimeout;
     parsedHeaders = Helpers.addHeaders(request);
 

@@ -51,8 +51,26 @@ function parseURLEncodedBody (body, mode, trim) {
  * @returns {String} request body in the desired format
  */
 function parseFormData (body, mode, trim, indent) {
-  var parameters = sanitize(JSON.stringify(body, null, 4), mode, trim),
-    bodySnippet = `let parameters = ${parameters} as [[String : Any]]\n\n`;
+  var parameters = [],
+    parameter,
+    bodySnippet;
+  _.forEach(body, (data) => {
+    if (!(data.disabled)) {
+      parameter = '';
+      parameter += `${indent}[\n${indent.repeat(2)}"key": "${sanitize(data.key, mode, trim)}",\n`;
+      if (data.type === 'file') {
+        parameter += `${indent.repeat(2)}"src": "${sanitize(data.src, mode, trim)}",\n`;
+        parameter += `${indent.repeat(2)}"type": "file"\n${indent}]`;
+      }
+      else {
+        parameter += `${indent.repeat(2)}"value": "${sanitize(data.value, mode, trim)}",\n`;
+        parameter += `${indent.repeat(2)}"type": "text"\n${indent}]`;
+      }
+      parameters.push(parameter);
+    }
+  });
+  parameters = '[\n' + _.join(parameters, ',\n') + ']';
+  bodySnippet = `let parameters = ${parameters} as [[String : Any]]\n\n`;
   bodySnippet += 'let boundary = "Boundary-\\(UUID().uuidString)"\n';
   bodySnippet += 'var body = ""\nvar error: Error? = nil\n';
   bodySnippet += 'for param in parameters {\n';
