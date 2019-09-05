@@ -4,7 +4,7 @@ var expect = require('chai').expect,
   newmanTestUtil = require('../../../../test/codegen/newman/newmanTestUtil'),
   async = require('async'),
   convert = require('../../lib/index').convert,
-  mainCollection = require('../../../../test/codegen/newman/fixtures/testCollection.json'),
+  mainCollection = require('./fixtures/testcollection/collection.json'),
   testCollection = require('./fixtures/testcollection/collectionForEdge.json'),
   getOptions = require('../../lib/index').getOptions,
   testResponse = require('./fixtures/testresponse.json'),
@@ -28,10 +28,7 @@ describe('csharp restsharp function', function () {
       },
       options = {
         indentCount: 1,
-        indentType: 'Tab',
-        followRedirect: true,
-        trimRequestBody: true,
-        requestTimeout: 5000
+        indentType: 'Tab'
       };
     async.waterfall([
       function (next) {
