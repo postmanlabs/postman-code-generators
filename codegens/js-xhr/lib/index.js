@@ -173,7 +173,7 @@ function convert (request, options, callback) {
   indent = indent.repeat(options.indentCount);
   trim = options.trimRequestBody;
 
-  bodySnippet = request.body ? parseBody(request.body.toJSON(), trim, indent) : '';
+  bodySnippet = request.body && !_.isEmpty(request.body.toJSON()) ? parseBody(request.body.toJSON(), trim, indent) : '';
 
   codeSnippet += bodySnippet + '\n';
 
@@ -196,7 +196,7 @@ function convert (request, options, callback) {
 
   codeSnippet += headerSnippet + '\n';
 
-  codeSnippet += request.body ? 'xhr.send(data)' : 'xhr.send();';
+  codeSnippet += request.body && !_.isEmpty(request.body.toJSON()) ? 'xhr.send(data);' : 'xhr.send();';
   callback(null, codeSnippet);
 }
 
