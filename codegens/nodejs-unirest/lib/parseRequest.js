@@ -66,7 +66,7 @@ function parseBody (requestbody, indentString, trimBody) {
         return parseMultipart(requestbody[requestbody.mode], indentString, trimBody);
         /* istanbul ignore next */
       case 'file':
-        return indentString + `.attach('file', ${requestbody[requestbody.mode]})\n`;
+        return '.send("<file contents here>")\n';
       default:
         return '';
     }

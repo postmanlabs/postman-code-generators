@@ -163,6 +163,32 @@ describe('Python-http.client converter', function () {
       });
     });
 
+    it('should add port in the options when host has port specified', function () {
+      var request = new sdk.Request({
+          'method': 'GET',
+          'header': [],
+          'url': {
+            'raw': 'https://localhost:3000/getSelfBody',
+            'protocol': 'https',
+            'host': [
+              'localhost'
+            ],
+            'port': '3000',
+            'path': [
+              'getSelfBody'
+            ]
+          }
+        }),
+        options = {};
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('conn = http.client.HTTPSConnection("localhost", 3000)');
+      });
+    });
+
   });
 
   describe('parseBody function', function () {

@@ -96,7 +96,8 @@ self = module.exports = {
   convert: function (request, options, callback) {
     var snippet = '',
       indentation = '',
-      identity = '';
+      identity = '',
+      isFormDataFile = false;
 
     if (_.isFunction(options)) {
       callback = options;
@@ -112,7 +113,17 @@ self = module.exports = {
     indentation = identity.repeat(options.indentCount);
     // concatenation and making up the final string
 
-    snippet = 'wget --no-check-certificate \\\n';
+    if (request.body && request.body.mode === 'formdata') {
+      _.forEach(request.body.toJSON().formdata, (data) => {
+        if (!data.disabled && data.type === 'file') {
+          isFormDataFile = true;
+        }
+      });
+    }
+    if (isFormDataFile) {
+      snippet = '# wget doesn\'t support file upload via form data, use curl -F \\\n';
+    }
+    snippet += 'wget --no-check-certificate --quiet \\\n';
     snippet += `${indentation}--method ${request.method} \\\n`;
     // console.log(getHeaders(request, indentation));
     // Shell-wget accepts timeout in seconds (conversion from milli-seconds to seconds)
@@ -125,6 +136,12 @@ self = module.exports = {
     // Shell-wget supports 20 redirects by default (without any specific options)
     if (typeof options.followRedirect === 'boolean' && !options.followRedirect) {
       snippet += `${indentation}--max-redirect=0 \\\n`;
+    }
+    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
     }
     snippet += `${getHeaders(request, indentation)}\n`;
     snippet += `${parseBody(request.toJSON(), options.trimRequestBody, indentation)}`;

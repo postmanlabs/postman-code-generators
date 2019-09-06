@@ -238,7 +238,7 @@ function getBody (request, trimRequestBody) {
         return trimRequestBody ? requestBody.trim() : requestBody;
 
       case FILE:
-        return JSON.stringify(request.body[request.body.mode]);
+        return '"<file contents here>"';
       default:
         return requestBody;
     }

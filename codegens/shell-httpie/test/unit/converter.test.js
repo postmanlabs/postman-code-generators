@@ -67,6 +67,32 @@ describe('Shell-Httpie convert function', function () {
       expect(snippet).to.include('--timeout 3600');
     });
   });
+
+  it('should add port in the url when host has port specified', function () {
+    var request = new sdk.Request({
+        'method': 'GET',
+        'header': [],
+        'url': {
+          'raw': 'https://localhost:3000/getSelfBody',
+          'protocol': 'https',
+          'host': [
+            'localhost'
+          ],
+          'port': '3000',
+          'path': [
+            'getSelfBody'
+          ]
+        }
+      }),
+      options = {};
+    convert(request, options, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('GET localhost:3000/getSelfBody');
+    });
+  });
 });
 
 describe('Sanitize function', function () {
