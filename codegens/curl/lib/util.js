@@ -36,6 +36,10 @@ module.exports = {
           return '--form';
         case '--data-binary':
           return '--data-binary';
+        case '--data-urlencode':
+          return '--data-urlencode';
+        case '--data-raw':
+          return '--data-raw';
         default:
           return '';
       }
