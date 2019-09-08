@@ -13,7 +13,7 @@ self = module.exports = {
     }
     options = sanitizeOptions(options, self.getOptions());
 
-    var indent, trim, headersData, body, text, redirect, timeout, multiLine,
+    var indent, trim, headersData, body, redirect, timeout, multiLine,
       format, snippet, silent, url;
 
     redirect = options.followRedirect;
@@ -62,16 +62,15 @@ self = module.exports = {
       if (!_.isEmpty(body)) {
         switch (body.mode) {
           case 'urlencoded':
-            text = [];
             _.forEach(body.urlencoded, function (data) {
               if (!data.disabled) {
-                text.push(`${escape(data.key)}=${escape(data.value)}`);
+                snippet += indent + `${form('--data-urlencode', format)}`;
+                snippet += ` "${sanitize(data.key, trim)}=${sanitize(data.value, trim)}"`;
               }
             });
-            snippet += indent + `${form('-d', format)} "${text.join('&')}"`;
             break;
           case 'raw':
-            snippet += indent + `${form('-d', format)} "${sanitize(body.raw.toString(), trim)}"`;
+            snippet += indent + `${form('--data-raw', format)} "${sanitize(body.raw.toString(), trim)}"`;
             break;
           case 'formdata':
             _.forEach(body.formdata, function (data) {

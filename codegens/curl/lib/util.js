@@ -35,6 +35,10 @@ module.exports = {
           return '--form';
         case '--data-binary':
           return '--data-binary';
+        case '--data-urlencode':
+          return '--data-urlencode';
+        case '--data-raw':
+          return '--data-raw';
         default:
           return '';
       }
@@ -115,7 +119,7 @@ module.exports = {
   /**
  *
  * @param {*} urlObject The request sdk request.url object
- * @returns {String} The final string after parsing all the parameters of the url including 
+ * @returns {String} The final string after parsing all the parameters of the url including
  * protocol, auth, host, port, path, query, hash
  * This will be used because the url.toString() method returned the URL with non encoded query string
  * and hence a manual call is made to getQueryString() method with encode option set as true.
