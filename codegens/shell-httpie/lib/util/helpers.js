@@ -65,6 +65,22 @@ module.exports = {
     return hostSnippet;
   },
 
+  /**
+   * parses port of request object and returns code snippet of shell httpie to add port
+   *
+   * @param {Object} request - Postman SDK request object
+   * @returns {String} - code snippet of shell httpie to add port
+   */
+
+  addPort: function (request) {
+    var port = request.url.port,
+      portSnippet = '';
+    if (port) {
+      portSnippet += ':' + port;
+    }
+    return portSnippet;
+  },
+
   addPathandQuery: function (request) {
     var pathArray = _.get(request, 'url.path'),
       queryArray = _.get(request.toJSON(), 'url.query'),
@@ -177,7 +193,9 @@ module.exports = {
           parsedBody = requestBody ? `${Sanitize.quote(requestBody)}` : '';
         }
         break;
-
+      case 'file':
+        parsedBody = requestBody.src;
+        break;
       default:
         parsedBody = '';
     }

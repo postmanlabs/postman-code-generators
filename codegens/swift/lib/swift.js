@@ -51,8 +51,26 @@ function parseURLEncodedBody (body, mode, trim) {
  * @returns {String} request body in the desired format
  */
 function parseFormData (body, mode, trim, indent) {
-  var parameters = sanitize(JSON.stringify(body, null, 4), mode, trim),
-    bodySnippet = `let parameters = ${parameters} as [[String : Any]]\n\n`;
+  var parameters = [],
+    parameter,
+    bodySnippet;
+  _.forEach(body, (data) => {
+    if (!(data.disabled)) {
+      parameter = '';
+      parameter += `${indent}[\n${indent.repeat(2)}"key": "${sanitize(data.key, mode, trim)}",\n`;
+      if (data.type === 'file') {
+        parameter += `${indent.repeat(2)}"src": "${sanitize(data.src, mode, trim)}",\n`;
+        parameter += `${indent.repeat(2)}"type": "file"\n${indent}]`;
+      }
+      else {
+        parameter += `${indent.repeat(2)}"value": "${sanitize(data.value, mode, trim)}",\n`;
+        parameter += `${indent.repeat(2)}"type": "text"\n${indent}]`;
+      }
+      parameters.push(parameter);
+    }
+  });
+  parameters = '[\n' + _.join(parameters, ',\n') + ']';
+  bodySnippet = `let parameters = ${parameters} as [[String : Any]]\n\n`;
   bodySnippet += 'let boundary = "Boundary-\\(UUID().uuidString)"\n';
   bodySnippet += 'var body = ""\nvar error: Error? = nil\n';
   bodySnippet += 'for param in parameters {\n';
@@ -81,17 +99,19 @@ function parseFormData (body, mode, trim, indent) {
 /**
  * Parses file body from the Request
  *
- * @param {String} indent - indentation string
  * @returns {String} request body in the desired format
  */
-function parseFile (indent) {
-  var bodySnippet = 'let filename = "{Insert_File_Name}", postData = Data()\n';
-  bodySnippet += 'if let path = Bundle.main.path(forResource: filename, ofType: nil) {\n';
-  bodySnippet += `${indent}do {\n${indent.repeat(2)}postData = try NSData(contentsOfFile:path, options:[]) as Data\n`;
-  bodySnippet += `${indent}} catch {\n`;
-  bodySnippet += `${indent.repeat(2)}print("Failed to read from \\(String(describing: filename))")\n`;
-  bodySnippet += `${indent}}\n} else {\n`;
-  bodySnippet += `${indent}print("Failed to load file from app bundle \\(String(describing: filename))")\n}\n`;
+function parseFile () {
+  // var bodySnippet = 'let filename = "{Insert_File_Name}", postData = Data()\n';
+  // bodySnippet += 'if let path = Bundle.main.path(forResource: filename, ofType: nil) {\n';
+  // bodySnippet += `${indent}do {\n${indent.repeat(2)}postData =
+  // try NSData(contentsOfFile:path, options:[]) as Data\n`;
+  // bodySnippet += `${indent}} catch {\n`;
+  // bodySnippet += `${indent.repeat(2)}print("Failed to read from \\(String(describing: filename))")\n`;
+  // bodySnippet += `${indent}}\n} else {\n`;
+  // bodySnippet += `${indent}print("Failed to load file from app bundle \\(String(describing: filename))")\n}\n`;
+  var bodySnippet = 'let parameters = "<file contents here>"\n';
+  bodySnippet += 'let postData = parameters.data(using: .utf8)';
   return bodySnippet;
 }
 
@@ -140,10 +160,6 @@ function parseHeaders (headers, mode) {
   if (mode === 'formdata') {
     headerSnippet += 'request.addValue("multipart/form-data; ';
     headerSnippet += 'boundary=\\(boundary)", forHTTPHeaderField: "Content-Type")\n';
-  }
-  /* istanbul ignore next */
-  else if (mode === 'file') {
-    headerSnippet += 'request.addValue("{Insert_File_Content_Type}", forHTTPHeaderField: "Content-Type")\n';
   }
   return headerSnippet;
 }
@@ -246,6 +262,12 @@ self = module.exports = {
     }
     codeSnippet += `var request = URLRequest(url: URL(string: "${finalUrl}")!,` +
          `timeoutInterval: ${timeout ? timeout : 'Double.infinity'})\n`;
+    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
+    }
     headerSnippet = parseHeaders(request.getHeaders({ enabled: true }), (request.body ? request.body.mode : 'raw'));
     if (headerSnippet !== '') {
       codeSnippet += headerSnippet + '\n';

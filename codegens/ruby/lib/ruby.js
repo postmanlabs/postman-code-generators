@@ -132,6 +132,12 @@ self = module.exports = {
         snippet += `http.read_timeout = ${Math.ceil(options.requestTimeout / 1000)}\n`;
       }
       snippet += `request = Net::HTTP::${_.capitalize(request.method)}.new(url)\n`;
+      if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'text/plain'
+        });
+      }
       headerSnippet = parseHeaders(request.getHeaders({enabled: true}));
 
       if (headerSnippet !== '') {

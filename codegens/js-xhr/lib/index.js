@@ -62,13 +62,12 @@ function parseFormData (body, trim) {
 /**
  * Parses file body from the Request
  *
- * @param {*} body body object from request.
- * @param {*} trim trim body option
  */
-function parseFile (body, trim) {
-  var bodySnippet = 'var data = new FormData();\n';
-  bodySnippet += `data.append("${sanitize(body.key, trim)}", "${sanitize(body.src, trim)}", `;
-  bodySnippet += `"${sanitize(body.key, trim)}");\n`;
+function parseFile () {
+  // var bodySnippet = 'var data = new FormData();\n';
+  // bodySnippet += `data.append("${sanitize(body.key, trim)}", "${sanitize(body.src, trim)}", `;
+  // bodySnippet += `"${sanitize(body.key, trim)}");\n`;
+  var bodySnippet = 'var data = "<file contents here>";\n';
   return bodySnippet;
 }
 
@@ -174,7 +173,7 @@ function convert (request, options, callback) {
   indent = indent.repeat(options.indentCount);
   trim = options.trimRequestBody;
 
-  bodySnippet = request.body ? parseBody(request.body.toJSON(), trim, indent) : '';
+  bodySnippet = request.body && !_.isEmpty(request.body.toJSON()) ? parseBody(request.body.toJSON(), trim, indent) : '';
 
   codeSnippet += bodySnippet + '\n';
 
@@ -197,7 +196,7 @@ function convert (request, options, callback) {
 
   codeSnippet += headerSnippet + '\n';
 
-  codeSnippet += request.body ? 'xhr.send(data)' : 'xhr.send();';
+  codeSnippet += request.body && !_.isEmpty(request.body.toJSON()) ? 'xhr.send(data);' : 'xhr.send();';
   callback(null, codeSnippet);
 }
 

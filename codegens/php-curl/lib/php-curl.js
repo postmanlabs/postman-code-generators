@@ -119,6 +119,12 @@ self = module.exports = {
     snippet += `${indentation}CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,\n`;
     snippet += `${indentation}CURLOPT_CUSTOMREQUEST => "${request.method}",\n`;
     snippet += `${parseBody(request.toJSON(), options.trimRequestBody, indentation)}`;
+    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
+    }
     snippet += `${getHeaders(request, indentation)}`;
     snippet += '));\n\n';
     snippet += '$response = curl_exec($curl);\n\n';

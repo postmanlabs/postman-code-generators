@@ -87,7 +87,7 @@ function parseBody (request, indentString, trimField) {
       case 'formdata':
         return parseFormData(request.body.toJSON(), indentString, trimField);
       case 'file':
-        return indentString + `.field("file", "new File(${request.body[request.body.mode].src})")\n`;
+        return indentString + '.body("<file contents here>")\n';
       default:
         return '';
     }
