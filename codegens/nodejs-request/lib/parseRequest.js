@@ -101,7 +101,7 @@ function parseHeader (request, indentString) {
   if (!_.isEmpty(headerObject)) {
     headerSnippet += _.reduce(Object.keys(headerObject), function (accumalator, key) {
       accumalator.push(
-        indentString.repeat(2) + `'${sanitize(key)}': '${sanitize(headerObject[key])}'`
+        indentString.repeat(2) + `'${sanitize(key, true)}': '${sanitize(headerObject[key])}'`
       );
       return accumalator;
     }, []).join(',\n') + '\n';
