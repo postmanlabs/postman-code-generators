@@ -64,3 +64,6 @@ typings/
 .env
 
 out/
+
+main.cs
+main.exe
