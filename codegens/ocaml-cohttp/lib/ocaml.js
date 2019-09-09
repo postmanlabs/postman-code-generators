@@ -150,7 +150,7 @@ function parseHeaders (bodyMode, headers, indent) {
   if (!_.isEmpty(headers)) {
     headerSnippet += `${indent}let headers = Header.init ()\n`;
     _.forEach(headers, function (value, key) {
-      headerSnippet += `${indent.repeat(2)}|> fun h -> Header.add h "${sanitize(key, 'header')}" `;
+      headerSnippet += `${indent.repeat(2)}|> fun h -> Header.add h "${sanitize(key, 'header', true)}" `;
       headerSnippet += `"${sanitize(value, 'header')}"\n`;
     });
   }
