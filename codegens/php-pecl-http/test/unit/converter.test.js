@@ -468,6 +468,33 @@ describe('Request Snippet', function () {
     });
   });
 
+  it('should trim header keys and not trim header values', function () {
+    var request = new sdk.Request({
+      'method': 'GET',
+      'header': [
+        {
+          'key': '   key_containing_whitespaces  ',
+          'value': '  value_containing_whitespaces  '
+        }
+      ],
+      'url': {
+        'raw': 'https://google.com',
+        'protocol': 'https',
+        'host': [
+          'google',
+          'com'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('\'key_containing_whitespaces\' => \'  value_containing_whitespaces  \'');
+    });
+  });
+
   describe('parseBody function', function () {
     it('should return empty string if request body is an empty string', function (done) {
       var request = {
