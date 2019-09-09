@@ -252,7 +252,6 @@ describe('okhttp convert function', function () {
         }
         expect(snippet).to.be.a('string');
         expect(snippet).to.include('.addHeader("key_containing_whitespaces", "  value_containing_whitespaces  ")');
-        console.log(snippet);
       });
     });
   });

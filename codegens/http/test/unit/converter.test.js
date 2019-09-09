@@ -21,7 +21,7 @@ describe('Converter test', function () {
     });
   });
 
-  it.only('should trim header keys and not trim header values', function () {
+  it('should trim header keys and not trim header values', function () {
     var request = new Request({
       'method': 'GET',
       'header': [

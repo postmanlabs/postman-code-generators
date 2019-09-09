@@ -346,7 +346,6 @@ describe('curl convert function', function () {
         expect(snippet).to.be.a('string');
         // one extra space in matching the output because we add key:<space>value in the snippet
         expect(snippet).to.include('--header "key_containing_whitespaces:   value_containing_whitespaces  "');
-        console.log(snippet);
       });
     });
 
