@@ -19,7 +19,7 @@ var expect = require('chai').expect,
 function runSnippet (codeSnippet, collection, done) {
   fs.writeFileSync('main.java', codeSnippet);
 
-  //  classpath of external libararies for java to compile 
+  //  classpath of external libararies for java to compile
   var compile = 'javac -cp *: main.java',
 
     //  bash command stirng for run compiled java file
@@ -225,6 +225,34 @@ describe('okhttp convert function', function () {
             expect(snippetArray[i + 1].charAt(2)).to.not.equal('\t');
           }
         }
+      });
+    });
+
+    it('should trim header keys and not trim header values', function () {
+      var request = new sdk.Request({
+        'method': 'GET',
+        'header': [
+          {
+            'key': '  key_containing_whitespaces  ',
+            'value': '  value_containing_whitespaces  '
+          }
+        ],
+        'url': {
+          'raw': 'https://google.com',
+          'protocol': 'https',
+          'host': [
+            'google',
+            'com'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('.addHeader("key_containing_whitespaces", "  value_containing_whitespaces  ")');
+        console.log(snippet);
       });
     });
   });
