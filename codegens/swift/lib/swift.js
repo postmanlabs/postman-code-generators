@@ -154,7 +154,7 @@ function parseHeaders (headers, mode) {
   if (!_.isEmpty(headers)) {
     _.forEach(headers, function (value, key) {
       headerSnippet += `request.addValue("${sanitize(value, 'header')}", `;
-      headerSnippet += `forHTTPHeaderField: "${sanitize(key, 'header')}")\n`;
+      headerSnippet += `forHTTPHeaderField: "${sanitize(key, 'header', true)}")\n`;
     });
   }
   if (mode === 'formdata') {
