@@ -222,7 +222,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat.!@#$%^&*()+POL:},'';,[;[;"
+					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
 				},
 				"url": {
 					"raw": "https://postman-echo.com/post",
@@ -263,7 +263,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"json\": \"Test-Test!@#$%^&*()+POL:},'';,[;[;:>\"\n}"
+					"raw": "{\n  \"json\": \"Test-Test\"\n}"
 				},
 				"url": {
 					"raw": "https://postman-echo.com/post",
@@ -345,7 +345,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "<xml>\n\tTest Test!@#$%^&*()+POL:},'';,[;[;\n</xml>"
+					"raw": "<xml>\n\tTest Test\n</xml>"
 				},
 				"url": {
 					"raw": "https://postman-echo.com/post",
@@ -386,7 +386,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "<html>\n  Test Test !@#$%^&*()+POL:},'';,[;[;\n</html>"
+					"raw": "<html>\n  Test Test\n</html>"
 				},
 				"url": {
 					"raw": "https://postman-echo.com/post",

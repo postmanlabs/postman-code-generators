@@ -95,7 +95,8 @@ module.exports = {
           'cache-control',
           'postman-token',
           'accept-language',
-          'x-forwarded-port'
+          'x-forwarded-port',
+          'if-none-match'
         ];
       if (result[0]) {
         propertiesTodelete.forEach(function (property) {

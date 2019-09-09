@@ -1,5 +1,7 @@
 var expect = require('chai').expect,
+  sdk = require('postman-collection'),
   async = require('async'),
+  mainCollection = require('./fixtures/sample_collection.json'),
   newmanTestUtil = require('../../../../test/codegen/newman/newmanTestUtil'),
   convert = require('../../lib/index').convert;
 
