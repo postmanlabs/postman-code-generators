@@ -7,51 +7,6 @@
 	},
 	"item": [
 		{
-			"name": "Request Headers",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "a402fc3d-0dac-4471-8505-6df9166afbbf",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "my-sample-header",
-						"value": "Lorem ipsum dolor sit amet"
-					},
-					{
-						"key": "testing",
-						"value": "'singlequotes'"
-					},
-					{
-						"key": "TEST",
-						"value": "\"doublequotes\""
-					}
-				],
-				"url": {
-					"raw": "https://mockbin.org/request",
-					"protocol": "https",
-					"host": [
-						"mockbin",
-						"org"
-					],
-					"path": [
-						"request"
-					]
-				},
-				"description": "A `GET` request to this endpoint returns the list of all request headers as part of the response JSON.\nIn Postman, sending your own set of headers through the [Headers tab](https://www.getpostman.com/docs/requests#headers?source=echo-collection-app-onboarding) will reveal the headers as part of the response."
-			},
-			"response": []
-		},
-		{
 			"name": "Request Headers (With special Characters)",
 			"event": [
 				{
@@ -79,6 +34,44 @@
 					{
 						"key": "more",
 						"value": ",./';[]}{\":?><|\\\\"
+					}
+				],
+				"url": {
+					"raw": "https://postman-echo.com/headers",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"headers"
+					]
+				},
+				"description": "A `GET` request to this endpoint returns the list of all request headers as part of the response JSON.\nIn Postman, sending your own set of headers through the [Headers tab](https://www.getpostman.com/docs/requests#headers?source=echo-collection-app-onboarding) will reveal the headers as part of the response."
+			},
+			"response": []
+		},
+		{
+			"name": "Request Headers",
+			"event": [],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "my-sample-header",
+						"value": "Lorem ipsum dolor sit amet"
+					},
+					{
+						"key": "testing",
+						"value": "'singlequotes'"
+					},
+					{
+						"key": "TEST",
+						"value": "\"doublequotes\""
+					},
+					{
+						"key": "Content-Type",
+						"value": "text/plain"
 					}
 				],
 				"url": {
