@@ -173,6 +173,9 @@ function getHeaders (request) {
     }
   }
 
+  _.forEach(request.headers.members, (header) => {
+    header.key = header.key.trim();
+  });
   headers = convertPropertyListToString(request.headers, '\n', false);
   if (request.body.mode === 'formdata' && contentTypeIndex < 0) {
     headers += `Content-Type: ${formDataHeader}`;
