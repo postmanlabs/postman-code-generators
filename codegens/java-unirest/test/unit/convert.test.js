@@ -15,8 +15,8 @@ describe('java unirest convert function for test collection', function () {
                         'public static void main(String []args) throws Exception{\n',
     footerSnippet = 'System.out.println(response.getBody());\n}\n}\n',
     testConfig = {
-      runSnippet: 'java -cp *: main',
-      compileSnippet: 'javac -cp *: main.java',
+      runScript: 'java -cp *: main',
+      compileScript: 'javac -cp *: main.java',
       fileName: 'main.java'
     },
     options = {indentCount: 3, indentType: 'Space'};
