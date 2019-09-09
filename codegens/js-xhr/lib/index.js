@@ -104,7 +104,7 @@ function parseHeaders (headers) {
   var headerSnippet = '';
   if (!_.isEmpty(headers)) {
     _.forEach(headers, function (value, key) {
-      headerSnippet += `xhr.setRequestHeader("${sanitize(key)}", "${sanitize(value)}");\n`;
+      headerSnippet += `xhr.setRequestHeader("${sanitize(key, true)}", "${sanitize(value)}");\n`;
     });
   }
   return headerSnippet;
