@@ -12,7 +12,7 @@ describe('Shell-Wget converter', function () {
       indentCount: 2
     },
     testConfig = {
-      footerSnippet: ' -qO-'
+      footerSnippet: ' -qO-' // Added this to get the response in stdout instead of saving in file.
     };
   runNewmanTest(convert, options, testConfig);
 
