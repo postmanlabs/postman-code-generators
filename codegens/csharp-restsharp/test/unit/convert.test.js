@@ -1,8 +1,7 @@
 var expect = require('chai').expect,
   path = require('path'),
   sdk = require('postman-collection'),
-  newmanTestUtil = require('../../../../test/codegen/newman/newmanTestUtil'),
-  async = require('async'),
+  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../lib/index').convert,
   mainCollection = require('./fixtures/testcollection/collection.json'),
   testCollection = require('./fixtures/testcollection/collectionForEdge.json'),
@@ -13,13 +12,7 @@ var expect = require('chai').expect,
 
 describe('csharp restsharp function', function () {
   describe('convert for different request types', function () {
-    var headerSnippet = 'using System;\n' +
-                            'using RestSharp;\n' +
-                            'namespace HelloWorldApplication {\n' +
-                            'class HelloWorld {\n' +
-                            'static void Main(string[] args) {\n',
-      footerSnippet = '}\n}\n}\n',
-      depedenciesPath = path.resolve(__dirname, 'fixtures/dependencies'),
+    var depedenciesPath = path.resolve(__dirname, 'fixtures/dependencies'),
       testConfig = {
         compileScript: `mcs -reference:${depedenciesPath}/RestSharp.dll` +
         ` -out:${depedenciesPath}/main.exe ${depedenciesPath}/main.cs`,
@@ -27,41 +20,9 @@ describe('csharp restsharp function', function () {
         fileName: `${depedenciesPath}/main.cs`
       },
       options = {
-        indentCount: 1,
-        indentType: 'Tab'
+        includeBoilerplate: true
       };
-    async.waterfall([
-      function (next) {
-        newmanTestUtil.generateSnippet(convert, options, function (error, snippets) {
-          if (error) {
-            expect.fail(null, null, error);
-            return next(error);
-          }
-
-          return next(null, snippets);
-        });
-      },
-      function (snippets, next) {
-        snippets.forEach((item, index) => {
-          it(item.name, function (done) {
-            newmanTestUtil.runSnippet(headerSnippet + item.snippet + footerSnippet, index, testConfig,
-              function (err, result) {
-                if (err) {
-                  expect.fail(null, null, err);
-                }
-                if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
-                  expect(result[0].toString().trim()).to.include(result[1].toString().trim());
-                }
-                else {
-                  expect(result[0]).deep.equal(result[1]);
-                }
-                return done(null);
-              });
-          });
-        });
-        return next(null);
-      }
-    ]);
+    runNewmanTest(convert, options, testConfig);
   });
 
   describe('csharp-restsharp convert function', function () {

@@ -1,7 +1,6 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  async = require('async'),
-  newmanTestUtil = require('../../../../test/codegen/newman/newmanTestUtil'),
+  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../lib/index').convert,
   getOptions = require('../../lib/index').getOptions,
   sanitize = require('../../lib/util').sanitize,
@@ -10,41 +9,14 @@ var expect = require('chai').expect,
 
 describe('nodejs unirest convert function', function () {
   var options = {indentCount: 2, indentType: 'Space'},
-    testConfig = {compileScript: null, runScript: 'node run.js', fileName: 'run.js'},
-    header = '/* eslint-disable */\n';
-  async.waterfall([
-    function (next) {
-      newmanTestUtil.generateSnippet(convert, options, function (error, snippets) {
-        if (error) {
-          return next(error);
-        }
-        return next(null, snippets);
-      });
-    },
-    function (snippets, next) {
-      snippets.forEach((item, index) => {
-        console.log(item.name, 'name');
-        it(item.name, function (done) {
-          console.log('inside');
+    testConfig = {
+      compileScript: null,
+      runScript: 'node run.js',
+      fileName: 'run.js',
+      headerSnippet: '/* eslint-disable */\n'
+    };
 
-          newmanTestUtil.runSnippet(header + item.snippet, index, testConfig,
-            function (err, result) {
-              if (err) {
-                expect.fail(null, null, err);
-              }
-              if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
-                expect(result[0].toString().trim()).to.include(result[1].toString().trim());
-              }
-              else {
-                expect(result[0]).deep.equal(result[1]);
-              }
-              return done(null);
-            });
-        });
-      });
-      return next(null);
-    }
-  ]);
+  runNewmanTest(convert, options, testConfig);
 
   describe('Convert function', function () {
     var request, reqObject, options, snippetArray, line_no;

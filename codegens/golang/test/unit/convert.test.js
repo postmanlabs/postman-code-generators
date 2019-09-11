@@ -1,7 +1,6 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  newmanTestUtil = require('../../../../test/codegen/newman/newmanTestUtil'),
-  async = require('async'),
+  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../index').convert;
 
 describe('Golang convert function', function () {
@@ -13,43 +12,9 @@ describe('Golang convert function', function () {
       },
       options = {
         indentCount: 1,
-        indentType: 'Tab',
-        requestTimeout: 5000,
-        followRedirect: true,
-        trimRequestBody: false
+        indentType: 'Tab'
       };
-    async.waterfall([
-      function (next) {
-        newmanTestUtil.generateSnippet(convert, options, function (error, snippets) {
-          if (error) {
-            expect.fail(null, null, error);
-            return next(error);
-          }
-
-          return next(null, snippets);
-        });
-      },
-      function (snippets, next) {
-        snippets.forEach((item, index) => {
-          it(item.name, function (done) {
-            newmanTestUtil.runSnippet(item.snippet, index, testConfig,
-              function (err, result) {
-                if (err) {
-                  expect.fail(null, null, err);
-                }
-                if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
-                  expect(result[0].toString().trim()).to.include(result[1].toString().trim());
-                }
-                else {
-                  expect(result[0]).deep.equal(result[1]);
-                }
-                return done(null);
-              });
-          });
-        });
-        return next(null);
-      }
-    ]);
+    runNewmanTest(convert, options, testConfig);
   });
 
   describe('Convert function', function () {

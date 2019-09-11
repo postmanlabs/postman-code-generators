@@ -1,57 +1,22 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  async = require('async'),
   convert = require('../../lib/index').convert,
   sanitize = require('../../lib/util').sanitize,
   getUrlStringfromUrlObject = require('../../lib/parseRequest').getUrlStringfromUrlObject,
   getOptions = require('../../index').getOptions,
-  newmanTestUtil = require('../../../../test/codegen/newman/newmanTestUtil'),
+  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   mainCollection = require('./fixtures/testcollection/collection.json');
 
 describe('java unirest convert function for test collection', function () {
-  var headerSnippet = 'import com.mashape.unirest.http.*;\n' +
-                        'import java.io.*;\n' +
-                        'public class main {\n' +
-                        'public static void main(String []args) throws Exception{\n',
-    footerSnippet = 'System.out.println(response.getBody());\n}\n}\n',
-    testConfig = {
+  var testConfig = {
       runScript: 'java -cp *: main',
       compileScript: 'javac -cp *: main.java',
       fileName: 'main.java'
     },
-    options = {indentCount: 3, indentType: 'Space'};
-  async.waterfall([
-    function (next) {
-      newmanTestUtil.generateSnippet(convert, options, function (error, snippets) {
-        if (error) {
-          expect.fail(null, null, error);
-          return next(error);
-        }
+    options = {includeBoilerplate: true};
 
-        return next(null, snippets);
-      });
-    },
-    function (snippets, next) {
-      snippets.forEach((item, index) => {
-        it(item.name, function (done) {
-          newmanTestUtil.runSnippet(headerSnippet + item.snippet + footerSnippet, index, testConfig,
-            function (err, result) {
-              if (err) {
-                expect.fail(null, null, err);
-              }
-              if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
-                expect(result[0].toString().trim()).to.include(result[1].toString().trim());
-              }
-              else {
-                expect(result[0]).deep.equal(result[1]);
-              }
-              return done(null);
-            });
-        });
-      });
-      return next(null);
-    }
-  ]);
+  runNewmanTest(convert, options, testConfig);
+
   describe('convert function', function () {
     var request,
       reqObject,

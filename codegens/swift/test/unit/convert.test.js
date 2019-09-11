@@ -1,7 +1,6 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  async = require('async'),
-  newmanTestUtil = require('../../../../test/codegen/newman/newmanTestUtil'),
+  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../index').convert,
   sanitize = require('../../lib/util').sanitize,
   getUrlStringfromUrlObject = require('../../lib/util').getUrlStringfromUrlObject,
@@ -20,36 +19,7 @@ describe('Swift Converter', function () {
         fileName: 'snippet.swift',
         runScript: 'swift-5.0.1-RELEASE-ubuntu16.04/usr/bin/./swift snippet.swift'
       };
-    async.waterfall([
-      function (next) {
-        newmanTestUtil.generateSnippet(convert, options, function (error, snippets) {
-          if (error) {
-            return next(error);
-          }
-          return next(null, snippets);
-        });
-      },
-      function (snippets, next) {
-        snippets.forEach((item, index) => {
-          it(item.name, function (done) {
-            newmanTestUtil.runSnippet(item.snippet, index, testConfig,
-              function (err, result) {
-                if (err) {
-                  expect.fail(null, null, err);
-                }
-                if (typeof result[1] !== 'object' || typeof result[0] !== 'object') {
-                  expect(result[0].toString().trim()).to.include(result[1].toString().trim());
-                }
-                else {
-                  expect(result[0]).deep.equal(result[1]);
-                }
-                return done(null);
-              });
-          });
-        });
-        return next(null);
-      }
-    ]);
+    runNewmanTest(convert, options, testConfig);
   });
 
   describe('convert function', function () {
