@@ -11,7 +11,9 @@ describe('Shell-Wget converter', function () {
       indentType: 'Space',
       indentCount: 2
     },
-    testConfig = {};
+    testConfig = {
+      footerSnippet: ' -qO-'
+    };
   runNewmanTest(convert, options, testConfig);
 
   describe('convert function', function () {
