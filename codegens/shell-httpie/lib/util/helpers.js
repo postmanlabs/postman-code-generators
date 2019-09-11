@@ -190,7 +190,7 @@ module.exports = {
           parsedBody = '';
         }
         else {
-          parsedBody = requestBody ? `${Sanitize.quote(requestBody)}` : '';
+          parsedBody = requestBody ? `${Sanitize.quote(requestBody, RAW)}` : '';
         }
         break;
       case 'file':
