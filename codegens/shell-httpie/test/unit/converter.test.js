@@ -7,10 +7,13 @@ var expect = require('chai').expect,
 describe('Shell-Httpie convert function', function () {
   describe('convert for different request types', function () {
     var options = {
-      indentType: 'Space',
-      indentCount: 4
-    };
-    runNewmanTest(convert, options, {});
+        indentType: 'Space',
+        indentCount: 4
+      },
+      testConfig = {
+        headerSnippet: 'printf \'\' | '
+      };
+    runNewmanTest(convert, options, testConfig);
   });
 
   it('should add a timeout of 1 hour (3600 seconds) for RequestTimeout set to 0', function () {

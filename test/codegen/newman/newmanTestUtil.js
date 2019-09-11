@@ -9,13 +9,13 @@ var fs = require('fs'),
 /**
    * compiles and runs codesnippet then compare it with newman output
    *
-   * @param {Object} testConfig
+   * @param {Object} testConfig - Config essential to run code snippet.
    * @param {String} testConfig.headerSnippet - Header snippet required to run the snippet. Default - ''
    * @param {String} testConfig.footerSnippet - Footer snippet required to run snippet. Default - ''
    * @param {String} testConfig.runScript - Script required to run code snippet
    * @param {String} testConfig.compileScript - Script required to compile code snippet
    * @param {String} testConfig.fileName - Filename with extension
-   * @param {Array} snippets
+   * @param {Array} snippets - Array of generated code snippets.
    */
 function runSnippet (testConfig, snippets) {
   snippets.forEach((item, index) => {
@@ -133,6 +133,18 @@ function runSnippet (testConfig, snippets) {
   });
 }
 module.exports = {
+/**
+   * compiles and runs codesnippet then compare it with newman output
+   *
+   * @param {Function} convert - convert function of the codegen
+   * @param {Object} options - options to be passed to the convert function
+   * @param {Object} testConfig - Config essential to run code snippet.
+   * @param {String} testConfig.headerSnippet - Header snippet required to run the snippet. Default - ''
+   * @param {String} testConfig.footerSnippet - Footer snippet required to run snippet. Default - ''
+   * @param {String} testConfig.runScript - Script required to run code snippet
+   * @param {String} testConfig.compileScript - Script required to compile code snippet
+   * @param {String} testConfig.fileName - Filename with extension
+   */
   runNewmanTest: function (convert, options, testConfig) {
 
     // Convert code snippet
