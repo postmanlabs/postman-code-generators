@@ -64,13 +64,15 @@ self = module.exports = {
           case 'urlencoded':
             _.forEach(body.urlencoded, function (data) {
               if (!data.disabled) {
-                snippet += indent + `${form('--data-urlencode', format)}`;
+                // Using the long form below without considering the longFormat option,
+                // to generate more accurate and correct snippet
+                snippet += indent + '--data-urlencode';
                 snippet += ` '${sanitize(data.key, trim)}=${sanitize(data.value, trim)}'`;
               }
             });
             break;
           case 'raw':
-            snippet += indent + `${form('--data-raw', format)} '${sanitize(body.raw.toString(), trim)}'`;
+            snippet += indent + `--data-raw '${sanitize(body.raw.toString(), trim)}'`;
             break;
           case 'formdata':
             _.forEach(body.formdata, function (data) {
@@ -87,7 +89,7 @@ self = module.exports = {
             });
             break;
           case 'file':
-            snippet += indent + `${form('--data-binary', format)}`;
+            snippet += indent + '--data-binary';
             snippet += ` '@${sanitize(body[body.mode].src, trim)}'`;
             break;
           default:
