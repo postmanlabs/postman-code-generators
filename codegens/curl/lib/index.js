@@ -39,10 +39,10 @@ self = module.exports = {
     }
     url = getUrlStringfromUrlObject(request.url);
     if (request.method === 'HEAD') {
-      snippet += ` ${form('-I', format)} "${url}"`;
+      snippet += ` ${form('-I', format)} '${url}'`;
     }
     else {
-      snippet += ` ${form('-X', format)} ${request.method} "${url}"`;
+      snippet += ` ${form('-X', format)} ${request.method} '${url}'`;
     }
 
     if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
@@ -53,7 +53,7 @@ self = module.exports = {
     }
     headersData = request.getHeaders({ enabled: true });
     _.forEach(headersData, function (value, key) {
-      snippet += indent + `${form('-H', format)} "${sanitize(key, trim)}: ${sanitize(value, trim)}"`;
+      snippet += indent + `${form('-H', format)} '${sanitize(key, trim)}: ${sanitize(value, trim)}'`;
     });
 
     if (request.body) {
@@ -68,21 +68,21 @@ self = module.exports = {
                 text.push(`${escape(data.key)}=${escape(data.value)}`);
               }
             });
-            snippet += indent + `${form('-d', format)} "${text.join('&')}"`;
+            snippet += indent + `${form('-d', format)} '${text.join('&')}'`;
             break;
           case 'raw':
-            snippet += indent + `${form('-d', format)} "${sanitize(body.raw.toString(), trim)}"`;
+            snippet += indent + `${form('-d', format)} '${sanitize(body.raw.toString(), trim)}'`;
             break;
           case 'formdata':
             _.forEach(body.formdata, function (data) {
               if (!(data.disabled)) {
                 if (data.type === 'file') {
                   snippet += indent + `${form('-F', format)}`;
-                  snippet += ` "${sanitize(data.key, trim)}=@${sanitize(data.src, trim)}"`;
+                  snippet += ` '${sanitize(data.key, trim)}=@${sanitize(data.src, trim)}'`;
                 }
                 else {
                   snippet += indent + `${form('-F', format)}`;
-                  snippet += ` "${sanitize(data.key, trim)}=${sanitize(data.value, trim)}"`;
+                  snippet += ` '${sanitize(data.key, trim)}=${sanitize(data.value, trim)}'`;
                 }
               }
             });
@@ -92,7 +92,7 @@ self = module.exports = {
             snippet += ` "@${sanitize(body[body.mode].src, trim)}"`;
             break;
           default:
-            snippet += `${form('-d', format)} ""`;
+            snippet += `${form('-d', format)} ''`;
         }
       }
     }
