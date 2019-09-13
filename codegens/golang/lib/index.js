@@ -118,7 +118,7 @@ function parseHeaders (headers, indent) {
   var headerSnippet = '';
   if (!_.isEmpty(headers)) {
     _.forEach(headers, function (value, key) {
-      headerSnippet += `${indent}req.Header.Add("${sanitize(key)}", "${sanitize(value)}")\n`;
+      headerSnippet += `${indent}req.Header.Add("${sanitize(key, true)}", "${sanitize(value)}")\n`;
     });
   }
   return headerSnippet;

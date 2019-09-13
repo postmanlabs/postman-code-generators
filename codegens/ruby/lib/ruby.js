@@ -14,7 +14,7 @@ function parseHeaders (headers) {
   var headerSnippet = '';
   if (!_.isEmpty(headers)) {
     _.forEach(headers, function (value, key) {
-      headerSnippet += `request["${key}"] = "${sanitize(value, 'header')}"\n`;
+      headerSnippet += `request["${sanitize(key, 'header', true)}"] = "${sanitize(value, 'header')}"\n`;
     });
   }
   return headerSnippet;

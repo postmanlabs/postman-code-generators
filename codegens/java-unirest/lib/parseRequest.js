@@ -5,7 +5,7 @@ var _ = require('./lodash'),
 /**
  *
  * @param {*} urlObject The request sdk request.url object
- * @returns {String} The final string after parsing all the parameters of the url including 
+ * @returns {String} The final string after parsing all the parameters of the url including
  * protocol, auth, host, port, path, query, hash
  * This will be used because the url.toString() method returned the URL with non encoded query string
  * and hence a manual call is made to getQueryString() method with encode option set as true.
@@ -107,7 +107,7 @@ function parseHeader (request, indentString) {
     headerSnippet = '';
   if (!_.isEmpty(headerObject)) {
     headerSnippet += Object.keys(headerObject).reduce(function (accumlator, key) {
-      accumlator += indentString + `.header("${sanitize(key)}", "${sanitize(headerObject[key])}")\n`;
+      accumlator += indentString + `.header("${sanitize(key, true)}", "${sanitize(headerObject[key])}")\n`;
       return accumlator;
     }, '');
   }
