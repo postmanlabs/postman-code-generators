@@ -1,5 +1,6 @@
 var expect = require('chai').expect,
   runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
+  sdk = require('postman-collection'),
   convert = require('../../lib/index').convert;
 
 describe('php-curl converter', function () {
