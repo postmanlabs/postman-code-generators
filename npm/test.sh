@@ -32,7 +32,7 @@ then
 else
     echo "Running common repository tests"
     # check whether all dependencies used are present in package.json, and vice versa.
-    # dependency-check ./package.json --no-dev --missing
+    dependency-check ./package.json --no-dev --missing
 
     # check for .gitignore, license.md, readme.md, .eslintrc and package.json
     mocha ./test/system/repository.test.js;
