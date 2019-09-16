@@ -134,6 +134,34 @@ describe('Swift Converter', function () {
         expect(snippet).to.not.include('http://postman-echo.com/post?a=b c');
       });
     });
+
+    it('should trim header keys and not trim header values', function () {
+      var request = new sdk.Request({
+        'method': 'GET',
+        'header': [
+          {
+            'key': '   key_containing_whitespaces  ',
+            'value': '  value_containing_whitespaces  '
+          }
+        ],
+        'url': {
+          'raw': 'https://google.com',
+          'protocol': 'https',
+          'host': [
+            'google',
+            'com'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('request.addValue("  value_containing_whitespaces  ", ' +
+        'forHTTPHeaderField: "key_containing_whitespaces")');
+      });
+    });
   });
 
   describe('getUrlStringfromUrlObject function', function () {

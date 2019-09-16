@@ -31,7 +31,7 @@ module.exports = {
       if (Array.isArray(request.headers.members) && request.headers.members.length) {
         request.headers.members = _.reject(request.headers.members, 'disabled');
         headerString = request.headers.members.map((header) => {
-          return ' ' + header.key + ':' + Sanitize.quote(header.value);
+          return ' ' + header.key.trim() + ':' + Sanitize.quote(header.value);
         }).join(' \\\n');
       }
       else {

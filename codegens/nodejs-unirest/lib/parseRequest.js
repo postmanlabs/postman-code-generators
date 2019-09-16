@@ -89,7 +89,7 @@ function parseHeader (request, indentString) {
     headerSnippet += indentString + '.headers({\n';
 
     headerSnippet += _.reduce(Object.keys(headerObject), function (accumalator, key) {
-      accumalator.push(indentString.repeat(2) + `'${sanitize(key)}': '${sanitize(headerObject[key])}'`);
+      accumalator.push(indentString.repeat(2) + `'${sanitize(key, true)}': '${sanitize(headerObject[key])}'`);
       return accumalator;
     }, []).join(',\n') + '\n';
 

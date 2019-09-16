@@ -17,7 +17,7 @@ function getHeaders (request, indentation) {
 
   if (!_.isEmpty(headerObject)) {
     headerMap = _.map(Object.keys(headerObject), function (key) {
-      return `${indentation.repeat(2)}"${sanitize(key, 'header')}: ` +
+      return `${indentation.repeat(2)}"${sanitize(key, 'header', true)}: ` +
             `${sanitize(headerObject[key], 'header')}"`;
     });
     return `${indentation}CURLOPT_HTTPHEADER => array(\n${headerMap.join(',\n')}\n${indentation}),\n`;

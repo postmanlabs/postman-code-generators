@@ -53,7 +53,7 @@ self = module.exports = {
     }
     headersData = request.getHeaders({ enabled: true });
     _.forEach(headersData, function (value, key) {
-      snippet += indent + `${form('-H', format)} '${sanitize(key, trim)}: ${sanitize(value, trim)}'`;
+      snippet += indent + `${form('-H', format)} "${sanitize(key, true)}: ${sanitize(value)}"`;
     });
 
     if (request.body) {

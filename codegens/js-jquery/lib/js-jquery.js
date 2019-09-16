@@ -18,7 +18,7 @@ function getHeaders (request, indent) {
 
   if (!_.isEmpty(header)) {
     headerMap = _.map(Object.keys(header), function (key) {
-      return `${indent.repeat(2)}"${sanitize(key, 'header')}": ` +
+      return `${indent.repeat(2)}"${sanitize(key, 'header', true)}": ` +
           `"${sanitize(header[key], 'header')}"`;
     });
     return `${indent}"headers": {\n${headerMap.join(',\n')}\n${indent}},\n`;
