@@ -28,7 +28,7 @@ List of supported code generators:
 ## Table of contents 
 
 1. [Getting Started](#getting-started)
-2. [Prerequisites](#prerequisites)
+2. [Prerequisite](#prerequisite)
 3. [Usage](#usage)
     1. [Using code generators as a Library](#using-code-generators-as-a-library)
 4. [Installing Dependencies](#installing-dependencies)
@@ -87,7 +87,7 @@ This function takes in three parameters and returns a callback  with error and s
 
 * `language` - lang key from the language list returned from getLanguageList function
 * `variant` - variant key provided by getLanguageList function
-* `callbacl` - callback function with first parameter as error and second parameter as array of options supported by the codegen.
+* `callback` - callback function with first parameter as error and second parameter as array of options supported by the codegen.
 
 
 ##### Example:
@@ -132,7 +132,7 @@ codegen.convert(language, variant, request, options, function(error, snippet) {
 });
 ```
 
-### Installing dependencies
+## Installing dependencies
 This command will install all the dependencies in production mode.
 ```bash
 $ npm install;
@@ -141,7 +141,7 @@ To install dev dependencies also for all codegens run:
 ```bash
 $ npm run deepinstall dev; 
 ```
-### Testing 
+## Testing 
 To run common repo test as well as tests (common structure test + individual codegen tests) for all the codegens
 ```bash
 $ npm test; 
@@ -151,7 +151,7 @@ To run structure and individual tests on a single codegen
 $ npm test <codegen-name>;
 # Here "codege-name" is the folder name of the codegen inside codegens folder
 ```
-### Packaging 
+## Packaging 
 To create zipped package of all codegens
 ```bash
 $ npm run package;
