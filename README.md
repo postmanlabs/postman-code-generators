@@ -31,7 +31,6 @@ List of supported code generators:
 2. [Prerequisites](#prerequisites)
 3. [Usage](#usage)
     1. [Using code generators as a Library](#using-code-generators-as-a-library)
-    2. [Guidelines for writing options copy](#guidelines-for-writing-options-copy)
 4. [Installing Dependencies](#installing-dependencies)
 5. [Testing](#testing)
 6. [Packaging](#packaging)
@@ -132,7 +131,6 @@ codegen.convert(language, variant, request, options, function(error, snippet) {
     //  handle snippet
 });
 ```
-### Guidelines for writing options copy
 
 ### Installing dependencies
 This command will install all the dependencies in production mode.
