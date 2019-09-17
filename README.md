@@ -38,6 +38,10 @@ List of supported code generators:
 8. [License](#license)
 
 ## Getting Started
+To install postman-code-generators as your dependency
+```bash
+$ npm install postman-code-generators
+```
 To get a copy on your local machine
 ```bash
 $ git clone https://github.com/postmanlabs/code-generators.git
