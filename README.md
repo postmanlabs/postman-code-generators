@@ -44,7 +44,7 @@ $ npm install postman-code-generators
 ```
 To get a copy on your local machine
 ```bash
-$ git clone https://github.com/postmanlabs/code-generators.git
+$ git clone https://github.com/postmanlabs/postman-code-generators.git
 ```
 
 ## Prerequisite
