@@ -168,7 +168,7 @@ $ npm run package <codegen-name>
 ```
 
 ## Contributing
-Please take a moment to read our [contributing guide](.github/CONTRIBUTING.md) to learn about our development process.
+Please take a moment to read our [contributing guide](https://github.com/postmanlabs/postman-code-generators/blob/master/CONTRIBUTING.md) to learn about our development process.
 Open an [issue](https://github.com/postmanlabs/postman-code-generators/issues) first to discuss potential changes/additions.
 
 ## License
