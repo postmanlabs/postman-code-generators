@@ -10,7 +10,20 @@ This module converts a Postman-SDK Request Object into a code snippet of chosen 
  
 List of supported code generators: 
 
-**C# - RestSharp, cURL, Go, HTTP 1.1, Java - (OkHttp and Unirest), JavaScript - (Fetch, jQuery, and XHR), NodeJs - (Native, Request, and Unirest), OCaml - Cohttp, PHP - (cURL and pech_http), Powershell - RestMethod, Python - (http.client and Requests), Ruby - Net::HTTP, Shell - (Httpie and wget), and Swift - URLSession**. 
+* C# - RestSharp
+* cURL
+* Go
+* HTTP
+* Java - (OkHttp and Unirest)
+* JavaScript - (Fetch, jQuery, and XHR)
+* NodeJs - (Native, Request, and Unirest)
+* OCaml - Cohttp
+* PHP - (cURL and pech_http)
+* Powershell - RestMethod
+* Python - (http.client and Requests)
+* Ruby - Net::HTTP
+* Shell - (Httpie and wget)
+* Swift - URLSession
 
 ## Table of contents 
 
