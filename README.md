@@ -30,7 +30,7 @@ List of supported code generators:
 1. [Getting Started](#getting-started)
 2. [Prerequisite](#prerequisite)
 3. [Usage](#usage)
-    1. [Using code generators as a Library](#using-code-generators-as-a-library)
+    1. [Using postman code generators as a Library](#using-postman-code-generators-as-a-library)
 4. [Installing Dependencies](#installing-dependencies)
 5. [Testing](#testing)
 6. [Packaging](#packaging)
@@ -52,7 +52,7 @@ To run any of the postman-code-generators, ensure that you have NodeJS >= v8. A 
 
 ## Usage
 
-### Using code generators as a Library 
+### Using postman-code-generators as a Library 
 There are three functions that are exposed in postman-code-generators: getLanguageList, getOptions, and convert.
 
 #### getLanguageList
