@@ -30,12 +30,13 @@ List of supported code generators:
 1. [Getting Started](#getting-started)
 2. [Prerequisites](#prerequisites)
 3. [Usage](#usage)
-    1. [Using Codegen as a Library](#using-codegen-as-a-library)
+    1. [Using code generators as a Library](#using-code-generators-as-a-library)
     2. [Guidelines for writing options copy](#guidelines-for-writing-options-copy)
 4. [Installing Dependencies](#installing-dependencies)
 5. [Testing](#testing)
-12. [Contributing](#contributing)
-14. [License](#license)
+6. [Packaging](#packaging)
+7. [Contributing](#contributing)
+8. [License](#license)
 
 ## Getting Started
 To get a copy on your local machine
@@ -133,7 +134,7 @@ codegen.convert(language, variant, request, options, function(error, snippet) {
 ```
 ### Guidelines for writing options copy
 
-#### Installing dependencies
+### Installing dependencies
 This command will install all the dependencies in production mode.
 ```bash
 $ npm install;
@@ -142,6 +143,7 @@ To install dev dependencies also for all codegens run:
 ```bash
 $ npm run deepinstall dev; 
 ```
+### Testing 
 To run common repo test as well as tests (common structure test + individual codegen tests) for all the codegens
 ```bash
 $ npm test; 
@@ -151,7 +153,7 @@ To run structure and individual tests on a single codegen
 $ npm test <codegen-name>;
 # Here "codege-name" is the folder name of the codegen inside codegens folder
 ```
-
+### Packaging 
 To create zipped package of all codegens
 ```bash
 $ npm run package;
