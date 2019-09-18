@@ -87,8 +87,9 @@ describe('libcurl convert function', function () {
       expect(options[1]).to.have.property('id', 'protocol');
       expect(options[2]).to.have.property('id', 'indentCount');
       expect(options[3]).to.have.property('id', 'indentType');
-      expect(options[4]).to.have.property('id', 'trimRequestBody');
-      expect(options[5]).to.have.property('id', 'useMimeType');
+      expect(options[4]).to.have.property('id', 'followRedirect');
+      expect(options[5]).to.have.property('id', 'trimRequestBody');
+      expect(options[6]).to.have.property('id', 'useMimeType');
     });
   });
 
