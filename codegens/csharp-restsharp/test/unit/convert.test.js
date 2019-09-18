@@ -14,7 +14,7 @@ describe('csharp restsharp function', function () {
   describe('convert for different request types', function () {
     var depedenciesPath = path.resolve(__dirname, 'fixtures/dependencies'),
       testConfig = {
-        compileScript: `mcs -reference:${depedenciesPath}/RestSharp.dll` +
+        compileScript: `mcs -reference:${depedenciesPath}/RestSharp106.6.10.dll` +
         ` -out:${depedenciesPath}/main.exe ${depedenciesPath}/main.cs`,
         runScript: `mono  ${depedenciesPath}/main.exe`,
         fileName: `${depedenciesPath}/main.cs`
