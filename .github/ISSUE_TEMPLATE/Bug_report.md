@@ -10,7 +10,7 @@ A clear and concise description of what the bug is.
 Steps to reproduce the behavior:
 
 **Expected code snippet**
-A clear and concise description of what you expected to happen.
+If you have a working code snippet that you thinks solves your problem please add it here.
 
 **Screenshots**
 If applicable, add screenshots to help explain your problem. Please make sure the screenshot does not contain any sensitive information such as API keys or access tokens. 
