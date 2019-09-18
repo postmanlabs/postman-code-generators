@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f52ee07d-6345-4220-89af-e6696b3c0122",
+		"_postman_id": "da46313c-2529-42cd-920c-94c5ed29c5d7",
 		"name": "Code-Gen Test Cases",
 		"description": "This collection contains requests that will be used to test validity of plugin created to convert postman request into code snippet of particular language.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -53,7 +53,6 @@
 		},
 		{
 			"name": "Request Headers",
-			"event": [],
 			"request": {
 				"method": "GET",
 				"header": [
@@ -216,8 +215,7 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "text/plain",
-						"disabled": false
+						"value": "text/plain"
 					}
 				],
 				"body": {
@@ -543,7 +541,6 @@
 						"value": "text/plain"
 					}
 				],
-				"body": {},
 				"url": {
 					"raw": "https://postman-echo.com/delete",
 					"protocol": "https",
@@ -556,6 +553,37 @@
 					]
 				},
 				"description": "The HTTP `DELETE` method is used to delete resources on a server. The exact\nuse of `DELETE` requests depends on the server implementation. In general, \n`DELETE` requests support both, Query String parameters as well as a Request \nBody.\n\nThis endpoint accepts an HTTP `DELETE` request and provides debug information\nsuch as the HTTP headers, Query String arguments, and the Request Body."
+			},
+			"response": []
+		},
+		{
+			"name": "Follow Redirects",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "sample-header",
+						"value": "value",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://httpbin.org/redirect-to?url=https://postman-echo.com/get",
+					"protocol": "https",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"redirect-to"
+					],
+					"query": [
+						{
+							"key": "url",
+							"value": "https://postman-echo.com/get"
+						}
+					]
+				}
 			},
 			"response": []
 		}
@@ -581,5 +609,6 @@
 				]
 			}
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }

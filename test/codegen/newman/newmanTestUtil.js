@@ -104,7 +104,8 @@ function runSnippet (testConfig, snippets) {
             'postman-token',
             'accept-language',
             'x-forwarded-port',
-            'if-none-match'
+            'if-none-match',
+            'referer'
           ];
         if (result[0]) {
           propertiesTodelete.forEach(function (property) {
@@ -165,7 +166,7 @@ module.exports = {
       if (err) {
         expect.fail(null, null, error);
       }
-      // Run code snippet. 
+      // Run code snippet.
       runSnippet(testConfig, snippets);
     });
   }
