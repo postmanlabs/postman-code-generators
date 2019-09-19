@@ -13,7 +13,7 @@
     "prepack": "node npm/pre-package.js",
     "postinstall": "node npm/deepinstall.js",
     "deepinstall": "node npm/deepinstall.js",
-    "boilerplate": "node npm/boiler-plate.js",
+    "boilerplate": "node npm/boilerplate.js",
     "cirequirements": "npm/ci-requirements.sh"
   },
   "repository": {
