@@ -22,6 +22,18 @@ pushd ./codegens/java-unirest &>/dev/null;
   sudo wget http://central.maven.org/maven2/org/apache/httpcomponents/httpmime/4.3.6/httpmime-4.3.6.jar
 popd &>/dev/null;
 
+echo "Installing dependencies required for tests in codegens/cshar-restsharp"
+pushd ./codegens/csharp-restsharp &>/dev/null;
+  wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+  sudo dpkg -i packages-microsoft-prod.deb
+  sudo apt-get install apt-transport-https
+  sudo apt-get update
+  sudo apt-get install dotnet-sdk-2.2
+  dotnet new console -o testProject
+  pushd ./tests &>/dev/null;
+  dotnet add package RestSharp
+  popd &>/dev/null;
+popd &>/dev/null;
 echo "Installing dependencies required for tests in codegens/swift"
 pushd ./codegens/swift &>/dev/null;
   sudo apt-get update
