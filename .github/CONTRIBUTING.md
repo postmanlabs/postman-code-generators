@@ -5,6 +5,7 @@
 
   - [Getting Started Quick](#getting-started-quick)
   - [Repository](#repository)
+  - [General Instructions](#general-instructions)
   - [Tests](#tests)
 
 ## Getting Started Quick
@@ -22,6 +23,32 @@ Directory               | Summary
 `test`                  | Contains test-scripts
 `test/codegen`             | Runs functional tests on the individual generation modules
 `test/system`           | Checks for proper code structuring and division across the code generators
+
+## General Instructions
+
+### Types of contributions
+One of the following three contributions are possible for postman-code-generators:
+  - New Code Generator: To add a new code generator, create a pull request to the develop branch of postman-code-generators. Since these code-generators are bundled with the app, they follow a particular structure as mentioned above. We have created a boilerplate for you to get started quickly. Simple run:
+  
+  ```bash
+  $ npm run boilerplate <<codegen-name>>
+  ```
+
+  - Bug fixes to existing codegens: We'd be happy to accept fixes to known issues in any of the code-generators, as long it's a filed issue on the [issue tracker](https://github.com/postmanlabs/postman-code-generators/issues). 
+
+### Pull request guildlines
+
+All pull requests should be to the develop branch. Every pull request should have an issue associated with it on our [issue tracker](https://github.com/postmanlabs/postman-code-generators/issues). For any non-trivial fixes, regression tests should be added as well. For a bug, we also recommend adding a request to the `testCollection.json` found inside `test/codegen/newman/fixtures`. 
+
+#### Acceptance criteria
+ - New code generators: For a new language to be added as a part of postman-code-generators, we will need some level of community support before it is accepted. Feel free to add links to any sort of report/statistics from trusted sources that might help us understand the relavance and popularity of this language among users.
+ - Bug fix:  
+
+## Security guildelines
+If you've found a vulnerability, or want additional information regarding how we manage security, please send an email to security@getpostman.com. We will review it and respond to you within 24 hours. Please use our [PGP public key](https://assets.getpostman.com/getpostman/documents/publickey.txt) to encrypt your communications with us.
+
+## Build Failures
+If you've added a new code generator, you might have to add some dependencies in `npm/ci-requirements` for running the code snippet on travis. We use the [xenial build](https://docs.travis-ci.com/user/reference/xenial/) of travis. 
 
 
 ## Tests
