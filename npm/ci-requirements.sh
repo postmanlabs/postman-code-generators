@@ -11,7 +11,7 @@ popd &>/dev/null;
 
 echo "Installing dependencies required for tests in codegens/java-unirest"
 pushd ./codegens/java-unirest &>/dev/null;
-  sudo wget https://repo1.maven.org/maven2/com/konghq/unirest-java/3.0.00/unirest-java-3.0.00-sources.jar
+  sudo wget https://repo1.maven.org/maven2/com/konghq/unirest-java/3.0.00/unirest-java-3.0.00-standalone.jar
   sudo wget http://central.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.2/httpclient-4.5.2.jar
   sudo wget http://central.maven.org/maven2/commons-codec/commons-codec/1.9/commons-codec-1.9.jar
   sudo wget http://central.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar
