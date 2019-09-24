@@ -44,7 +44,7 @@ function runNewman (collection, collectionName, done) {
       return done(err);
     }
     responseObject[collectionName] = responses;
-    return done(null, 'Newman run complete with no errors for collection ' + collectionName);
+    return done(null, '\nNewman run complete with no errors for collection ' + collectionName + '\n');
   });
 }
 
