@@ -30,7 +30,7 @@ repository. As such run `npm test` before you push. At present, the following su
 * `npm test`: Runs strucutre, unit and system tests for all codegens
 * `npm run test <codegen-name>`: Runs tests for a particular codegen.
 
-### `npm run boilerplate <codegen-name>
+### `npm run boilerplate <codegen-name>`
 
 The command will add a new boilerplate code generator with the name <codegen-name> with basic functions and tests, along with the right `package.json` structure.
 
