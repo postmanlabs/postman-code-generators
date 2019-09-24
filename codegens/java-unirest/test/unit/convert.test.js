@@ -12,7 +12,7 @@ describe('java unirest convert function for test collection', function () {
       runScript: 'java -cp *: main',
       compileScript: 'javac -cp *: main.java',
       fileName: 'main.java',
-      skipColelctions: ['formdataCollection.json']
+      skipCollections: ['formdataCollection.json']
     },
     options = {includeBoilerplate: true};
 
