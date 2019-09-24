@@ -1,11 +1,11 @@
 module.exports = {
 /**
 * sanitization of values : trim, escape characters
-* 
+*
 * @param {String} inputString - input
-* @param {String} escapeCharFor - escape for headers, body: raw, formdata etc 
+* @param {String} escapeCharFor - escape for headers, body: raw, formdata etc
 * @param {Boolean} [inputTrim] - whether to trim the input
-* @returns {String} 
+* @returns {String}
 */
   sanitize: function (inputString, escapeCharFor, inputTrim) {
 

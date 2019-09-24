@@ -45,7 +45,7 @@
     "jsdoc-to-markdown": "5.0.0",
     "lodash": "4.17.15",
     "mocha": "5.0.3",
-    "newman": "^4.5.4",
+    "newman": "4.5.4",
     "nyc": "14.1.1",
     "parse-gitignore": "1.0.1",
     "postman-collection": "3.5.1",
