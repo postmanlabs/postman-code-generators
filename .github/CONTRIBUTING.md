@@ -4,6 +4,7 @@
 
 
   - [Getting Started Quick](#getting-started-quick)
+  - [NPM Command Reference](#npm-command-reference)
   - [Repository](#repository)
   - [General Instructions](#general-instructions)
   - [Pull request guidelines](#pull-request-guidelines)
@@ -15,6 +16,23 @@
 
 Instructions on initial setup can be found in the README.
 
+## NPM Command Reference
+
+### `npm install`
+
+Installs all `dependencies` listed in the root `package.json` and all the codegens
+
+### `npm test`
+
+The script associated with `npm test` will run all tests that ensures that your commit does not break anything in the
+repository. As such run `npm test` before you push. At present, the following sub tests can be run on a standalone basis:
+
+* `npm test`: Runs strucutre, unit and system tests for all codegens
+* `npm run test <codegen-name>`: Runs tests for a particular codegen.
+
+### `npm run boilerplate <codegen-name>
+
+The command will add a new boilerplate code generator with the name <codegen-name> with basic functions and tests, along with the right `package.json` structure.
 
 ## Repository
 
