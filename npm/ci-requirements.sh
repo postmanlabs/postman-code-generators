@@ -11,17 +11,31 @@ popd &>/dev/null;
 
 echo "Installing dependencies required for tests in codegens/java-unirest"
 pushd ./codegens/java-unirest &>/dev/null;
-  sudo wget http://central.maven.org/maven2/com/mashape/unirest/unirest-java/1.4.9/unirest-java-1.4.9.jar
-  sudo wget http://central.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.2/httpclient-4.5.2.jar
-  sudo wget http://central.maven.org/maven2/commons-codec/commons-codec/1.9/commons-codec-1.9.jar
-  sudo wget http://central.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar
-  sudo wget http://central.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.4/httpcore-4.4.4.jar
-  sudo wget http://central.maven.org/maven2/org/apache/httpcomponents/httpasyncclient/4.1.1/httpasyncclient-4.1.1.jar
-  sudo wget http://central.maven.org/maven2/org/apache/httpcomponents/httpcore-nio/4.4.4/httpcore-nio-4.4.4.jar
-  sudo wget http://central.maven.org/maven2/org/json/json/20160212/json-20160212.jar
-  sudo wget http://central.maven.org/maven2/org/apache/httpcomponents/httpmime/4.3.6/httpmime-4.3.6.jar
+  pushd /opt/
+    wget http://www-eu.apache.org/dist/maven/maven-3/3.6.2/binaries/apache-maven-3.6.2-bin.tar.gz
+    sudo tar -xvzf apache-maven-3.3.9-bin.tar.gz
+    sudo mv apache-maven-3.3.9 maven 
+    export M2_HOME=/opt/maven
+    export PATH=${M2_HOME}/bin:${PATH}
+  popd &>/dev/null;
+  mvn archetype:generate -DgroupId=postman -DartifactId=testProject -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
+  pushd ./testProject&>/dev/null;
+    mvn dependency:get -Dartifact=com.konghq:unirest-java:3.0.00 
+  popd &>/dev/null;
 popd &>/dev/null;
 
+echo "Installing dependencies required for tests in codegens/csharp-restsharp"
+pushd ./codegens/csharp-restsharp &>/dev/null;
+  wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+  sudo dpkg -i packages-microsoft-prod.deb
+  sudo apt-get install apt-transport-https
+  sudo apt-get update
+  sudo apt-get install dotnet-sdk-2.2
+  dotnet new console -o testProject
+  pushd ./testProject &>/dev/null;
+    dotnet add package RestSharp
+  popd &>/dev/null;
+popd &>/dev/null;
 echo "Installing dependencies required for tests in codegens/swift"
 pushd ./codegens/swift &>/dev/null;
   sudo apt-get update

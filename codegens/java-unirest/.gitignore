@@ -33,6 +33,9 @@ lib-cov
 # Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
 
+# Test Project directories
+testProject/
+
 # Bower dependency directory (https://bower.io/)
 bower_components
 

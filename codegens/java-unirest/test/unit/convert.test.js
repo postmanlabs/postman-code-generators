@@ -1,4 +1,5 @@
 var expect = require('chai').expect,
+  path = require('path'),
   sdk = require('postman-collection'),
   convert = require('../../lib/index').convert,
   sanitize = require('../../lib/util').sanitize,
@@ -8,10 +9,11 @@ var expect = require('chai').expect,
   mainCollection = require('./fixtures/testcollection/collection.json');
 
 describe('java unirest convert function for test collection', function () {
-  var testConfig = {
-      runScript: 'java -cp *: main',
-      compileScript: 'javac -cp *: main.java',
-      fileName: 'main.java'
+  var projectPath = path.resolve(__dirname, '../../testProject'),
+    testConfig = {
+      runScript: 'java -cp ' + projectPath + '/target/testProject-1.0-SNAPSHOT.jar postman.App',
+      compileScript: 'mvn package -f ' + projectPath + '/pom.xml',
+      fileName: projectPath + '/src/main/java/postman/App.java'
     },
     options = {includeBoilerplate: true};
 
