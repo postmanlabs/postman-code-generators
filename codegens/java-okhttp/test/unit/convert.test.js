@@ -4,7 +4,7 @@ var expect = require('chai').expect,
   convert = require('../../lib/index').convert,
   getOptions = require('../../lib/index').getOptions,
   runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
-  mainCollection = require('../../../../test/codegen/newman/fixtures/testCollection.json');
+  mainCollection = require('../../../../test/codegen/newman/fixtures/basicCollection.json');
 
 describe('okhttp convert function', function () {
   describe('convert for different request types', function () {
