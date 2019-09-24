@@ -25,7 +25,7 @@ Installs all `dependencies` listed in the root `package.json` and all the codege
 ### `npm test`
 
 The script associated with `npm test` will run all tests that ensures that your commit does not break anything in the
-repository. As such run `npm test` before you push. At present, the following sub tests can be run on a standalone basis:
+repository.
 
 * `npm test`: Runs strucutre, unit and system tests for all codegens
 * `npm run test <codegen-name>`: Runs tests for a particular codegen.
