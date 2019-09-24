@@ -118,7 +118,8 @@ function runSnippet (testConfig, snippets, collectionName) {
             'postman-token',
             'accept-language',
             'x-forwarded-port',
-            'if-none-match'
+            'if-none-match',
+            'referer'
           ];
         if (result[0]) {
           propertiesTodelete.forEach(function (property) {
