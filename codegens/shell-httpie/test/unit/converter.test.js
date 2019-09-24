@@ -11,7 +11,8 @@ describe('Shell-Httpie convert function', function () {
         indentCount: 4
       },
       testConfig = {
-        headerSnippet: 'printf \'\' | '
+        headerSnippet: 'printf \'\' | ',
+        skipColelctions: ['formdataCollection.json']
       };
     runNewmanTest(convert, options, testConfig);
   });

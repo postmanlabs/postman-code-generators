@@ -17,7 +17,8 @@ describe('csharp restsharp function', function () {
         compileScript: `mcs -reference:${depedenciesPath}/RestSharp.dll` +
         ` -out:${depedenciesPath}/main.exe ${depedenciesPath}/main.cs`,
         runScript: `mono  ${depedenciesPath}/main.exe`,
-        fileName: `${depedenciesPath}/main.cs`
+        fileName: `${depedenciesPath}/main.cs`,
+        skipCollections: ['formdataCollection.json']
       },
       options = {
         includeBoilerplate: true

@@ -11,7 +11,8 @@ describe('Ruby converter', function () {
     testConfig = {
       fileName: 'test/unit/fixtures/codesnippet.rb',
       runScript: 'ruby test/unit/fixtures/codesnippet.rb',
-      compileScript: null
+      compileScript: null,
+      skipCollections: ['redirectCollection.json']
     };
 
   runNewmanTest(convert, options, testConfig);
