@@ -13,7 +13,7 @@ describe('js-xhr convert function', function () {
         compileScript: null,
         runScript: 'node snippet.js',
         fileName: 'snippet.js',
-        skipCollections: ['redirectCollection.json']
+        skipCollections: ['redirectCollection.json', 'formdataCollection.json']
       },
       options = {};
     boilerplateCode += 'var FormData = require(\'form-data\');\n\n';
