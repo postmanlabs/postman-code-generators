@@ -17,8 +17,7 @@ describe('libcurl convert function', function () {
       testConfig = {
         compileScript: '`curl-config --cc --cflags` -o executableFile testFile.c `curl-config --libs`',
         runScript: './executableFile',
-        fileName: 'testFile.c',
-        skipCollections: ['redirectCollection.json']
+        fileName: 'testFile.c'
       };
     runNewmanTest(convert, options, testConfig);
   });
