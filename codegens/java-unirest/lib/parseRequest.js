@@ -85,7 +85,7 @@ function parseBody (request, indentString, trimField) {
       case 'raw':
         return indentString + `.body(${JSON.stringify(request.body.toString())})\n`;
       case 'formdata':
-        return indentString + '.multiPartContent()\n' + parseFormData(request.body.toJSON(), indentString, trimField);
+        return parseFormData(request.body.toJSON(), indentString, trimField);
       case 'file':
         return indentString + '.body("<file contents here>")\n';
       default:
