@@ -19,7 +19,7 @@ describe('Python-http.client converter', function () {
     testConfig = {
       fileName: 'test/unit/fixtures/codesnippet.py',
       runScript: 'python3 test/unit/fixtures/codesnippet.py',
-      skipCollections: ['redirectCollection.json']
+      skipCollections: ['redirectCollection']
     };
   runNewmanTest(convert, options, testConfig);
 

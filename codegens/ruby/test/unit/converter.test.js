@@ -12,7 +12,7 @@ describe('Ruby converter', function () {
       fileName: 'test/unit/fixtures/codesnippet.rb',
       runScript: 'ruby test/unit/fixtures/codesnippet.rb',
       compileScript: null,
-      skipCollections: ['redirectCollection.json']
+      skipCollections: ['redirectCollection']
     };
 
   runNewmanTest(convert, options, testConfig);

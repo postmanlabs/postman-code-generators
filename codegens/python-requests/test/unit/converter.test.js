@@ -13,7 +13,7 @@ describe('Python- Requests converter', function () {
       fileName: 'test/unit/fixtures/codesnippet.py',
       runScript: 'python test/unit/fixtures/codesnippet.py',
       compileScript: null,
-      skipCollections: ['formdataCollection.json']
+      skipCollections: ['formdataCollection']
     };
   runNewmanTest(convert, options, testConfig);
 
