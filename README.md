@@ -1,39 +1,52 @@
 
-![postman icon](https://raw.githubusercontent.com/postmanlabs/postmanlabs.github.io/develop/global-artefacts/postman-logo%2Btext-320x132.png) 
+<a href="https://www.getpostman.com/"><img src="https://assets.getpostman.com/common-share/postman-logo-horizontal-320x132.png" /></a><br />
+_Manage all of your organization's APIs in Postman, with the industry's most complete API development environment._
 
 *Supercharge your API workflow.*  
 *Modern software is built on APIs. Postman helps you develop APIs faster.*
 
 # postman-code-generators [![Build Status](https://travis-ci.com/postmanlabs/postman-code-generators.svg?branch=master)](https://travis-ci.com/postmanlabs/postman-code-generators)
 
-This module converts a Postman-SDK Request Object into a code snippet of chosen language.
+This module converts a [Postman SDK](https://github.com/postmanlabs/postman-collection) Request Object into a code snippet of chosen language.
+
+Every code generator has two identifiers: `language` and `variant`.
+* `language` of a code generator is the programming language in which the code snippet is generated.
+* `variant` of a code generator is the methodology or the underlying library used by the language to send requests. 
  
 List of supported code generators: 
 
-* C# - RestSharp
-* cURL
-* Go
-* HTTP
-* Java - (OkHttp and Unirest)
-* JavaScript - (Fetch, jQuery, and XHR)
-* NodeJs - (Native, Request, and Unirest)
-* OCaml - Cohttp
-* PHP - (cURL and pech_http)
-* Powershell - RestMethod
-* Python - (http.client and Requests)
-* Ruby - Net::HTTP
-* Shell - (Httpie and wget)
-* Swift - URLSession
-
+| Language | Variant        |
+|-----------|---------------|
+| C# | RestSharp | 
+| cURL | cURL | 
+| Go | Native | 
+| HTTP | HTTP | 
+| Java | OkHttp |
+| Java | Unirest |
+| JavaScript | Fetch | 
+| JavaScript | jQuery | 
+| JavaScript | XHR | 
+| NodeJs | Native |
+| NodeJs | Request |
+| NodeJs | Unirest |
+| OCaml | Cohttp | 
+|PHP | cURL |
+|PHP | pecl_http |
+| Powershell | RestMethod | 
+| Ruby | Net:HTTP |
+| Shell | Httpie |
+| Shell | wget |
+| Swift | URLSession | 
 ## Table of contents 
 
 1. [Getting Started](#getting-started)
 2. [Prerequisite](#prerequisite)
 3. [Usage](#usage)
     1. [Using postman code generators as a Library](#using-postman-code-generators-as-a-library)
-4. [Installing Dependencies](#installing-dependencies)
-5. [Testing](#testing)
-6. [Packaging](#packaging)
+4. [Development](#development)
+    1. [Installing Dependencies](#installing-dependencies)
+    2. [Testing](#testing)
+    3. [Packaging](#packaging)
 7. [Contributing](#contributing)
 8. [License](#license)
 
@@ -93,12 +106,18 @@ This function takes in three parameters and returns a callback  with error and s
 * `variant` - variant key provided by getLanguageList function
 * `callback` - callback function with first parameter as error and second parameter as array of options supported by the codegen.
 
+A typical option has the following properties:
+* `name` - Display name
+* `id` - unique ID of the option
+* `type` - Data type of the option 
+* `default` - Default value. The value that is used if this option is not specified while creating code snippet
+* `description` - User friendly description.
 
 ##### Example:
 ```js
 var codegen = require('postman-code-generators'), // require postman-code-generators in your project
     language = 'nodejs',
-    variant = 'requests';
+    variant = 'Request';
 
     codegen.getOptions(language, variant, function (error, options) {
       if (error) {
@@ -106,14 +125,33 @@ var codegen = require('postman-code-generators'), // require postman-code-genera
       }
       console.log(options);
     });
+// output: 
+//     [
+//     {
+//       name: 'Set indentation count',
+//       id: 'indentCount',
+//       type: 'positiveInteger',
+//       default: 2,
+//       description: 'Set the number of indentation characters to add per code level'
+//     },
+//     {
+//       name: 'Set indentation type',
+//       id: 'indentType',
+//       type: 'enum',
+//       availableOptions: ['Tab', 'Space'],
+//       default: 'Space',
+//       description: 'Select the character used to indent lines of code'
+//     },
+//     ...
+//   ];
 ```
 
 #### convert 
 This function takes in five parameters and returns a callback with error and generated code snippet
 * `language` - lang key from the language list returned from getLanguageList function
 * `variant` - variant key provided by getLanguageList function
-* `request` - Postman-SDK Request Object
-* `options` - Options that can be used to configure generated code snippet. 
+* `request` - [Postman-SDK](https://github.com/postmanlabs/postman-collection) Request Object
+* `options` - Options that can be used to configure generated code snippet. Defaults will be used for the  
 * `callback` - callback function with first parameter as error and second parameter as string for code snippet
 
 ##### Example:
@@ -135,8 +173,10 @@ codegen.convert(language, variant, request, options, function(error, snippet) {
     //  handle snippet
 });
 ```
+## Development
 
-## Installing dependencies
+
+### Installing dependencies
 This command will install all the dependencies in production mode.
 ```bash
 $ npm install;
@@ -145,7 +185,7 @@ To install dev dependencies also for all codegens run:
 ```bash
 $ npm run deepinstall dev; 
 ```
-## Testing 
+### Testing 
 To run common repo test as well as tests (common structure test + individual codegen tests) for all the codegens
 ```bash
 $ npm test; 
@@ -155,7 +195,7 @@ To run structure and individual tests on a single codegen
 $ npm test <codegen-name>;
 # Here "codege-name" is the folder name of the codegen inside codegens folder
 ```
-## Packaging 
+### Packaging 
 To create zipped package of all codegens
 ```bash
 $ npm run package;
@@ -172,4 +212,4 @@ Please take a moment to read our [contributing guide](https://github.com/postman
 Open an [issue](https://github.com/postmanlabs/postman-code-generators/issues) first to discuss potential changes/additions.
 
 ## License
-This software is licensed under Apache-2.0. Copyright Postdot Technologies, Inc. See the [LICENSE.md](LICENSE.md) file for more information.
+This software is licensed under Apache-2.0. Copyright Postman, Inc. See the [LICENSE.md](LICENSE.md) file for more information.
