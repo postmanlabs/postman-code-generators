@@ -1,7 +1,7 @@
 var runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../index').convert;
 
-describe('convert for different request types', function () {
+describe('Convert for different types of request', function () {
   var testConfig = {compileScript: null, runScript: null, fileName: null},
     options = {
       indentCount: 3,
