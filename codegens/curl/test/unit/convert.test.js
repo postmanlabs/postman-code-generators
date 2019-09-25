@@ -1,26 +1,9 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../index').convert,
   getUrlStringfromUrlObject = require('../../lib/util').getUrlStringfromUrlObject;
 
 describe('curl convert function', function () {
-  describe('convert for different request types', function () {
-    var testConfig = {compileScript: null, runScript: null, fileName: null},
-      options = {
-        indentCount: 3,
-        indentType: 'Space',
-        requestTimeout: 200,
-        multiLine: true,
-        followRedirect: true,
-        longFormat: true,
-        silent: true,
-        lineContinuationCharacter: '\\'
-      };
-
-    runNewmanTest(convert, options, testConfig);
-  });
-
   describe('Convert function', function () {
     var request, options, snippetArray, line;
 
