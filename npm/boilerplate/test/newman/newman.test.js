@@ -16,7 +16,7 @@ describe('<<CODEGEN_NAME>> Converter', function () {
         // Compile script required to compile the code snippet
         compileScript: '',
         // Array of name of collections for which newman tests has to be skipped.
-        skipCollections: ''
+        skipCollections: []
       };
     runNewmanTest(convert, options, testConfig);
   });
