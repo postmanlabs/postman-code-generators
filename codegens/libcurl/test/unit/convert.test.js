@@ -4,7 +4,7 @@ var expect = require('chai').expect,
   runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   getOptions = require('../../index').getOptions,
   sanitize = require('../../lib/util').sanitize,
-  mainCollection = require('../../../../test/codegen/newman/fixtures/testCollection.json');
+  mainCollection = require('../../../../test/codegen/newman/fixtures/basicCollection.json');
 
 describe('libcurl convert function', function () {
   describe('convert for different request types', function () {
@@ -17,7 +17,8 @@ describe('libcurl convert function', function () {
       testConfig = {
         compileScript: '`curl-config --cc --cflags` -o executableFile testFile.c `curl-config --libs`',
         runScript: './executableFile',
-        fileName: 'testFile.c'
+        fileName: 'testFile.c',
+        skipCollections: ['redirectCollection.json']
       };
     runNewmanTest(convert, options, testConfig);
   });
