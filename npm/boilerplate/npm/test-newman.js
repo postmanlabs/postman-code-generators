@@ -14,11 +14,11 @@ var path = require('path'),
   recursive = require('recursive-readdir'),
 
   COV_REPORT_PATH = '.coverage',
-  SPEC_SOURCE_DIR = path.join(__dirname, '..', 'test', 'unit');
+  SPEC_SOURCE_DIR = path.join(__dirname, '..', 'test', 'newman');
 
 module.exports = function (exit) {
   // banner line
-  console.info(chalk.yellow.bold('Running unit tests using mocha on node...'));
+  console.info(chalk.yellow.bold('Running newman tests using mocha on node...'));
 
   test('-d', COV_REPORT_PATH) && rm('-rf', COV_REPORT_PATH);
   mkdir('-p', COV_REPORT_PATH);
