@@ -64,3 +64,5 @@ typings/
 .env
 
 out/
+
+*.rb
