@@ -1,5 +1,6 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
+  path = require('path'),
   runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../lib/index').convert,
   mainCollection = require('./fixtures/testcollection/collection.json'),
@@ -11,10 +12,11 @@ var expect = require('chai').expect,
 
 describe('csharp restsharp function', function () {
   describe('convert for different request types', function () {
-    var testConfig = {
-        compileScript: 'dotnet build ../../codegens/csharp-restsharp/testProject',
-        runScript: 'dotnet run --project ../../codegens/csharp-restsharp/testProject',
-        fileName: '../../codegens/csharp-restsharp/testProject/Program.cs'
+    var projectPath = path.resolve(__dirname, '../../testProject'),
+      testConfig = {
+        compileScript: 'dotnet build ' + projectPath,
+        runScript: 'dotnet run --project ' + projectPath,
+        fileName: projectPath + '/Program.cs'
       },
       options = {
         includeBoilerplate: true
