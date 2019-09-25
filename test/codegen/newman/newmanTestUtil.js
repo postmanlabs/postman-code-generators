@@ -2,9 +2,20 @@ var fs = require('fs'),
   expect = require('chai').expect,
   exec = require('shelljs').exec,
   sdk = require('postman-collection'),
+  path = require('path'),
   newmanResponses = require('./newmanResponses.json'),
-  testCollection = require('./fixtures/testCollection.json'),
   async = require('async');
+const PATH_TO_COLLECTIONS = path.resolve(__dirname, './fixtures');
+
+/**
+ *
+ * @param {String} collection_folder - path to the collections folder
+ * @returns {Array} - Array of objects, with each object containing path and name of the collection
+ */
+function getCollections (collection_folder) {
+  return fs.readdirSync(collection_folder)
+    .map((collection) => { return { path: path.join(collection_folder, collection), name: collection }; });
+}
 
 /**
    * compiles and runs codesnippet then compare it with newman output
@@ -15,9 +26,12 @@ var fs = require('fs'),
    * @param {String} testConfig.runScript - Script required to run code snippet
    * @param {String} testConfig.compileScript - Script required to compile code snippet
    * @param {String} testConfig.fileName - Filename with extension
-   * @param {Array} snippets - Array of generated code snippets.
+   * @param {Object} snippets - Array of generated code codeSnippets.
+   * @param {String} collectionName
    */
-function runSnippet (testConfig, snippets) {
+function runSnippet (testConfig, snippets, collectionName) {
+  var currentCollectionResponses = newmanResponses[collectionName];
+
   snippets.forEach((item, index) => {
     var headerSnippet = testConfig.headerSnippet ? testConfig.headerSnippet : '',
       footerSnippet = testConfig.footerSnippet ? testConfig.footerSnippet : '',
@@ -75,7 +89,7 @@ function runSnippet (testConfig, snippets) {
           }
         }
       ], function (err, response) {
-        var result = [response, newmanResponses[index]];
+        var result = [response, currentCollectionResponses[index]];
 
         if (err) {
           expect.fail(null, null, err);
@@ -147,27 +161,46 @@ module.exports = {
    * @param {String} testConfig.fileName - Filename with extension
    */
   runNewmanTest: function (convert, options, testConfig) {
+    const collections = getCollections(PATH_TO_COLLECTIONS),
+      // array of collections that need to be skipped for this codegen.
+      collectionsToSkip = testConfig.skipCollections ? testConfig.skipCollections : [];
 
-    // Convert code snippet
-    async.map(testCollection.item, function (item, cb) {
-      var request = new sdk.Request(item.request);
+    async.eachSeries(collections, (collectionObj, callback) => {
+      if (!collectionsToSkip.includes(collectionObj.name)) {
+        // Convert code snippet
+        var collection = require(collectionObj.path);
+        async.map(collection.item, function (item, cb) {
+          var request = new sdk.Request(item.request);
 
-      convert(request, options, function (err, snippet) {
-        if (err) {
-          return cb(err);
-        }
+          convert(request, options, function (err, snippet) {
+            if (err) {
+              return cb(err);
+            }
 
-        return cb(null, {
-          name: item.name,
-          snippet: snippet
+            return cb(null, {
+              name: item.name,
+              snippet: snippet
+            });
+          });
+        }, function (err, snippets) {
+          if (err) {
+            return callback(err);
+          }
+          // Run code snippet.
+          describe('\nRunning newman test for: ' + collectionObj.name, function () {
+            runSnippet(testConfig, snippets, collectionObj.name);
+          });
+          return callback(null);
         });
-      });
-    }, function (err, snippets) {
-      if (err) {
+      }
+      else {
+        console.log('\nSkipping newman test for: ' + collectionObj.name);
+        return callback(null);
+      }
+    }, function (error) {
+      if (error) {
         expect.fail(null, null, error);
       }
-      // Run code snippet.
-      runSnippet(testConfig, snippets);
     });
   }
 };

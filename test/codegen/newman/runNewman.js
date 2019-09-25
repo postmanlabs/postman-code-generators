@@ -1,17 +1,22 @@
 var newman = require('newman'),
   fs = require('fs'),
+  async = require('async'),
   path = require('path'),
-  responses = [];
-const collection = require('../newman/fixtures/testCollection.json'),
+  responses = [],
+  responseObject = {},
+  collections;
+const PATH_TO_COLLECTIONS = path.resolve(__dirname, './fixtures'),
   PATH_TO_NEWMAN_REPONSES = path.resolve(__dirname, '../newman/newmanResponses.json');
 
 /**
  * Runs a collection using newman
  *
  * @param {Object} collection - collection which will be run using newman
+ * @param {String} collectionName - name of the collection which will be used as a key for storing in response object
  * @param {Function} done - callback for async calls
  */
-function runNewman (collection, done) {
+function runNewman (collection, collectionName, done) {
+  responses = [];
   newman.run({
     collection: collection
   }).on('beforeItem', function (err, summary) {
@@ -38,18 +43,40 @@ function runNewman (collection, done) {
     if (err) {
       return done(err);
     }
-    fs.writeFile(PATH_TO_NEWMAN_REPONSES, JSON.stringify(responses, null, 2), function (err) {
-      if (err) {
-        console.log(err);
-      }
-    });
-    return done(null, 'Newman run complete with no errors');
+    responseObject[collectionName] = responses;
+    return done(null, '\nNewman run complete with no errors for collection ' + collectionName + '\n');
   });
 }
 
-runNewman(collection, function (err, out) {
+/**
+ *
+ * @param {String} collection_folder - path to the collections folder
+ * @returns {Array} - Array of objects, with each object containing path and name of the collection
+ */
+function getCollections (collection_folder) {
+  return fs.readdirSync(collection_folder)
+    .map((collection) => { return { path: path.join(collection_folder, collection), name: collection }; });
+}
+
+collections = getCollections(PATH_TO_COLLECTIONS);
+async.eachSeries(collections, (collection, callback) => {
+  var collectionJSON = require(collection.path),
+    collectionName = collection.name;
+  runNewman(collectionJSON, collectionName, (err, out) => {
+    if (err) {
+      return callback(err);
+    }
+    console.log(out);
+    return callback(null);
+  });
+}, (err) => {
   if (err) {
     console.log(err);
+    return;
   }
-  console.log(out);
+  fs.writeFile(PATH_TO_NEWMAN_REPONSES, JSON.stringify(responseObject, null, 2), function (err) {
+    if (err) {
+      console.log(err);
+    }
+  });
 });

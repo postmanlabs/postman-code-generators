@@ -12,7 +12,8 @@ describe('Shell-Wget converter', function () {
       indentCount: 2
     },
     testConfig = {
-      footerSnippet: ' -qO-' // Added this to get the response in stdout instead of saving in file.
+      footerSnippet: ' -qO-', // Added this to get the response in stdout instead of saving in file.
+      skipCollections: ['formdataCollection.json']
     };
   runNewmanTest(convert, options, testConfig);
 

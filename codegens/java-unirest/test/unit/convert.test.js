@@ -11,7 +11,8 @@ describe('java unirest convert function for test collection', function () {
   var testConfig = {
       runScript: 'java -cp *: main',
       compileScript: 'javac -cp *: main.java',
-      fileName: 'main.java'
+      fileName: 'main.java',
+      skipCollections: ['formdataCollection.json']
     },
     options = {includeBoilerplate: true};
 
