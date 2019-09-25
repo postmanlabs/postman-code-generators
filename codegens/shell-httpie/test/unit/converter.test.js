@@ -12,7 +12,7 @@ describe('Shell-Httpie convert function', function () {
       },
       testConfig = {
         headerSnippet: 'printf \'\' | ',
-        skipColelctions: ['formdataCollection.json']
+        skipCollections: ['formdataCollection.json']
       };
     runNewmanTest(convert, options, testConfig);
   });
