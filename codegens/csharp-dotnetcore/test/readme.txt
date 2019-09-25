@@ -1,0 +1,1 @@
+To run tests on the code snippet generator, execute this command: node npm/test.js
