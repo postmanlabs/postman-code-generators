@@ -53,7 +53,7 @@ function generateMultipartFormData (requestbody) {
         }
         else {
           // eslint-disable-next-line no-useless-escape
-          const value = dataArrayElement.value.replace(/\\\"/g, '\\\\\"').replace(/\"/g, '\\"');
+          const value = dataArrayElement.value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
           accumalator.push(`name=\\"${key}\\"\\r\\n\\r\\n${value}\\r\\n`);
         }
       }
