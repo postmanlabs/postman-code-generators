@@ -1,6 +1,5 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../lib/index').convert,
   getOptions = require('../../lib/index').getOptions,
   parseBody = require('../../lib/util/parseBody'),
@@ -8,20 +7,6 @@ var expect = require('chai').expect,
   mainCollection = require('../unit/fixtures/sample_collection.json');
 
 describe('Python-http.client converter', function () {
-  var options = {
-      indentType: 'Space',
-      indentCount: 4,
-      requestTimeout: 0,
-      requestBodyTrim: false,
-      addCacheHeader: false,
-      followRedirect: true
-    },
-    testConfig = {
-      fileName: 'test/unit/fixtures/codesnippet.py',
-      runScript: 'python3 test/unit/fixtures/codesnippet.py',
-      skipCollections: ['redirectCollection']
-    };
-  runNewmanTest(convert, options, testConfig);
 
   describe('convert function', function () {
     var request = new sdk.Request(mainCollection.item[0].request),
