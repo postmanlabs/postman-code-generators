@@ -1,22 +1,8 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../lib/index').convert;
 
 describe('Ruby converter', function () {
-  var options = {
-      indentType: 'Space',
-      indentCount: 4
-    },
-    testConfig = {
-      fileName: 'test/unit/fixtures/codesnippet.rb',
-      runScript: 'ruby test/unit/fixtures/codesnippet.rb',
-      compileScript: null,
-      skipCollections: ['redirectCollection']
-    };
-
-  runNewmanTest(convert, options, testConfig);
-
   it('should throw an error when callback is not function', function () {
     expect(function () { convert({}, {}); })
       .to.throw('Ruby~convert: Callback is not a function');
