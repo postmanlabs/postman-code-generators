@@ -4,20 +4,9 @@ var expect = require('chai').expect,
   sanitize = require('../../lib/util').sanitize,
   getUrlStringfromUrlObject = require('../../lib/parseRequest').getUrlStringfromUrlObject,
   getOptions = require('../../index').getOptions,
-  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   mainCollection = require('./fixtures/testcollection/collection.json');
 
 describe('java unirest convert function for test collection', function () {
-  var testConfig = {
-      runScript: 'java -cp *: main',
-      compileScript: 'javac -cp *: main.java',
-      fileName: 'main.java',
-      skipCollections: ['formdataCollection']
-    },
-    options = {includeBoilerplate: true};
-
-  runNewmanTest(convert, options, testConfig);
-
   describe('convert function', function () {
     var request,
       reqObject,
