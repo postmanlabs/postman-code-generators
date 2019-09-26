@@ -7,6 +7,7 @@ var chalk = require('chalk'),
 
 require('async').series([
   require('./test-lint'),
+  require('./test-newman'),
   require('./test-unit')
 ], function (code) {
   // eslint-disable-next-line max-len

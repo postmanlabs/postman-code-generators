@@ -1,26 +1,11 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   sanitize = require('../../lib/util').sanitize,
   getOptions = require('../../index').getOptions,
   convert = require('../../index').convert,
   mainCollection = require('./fixtures/testcollection/collection.json');
 
 describe('js-fetch convert function for test collection', function () {
-  var testSnippet = 'var fetch = require(\'node-fetch\'),\nFormData = require(\'form-data\'),\n',
-    testConfig = {
-      compileScript: null,
-      runScript: 'node snippet.js',
-      fileName: 'snippet.js'
-    },
-    options = {
-      multiLine: true
-    };
-  testSnippet += 'Headers = require(\'node-fetch\').Headers,\n';
-  testSnippet += 'URLSearchParams = require(\'url\').URLSearchParams;\n\n';
-  testConfig.headerSnippet = testSnippet;
-  runNewmanTest(convert, options, testConfig);
-
   describe('Convert function', function () {
     var request,
       options,
