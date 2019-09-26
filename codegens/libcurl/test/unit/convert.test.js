@@ -1,28 +1,12 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
   convert = require('../../index').convert,
-  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   getOptions = require('../../index').getOptions,
   sanitize = require('../../lib/util').sanitize,
   mainCollection = require('../../../../test/codegen/newman/fixtures/basicCollection.json');
 
 describe('libcurl convert function', function () {
-  describe('convert for different request types', function () {
-    var options = {
-        indentCount: 1,
-        indentType: 'Tab',
-        useMimeType: false,
-        includeBoilerplate: true
-      },
-      testConfig = {
-        compileScript: '`curl-config --cc --cflags` -o executableFile testFile.c `curl-config --libs`',
-        runScript: './executableFile',
-        fileName: 'testFile.c'
-      };
-    runNewmanTest(convert, options, testConfig);
-  });
   describe('convert function', function () {
-
     it('should throw an error if callback is not a function', function () {
       var request = null,
         options = {
