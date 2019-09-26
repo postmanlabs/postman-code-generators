@@ -13,8 +13,9 @@ var _ = require('./lodash'),
 function parseHeaders (headers) {
   var headerSnippet = '';
   if (!_.isEmpty(headers)) {
-    _.forEach(headers, function (value, key) {
-      headerSnippet += `request["${sanitize(key, 'header', true)}"] = "${sanitize(value, 'header')}"\n`;
+    headers = _.reject(headers, 'disabled');
+    _.forEach(headers, function (header) {
+      headerSnippet += `request["${sanitize(header.key, 'header', true)}"] = "${sanitize(header.value, 'header')}"\n`;
     });
   }
   return headerSnippet;
@@ -138,7 +139,7 @@ self = module.exports = {
           value: 'text/plain'
         });
       }
-      headerSnippet = parseHeaders(request.getHeaders({enabled: true}));
+      headerSnippet = parseHeaders(request.toJSON().header);
 
       if (headerSnippet !== '') {
         snippet += headerSnippet;

@@ -117,8 +117,9 @@ function parseBody (body, trim, indent) {
 function parseHeaders (headers, indent) {
   var headerSnippet = '';
   if (!_.isEmpty(headers)) {
-    _.forEach(headers, function (value, key) {
-      headerSnippet += `${indent}req.Header.Add("${sanitize(key, true)}", "${sanitize(value)}")\n`;
+    headers = _.reject(headers, 'disabled');
+    _.forEach(headers, function (header) {
+      headerSnippet += `${indent}req.Header.Add("${sanitize(header.key, true)}", "${sanitize(header.value)}")\n`;
     });
   }
   return headerSnippet;
@@ -198,7 +199,7 @@ self = module.exports = {
         value: 'text/plain'
       });
     }
-    headerSnippet = parseHeaders(request.getHeaders({enabled: true}), indent);
+    headerSnippet = parseHeaders(request.toJSON().header, indent);
     if (headerSnippet !== '') {
       codeSnippet += headerSnippet + '\n';
     }

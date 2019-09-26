@@ -82,14 +82,15 @@ function parseBody (requestbody, indentString, trimBody) {
  * @returns {String} - code snippet of nodejs unirest to add header
  */
 function parseHeader (request, indentString) {
-  var headerObject = request.getHeaders({enabled: true}),
+  var headerArray = request.toJSON().header,
     headerSnippet = '';
 
-  if (!_.isEmpty(headerObject)) {
+  if (!_.isEmpty(headerArray)) {
+    headerArray = _.reject(headerArray, 'disabled');
     headerSnippet += indentString + '.headers({\n';
 
-    headerSnippet += _.reduce(Object.keys(headerObject), function (accumalator, key) {
-      accumalator.push(indentString.repeat(2) + `'${sanitize(key, true)}': '${sanitize(headerObject[key])}'`);
+    headerSnippet += _.reduce(headerArray, function (accumalator, header) {
+      accumalator.push(indentString.repeat(2) + `'${sanitize(header.key, true)}': '${sanitize(header.value)}'`);
       return accumalator;
     }, []).join(',\n') + '\n';
 

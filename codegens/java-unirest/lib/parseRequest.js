@@ -103,11 +103,12 @@ function parseBody (request, indentString, trimField) {
  * @returns {String} - body string parsed from request object
  */
 function parseHeader (request, indentString) {
-  var headerObject = request.getHeaders({enabled: true}),
+  var headerArray = request.toJSON().header,
     headerSnippet = '';
-  if (!_.isEmpty(headerObject)) {
-    headerSnippet += Object.keys(headerObject).reduce(function (accumlator, key) {
-      accumlator += indentString + `.header("${sanitize(key, true)}", "${sanitize(headerObject[key])}")\n`;
+  if (!_.isEmpty(headerArray)) {
+    headerArray = _.reject(headerArray, 'disabled');
+    headerSnippet += headerArray.reduce(function (accumlator, header) {
+      accumlator += indentString + `.header("${sanitize(header.key, true)}", "${sanitize(header.value)}")\n`;
       return accumlator;
     }, '');
   }

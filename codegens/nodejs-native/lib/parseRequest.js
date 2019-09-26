@@ -98,19 +98,20 @@ function parseBody (requestbody, indentString, trimBody) {
  * @returns {String} - code snippet of nodejs native to add header
  */
 function parseHeader (request, indentString) {
-  var headerObject = request.getHeaders({enabled: true}),
+  var headerArray = request.toJSON().header,
     headerSnippet = indentString + '\'headers\': {\n';
 
-  if (headerObject) {
-    headerSnippet += _.reduce(Object.keys(headerObject), function (accumalator, key) {
+  if (headerArray) {
+    headerArray = _.reject(headerArray, 'disabled');
+    headerSnippet += _.reduce(headerArray, function (accumalator, header) {
       accumalator.push(
-        indentString.repeat(2) + `'${sanitize(key, true)}': '${sanitize(headerObject[key])}'`
+        indentString.repeat(2) + `'${sanitize(header.key, true)}': '${sanitize(header.value)}'`
       );
       return accumalator;
     }, []).join(',\n');
   }
 
-  if (headerObject && !_.isEmpty(headerObject)) {
+  if (headerArray && !_.isEmpty(headerArray)) {
     headerSnippet += '\n';
   }
 

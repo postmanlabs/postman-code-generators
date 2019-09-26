@@ -152,9 +152,10 @@ function parseBody (body, trim, indent) {
 function parseHeaders (headers, mode) {
   var headerSnippet = '';
   if (!_.isEmpty(headers)) {
-    _.forEach(headers, function (value, key) {
-      headerSnippet += `request.addValue("${sanitize(value, 'header')}", `;
-      headerSnippet += `forHTTPHeaderField: "${sanitize(key, 'header', true)}")\n`;
+    headers = _.reject(headers, 'disabled');
+    _.forEach(headers, function (header) {
+      headerSnippet += `request.addValue("${sanitize(header.value, 'header')}", `;
+      headerSnippet += `forHTTPHeaderField: "${sanitize(header.key, 'header', true)}")\n`;
     });
   }
   if (mode === 'formdata') {
@@ -268,7 +269,7 @@ self = module.exports = {
         value: 'text/plain'
       });
     }
-    headerSnippet = parseHeaders(request.getHeaders({ enabled: true }), (request.body ? request.body.mode : 'raw'));
+    headerSnippet = parseHeaders(request.toJSON().header, (request.body ? request.body.mode : 'raw'));
     if (headerSnippet !== '') {
       codeSnippet += headerSnippet + '\n';
     }

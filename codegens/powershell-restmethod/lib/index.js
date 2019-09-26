@@ -122,9 +122,10 @@ function parseBody (body, trim) {
 function parseHeaders (headers) {
   var headerSnippet = '';
   if (!_.isEmpty(headers)) {
+    headers = _.reject(headers, 'disabled');
     headerSnippet = '$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"\n';
-    _.forEach(headers, function (value, key) {
-      headerSnippet += `$headers.Add("${sanitize(key, true)}", "${sanitize(value)}")\n`;
+    _.forEach(headers, function (header) {
+      headerSnippet += `$headers.Add("${sanitize(header.key, true)}", "${sanitize(header.value)}")\n`;
     });
   }
   else {
@@ -193,7 +194,7 @@ function convert (request, options, callback) {
     });
   }
 
-  headers = request.getHeaders({enabled: true});
+  headers = request.toJSON().header;
   headerSnippet = parseHeaders(headers);
 
   body = request.body ? request.body.toJSON() : {};

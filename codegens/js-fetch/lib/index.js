@@ -110,8 +110,9 @@ function parseHeaders (headers) {
   var headerSnippet = '';
   if (!_.isEmpty(headers)) {
     headerSnippet = 'var myHeaders = new Headers();\n';
-    _.forEach(headers, function (value, key) {
-      headerSnippet += `myHeaders.append("${sanitize(key, true)}", "${sanitize(value)}");\n`;
+    headers = _.reject(headers, 'disabled');
+    _.forEach(headers, function (header) {
+      headerSnippet += `myHeaders.append("${sanitize(header.key, true)}", "${sanitize(header.value)}");\n`;
     });
   }
   else {
@@ -196,7 +197,7 @@ function convert (request, options, callback) {
     fetchSnippet = '';
   indent = indent.repeat(options.indentCount);
 
-  headers = request.getHeaders({enabled: true});
+  headers = request.toJSON().header;
   headerSnippet = parseHeaders(headers);
 
   body = request.body && request.body.toJSON();
