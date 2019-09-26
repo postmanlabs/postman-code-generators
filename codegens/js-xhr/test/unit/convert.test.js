@@ -1,51 +1,37 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   sanitize = require('../../lib/util.js').sanitize,
 
   convert = require('../../index').convert,
   getOptions = require('../../index').getOptions;
 
 describe('js-xhr convert function', function () {
-  describe('convert for different request types', function () {
-    var boilerplateCode = 'var XMLHttpRequest = require(\'xmlhttprequest\').XMLHttpRequest;\n',
-      testConfig = {
-        compileScript: null,
-        runScript: 'node snippet.js',
-        fileName: 'snippet.js',
-        skipCollections: ['redirectCollection', 'formdataCollection']
-      },
-      options = {};
-    boilerplateCode += 'var FormData = require(\'form-data\');\n\n';
-    testConfig.headerSnippet = boilerplateCode;
-    runNewmanTest(convert, options, testConfig);
 
-    it('should trim header keys and not trim header values', function () {
-      var request = new sdk.Request({
-        'method': 'GET',
-        'header': [
-          {
-            'key': '   key_containing_whitespaces  ',
-            'value': '  value_containing_whitespaces  '
-          }
-        ],
-        'url': {
-          'raw': 'https://google.com',
-          'protocol': 'https',
-          'host': [
-            'google',
-            'com'
-          ]
+  it('should trim header keys and not trim header values', function () {
+    var request = new sdk.Request({
+      'method': 'GET',
+      'header': [
+        {
+          'key': '   key_containing_whitespaces  ',
+          'value': '  value_containing_whitespaces  '
         }
-      });
-      convert(request, {}, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-        }
-        expect(snippet).to.be.a('string');
-        expect(snippet).to.include('xhr.setRequestHeader("key_containing_whitespaces", ' +
-        '"  value_containing_whitespaces  ")');
-      });
+      ],
+      'url': {
+        'raw': 'https://google.com',
+        'protocol': 'https',
+        'host': [
+          'google',
+          'com'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('xhr.setRequestHeader("key_containing_whitespaces", ' +
+      '"  value_containing_whitespaces  ")');
     });
   });
 
