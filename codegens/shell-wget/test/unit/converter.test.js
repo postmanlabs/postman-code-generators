@@ -1,21 +1,12 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
   sanitize = require('../../lib/util/sanitize').sanitize,
-  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../lib/index').convert,
   getOptions = require('../../lib/index').getOptions,
   mainCollection = require('../unit/fixtures/sample_collection.json');
 
 describe('Shell-Wget converter', function () {
-  var options = {
-      indentType: 'Space',
-      indentCount: 2
-    },
-    testConfig = {
-      footerSnippet: ' -qO-', // Added this to get the response in stdout instead of saving in file.
-      skipCollections: ['formdataCollection']
-    };
-  runNewmanTest(convert, options, testConfig);
+
 
   describe('convert function', function () {
     var request = new sdk.Request(mainCollection.item[0].request),

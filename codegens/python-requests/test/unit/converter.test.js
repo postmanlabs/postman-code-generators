@@ -1,22 +1,9 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
   mainCollection = require('./fixtures/sample_collection.json'),
-  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../lib/index').convert;
 
 describe('Python- Requests converter', function () {
-  var options = {
-      indentType: 'Space',
-      indentCount: 4
-    },
-    testConfig = {
-      fileName: 'test/unit/fixtures/codesnippet.py',
-      runScript: 'python test/unit/fixtures/codesnippet.py',
-      compileScript: null,
-      skipCollections: ['formdataCollection']
-    };
-  runNewmanTest(convert, options, testConfig);
-
   it('should throw an error when callback is not function', function () {
     expect(function () { convert({}, {}); })
       .to.throw('Python-Requests~convert: Callback is not a function');
