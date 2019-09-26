@@ -18,6 +18,7 @@ self = module.exports = {
       protocol,
       BOUNDARY = '----WebKitFormBoundary7MA4YWxkTrZu0gW',
       timeout,
+      followRedirect,
       indent = options.indentType === 'Tab' ? '\t' : ' ',
       indentString = indent.repeat(options.indentCount),
       headerSnippet = '',
@@ -30,6 +31,7 @@ self = module.exports = {
     trim = options.trimRequestBody;
     protocol = options.protocol;
     timeout = options.requestTimeout;
+    followRedirect = options.followRedirect;
     snippet += 'CURL *curl;\n';
     snippet += 'CURLcode res;\n';
     snippet += 'curl = curl_easy_init();\n';
@@ -39,6 +41,9 @@ self = module.exports = {
     `curl_easy_setopt(curl, CURLOPT_URL, "${encodeURI(request.url.toString())}");\n`;
     if (timeout) {
       snippet += indentString + `curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, ${timeout}L);\n`;
+    }
+    if (followRedirect) {
+      snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);\n';
     }
     snippet += indentString + `curl_easy_setopt(curl, CURLOPT_DEFAULT_PROTOCOL, "${protocol}");\n`;
     snippet += indentString + 'struct curl_slist *headers = NULL;\n';
@@ -170,6 +175,13 @@ self = module.exports = {
         availableOptions: ['Tab', 'Space'],
         default: 'Space',
         description: 'Select the character used to indent lines of code'
+      },
+      {
+        name: 'Follow redirects',
+        id: 'followRedirect',
+        type: 'boolean',
+        default: true,
+        description: 'Automatically follow HTTP redirects'
       },
       {
         name: 'Trim request body fields',

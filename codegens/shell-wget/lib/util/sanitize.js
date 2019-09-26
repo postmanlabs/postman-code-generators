@@ -18,7 +18,7 @@ module.exports = {
         case 'raw':
           return inputString.replace(/'/g, '\'\\\'\'');
         case 'urlencoded':
-          return escape(inputString);
+          return encodeURIComponent(inputString).replace(/'/g, '\'\\\'\'');
         case 'formdata':
           return inputString.replace(/'/g, '\\\'');
           /* istanbul ignore next */

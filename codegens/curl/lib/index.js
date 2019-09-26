@@ -13,7 +13,7 @@ self = module.exports = {
     }
     options = sanitizeOptions(options, self.getOptions());
 
-    var indent, trim, headersData, body, text, redirect, timeout, multiLine,
+    var indent, trim, headersData, body, redirect, timeout, multiLine,
       format, snippet, silent, url;
 
     redirect = options.followRedirect;
@@ -39,10 +39,10 @@ self = module.exports = {
     }
     url = getUrlStringfromUrlObject(request.url);
     if (request.method === 'HEAD') {
-      snippet += ` ${form('-I', format)} "${url}"`;
+      snippet += ` ${form('-I', format)} '${url}'`;
     }
     else {
-      snippet += ` ${form('-X', format)} ${request.method} "${url}"`;
+      snippet += ` ${form('-X', format)} ${request.method} '${url}'`;
     }
 
     if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
@@ -53,7 +53,7 @@ self = module.exports = {
     }
     headersData = request.getHeaders({ enabled: true });
     _.forEach(headersData, function (value, key) {
-      snippet += indent + `${form('-H', format)} "${sanitize(key, true)}: ${sanitize(value)}"`;
+      snippet += indent + `${form('-H', format)} '${sanitize(key, true)}: ${sanitize(value)}'`;
     });
 
     if (request.body) {
@@ -62,37 +62,38 @@ self = module.exports = {
       if (!_.isEmpty(body)) {
         switch (body.mode) {
           case 'urlencoded':
-            text = [];
             _.forEach(body.urlencoded, function (data) {
               if (!data.disabled) {
-                text.push(`${escape(data.key)}=${escape(data.value)}`);
+                // Using the long form below without considering the longFormat option,
+                // to generate more accurate and correct snippet
+                snippet += indent + '--data-urlencode';
+                snippet += ` '${sanitize(data.key, trim)}=${sanitize(data.value, trim)}'`;
               }
             });
-            snippet += indent + `${form('-d', format)} "${text.join('&')}"`;
             break;
           case 'raw':
-            snippet += indent + `${form('-d', format)} "${sanitize(body.raw.toString(), trim)}"`;
+            snippet += indent + `--data-raw '${sanitize(body.raw.toString(), trim)}'`;
             break;
           case 'formdata':
             _.forEach(body.formdata, function (data) {
               if (!(data.disabled)) {
                 if (data.type === 'file') {
                   snippet += indent + `${form('-F', format)}`;
-                  snippet += ` "${sanitize(data.key, trim)}=@${sanitize(data.src, trim)}"`;
+                  snippet += ` '${sanitize(data.key, trim)}=@${sanitize(data.src, trim)}'`;
                 }
                 else {
                   snippet += indent + `${form('-F', format)}`;
-                  snippet += ` "${sanitize(data.key, trim)}=${sanitize(data.value, trim)}"`;
+                  snippet += ` '${sanitize(data.key, trim)}=${sanitize(data.value, trim)}'`;
                 }
               }
             });
             break;
           case 'file':
-            snippet += indent + `${form('--data-binary', format)}`;
-            snippet += ` "@${sanitize(body[body.mode].src, trim)}"`;
+            snippet += indent + '--data-binary';
+            snippet += ` '@${sanitize(body[body.mode].src, trim)}'`;
             break;
           default:
-            snippet += `${form('-d', format)} ""`;
+            snippet += `${form('-d', format)} ''`;
         }
       }
     }

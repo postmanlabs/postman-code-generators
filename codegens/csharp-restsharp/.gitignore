@@ -44,6 +44,9 @@ build/Release
 node_modules/
 jspm_packages/
 
+# Test Project directories
+testProject/
+
 # Typescript v1 declaration files
 typings/
 
@@ -66,3 +69,6 @@ typings/
 .env
 
 out/
+
+main.cs
+main.exe

@@ -30,6 +30,19 @@ function makeSnippet (request, options) {
   }
   snippet += `var request = new RestRequest(${isUnSupportedMethod ? '' : ('Method.' + request.method)});\n`;
   snippet += parseRequest.parseHeader(request.toJSON(), options.trimRequestBody);
+  if (request.body && request.body.mode === 'formdata') {
+    let isFile = false;
+    request.body.toJSON().formdata.forEach((data) => {
+      if (!data.disabled && data.type === 'file') {
+        isFile = true;
+      }
+    });
+    // The following statement needs to be added else the multipart/form-data request where there is no file
+    // is being sent as x-www-form-urlencoded by default
+    if (!isFile) {
+      snippet += 'request.AlwaysMultipartFormData = true;\n';
+    }
+  }
   snippet += parseRequest.parseBody(request, options.trimRequestBody);
   if (isUnSupportedMethod) {
     (UNSUPPORTED_METHODS_LIKE_GET.includes(request.method)) &&

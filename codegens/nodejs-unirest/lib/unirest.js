@@ -25,7 +25,7 @@ function makeSnippet (request, indentString, options) {
   snippet += parseRequest.parseHeader(request, indentString);
 
   if (request.body) {
-    snippet += parseRequest.parseBody(request.body.toJSON(), indentString, options);
+    snippet += parseRequest.parseBody(request.body.toJSON(), indentString, options.trimRequestBody);
   }
   if (options.requestTimeout) {
     snippet += indentString + `.timeout(${options.requestTimeout})`;

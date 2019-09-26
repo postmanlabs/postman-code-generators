@@ -1,3 +1,7 @@
+*.java
+*.class
+*.jar
+
 .DS_Store
 *.jar
 *.class

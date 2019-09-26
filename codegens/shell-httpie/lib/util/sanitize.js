@@ -1,9 +1,14 @@
 module.exports = {
-  quote: function (value) {
+  quote: function (value, mode) {
     if (typeof value !== 'string' || value === '') {
       return '';
     }
-    return '\'' + value.replace(/\\/g, '\\\\').replace(/'/g, '\'\\\'\'') + '\'';
+    switch (mode) {
+      case 'raw':
+        return '\'' + value.replace(/\\/g, '\\\\').replace(/'/g, '\'\\\'\'').replace(/%/, '%%') + '\'';
+      default:
+        return '\'' + value.replace(/\\/g, '\\\\').replace(/'/g, '\'\\\'\'') + '\'';
+    }
   },
 
   /**

@@ -1,0 +1,35 @@
+{
+	"info": {
+		"_postman_id": "d5d65b0c-0f10-4455-8ba2-d887c4180a08",
+		"name": "Redirect test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Follow Redirects",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://httpbin.org/redirect-to?url=https://postman-echo.com/get",
+					"protocol": "https",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"redirect-to"
+					],
+					"query": [
+						{
+							"key": "url",
+							"value": "https://postman-echo.com/get"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
