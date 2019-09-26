@@ -1,19 +1,8 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../lib/index').convert;
 
 describe('nodejs-native convert function', function () {
-  var options = {indentCount: 2, indentType: 'Space'},
-    testConfig = {
-      headerSnippet: '/* eslint-disable */\n',
-      compileScript: null,
-      runScript: 'node run.js',
-      fileName: 'run.js'
-    };
-
-  runNewmanTest(convert, options, testConfig);
-
   it('should sustain path variables when request has no path and has query params', function () {
     var request = new sdk.Request({
         'method': 'GET',
