@@ -12,6 +12,7 @@
   "scripts": {
     "test": "node npm/test.js",
     "test-lint": "node npm/test-lint.js",
+    "test-newman": "node npm/test-newman.js",
     "test-unit": "node npm/test-unit.js"
   },
   "repository": {

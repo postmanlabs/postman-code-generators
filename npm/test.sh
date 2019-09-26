@@ -12,6 +12,8 @@ else
     exit 1;
 fi
 popd &>/dev/null
+echo "Running newman for common collection and storing results in newmanResponses.json"
+    node ./test/codegen/newman/runNewman.js
 
 if [ -n "$1" ]
 then

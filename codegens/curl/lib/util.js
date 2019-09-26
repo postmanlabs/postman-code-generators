@@ -11,7 +11,8 @@ module.exports = {
     if (typeof inputString !== 'string') {
       return '';
     }
-    inputString = inputString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    // for curl escaping of single quotes inside single quotes involves changing of ' to '\''
+    inputString = inputString.replace(/'/g, "'\\''"); // eslint-disable-line quotes
     return trim ? inputString.trim() : inputString;
   },
   form: function (option, format) {
@@ -33,8 +34,6 @@ module.exports = {
           return '--data';
         case '-F':
           return '--form';
-        case '--data-binary':
-          return '--data-binary';
         default:
           return '';
       }

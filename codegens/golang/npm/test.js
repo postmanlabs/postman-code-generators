@@ -7,7 +7,8 @@ var chalk = require('chalk'),
 
 require('async').series([
   require('./test-lint'),
-  require('./test-unit')
+  require('./test-unit'),
+  require('./test-newman')
   // require('./test-browser')
   // require('./test-integration')
 ], function (code) {

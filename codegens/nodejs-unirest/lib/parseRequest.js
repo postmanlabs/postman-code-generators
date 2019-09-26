@@ -42,7 +42,7 @@ function parseFormdata (bodyArray, indentString, trimBody) {
       return bodyString;
     }
     bodyString += indentString +
-                    `.send('${sanitize(item.key, trimBody)}=${sanitize(item.value, trimBody)}')\n`;
+      '.send(' + `'${sanitize(item.key, trimBody)}=${sanitize(item.value, trimBody)}'`.replace(/&/g, '%26') + ')\n';
     return bodyString;
   }, '');
 }

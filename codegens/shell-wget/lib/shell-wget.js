@@ -145,8 +145,7 @@ self = module.exports = {
     }
     snippet += `${getHeaders(request, indentation)}\n`;
     snippet += `${parseBody(request.toJSON(), options.trimRequestBody, indentation)}`;
-    snippet += `${indentation}--output-document=shellWget.txt \\\n`;
-    snippet += `${indentation}- '${request.url.toString()}'`;
+    snippet += `${indentation} '${request.url.toString()}'`;
 
     return callback(null, snippet);
   }

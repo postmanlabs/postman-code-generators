@@ -1,5 +1,6 @@
-main.java
-
+*.java
+*.class
+*.jar
 .DS_Store
 # Logs
 logs
