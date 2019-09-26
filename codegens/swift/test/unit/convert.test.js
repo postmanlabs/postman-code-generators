@@ -1,6 +1,5 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../index').convert,
   sanitize = require('../../lib/util').sanitize,
   getUrlStringfromUrlObject = require('../../lib/util').getUrlStringfromUrlObject,
@@ -9,18 +8,6 @@ var expect = require('chai').expect,
 
 
 describe('Swift Converter', function () {
-  describe('convert for different request types', function () {
-    var options = {
-        indentType: 'Space',
-        indentCount: 4
-      },
-      // if running locally on mac change the runScript to 'swift snippet.swift'
-      testConfig = {
-        fileName: 'snippet.swift',
-        runScript: 'swift-5.0.1-RELEASE-ubuntu16.04/usr/bin/./swift snippet.swift'
-      };
-    runNewmanTest(convert, options, testConfig);
-  });
 
   describe('convert function', function () {
     var request = new sdk.Request(mainCollection.item[0].request),
