@@ -1,6 +1,5 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../lib/index').convert,
   getOptions = require('../../lib/index').getOptions,
   sanitize = require('../../lib/util').sanitize,
@@ -8,15 +7,6 @@ var expect = require('chai').expect,
   mainCollection = require('./fixtures/testcollection/collection.json');
 
 describe('nodejs unirest convert function', function () {
-  var options = {indentCount: 2, indentType: 'Space'},
-    testConfig = {
-      compileScript: null,
-      runScript: 'node run.js',
-      fileName: 'run.js',
-      headerSnippet: '/* eslint-disable */\n'
-    };
-
-  runNewmanTest(convert, options, testConfig);
 
   describe('Convert function', function () {
     var request, reqObject, options, snippetArray, line_no;
