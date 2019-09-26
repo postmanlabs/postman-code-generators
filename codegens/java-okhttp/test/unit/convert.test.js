@@ -3,20 +3,9 @@ var expect = require('chai').expect,
   sanitize = require('../../lib/util').sanitize,
   convert = require('../../lib/index').convert,
   getOptions = require('../../lib/index').getOptions,
-  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   mainCollection = require('../../../../test/codegen/newman/fixtures/basicCollection.json');
 
 describe('okhttp convert function', function () {
-  describe('convert for different request types', function () {
-    var options = {indentCount: 3, indentType: 'Space', includeBoilerplate: true},
-      testConfig = {
-        compileScript: 'javac -cp *: main.java',
-        runScript: 'java -cp *: main',
-        fileName: 'main.java'
-      };
-    runNewmanTest(convert, options, testConfig);
-  });
-
   describe('convert function', function () {
     var request = new sdk.Request(mainCollection.item[0].request),
       snippetArray,
