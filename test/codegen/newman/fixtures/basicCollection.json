@@ -136,6 +136,36 @@
 			"response": []
 		},
 		{
+			"name": "Request headers with multiple headers with same name",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "key",
+						"value": "value1",
+						"type": "text"
+					},
+					{
+						"key": "key",
+						"value": "value2",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://postman-echo.com/get",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "GET Request with disabled query",
 			"event": [
 				{
