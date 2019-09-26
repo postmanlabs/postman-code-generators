@@ -1,6 +1,5 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   sanitize = require('../../lib/util').sanitize,
   parseBody = require('../../lib/parseRequest').parseBody,
   getOptions = require('../../lib/index').getOptions,
@@ -8,16 +7,6 @@ var expect = require('chai').expect,
   mainCollection = require('./fixtures/testcollection/collection.json');
 
 describe('nodejs-request convert function', function () {
-  var options = {indentCount: 2, indentType: 'Space'},
-    testConfig = {
-      compileScript: null,
-      runScript: 'node run.js',
-      fileName: 'run.js',
-      headerSnippet: '/* eslint-disable */\n'
-    };
-
-  runNewmanTest(convert, options, testConfig);
-
   describe('Convert function', function () {
     var request,
       reqObject,
