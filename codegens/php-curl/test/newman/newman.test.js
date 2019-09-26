@@ -3,8 +3,8 @@ var runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').ru
 
 describe('Convert for different types of request', function () {
   var testConfig = {
-      runScript: 'php test/unit/fixtures/codesnippet.php',
-      fileName: 'test/unit/fixtures/codesnippet.php',
+      runScript: 'php codesnippet.php',
+      fileName: 'codesnippet.php',
       compileScript: null
     },
     options = {

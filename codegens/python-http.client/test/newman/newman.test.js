@@ -11,8 +11,8 @@ describe('Convert for different types of request', function () {
       followRedirect: true
     },
     testConfig = {
-      fileName: 'test/unit/fixtures/codesnippet.py',
-      runScript: 'python3 test/unit/fixtures/codesnippet.py',
+      fileName: 'codesnippet.py',
+      runScript: 'python3 codesnippet.py',
       skipCollections: ['redirectCollection']
     };
   runNewmanTest(convert, options, testConfig);
