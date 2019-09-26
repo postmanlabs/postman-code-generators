@@ -1,22 +1,8 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../index').convert;
 
 describe('Golang convert function', function () {
-  describe('convert for different request types', function () {
-    var testConfig = {
-        runScript: 'go run snippet.go',
-        compileScript: null,
-        fileName: 'snippet.go'
-      },
-      options = {
-        indentCount: 1,
-        indentType: 'Tab'
-      };
-    runNewmanTest(convert, options, testConfig);
-  });
-
   describe('Convert function', function () {
     var request, options;
 
