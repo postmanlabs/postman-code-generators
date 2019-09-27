@@ -98,20 +98,30 @@ function parseBody (requestbody, indentString, trimBody) {
  * @returns {String} - code snippet of nodejs native to add header
  */
 function parseHeader (request, indentString) {
-  var headerArray = request.toJSON().header,
+  var headerObject = request.getHeaders({enabled: true}),
     headerSnippet = indentString + '\'headers\': {\n';
 
-  if (headerArray) {
-    headerArray = _.reject(headerArray, 'disabled');
-    headerSnippet += _.reduce(headerArray, function (accumalator, header) {
-      accumalator.push(
-        indentString.repeat(2) + `'${sanitize(header.key, true)}': '${sanitize(header.value)}'`
-      );
+  if (headerObject) {
+    headerSnippet += _.reduce(Object.keys(headerObject), function (accumalator, key) {
+      if (Array.isArray(headerObject[key])) {
+        var headerValues = [];
+        _.forEach(headerObject[key], (value) => {
+          headerValues.push(`'${sanitize(value)}'`);
+        });
+        accumalator.push(
+          indentString.repeat(2) + `'${sanitize(key, true)}': [${headerValues.join(', ')}]`
+        );
+      }
+      else {
+        accumalator.push(
+          indentString.repeat(2) + `'${sanitize(key, true)}': '${sanitize(headerObject[key])}'`
+        );
+      }
       return accumalator;
     }, []).join(',\n');
   }
 
-  if (headerArray && !_.isEmpty(headerArray)) {
+  if (headerObject && !_.isEmpty(headerObject)) {
     headerSnippet += '\n';
   }
 
