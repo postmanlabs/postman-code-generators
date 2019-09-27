@@ -107,15 +107,19 @@ runNewmanTest(conver, options, testConfig);
 * options - Options object to generate appropriate code snippet
 * testConfig - These are the test configuration required to compile and run the code snippet.
 
-example for Java Okhttp: 
+#### Example for Java Okhttp: 
 ```js
-testConfig = {
-  fileName: 'main.java', // The file in which the code snippet has to be saved to later compile and run
-  compileScript: 'javac -cp *: main.java', // The script required to compile generated code snippet.
-  runScript: 'java -cp *: main', // The script required to run the generated code snippet.
-  skipCollections: [] // Collections that need to be skipped for testing for a particular codegen.
-  // The collection through which newman tests are run will be found inside the `test/codegen/newman/fixtures`. 
-}
+var convert = require('../../index').convert,
+  options = {
+    includeBoilerplate: true
+  },
+  testConfig = {
+    fileName: 'main.java', // The file in which the code snippet has to be saved to later compile and run
+    compileScript: 'javac -cp *: main.java', // The script required to compile generated code snippet.
+    runScript: 'java -cp *: main', // The script required to run the generated code snippet.
+    skipCollections: [] // Collections that need to be skipped for testing for a particular codegen.
+    // The collection through which newman tests are run will be found inside the `test/codegen/newman/fixtures`. 
+  }
 ```
 
 For some languages, it's not practical to run an interpreter for generated code. The JS-jQuery is an example. In such cases, the output of the conversion is compared against a known snippet that we know works correctly.
