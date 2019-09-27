@@ -56,7 +56,7 @@ Directory               | Summary
 `test/codegen`          | Runs functional tests on the individual generation modules
 `test/system`           | Checks for proper code structuring and division across the code generators
 
-## Codegen
+### Codegen
 
 Every codegen has the following structure.
 
@@ -94,7 +94,7 @@ The CI pipeline on travis will check for code structure across all code generato
 
 ### Newman Test 
 
-Newman tests run a fixed collection in [Newman](https://github.com/postmanlabs/newman), and run each request through the corresponding code generator, and execute it through the relevant interpreter. The responses from Newman and the language interpreter are compared. 
+Newman tests run a set of fixed collections in [Newman](https://github.com/postmanlabs/newman), and run each request through the corresponding code generator, and execute it through the relevant interpreter. The responses from Newman and the language interpreter are compared. Currently, there are a set of 3 collections, basicCollection - has a set of some basic requests that every codegen running newman tests has to run, formdataCollection - has requests relating to form-data mode of data transfer and redirectCollection - has requests with follow redirects enabled. Apart from basicCollection all other collections may be skipped for running newman tests with valid reasons.
 
 This mechanism is present in `test/codegen/newman`. All you need to run these tests is to call the following function:
 
