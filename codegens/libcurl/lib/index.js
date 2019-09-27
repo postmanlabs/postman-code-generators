@@ -54,11 +54,13 @@ self = module.exports = {
       });
     }
     headersData = request.toJSON().header;
-    headersData = _.reject(headersData, 'disabled');
-    _.forEach(headersData, function (header) {
-      snippet += indentString + `headers = curl_slist_append(headers, "${sanitize(header.key, true)}:` +
+    if (headersData) {
+      headersData = _.reject(headersData, 'disabled');
+      _.forEach(headersData, function (header) {
+        snippet += indentString + `headers = curl_slist_append(headers, "${sanitize(header.key, true)}:` +
       ` ${sanitize(header.value)}");\n`;
-    });
+      });
+    }
     body = request.body ? request.body.toJSON() : {};
     if (body.mode && body.mode === 'formdata' && !options.useMimeType) {
       snippet += indentString + 'headers = curl_slist_append(headers, "content-type:' +
