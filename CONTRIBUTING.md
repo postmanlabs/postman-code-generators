@@ -99,7 +99,7 @@ Newman tests run a fixed collection in [Newman](https://github.com/postmanlabs/n
 This mechanism is present in `test/codegen/newman`. All you need to run these tests is to call the following function:
 
 ```js
-var runNewmanTest = require(PATH_TO_NEWMAN_TEST_FOLDER);
+var runNewmanTest = require(PATH_TO_NEWMAN_UTIL_FOLDER).runNewmanTest;
 
 runNewmanTest(conver, options, testConfig);
 ```
