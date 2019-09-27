@@ -102,14 +102,14 @@ var codegen = require('postman-code-generators'), // require postman-code-genera
 
 This function takes in three parameters and returns a callback  with error and supported options of that code generator.
 
-* `language` - lang key from the language list returned from getLanguageList function
+* `language` - langugage key from the language list returned from getLanguageList function
 * `variant` - variant key provided by getLanguageList function
 * `callback` - callback function with first parameter as error and second parameter as array of options supported by the codegen.
 
 A typical option has the following properties:
 * `name` - Display name
 * `id` - unique ID of the option
-* `type` - Data type of the option 
+* `type` - Data type of the option. (Allowed data types: `boolean`, `enum`, `positiveInteger`)
 * `default` - Default value. The value that is used if this option is not specified while creating code snippet
 * `description` - User friendly description.
 
