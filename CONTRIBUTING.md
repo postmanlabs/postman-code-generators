@@ -14,7 +14,7 @@
 
 ## Getting Started Quick
 
-Instructions on initial setup can be found in the README.
+Instructions on initial setup can be found in the [README](/README.md).
 
 ## NPM Command Reference
 
@@ -31,9 +31,9 @@ Installs all `dependencies` of all the codegens. This runs the command `npm inst
 #### `npm test`
 
 The script associated with `npm test` will run all tests that ensures that your commit does not break anything in the
-repository.
+repository. Additional requirements to run these tests have been listed down in [ADDITIONAL_DEPENDENCIES](/ADDITIONAL_DEPENDENCIES.md)
 
-* `npm test`: Runs strucutre, unit and system tests for all codegens
+* `npm test`: Runs strucutre, unit, newman and system tests for all codegens
 * `npm run test <codegen-name>`: Runs tests for a particular codegen.
 
 
