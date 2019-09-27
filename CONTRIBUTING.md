@@ -9,8 +9,8 @@
   - [General Instructions](#general-instructions)
   - [Pull request guidelines](#pull-request-guidelines)
   - [Tests](#tests)
-  - [Security guildelines](security-guidelines)
   - [Build Failures](build-failures)
+  - [Security guildelines](security-guidelines)
 
 ## Getting Started Quick
 
@@ -18,17 +18,17 @@ Instructions on initial setup can be found in the README.
 
 ## NPM Command Reference
 
-### `npm install`
+#### `npm install`
 
 Installs all `dependencies` listed in the root `package.json` and all the codegens.
 
-### `npm run deepinstall`
+#### `npm run deepinstall`
 
 Installs all `dependencies` of all the codegens. This runs the command `npm install --production --no-audit` in all codegens.
 
 * `npm run deepinstall dev`: Installs all dependencies as well as devDependencies of all codegens.
 
-### `npm test`
+#### `npm test`
 
 The script associated with `npm test` will run all tests that ensures that your commit does not break anything in the
 repository.
@@ -37,13 +37,13 @@ repository.
 * `npm run test <codegen-name>`: Runs tests for a particular codegen.
 
 
-### `npm run boilerplate <codegen-name>`
+#### `npm run boilerplate <codegen-name>`
 
 The command will add a new boilerplate code generator with the name <codegen-name> with basic functions and tests, along with the right `package.json` structure. The format of the codegen name preferably should be `language-variant`. Please refer the [README](https://github.com/postmanlabs/postman-code-generators/blob/master/README.md) document.
 
-### `npm run cirequirements`
+#### `npm run cirequirements`
 
-The script associated with this command installs all the additional dependencies that are required to run the generated code snippet on travis. The script associated with this will only 
+The script associated with this command installs all the additional dependencies that are required to run the generated code snippet on travis. These are important to run the [newman tests](#tests) on travis. 
 
 ## Repository
 
@@ -67,7 +67,7 @@ Directory/File          | Summary
 `test`                  | Contains unit and newman tests.
 `test/newman`           | Runs [newman tests](#tests) 
 `test/unit`             | Runs unit tests
-`index.js`              | Exposes the two functions: convert and getOptions
+`index.js`              | Exposes two functions: convert and getOptions
 
 ## General Instructions
 
@@ -120,10 +120,11 @@ testConfig = {
 
 For some languages, it's not practical to run an interpreter for generated code. The JS-jQuery is an example. In such cases, the output of the conversion is compared against a known snippet that we know works correctly.
 
-## Security guidelines
-If you've found a vulnerability, or want additional information regarding how we manage security, please send an email to security@getpostman.com. We will review it and respond to you within 24 hours. Please use our [PGP public key](https://assets.getpostman.com/getpostman/documents/publickey.txt) to encrypt your communications with us.
-
 ## Build Failures
 Some common reasons for travis build failures:
 - If you've added a new code generator, you might have to add some dependencies in `npm/ci-requirements` for running the code snippet on travis. We use the [xenial build](https://docs.travis-ci.com/user/reference/xenial/) of travis. If appropriate dependencies are not added, the newman tests for the codegen will fail.
 - Use of `sudo` before bash commands. This is enforced by travis and not adding this will throw error.
+
+## Security guidelines
+If you've found a vulnerability, or want additional information regarding how we manage security, please send an email to security@getpostman.com. We will review it and respond to you within 24 hours. Please use our [PGP public key](https://assets.getpostman.com/getpostman/documents/publickey.txt) to encrypt your communications with us.
+
