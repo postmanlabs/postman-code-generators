@@ -2,22 +2,11 @@
 
 > Converts Postman-SDK Request into code snippet for Java-unirest.
 
-## Getting Started
- To get a copy on your local machine
-```bash
-$ git clone git@bitbucket.org:postmanlabs/codegen-java-unirest.git
-```
-
 #### Prerequisites
 To run Code-Gen, ensure that you have NodeJS >= v6. A copy of the NodeJS installable can be downloaded from https://nodejs.org/en/download/package-manager.
 
-#### Installing dependencies
-```bash
-$ npm install;
-```
-
 ## Using the Module
-The module will expose an object which will have property `convert` which is the function for converting the Postman-SDK request to java-unirest code snippet.
+The module will expose an object which will have property `convert` which is the function for converting the Postman-SDK request to java-unirest code snippet and `getOptions` function which returns an array of supported options.
 
 ### convert function
 Convert function will take three parameters
@@ -49,6 +38,28 @@ convert(request, options, function(error, snippet) {
 });
 ```
 
+### getOptions function
+
+This function returns a list of options supported by this codegen.
+
+#### Example
+```js
+var options = getOptions();
+
+console.log(options);
+// output
+// [
+//       {
+//         name: 'Set indentation count',
+//         id: 'indentCount',
+//         type: 'positiveInteger',
+//         default: 2,
+//         description: 'Set the number of indentation characters to add per code level'
+//       },
+//       ...
+// ]
+```
+
 ### Guideline for using generated snippet
 * To download dependecies to use snippet please see [unirest-doc](http://unirest.io/java.html)
 
@@ -62,17 +73,3 @@ convert(request, options, function(error, snippet) {
 * Since java unirest does not support special characters in URL. URL will be encoded in snippet
 
 * This module doesn't support cookies.
-
-
-
-## Running the tests
-
-```bash
-$ npm test
-```
-
-### Break down into unit tests
-
-```bash
-$ npm run test-unit
-```

@@ -2,20 +2,8 @@
 
 This module is used to convert Postman SDK-Request object in PHP-curl variant snippet
 
-## Getting Started
- To get a copy on your local machine
-```bash
-$ git clone git@bitbucket.org:postmanlabs/codegen-php-curl.git
-```
-
-
 #### Prerequisites
 To run this repository, ensure that you have NodeJS >= v4. A copy of the NodeJS installable can be downloaded from https://nodejs.org/en/download/package-manager.
-
-#### Installing dependencies
-```bash
-$ npm install;
-```
 
 ## Using the Module
 This module exposes two function `convert()` and `getOptions()`
@@ -55,10 +43,28 @@ convert(request, options, function (err, snippet) {
 });
 ```
 
-### GetOptions
 
-GetOptions function is used to return options in an array which are specific to a particular plugin.
+### getOptions function
 
+This function returns a list of options supported by this codegen.
+
+#### Example
+```js
+var options = getOptions();
+
+console.log(options);
+// output
+// [
+//       {
+//         name: 'Set indentation count',
+//         id: 'indentCount',
+//         type: 'positiveInteger',
+//         default: 2,
+//         description: 'Set the number of indentation characters to add per code level'
+//       },
+//       ...
+// ]
+```
 
 ### Notes
 
@@ -77,15 +83,3 @@ GetOptions function is used to return options in an array which are specific to 
 ### Resources
 
 * Php-Curl official documentation [Php-Curl](http://php.net/manual/en/book.curl.php)
-
-## Running the tests
-
-```bash
-$ npm test
-```
-
-### Break down into unit tests
-
-```bash
-$ npm run test-unit
-```

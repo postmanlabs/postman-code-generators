@@ -2,7 +2,6 @@
 
 This module is used to convert Postman SDK-Request object in Shell-wget variant snippet
 
-
 #### Prerequisites
 To run this repository, ensure that you have NodeJS >= v4. A copy of the NodeJS installable can be downloaded from https://nodejs.org/en/download/package-manager.
 
@@ -44,6 +43,24 @@ convert(request, options, function (err, snippet) {
 });
 ```
 
-### GetOptions
+### getOptions function
 
-GetOptions function is used to return options in an array which are specific to a particular plugin.
+This function returns a list of options supported by this codegen.
+
+#### Example
+```js
+var options = getOptions();
+
+console.log(options);
+// output
+// [
+//       {
+//         name: 'Set indentation count',
+//         id: 'indentCount',
+//         type: 'positiveInteger',
+//         default: 2,
+//         description: 'Set the number of indentation characters to add per code level'
+//       },
+//       ...
+// ]
+```

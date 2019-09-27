@@ -1,21 +1,11 @@
 # codegen-js-xhr
 >Converts Postman-SDK Request into code snippet for JS XHR
 
-## Getting Started
-To get a copy on your local machine
-```bash
-$ git clone git@bitbucket.org:postmanlabs/codegen-js-xhr.git
-```
 #### Prerequisites
 To run Code-Gen, ensure that you have NodeJS >= v6. A copy of the NodeJS installable can be downloaded from https://nodejs.org/en/download/package-manager.
 
-#### Installing dependencies
-```bash
-$ npm install;
-```
-
 ## Using the Module
-The module will expose an object which will have property `convert` which is the function for converting the Postman-SDK request to js-xhr code snippet.
+The module will expose an object which will have property `convert` which is the function for converting the Postman-SDK request to js-xhr code snippet and `getOptions` function which returns an array of supported options.
 
 ### convert function
 Convert function takes three parameters
@@ -48,21 +38,31 @@ convert(request, options, function(error, snippet) {
     //  handle snippet
 });
 ```
+
+### getOptions function
+
+This function returns a list of options supported by this codegen.
+
+#### Example
+```js
+var options = getOptions();
+
+console.log(options);
+// output
+// [
+//       {
+//         name: 'Set indentation count',
+//         id: 'indentCount',
+//         type: 'positiveInteger',
+//         default: 2,
+//         description: 'Set the number of indentation characters to add per code level'
+//       },
+//       ...
+// ]
+```
+
 ### Guidelines for using generated snippet
 
 * Since Postman-SDK Request object doesn't provide complete path of the file, it needs to be manually inserted in case of uploading a file.
 
 * This module doesn't support cookies.
-
-
-## Running the tests
-
-```bash
-$ npm test
-```
-
-### Break down into unit tests
-
-```bash
-$ npm run test-unit
-```

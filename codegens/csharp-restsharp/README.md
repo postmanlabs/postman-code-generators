@@ -2,11 +2,11 @@
 
 > Converts Postman-SDK Request into code snippet for Csharp-RestSharp.
 
-#### Prerequisites
+#### Prerequisite
 To run Code-Gen, ensure that you have NodeJS >= v6. A copy of the NodeJS installable can be downloaded from https://nodejs.org/en/download/package-manager.
 
 ## Using the Module
-The module will expose an object which will have property `convert` which is the function for converting the Postman-SDK request to Csharp-RestSharp code snippet.
+The module will expose an object which will have property `convert` which is the function for converting the Postman-SDK request to Csharp-RestSharp code snippetand `getOptions` function which returns an array of supported options.
 
 ### convert function
 Convert function will take three parameters
@@ -37,9 +37,34 @@ convert(request, options, function(error, snippet) {
     //  handle snippet
 });
 ```
+### getOptions function
 
+This function returns a list of options supported by this codegen.
+
+```js
+var options = getOptions();
+
+console.log(options);
+// output
+// [
+//     {
+//         name: 'Include boilerplate',
+//         id: 'includeBoilerplate',
+//         type: 'boolean',
+//         default: false,
+//         description: 'Include class definition and import statements in snippet'
+//       },
+//       {
+//         name: 'Set indentation count',
+//         id: 'indentCount',
+//         type: 'positiveInteger',
+//         default: 2,
+//         description: 'Set the number of indentation characters to add per code level'
+//       },
+//       ...
+// ]
+```
 ### Guideline for using generated snippet
-* Generated snippet requires dependecies [mono-complete](https://www.mono-project.com/download/stable/#download-lin) to compile and run
 
 * Since Postman-SDK Request object doesn't provide complete path of the file, it needs to be manually inserted in case of uploading a file.
 
