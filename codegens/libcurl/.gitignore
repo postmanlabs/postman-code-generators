@@ -1,4 +1,6 @@
 .DS_Store
+
+
 # Logs
 logs
 *.log
@@ -65,4 +67,5 @@ typings/
 
 out/
 
-testFile.c
+*.c
+

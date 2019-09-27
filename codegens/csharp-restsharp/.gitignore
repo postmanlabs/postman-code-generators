@@ -1,4 +1,6 @@
 .DS_Store
+*.cs
+*.exe
 # Logs
 logs
 *.log
