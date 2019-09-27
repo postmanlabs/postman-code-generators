@@ -9,7 +9,7 @@ To run this repository, ensure that you have NodeJS >= v4. A copy of the NodeJS 
 This module exposes two function `convert()` and `getOptions()`
 
 ### Convert
- 
+
 Convert function sanitizes the inputs, overrides options with the default ones if not provided and return the code snippet in the desired format.
 
 It requires 3 mandatory parameters `request`, `callback` and `options`
@@ -43,10 +43,28 @@ convert(request, options, function (err, snippet) {
 });
 ```
 
-### GetOptions
 
-GetOptions function is used to return options in an array which are specific to a particular plugin.
+### getOptions function
 
+This function returns a list of options supported by this codegen.
+
+#### Example
+```js
+var options = getOptions();
+
+console.log(options);
+// output
+// [
+//       {
+//         name: 'Set indentation count',
+//         id: 'indentCount',
+//         type: 'positiveInteger',
+//         default: 2,
+//         description: 'Set the number of indentation characters to add per code level'
+//       },
+//       ...
+// ]
+```
 
 ### Notes
 
