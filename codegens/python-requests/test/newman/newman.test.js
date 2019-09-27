@@ -10,8 +10,9 @@ describe('Convert for different types of request', function () {
       fileName: 'codesnippet.py',
       runScript: 'python codesnippet.py',
       compileScript: null,
-      skipCollections: ['formdataCollection']
+      skipCollections: ['formdataCollection', 'sameNameHeadersCollection']
     };
   runNewmanTest(convert, options, testConfig);
 
 });
+

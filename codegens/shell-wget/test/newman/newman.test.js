@@ -8,7 +8,7 @@ describe('Convert for different types of request', function () {
     },
     testConfig = {
       footerSnippet: ' -qO-', // Added this to get the response in stdout instead of saving in file.
-      skipCollections: ['formdataCollection']
+      skipCollections: ['formdataCollection', 'sameNameHeadersCollection']
     };
   runNewmanTest(convert, options, testConfig);
 });
