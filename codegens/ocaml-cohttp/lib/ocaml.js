@@ -148,10 +148,11 @@ function parseBody (body, trim, indent) {
 function parseHeaders (bodyMode, headers, indent) {
   var headerSnippet = '';
   if (!_.isEmpty(headers)) {
+    headers = _.reject(headers, 'disabled');
     headerSnippet += `${indent}let headers = Header.init ()\n`;
-    _.forEach(headers, function (value, key) {
-      headerSnippet += `${indent.repeat(2)}|> fun h -> Header.add h "${sanitize(key, 'header', true)}" `;
-      headerSnippet += `"${sanitize(value, 'header')}"\n`;
+    _.forEach(headers, function (header) {
+      headerSnippet += `${indent.repeat(2)}|> fun h -> Header.add h "${sanitize(header.key, 'header', true)}" `;
+      headerSnippet += `"${sanitize(header.value, 'header')}"\n`;
     });
   }
   if (bodyMode === 'formdata') {
@@ -287,7 +288,7 @@ self = module.exports = {
         value: 'text/plain'
       });
     }
-    headerSnippet += parseHeaders(requestBodyMode, request.getHeaders({enabled: true}), indent);
+    headerSnippet += parseHeaders(requestBodyMode, request.toJSON().header, indent);
     bodySnippet = parseBody(requestBody, trim, indent);
 
     // Starting to add in codeSnippet

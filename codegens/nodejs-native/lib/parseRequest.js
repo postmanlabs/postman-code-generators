@@ -103,9 +103,20 @@ function parseHeader (request, indentString) {
 
   if (headerObject) {
     headerSnippet += _.reduce(Object.keys(headerObject), function (accumalator, key) {
-      accumalator.push(
-        indentString.repeat(2) + `'${sanitize(key, true)}': '${sanitize(headerObject[key])}'`
-      );
+      if (Array.isArray(headerObject[key])) {
+        var headerValues = [];
+        _.forEach(headerObject[key], (value) => {
+          headerValues.push(`'${sanitize(value)}'`);
+        });
+        accumalator.push(
+          indentString.repeat(2) + `'${sanitize(key, true)}': [${headerValues.join(', ')}]`
+        );
+      }
+      else {
+        accumalator.push(
+          indentString.repeat(2) + `'${sanitize(key, true)}': '${sanitize(headerObject[key])}'`
+        );
+      }
       return accumalator;
     }, []).join(',\n');
   }

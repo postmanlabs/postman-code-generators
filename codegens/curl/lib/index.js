@@ -51,10 +51,13 @@ self = module.exports = {
         value: 'text/plain'
       });
     }
-    headersData = request.getHeaders({ enabled: true });
-    _.forEach(headersData, function (value, key) {
-      snippet += indent + `${form('-H', format)} '${sanitize(key, true)}: ${sanitize(value)}'`;
-    });
+    headersData = request.toJSON().header;
+    if (headersData) {
+      headersData = _.reject(headersData, 'disabled');
+      _.forEach(headersData, (header) => {
+        snippet += indent + `${form('-H', format)} '${sanitize(header.key, true)}: ${sanitize(header.value)}'`;
+      });
+    }
 
     if (request.body) {
       body = request.body.toJSON();

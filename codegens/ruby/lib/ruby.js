@@ -14,7 +14,16 @@ function parseHeaders (headers) {
   var headerSnippet = '';
   if (!_.isEmpty(headers)) {
     _.forEach(headers, function (value, key) {
-      headerSnippet += `request["${sanitize(key, 'header', true)}"] = "${sanitize(value, 'header')}"\n`;
+      if (Array.isArray(value)) {
+        var headerValues = [];
+        _.forEach(value, (singleValue) => {
+          headerValues.push(`"${sanitize(singleValue, 'header')}"`);
+        });
+        headerSnippet += `request["${sanitize(key, 'header', true)}"] = [${headerValues.join(', ')}]\n`;
+      }
+      else {
+        headerSnippet += `request["${sanitize(key, 'header', true)}"] = "${sanitize(value, 'header')}"\n`;
+      }
     });
   }
   return headerSnippet;

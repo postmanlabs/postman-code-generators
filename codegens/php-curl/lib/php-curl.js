@@ -12,13 +12,14 @@ var _ = require('./lodash'),
  * @returns {String} - request headers in the desired format
  */
 function getHeaders (request, indentation) {
-  var headerObject = request.getHeaders({enabled: true}),
+  var headerArray = request.toJSON().header,
     headerMap;
 
-  if (!_.isEmpty(headerObject)) {
-    headerMap = _.map(Object.keys(headerObject), function (key) {
-      return `${indentation.repeat(2)}"${sanitize(key, 'header', true)}: ` +
-            `${sanitize(headerObject[key], 'header')}"`;
+  if (!_.isEmpty(headerArray)) {
+    headerArray = _.reject(headerArray, 'disabled');
+    headerMap = _.map(headerArray, function (header) {
+      return `${indentation.repeat(2)}"${sanitize(header.key, 'header', true)}: ` +
+            `${sanitize(header.value, 'header')}"`;
     });
     return `${indentation}CURLOPT_HTTPHEADER => array(\n${headerMap.join(',\n')}\n${indentation}),\n`;
   }

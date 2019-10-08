@@ -47,16 +47,20 @@ self = module.exports = {
     }
     snippet += indentString + `curl_easy_setopt(curl, CURLOPT_DEFAULT_PROTOCOL, "${protocol}");\n`;
     snippet += indentString + 'struct curl_slist *headers = NULL;\n';
-    headersData = request.getHeaders({ enabled: true });
     if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
       request.addHeader({
         key: 'Content-Type',
         value: 'text/plain'
       });
     }
-    _.forEach(headersData, function (value, key) {
-      snippet += indentString + `headers = curl_slist_append(headers, "${sanitize(key, true)}: ${sanitize(value)}");\n`;
-    });
+    headersData = request.toJSON().header;
+    if (headersData) {
+      headersData = _.reject(headersData, 'disabled');
+      _.forEach(headersData, function (header) {
+        snippet += indentString + `headers = curl_slist_append(headers, "${sanitize(header.key, true)}:` +
+      ` ${sanitize(header.value)}");\n`;
+      });
+    }
     body = request.body ? request.body.toJSON() : {};
     if (body.mode && body.mode === 'formdata' && !options.useMimeType) {
       snippet += indentString + 'headers = curl_slist_append(headers, "content-type:' +

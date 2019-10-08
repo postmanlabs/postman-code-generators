@@ -7,7 +7,10 @@ describe('convert for different request types', function () {
     testConfig = {
       compileScript: 'dotnet build ' + projectPath,
       runScript: 'dotnet run --project ' + projectPath,
-      fileName: projectPath + '/Program.cs'
+      fileName: projectPath + '/Program.cs',
+      // sameNameHeaders Collection is skipped because csharp internally concatenates the
+      // headers with same names into a single header with value as comma seperated string
+      skipCollections: ['sameNameHeadersCollection']
     },
     options = {
       includeBoilerplate: true

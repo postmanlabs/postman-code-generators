@@ -94,13 +94,14 @@ function parseBody (requestBody, indentString, trimFields) {
  * @returns {String} - code snippet for adding headers in java-okhttp
  */
 function parseHeader (request, indentString) {
-  var headerObject = request.getHeaders({enabled: true}),
+  var headerArray = request.toJSON().header,
     headerSnippet = '';
 
-  if (!_.isEmpty(headerObject)) {
-    headerSnippet += _.reduce(Object.keys(headerObject), function (accumalator, key) {
-      accumalator += indentString + `.addHeader("${sanitize(key, true)}", ` +
-                           `"${sanitize(headerObject[key])}")\n`;
+  if (!_.isEmpty(headerArray)) {
+    headerArray = _.reject(headerArray, 'disabled');
+    headerSnippet += _.reduce(headerArray, function (accumalator, header) {
+      accumalator += indentString + `.addHeader("${sanitize(header.key, true)}", ` +
+        `"${sanitize(header.value)}")\n`;
       return accumalator;
     }, '');
   }

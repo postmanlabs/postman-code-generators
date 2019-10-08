@@ -103,8 +103,9 @@ function parseBody (body, trim) {
 function parseHeaders (headers) {
   var headerSnippet = '';
   if (!_.isEmpty(headers)) {
-    _.forEach(headers, function (value, key) {
-      headerSnippet += `xhr.setRequestHeader("${sanitize(key, true)}", "${sanitize(value)}");\n`;
+    headers = _.reject(headers, 'disabled');
+    _.forEach(headers, function (header) {
+      headerSnippet += `xhr.setRequestHeader("${sanitize(header.key, true)}", "${sanitize(header.value)}");\n`;
     });
   }
   return headerSnippet;
@@ -192,7 +193,7 @@ function convert (request, options, callback) {
     codeSnippet += '});\n';
   }
 
-  headerSnippet = parseHeaders(request.getHeaders({enabled: true}));
+  headerSnippet = parseHeaders(request.toJSON().header);
 
   codeSnippet += headerSnippet + '\n';
 
