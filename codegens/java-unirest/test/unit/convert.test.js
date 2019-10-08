@@ -246,6 +246,82 @@ describe('java unirest convert function for test collection', function () {
         expect(snippet).to.include('.header("key_containing_whitespaces", "  value_containing_whitespaces  ")');
       });
     });
+
+    it('should add the force multipart body method when ' +
+      'there are no files but contains text field params in multipart/form-data', function () {
+      var request = new sdk.Request({
+        'method': 'GET',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'key1',
+              'value': 'value1',
+              'type': 'text'
+            },
+            {
+              'key': 'key2',
+              'value': 'value2',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'https://postman-echo/',
+          'protocol': 'https',
+          'host': [
+            'google',
+            'com'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('.multiPartContent()');
+        expect(snippet).to.include('.field("key1", "value1")');
+        expect(snippet).to.include('.field("key2", "value2")');
+      });
+    });
+
+    it('should not add the force multipart body method when ' +
+      'there are file fields in multipart/form-data', function () {
+      var request = new sdk.Request({
+        'method': 'GET',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'key1',
+              'value': 'value1',
+              'type': 'file'
+            },
+            {
+              'key': 'key2',
+              'value': 'value2',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'https://postman-echo/',
+          'protocol': 'https',
+          'host': [
+            'google',
+            'com'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.not.include('.multiPartContent()');
+      });
+    });
   });
   describe('getUrlStringfromUrlObject function', function () {
     var rawUrl, urlObject, outputUrlString;
