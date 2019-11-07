@@ -76,6 +76,20 @@ function parseBody (requestbody, indentString, trimBody) {
     switch (requestbody.mode) {
       case 'raw':
         return ` ${JSON.stringify(requestbody[requestbody.mode])}`;
+      // eslint-disable-next-line no-case-declarations
+      case 'graphql':
+        let query = requestbody[requestbody.mode].query,
+          graphqlVariables;
+        try {
+          graphqlVariables = JSON.parse(requestbody[requestbody.mode].variables);
+        }
+        catch (e) {
+          graphqlVariables = {};
+        }
+        return ` ${JSON.stringify({
+          query: query,
+          variables: graphqlVariables
+        })}`;
       case 'formdata':
         return generateMultipartFormData(requestbody);
       case 'urlencoded':

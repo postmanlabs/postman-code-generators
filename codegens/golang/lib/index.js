@@ -17,6 +17,29 @@ function parseRawBody (body, trim) {
 }
 
 /**
+ * Parses graphql data to golang syntax
+ *
+ * @param {Object} body Raw body data
+ * @param {boolean} trim trim body option
+ */
+function parseGraphQL (body, trim) {
+  let query = body.query,
+    graphqlVariables,
+    bodySnippet;
+  try {
+    graphqlVariables = JSON.parse(body.variables);
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  bodySnippet = `payload := strings.NewReader("${sanitize(JSON.stringify({
+    query: query,
+    variables: graphqlVariables
+  }), trim)}")`;
+  return bodySnippet;
+}
+
+/**
  * Parses URLEncoded body from request to fetch syntax
  *
  * @param {Object} body URLEncoded Body
@@ -97,6 +120,8 @@ function parseBody (body, trim, indent) {
         return parseURLEncodedBody(body.urlencoded, trim);
       case 'raw':
         return parseRawBody(body.raw, trim);
+      case 'graphql':
+        return parseGraphQL(body.graphql, trim);
       case 'formdata':
         return parseFormData(body.formdata, trim, indent);
       case 'file':

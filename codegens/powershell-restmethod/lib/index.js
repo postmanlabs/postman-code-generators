@@ -76,6 +76,27 @@ function parseRawBody (body, trim) {
   return `$body = "${sanitize(body.toString(), trim)}"\n`;
 }
 
+/**
+ * Parses graphql data from request to powershell-restmethod syntax
+ *
+ * @param {Object} body graphql body data
+ * @param {boolean} trim trim body option
+ */
+function parseGraphQL (body, trim) {
+  let query = body.query,
+    graphqlVariables;
+  try {
+    graphqlVariables = JSON.parse(body.variables);
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  return `$body = "${sanitize(JSON.stringify({
+    query: query,
+    variables: graphqlVariables
+  }), trim)}"\n`;
+}
+
 /* eslint-disable no-unused-vars*/
 /* istanbul ignore next */
 /**
@@ -102,6 +123,8 @@ function parseBody (body, trim) {
         return parseURLEncodedBody(body.urlencoded);
       case 'raw':
         return parseRawBody(body.raw, trim);
+      case 'graphql':
+        return parseGraphQL(body.graphql, trim);
       case 'formdata':
         return parseFormData(body.formdata, trim);
         /* istanbul ignore next */

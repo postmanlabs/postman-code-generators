@@ -77,6 +77,21 @@ self = module.exports = {
           case 'raw':
             snippet += indent + `--data-raw '${sanitize(body.raw.toString(), trim)}'`;
             break;
+          // eslint-disable-next-line no-case-declarations
+          case 'graphql':
+            let query = body.graphql.query,
+              graphqlVariables;
+            try {
+              graphqlVariables = JSON.parse(requestBody.graphql.variables);
+            }
+            catch (e) {
+              graphqlVariables = {};
+            }
+            snippet += indent + `--data-raw '${sanitize(JSON.stringify({
+              query: query,
+              variables: graphqlVariables
+            }), trim)}'`;
+            break;
           case 'formdata':
             _.forEach(body.formdata, function (data) {
               if (!(data.disabled)) {

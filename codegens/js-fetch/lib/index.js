@@ -66,6 +66,29 @@ function parseRawBody (body, trim) {
   return bodySnippet;
 }
 
+/**
+ * Parses graphql data to fetch syntax
+ *
+ * @param {Object} body graphql body data
+ * @param {boolean} trim trim body option
+ */
+function parseGraphQL (body, trim) {
+  let query = body.query,
+    graphqlVariables,
+    bodySnippet;
+  try {
+    graphqlVariables = JSON.parse(body.variables);
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  bodySnippet = `var graphql = "${sanitize(JSON.stringify({
+    query: query,
+    variables: graphqlVariables
+  }), trim)}";\n`;
+  return bodySnippet;
+}
+
 
 /* istanbul ignore next */
 /**
@@ -89,6 +112,8 @@ function parseBody (body, trim) {
         return parseURLEncodedBody(body.urlencoded, trim);
       case 'raw':
         return parseRawBody(body.raw, trim);
+      case 'graphql':
+        return parseGraphQL(body.graphql, trim);
       case 'formdata':
         return parseFormData(body.formdata, trim);
         /* istanbul ignore next */

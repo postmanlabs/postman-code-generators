@@ -3,6 +3,7 @@ let _ = require('./lodash'),
 
 const FORM_DATA_BOUNDARY = '----WebKitFormBoundary7MA4YWxkTrZu0gW',
   RAW = 'raw',
+  GRAPHQL = 'graphql',
   URL_ENCODED = 'urlencoded',
   FORM_DATA = 'formdata',
   FILE = 'file';
@@ -200,7 +201,21 @@ function getBody (request, trimRequestBody) {
           requestBody += request.body[request.body.mode].toString();
         }
         return trimRequestBody ? requestBody.trim() : requestBody;
-
+      // eslint-disable-next-line no-case-declarations
+      case GRAPHQL:
+        let query = request.body[request.body.mode].query,
+          graphqlVariables;
+        try {
+          graphqlVariables = JSON.parse(requestBody.graphql.variables);
+        }
+        catch (e) {
+          graphqlVariables = {};
+        }
+        requestBody += JSON.stringify({
+          query: query,
+          variables: graphqlVariables
+        });
+        return trimRequestBody ? requestBody.trim() : requestBody;
       case URL_ENCODED:
         /* istanbul ignore else */
         if (!_.isEmpty(request.body[request.body.mode])) {
