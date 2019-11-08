@@ -217,7 +217,12 @@ function convert (request, options, callback) {
     codeSnippet += `${indent} console.log(e);\n`;
     codeSnippet += '});\n';
   }
-
+  if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
+    request.addHeader({
+      key: 'Content-Type',
+      value: 'application/json'
+    });
+  }
   headerSnippet = parseHeaders(request.toJSON().header);
 
   codeSnippet += headerSnippet + '\n';

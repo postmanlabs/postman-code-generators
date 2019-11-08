@@ -41,6 +41,12 @@ function makeSnippet (request, indentString, options) {
     console.warn(request.method + ' method isn\'t supported by Unirest java library');
     snippet += `get("${urlString}")\n`;
   }
+  if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
+    request.addHeader({
+      key: 'Content-Type',
+      value: 'application/json'
+    });
+  }
   snippet += parseRequest.parseHeader(request, indentString);
   snippet += parseRequest.parseBody(request, indentString, options.trimRequestBody);
   snippet += indentString + '.asString();\n';

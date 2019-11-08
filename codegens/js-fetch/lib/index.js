@@ -223,6 +223,12 @@ function convert (request, options, callback) {
   indent = indent.repeat(options.indentCount);
 
   headers = request.toJSON().header;
+  if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
+    request.addHeader({
+      key: 'Content-Type',
+      value: 'application/json'
+    });
+  }
   headerSnippet = parseHeaders(headers);
 
   body = request.body && request.body.toJSON();

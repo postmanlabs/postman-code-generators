@@ -74,6 +74,12 @@ self = module.exports = {
     Helpers.parseURLVariable(request);
     url = Helpers.addHost(request) + Helpers.addPort(request) + Helpers.addPathandQuery(request);
     timeout = options.requestTimeout;
+    if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'application/json'
+      });
+    }
     parsedHeaders = Helpers.addHeaders(request);
 
     // snippet construction based on the request body

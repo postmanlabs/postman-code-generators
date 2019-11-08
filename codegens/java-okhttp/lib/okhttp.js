@@ -40,7 +40,12 @@ function makeSnippet (request, indentString, options) {
   snippet += 'Request request = new Request.Builder()\n';
   snippet += indentString + `.url("${sanitize(request.url.toString())}")\n`;
   snippet += indentString + `.method("${request.method}", ${isBodyRequired ? 'body' : 'null'})\n`;
-
+  if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
+    request.addHeader({
+      key: 'Content-Type',
+      value: 'application/json'
+    });
+  }
   //  java-okhttp snippet for adding headers to request
   snippet += parseRequest.parseHeader(request, indentString);
 

@@ -290,11 +290,19 @@ self = module.exports = {
     }
     codeSnippet += `var request = URLRequest(url: URL(string: "${finalUrl}")!,` +
          `timeoutInterval: ${timeout ? timeout : 'Double.infinity'})\n`;
-    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
-      request.addHeader({
-        key: 'Content-Type',
-        value: 'text/plain'
-      });
+    if (request.body && !request.headers.has('Content-Type')) {
+      if (request.body.mode === 'file') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'text/plain'
+        });
+      }
+      else if (request.body.mode === 'graphql') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'application/json'
+        });
+      }
     }
     headerSnippet = parseHeaders(request.toJSON().header, (request.body ? request.body.mode : 'raw'));
     if (headerSnippet !== '') {

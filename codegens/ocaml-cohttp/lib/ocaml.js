@@ -309,11 +309,19 @@ self = module.exports = {
     trim = options.trimRequestBody;
     finalUrl = encodeURI(request.url.toString());
     methodArg = getMethodArg(request.method);
-    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
-      request.addHeader({
-        key: 'Content-Type',
-        value: 'text/plain'
-      });
+    if (request.body && !request.headers.has('Content-Type')) {
+      if (request.body.mode === 'file') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'text/plain'
+        });
+      }
+      else if (request.body.mode === 'graphql') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'application/json'
+        });
+      }
     }
     headerSnippet += parseHeaders(requestBodyMode, request.toJSON().header, indent);
     bodySnippet = parseBody(requestBody, trim, indent);
