@@ -2,21 +2,15 @@ var runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').ru
   convert = require('../../index').convert;
 
 
-describe('<<CODEGEN_NAME>> Converter', function () {
+describe('PHP HttpRequest Converter', function () {
   describe('convert for different request types', function () {
     var options = {
         indentType: 'Space',
         indentCount: 4
       },
       testConfig = {
-        // filename along with the appropriate version of the file. This file will be used to run the snippet.
-        fileName: '',
-        // Run script required to run the generated code snippet
-        runScript: '',
-        // Compile script required to compile the code snippet
-        compileScript: '',
-        // Array of name of collections for which newman tests has to be skipped.
-        skipCollections: []
+        runScript: 'php codesnippet.php',
+        fileName: 'codesnippet.php'
       };
     runNewmanTest(convert, options, testConfig);
   });
