@@ -90,7 +90,7 @@ self = module.exports = {
             let query = body.graphql.query,
               graphqlVariables;
             try {
-              graphqlVariables = JSON.parse(requestBody.graphql.variables);
+              graphqlVariables = JSON.parse(body.graphql.variables);
             }
             catch (e) {
               graphqlVariables = {};

@@ -55,7 +55,7 @@ function parseGraphQL (requestBody) {
   catch (e) {
     graphqlVariables = {};
   }
-  return `request.AddParameter("${parseContentType(request)}", ` +
+  return 'request.AddParameter("application/json", ' +
           `${JSON.stringify({query: query, variables: graphqlVariables})}, ParameterType.RequestBody);\n`;
 
 }
