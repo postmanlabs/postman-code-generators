@@ -35,10 +35,11 @@ function parseRawBody (body, trim) {
 /**
  * Parses graphql data
  *
- * @param {*} body graphql body data
- * @param {*} trim trim body option
+ * @param {Object} body graphql body data
+ * @param {boolean} trim trim body option
+ * @param {String} indentString indentation to be added to the snippet
  */
-function parseGraphQL (body, trim) {
+function parseGraphQL (body, trim, indentString) {
   let query = body.query,
     graphqlVariables,
     bodySnippet;
@@ -48,10 +49,10 @@ function parseGraphQL (body, trim) {
   catch (e) {
     graphqlVariables = {};
   }
-  bodySnippet = `var data = "${sanitize(JSON.stringify({
-    query: query,
-    variables: graphqlVariables
-  }), trim)}";\n`;
+  bodySnippet = 'var data = JSON.stringify({\n';
+  bodySnippet += `${indentString}query: "${sanitize(query, trim)}",\n`;
+  bodySnippet += `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n`;
+  bodySnippet += '});\n';
   return bodySnippet;
 }
 
@@ -97,10 +98,11 @@ function parseFile () {
 /**
  * Parses Body from the Request
  *
- * @param {*} body body object from request.
- * @param {*} trim trim body option
+ * @param {Object} body body object from request.
+ * @param {boolean} trim trim body option
+ * @param {String} indentString indentation to be added to the snippet
  */
-function parseBody (body, trim) {
+function parseBody (body, trim, indentString) {
   if (!_.isEmpty(body)) {
     switch (body.mode) {
       case 'urlencoded':
@@ -108,7 +110,7 @@ function parseBody (body, trim) {
       case 'raw':
         return parseRawBody(body.raw, trim);
       case 'graphql':
-        return parseGraphQL(body.graphql, trim);
+        return parseGraphQL(body.graphql, trim, indentString);
       case 'formdata':
         return parseFormData(body.formdata, trim);
       case 'file':

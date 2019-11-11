@@ -34,11 +34,11 @@ module.exports = function (request, trimRequestBody, indentation) {
           graphqlVariables = {};
         }
         requestBody += `${indentation}"data": ` +
-          `${sanitize(JSON.stringify({
-            query: query,
-            variables: graphqlVariables
-          }), 'raw', trimRequestBody)}`;
-        break;
+          'JSON.stringify({\n' +
+          `${indentation.repeat(2)}query: ${sanitize(query, 'raw', trimRequestBody)},\n` +
+          `${indentation.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
+          `${indentation}})\n`;
+        return requestBody;
       case 'urlencoded':
         enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
         if (!_.isEmpty(enabledBodyList)) {

@@ -2,7 +2,7 @@ var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
   path = require('path');
-const VALID_BODY_MODES = ['urlencoded', 'raw', 'file', 'formdata'];
+const VALID_BODY_MODES = ['urlencoded', 'raw', 'graphql', 'file', 'formdata'];
 
 /**
  * Adds mode of redirection in fetch.
@@ -71,8 +71,9 @@ function parseRawBody (body, trim) {
  *
  * @param {Object} body graphql body data
  * @param {boolean} trim trim body option
+ * @param {String} indentString indentation to be added to the snippet
  */
-function parseGraphQL (body, trim) {
+function parseGraphQL (body, trim, indentString) {
   let query = body.query,
     graphqlVariables,
     bodySnippet;
@@ -82,10 +83,9 @@ function parseGraphQL (body, trim) {
   catch (e) {
     graphqlVariables = {};
   }
-  bodySnippet = `var graphql = "${sanitize(JSON.stringify({
-    query: query,
-    variables: graphqlVariables
-  }), trim)}";\n`;
+  bodySnippet = 'var graphql = JSON.stringify({\n';
+  bodySnippet += `${indentString}query: "${sanitize(query, trim)}",\n`;
+  bodySnippet += `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n})`;
   return bodySnippet;
 }
 
@@ -104,8 +104,9 @@ function parseFileData () {
  *
  * @param {Object} body body object from request.
  * @param {boolean} trim trim body option
+ * @param {String} indentString indentation to be added to the snippet
  */
-function parseBody (body, trim) {
+function parseBody (body, trim, indentString) {
   if (!_.isEmpty(body)) {
     switch (body.mode) {
       case 'urlencoded':
@@ -113,7 +114,7 @@ function parseBody (body, trim) {
       case 'raw':
         return parseRawBody(body.raw, trim);
       case 'graphql':
-        return parseGraphQL(body.graphql, trim);
+        return parseGraphQL(body.graphql, trim, indentString);
       case 'formdata':
         return parseFormData(body.formdata, trim);
         /* istanbul ignore next */
@@ -221,18 +222,17 @@ function convert (request, options, callback) {
     timeoutSnippet = '',
     fetchSnippet = '';
   indent = indent.repeat(options.indentCount);
-
-  headers = request.toJSON().header;
   if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
     request.addHeader({
       key: 'Content-Type',
       value: 'application/json'
     });
   }
+  headers = request.toJSON().header;
   headerSnippet = parseHeaders(headers);
 
   body = request.body && request.body.toJSON();
-  bodySnippet = parseBody(body, trim);
+  bodySnippet = parseBody(body, trim, indent);
 
   optionsSnippet = `var requestOptions = {\n${indent}`;
   optionsSnippet += `method: '${request.method}',\n${indent}`;
