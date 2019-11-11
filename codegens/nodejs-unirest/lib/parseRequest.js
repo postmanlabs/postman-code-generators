@@ -70,10 +70,10 @@ function parseBody (requestbody, indentString, trimBody) {
         catch (e) {
           graphqlVariables = {};
         }
-        return indentString + '.send(' + JSON.stringify({
-          query: query,
-          variables: graphqlVariables
-        }) + ')\n';
+        return indentString + '.send(JSON.stringify({\n' +
+          `${indentString.repeat(2)}query: '${sanitize(query, trimBody)}',\n` +
+          `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
+          `${indentString}}))\n`;
       case 'urlencoded':
         return parseFormdata(requestbody[requestbody.mode], indentString, trimBody);
       case 'formdata':

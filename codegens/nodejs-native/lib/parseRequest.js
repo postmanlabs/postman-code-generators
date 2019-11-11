@@ -86,10 +86,9 @@ function parseBody (requestbody, indentString, trimBody) {
         catch (e) {
           graphqlVariables = {};
         }
-        return ` ${JSON.stringify({
-          query: query,
-          variables: graphqlVariables
-        })}`;
+        return 'JSON.stringify({\n' +
+        `${indentString}query: "${sanitize(query, trimBody)}",\n` +
+        `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n})`;
       case 'formdata':
         return generateMultipartFormData(requestbody);
       case 'urlencoded':
