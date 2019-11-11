@@ -44,9 +44,10 @@ function parseContentType (request) {
 /**
  *
  * @param {Object} requestBody - JSON object representing body of request
+ * @param {boolean} trimFields - Boolean denoting whether to trim body fields
  * @returns {String} code snippet for graphql body
  */
-function parseGraphQL (requestBody) {
+function parseGraphQL (requestBody, trimFields) {
   let query = requestBody.graphql.query,
     graphqlVariables;
   try {
@@ -56,7 +57,8 @@ function parseGraphQL (requestBody) {
     graphqlVariables = {};
   }
   return 'request.AddParameter("application/json", ' +
-          `${JSON.stringify({query: query, variables: graphqlVariables})}, ParameterType.RequestBody);\n`;
+          `"${sanitize(JSON.stringify({query: query, variables: graphqlVariables}), trimFields)}",
+           ParameterType.RequestBody);\n`;
 
 }
 
@@ -79,7 +81,7 @@ function parseBody (request, trimFields) {
         return `request.AddParameter("${parseContentType(request)}", ` +
                     `${JSON.stringify(requestBody[requestBody.mode])},  ParameterType.RequestBody);\n`;
       case 'graphql':
-        return parseGraphQL(requestBody);
+        return parseGraphQL(requestBody, trimFields);
         /* istanbul ignore next */
       case 'file':
         return `request.AddParameter("${parseContentType(request)}", ` +
