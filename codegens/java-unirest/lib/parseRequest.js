@@ -94,10 +94,10 @@ function parseBody (request, indentString, trimField) {
         catch (e) {
           graphqlVariables = {};
         }
-        return indentString + `.body(${JSON.stringify({
+        return indentString + `.body("${sanitize(JSON.stringify({
           query: query,
           variables: graphqlVariables
-        })})\n`;
+        }), trimField)}")\n`;
       case 'formdata':
         var formDataContent = parseFormData(request.body.toJSON(), indentString, trimField);
         if (!formDataContent.includes('.field("file", new File')) {

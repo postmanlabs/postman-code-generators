@@ -80,10 +80,10 @@ function parseBody (requestBody, indentString, trimFields) {
           graphqlVariables = {};
         }
         return 'RequestBody body = RequestBody.create(mediaType, ' +
-        `${JSON.stringify({
+        `"${sanitize(JSON.stringify({
           query: query,
           variables: graphqlVariables
-        })});\n`;
+        }), trimFields)}");\n`;
       case 'formdata':
         return 'RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
                         `${parseFormData(requestBody, indentString, trimFields)};\n`;
