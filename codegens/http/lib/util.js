@@ -169,7 +169,7 @@ function getHeaders (request) {
 
   if (contentTypeIndex >= 0) {
     if (request.headers.members[contentTypeIndex].value === 'multipart/form-data' ||
-      (request.bidy && request.body.mode === 'formdata')) {
+      (request.body && request.body.mode === 'formdata')) {
       request.headers.members[contentTypeIndex].value = formDataHeader;
     }
   }
