@@ -126,7 +126,25 @@ self = module.exports = {
 
     indent = indentType.repeat(options.indentCount);
 
+    // The following code handles multiple files in the same formdata param.
+    // It removes the form data params where the src property is an array of filepath strings
+    // Splits that array into different form data params with src set as a single filepath string
     if (request.body && request.body.mode === 'formdata') {
+      let formdata = request.body.formdata;
+      formdata.members.forEach((item) => {
+        if (item.type === 'file' && Array.isArray(item.src)) {
+          item.src.forEach((filePath) => {
+            formdata.add({
+              key: item.key,
+              src: filePath,
+              type: 'file'
+            });
+          });
+        }
+      });
+      formdata.remove((item) => {
+        return (item.type === 'file' && Array.isArray(item.src));
+      });
       jQueryCode = createForm(request.toJSON(), options.trimRequestBody);
     }
     jQueryCode += 'var settings = {\n';
