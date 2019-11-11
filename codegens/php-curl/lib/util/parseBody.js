@@ -37,7 +37,7 @@ module.exports = function (request, trimRequestBody, indentation) {
           `${sanitize(JSON.stringify({
             query: query,
             variables: graphqlVariables
-          }), request.body.mode, trimRequestBody)},\n`;
+          }), 'raw', trimRequestBody)},\n`;
         return requestBody;
       case 'urlencoded':
         enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');

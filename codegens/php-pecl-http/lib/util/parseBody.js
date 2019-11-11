@@ -33,10 +33,10 @@ module.exports = function (request, indentation, bodyTrim) {
         catch (e) {
           graphqlVariables = {};
         }
-        requestBody += `$body->append('${JSON.stringify({
+        requestBody += `$body->append('${sanitize(JSON.stringify({
           query: query,
           variables: graphqlVariables
-        })}');\n`;
+        }), bodyTrim)}');\n`;
         return requestBody;
       case 'urlencoded':
         enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');

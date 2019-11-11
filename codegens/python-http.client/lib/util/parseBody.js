@@ -41,7 +41,7 @@ module.exports = function (request, indentation, bodyTrim) {
           query: query,
           variables: graphqlVariables
         }),
-        request.body.mode, bodyTrim)}\n`;
+        'raw', bodyTrim)}\n`;
         return requestBody;
       case 'urlencoded':
         enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
