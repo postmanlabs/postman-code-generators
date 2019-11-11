@@ -7,6 +7,7 @@ const GAP = ' ',
   URLENCODED = 'urlencoded',
   FORM_DATA = 'formdata',
   RAW = 'raw',
+  GRAPHQL = 'graphql',
   FILE = 'file';
 
 self = module.exports = {
@@ -104,6 +105,13 @@ self = module.exports = {
             break;
 
           case RAW:
+            if (parsedBody) {
+              snippet += 'printf ' + parsedBody + '| ';
+            }
+            snippet += 'http ' + handleRedirect(options.followRedirect) + handleRequestTimeout(timeout);
+            snippet += request.method + GAP + url + (parsedHeaders ? (' \\\n' + parsedHeaders) : '');
+            break;
+          case GRAPHQL:
             if (parsedBody) {
               snippet += 'printf ' + parsedBody + '| ';
             }
