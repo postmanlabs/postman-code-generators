@@ -49,7 +49,8 @@ function makeSnippet (request, indentString, options) {
 
   if (request.body && request.body[request.body.mode]) {
     optionsArray.push(
-      indentString + parseRequest.parseBody(request.body.toJSON(), indentString, options.trimRequestBody)
+      indentString + parseRequest.parseBody(request.body.toJSON(), indentString, options.trimRequestBody,
+        request.headers.get('Content-Type'))
     );
   }
   if (options.requestTimeout) {
