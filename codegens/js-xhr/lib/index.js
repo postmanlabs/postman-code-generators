@@ -25,10 +25,22 @@ function parseURLEncodedBody (body) {
  *
  * @param {*} body Raw body data
  * @param {*} trim trim body option
+ * @param {String} contentType Content type of the body being sent
  */
-function parseRawBody (body, trim) {
-  var bodySnippet;
-  bodySnippet = `var data = "${sanitize(body.toString(), trim)}";\n`;
+function parseRawBody (body, trim, contentType) {
+  var bodySnippet = 'var data = ';
+  if (contentType === 'application/json') {
+    try {
+      let jsonBody = JSON.parse(body);
+      bodySnippet += `JSON.stringify(${JSON.stringify(jsonBody)});\n`;
+    }
+    catch (error) {
+      bodySnippet += `"${sanitize(body.toString(), trim)}";\n`;
+    }
+  }
+  else {
+    bodySnippet += `"${sanitize(body.toString(), trim)}";\n`;
+  }
   return bodySnippet;
 }
 
@@ -76,14 +88,15 @@ function parseFile () {
  *
  * @param {*} body body object from request.
  * @param {*} trim trim body option
+ * @param {String} contentType Content type of the body being sent
  */
-function parseBody (body, trim) {
+function parseBody (body, trim, contentType) {
   if (!_.isEmpty(body)) {
     switch (body.mode) {
       case 'urlencoded':
         return parseURLEncodedBody(body.urlencoded, trim);
       case 'raw':
-        return parseRawBody(body.raw, trim);
+        return parseRawBody(body.raw, trim, contentType);
       case 'formdata':
         return parseFormData(body.formdata, trim);
       case 'file':
@@ -174,7 +187,8 @@ function convert (request, options, callback) {
   indent = indent.repeat(options.indentCount);
   trim = options.trimRequestBody;
 
-  bodySnippet = request.body && !_.isEmpty(request.body.toJSON()) ? parseBody(request.body.toJSON(), trim, indent) : '';
+  bodySnippet = request.body && !_.isEmpty(request.body.toJSON()) ? parseBody(request.body.toJSON(), trim,
+    request.headers.get('Content-Type')) : '';
 
   codeSnippet += bodySnippet + '\n';
 
