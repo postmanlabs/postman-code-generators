@@ -52,7 +52,7 @@ describe('Converter test', function () {
       expect(snippet).to.include('key_containing_whitespaces:   value_containing_whitespaces  ');
     });
   });
-  it.only('should generate snippets(not error out) for requests with no body', function () {
+  it('should generate snippets(not error out) for requests with no body', function () {
     var request = new Request({
       'method': 'GET',
       'header': [],
