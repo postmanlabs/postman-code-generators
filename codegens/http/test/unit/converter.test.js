@@ -55,7 +55,12 @@ describe('Converter test', function () {
   it('should generate snippets(not error out) for requests with no body', function () {
     var request = new Request({
       'method': 'GET',
-      'header': [],
+      'header': [
+        {
+          'key': 'Content-Type',
+          'value': 'text/plain'
+        }
+      ],
       'url': {
         'raw': 'https://postman-echo.com/get',
         'protocol': 'https',
