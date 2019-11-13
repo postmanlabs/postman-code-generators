@@ -107,7 +107,6 @@ function makeSnippet (request, indentString, options) {
   }
 
   snippet += 'req.end();';
-  console.log('\n' + snippet + '\n');
   return snippet;
 }
 
