@@ -131,7 +131,7 @@ describe('Ocaml convert function', function () {
   describe('convert for different request types', function () {
     // Skipping ocaml for now, as there are many dependencies
     mainCollection.item.forEach(function (item) {
-      it.skip(item.name, function (done) {
+      it(item.name, function (done) {
         var request = new sdk.Request(item.request),
           collection = {
             item: [
@@ -237,6 +237,40 @@ describe('Ocaml convert function', function () {
         }
         expect(snippet).to.be.a('string');
         expect(snippet).to.include('Header.add h "key_containing_whitespaces" "  value_containing_whitespaces  "');
+      });
+    });
+
+    it('should include graphql body in the snippet', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'graphql',
+          'graphql': {
+            'query': '{ body { graphql } }',
+            'variables': '{"variable_key": "variable_value"}'
+          }
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'protocol': 'http',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        console.log(snippet);
+        expect(snippet).to.include('\\"query\\":\\"{ body { graphql } }\\"');
+        expect(snippet).to.include('\\"variables\\":{\\"variable_key\\":\\"variable_value\\"}');
       });
     });
   });
