@@ -206,7 +206,7 @@ function getBody (request, trimRequestBody) {
         let query = request.body[request.body.mode].query,
           graphqlVariables;
         try {
-          graphqlVariables = JSON.parse(requestBody.graphql.variables);
+          graphqlVariables = JSON.parse(request.body[request.body.mode].variables);
         }
         catch (e) {
           graphqlVariables = {};
