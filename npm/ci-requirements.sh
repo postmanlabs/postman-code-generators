@@ -36,8 +36,7 @@ pushd ./codegens/csharp-restsharp &>/dev/null;
 popd &>/dev/null;
 
 echo "Installing dependencies required for tests in codegens/php-httprequest2"
-php --version
-pear version
+  pear install HTTP_Request2-2.3.0
 
 echo "Installing dependencies required for tests in codegens/swift"
 pushd ./codegens/swift &>/dev/null;
