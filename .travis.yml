@@ -5,6 +5,7 @@ node_js:
 before_install:
   - echo "Installing additional dependencies required for running tests on travis"
   - npm run cirequirements
+  - npm test php-httprequest2
 before_script:
   - echo "Installing dev dependencies required of all codegens"
   - npm run deepinstall dev
