@@ -85,6 +85,35 @@ describe('Converter test', function () {
       expect(snippet).to.include('"variables":{"variable_key":"variable_value"}}');
     });
   });
+
+  it('should generate snippets(not error out) for requests with no body', function () {
+    var request = new Request({
+      'method': 'GET',
+      'header': [
+        {
+          'key': 'Content-Type',
+          'value': 'text/plain'
+        }
+      ],
+      'url': {
+        'raw': 'https://postman-echo.com/get',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'get'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+    });
+  });
 });
 
 describe('Converter test using options.trimRequestBody', function () {

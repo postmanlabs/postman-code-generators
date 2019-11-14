@@ -169,7 +169,8 @@ function getHeaders (request) {
     headers = '';
 
   if (contentTypeIndex >= 0) {
-    if (request.headers.members[contentTypeIndex].value === 'multipart/form-data' || request.body.mode === 'formdata') {
+    if (request.headers.members[contentTypeIndex].value === 'multipart/form-data' ||
+      (request.body && request.body.mode === 'formdata')) {
       request.headers.members[contentTypeIndex].value = formDataHeader;
     }
   }
@@ -178,7 +179,7 @@ function getHeaders (request) {
     header.key = header.key.trim();
   });
   headers = convertPropertyListToString(request.headers, '\n', false);
-  if (request.body.mode === 'formdata' && contentTypeIndex < 0) {
+  if (request.body && request.body.mode === 'formdata' && contentTypeIndex < 0) {
     headers += `Content-Type: ${formDataHeader}`;
   }
   return headers;
