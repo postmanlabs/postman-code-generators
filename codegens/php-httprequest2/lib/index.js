@@ -85,12 +85,12 @@ self = module.exports = {
     indentString = indentString.repeat(options.indentCount);
 
     snippet = '<?php\n';
+    snippet += 'require_once \'HTTP/Request2.php\';\n';
     snippet += '$request = new HTTP_Request2();\n';
     snippet += `$request->setUrl('${request.url.toString()}');\n`;
     snippet += `$request->setMethod(HTTP_Request2::METHOD_${request.method});\n`;
     if (options.requestTimeout !== 0 || options.followRedirect) {
       let configArray = [];
-      snippet += '$request->setOptions(array(';
 
       // PHP-HTTP_Request2 method accepts timeout in seconds and it must be an integer
       if (options.requestTimeout !== 0 && Number.isInteger(options.requestTimeout / 1000)) {
@@ -102,7 +102,7 @@ self = module.exports = {
         configArray.push(`${indentString}'redirect' => TRUE`);
       }
       if (configArray.length) {
-        snippet += '$request->setOptions(array(\n';
+        snippet += '$request->setConfig(array(\n';
         snippet += configArray.join(',\n') + '\n';
       }
       snippet += '));\n';
@@ -130,14 +130,15 @@ self = module.exports = {
     }
     snippet += 'try {\n';
     snippet += `${indentString}$response = $request->send();\n`;
-    snippet += `${indentString}if ($response=>getStatus() == 200) {\n`;
+    snippet += `${indentString}if ($response->getStatus() == 200) {\n`;
     snippet += `${indentString.repeat(2)} echo $response->getBody();\n`;
     snippet += `${indentString}} else {\n`;
-    snippet += `${indentString.repeat(2)}echo 'Unexpected HTTP status: . $response->getStatus() . ' ' .\n`;
+    snippet += `${indentString.repeat(2)}echo 'Unexpected HTTP status: ' . $response->getStatus() . ' ' .\n`;
     snippet += `${indentString.repeat(3)}$response->getReasonPhrase();\n`;
     snippet += `${indentString}}\n`;
     snippet += '} catch(HTTP_Request2_Exception $e) {\n';
     snippet += `${indentString}echo 'Error: ' . $e->getMessage();\n}`;
+    console.log(snippet);
     return callback(null, snippet);
   }
 };

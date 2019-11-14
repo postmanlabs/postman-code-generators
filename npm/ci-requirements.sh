@@ -34,6 +34,13 @@ pushd ./codegens/csharp-restsharp &>/dev/null;
   dotnet add package RestSharp
   popd &>/dev/null;
 popd &>/dev/null;
+
+echo "Installing dependencies required for tests in codegens/php-httprequest2"
+pushd ./codegens/php-httprequest2 &>/dev/null;
+  wget http://pear.php.net/go-pear.phar -O go-pear.php  
+  php go-pear.php
+popd &>/dev/null;
+
 echo "Installing dependencies required for tests in codegens/swift"
 pushd ./codegens/swift &>/dev/null;
   sudo apt-get update
