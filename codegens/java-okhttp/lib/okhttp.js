@@ -19,7 +19,7 @@ function makeSnippet (request, indentString, options) {
 
   var isBodyRequired = !(_.includes(METHODS_WITHOUT_BODY, request.method)),
     snippet = 'OkHttpClient client = new OkHttpClient().newBuilder()\n',
-    requestBody = (request.body ? request.body.toJSON() : {});
+    requestBody;
 
   if (options.requestTimeout > 0) {
     snippet += indentString + `.setConnectTimeout(${options.requestTimeout}, TimeUnit.MILLISECONDS)\n`;
@@ -52,6 +52,7 @@ function makeSnippet (request, indentString, options) {
         return (item.type === 'file' && Array.isArray(item.src));
       });
     }
+    requestBody = (request.body ? request.body.toJSON() : {});
     //  snippet for creating mediatype object in java based on content-type of request
     snippet += `MediaType mediaType = MediaType.parse("${parseRequest.parseContentType(request)}");\n`;
     snippet += parseRequest.parseBody(requestBody, indentString, options.trimRequestBody);
