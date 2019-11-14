@@ -2,7 +2,7 @@ var runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').ru
   convert = require('../../index').convert;
 
 
-describe('PHP HttpRequest Converter', function () {
+describe('PHP HttpRequest2 Converter', function () {
   describe('convert for different request types', function () {
     var options = {
         indentType: 'Space',

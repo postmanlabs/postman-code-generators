@@ -18,10 +18,10 @@ function getHeaders (request, indentation) {
   if (!_.isEmpty(headerArray)) {
     headerArray = _.reject(headerArray, 'disabled');
     headerMap = _.map(headerArray, function (header) {
-      return `${indentation}'${sanitize(header.key, true)}' => ` +
+      return `${indentation}'${sanitize(header.key)}' => ` +
             `'${sanitize(header.value)}'`;
     });
-    return `$request->setHeaders(array(\n${headerMap.join(',\n')}\n));\n`;
+    return `$request->setHeader(array(\n${headerMap.join(',\n')}\n));\n`;
   }
   return '';
 }
@@ -76,7 +76,7 @@ self = module.exports = {
       options = {};
     }
     if (!_.isFunction(callback)) {
-      throw new Error('PHP-HttpRequest-Converter: callback is not valid function');
+      throw new Error('PHP-HttpRequest2-Converter: callback is not valid function');
     }
     options = sanitizeOptions(options, self.getOptions());
 
@@ -85,13 +85,26 @@ self = module.exports = {
     indentString = indentString.repeat(options.indentCount);
 
     snippet = '<?php\n';
-    snippet += '$request = new HttpRequest();\n';
+    snippet += '$request = new HTTP_Request2();\n';
     snippet += `$request->setUrl('${request.url.toString()}');\n`;
-    snippet += `$request->setMethod(HTTP_METH_${request.method});\n`;
-    if (options.requestTimeout !== 0 || !options.followRedirect) {
+    snippet += `$request->setMethod(HTTP_Request2::METHOD_${request.method});\n`;
+    if (options.requestTimeout !== 0 || options.followRedirect) {
+      let configArray = [];
       snippet += '$request->setOptions(array(';
-      snippet += options.requestTimeout === 0 ? '' : `'timeout' => ${options.requestTimeout}`;
-      snippet += options.followRedirect ? '' : ', \'redirect\' => false';
+
+      // PHP-HTTP_Request2 method accepts timeout in seconds and it must be an integer
+      if (options.requestTimeout !== 0 && Number.isInteger(options.requestTimeout / 1000)) {
+        let requestTimeout = options.requestTimeout;
+        requestTimeout /= 1000;
+        configArray.push(`${indentString}'timeout' => ${requestTimeout}`);
+      }
+      if (options.followRedirect) {
+        configArray.push(`${indentString}'redirect' => TRUE`);
+      }
+      if (configArray.length) {
+        snippet += '$request->setOptions(array(\n';
+        snippet += configArray.join(',\n') + '\n';
+      }
       snippet += '));\n';
     }
     if (request.body && !request.headers.has('Content-Type')) {
@@ -116,9 +129,15 @@ self = module.exports = {
       snippet += `${parseBody(request.toJSON(), indentString, options.trimRequestBody)}`;
     }
     snippet += 'try {\n';
-    snippet += `${indentString}echo $request->send()->getBody();\n`;
-    snippet += '} catch(HttpException $ex) {\n';
-    snippet += `${indentString}echo $ex;\n}`;
+    snippet += `${indentString}$response = $request->send();\n`;
+    snippet += `${indentString}if ($response=>getStatus() == 200) {\n`;
+    snippet += `${indentString.repeat(2)} echo $response->getBody();\n`;
+    snippet += `${indentString}} else {\n`;
+    snippet += `${indentString.repeat(2)}echo 'Unexpected HTTP status: . $response->getStatus() . ' ' .\n`;
+    snippet += `${indentString.repeat(3)}$response->getReasonPhrase();\n`;
+    snippet += `${indentString}}\n`;
+    snippet += '} catch(HTTP_Request2_Exception $e) {\n';
+    snippet += `${indentString}echo 'Error: ' . $e->getMessage();\n}`;
     return callback(null, snippet);
   }
 };

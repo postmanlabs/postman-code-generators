@@ -1,12 +1,12 @@
 {
-  "name": "@postman/codegen-php-httprequest",
+  "name": "@postman/codegen-php-httprequest2",
   "version": "0.0.1",
-  "description": "Converts Postman SDK Requests to PHP HttpRequest code snippet",
+  "description": "Converts Postman SDK Requests to PHP HTTP_Request2 code snippet",
   "main": "index.js",
   "com_postman_plugin": {
     "type": "code_generator",
     "lang": "php",
-    "variant": "httprequest",
+    "variant": "HTTP_Request2",
     "syntax_mode": "php"
   },
   "directories": {
@@ -24,7 +24,7 @@
   },
   "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/php-httprequest",
+  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/php-httprequest2",
   "dependencies": {},
   "devDependencies": {},
   "engines": {

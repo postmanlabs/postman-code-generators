@@ -9,7 +9,7 @@ module.exports = function (request, indentString, trim) {
 
   switch (request.body.mode) {
     case 'raw':
-      bodySnippet += `$request->setBody(${sanitize(request.body[request.body.mode], trim)});\n`;
+      bodySnippet += `$request->setBody('${sanitize(request.body[request.body.mode], trim)}');\n`;
       break;
     // eslint-disable-next-line no-case-declarations
     case 'graphql':
@@ -21,10 +21,10 @@ module.exports = function (request, indentString, trim) {
       catch (e) {
         graphqlVariables = {};
       }
-      bodySnippet += `$request->setBody(${sanitize(JSON.stringify({
+      bodySnippet += `$request->setBody('${sanitize(JSON.stringify({
         query: query,
         variables: graphqlVariables
-      }), trim)});\n`;
+      }), trim)}');\n`;
       break;
     case 'urlencoded':
       enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
@@ -32,7 +32,7 @@ module.exports = function (request, indentString, trim) {
         bodyDataMap = _.map(enabledBodyList, (data) => {
           return `${indentString}'${sanitize(data.key, trim)}' => '${sanitize(data.value, trim)}'`;
         });
-        bodySnippet += `$request->setPostFields(array(\n${bodyDataMap.join(',\n')}));\n`;
+        bodySnippet += `$request->addPostParameter(array(\n${bodyDataMap.join(',\n')}));\n`;
       }
       break;
     case 'formdata':
@@ -45,10 +45,10 @@ module.exports = function (request, indentString, trim) {
           return `${indentString}'${sanitize(data.key, trim)}', '${data.src}', <Content-Type Header>`;
         });
         if (bodyDataMap.length) {
-          bodySnippet += `$request->setPostFields(array(\n${bodyDataMap.join(',\n')}));\n`;
+          bodySnippet += `$request->addPostParameter(array(\n${bodyDataMap.join(',\n')}));\n`;
         }
         if (bodyFileMap.length) {
-          bodySnippet += `$request->setPostFiles(array(\n${bodyDataMap.join(',\n')}));\n`;
+          bodySnippet += `$request->addUpload(array(\n${bodyDataMap.join(',\n')}));\n`;
         }
       }
       break;
