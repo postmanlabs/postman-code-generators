@@ -42,13 +42,17 @@ module.exports = function (request, indentString, trim) {
           return `${indentString}'${sanitize(data.key, trim)}' => '${sanitize(data.value, trim)}'`;
         });
         bodyFileMap = _.map(_.filter(enabledBodyList, {'type': 'file'}), function (data) {
-          return `${indentString}'${sanitize(data.key, trim)}', '${data.src}', <Content-Type Header>`;
+          let pathArray = property.src.split(path.sep),
+            fileName = pathArray[pathArray.length - 1];
+          return `${indentString}'${sanitize(data.key, trim)}', '${data.src}', '${fileName}', <Content-Type Header>`;
         });
         if (bodyDataMap.length) {
           bodySnippet += `$request->addPostParameter(array(\n${bodyDataMap.join(',\n')}));\n`;
         }
         if (bodyFileMap.length) {
-          bodySnippet += `$request->addUpload(array(\n${bodyDataMap.join(',\n')}));\n`;
+          _.forEach(bodyFileMap, (file) => {
+            bodySnippet += `$request->addUpload(${file});\n`;
+          });
         }
       }
       break;
