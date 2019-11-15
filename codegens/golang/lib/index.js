@@ -44,16 +44,18 @@ function parseURLEncodedBody (body, trim) {
  */
 function parseFormData (body, trim, indent) {
   var bodySnippet = `payload := &bytes.Buffer{}\n${indent}writer := multipart.NewWriter(payload)\n`;
-  _.forEach(body, function (data) {
+  _.forEach(body, function (data, index) {
     if (!data.disabled) {
       if (data.type === 'file') {
         isFile = true;
-        bodySnippet += `${indent}file, err_file := os.Open("${data.src}")\n`;
+        bodySnippet += `${indent}file, errFile${index + 1} := os.Open("${data.src}")\n`;
         bodySnippet += `${indent}defer file.Close()\n`;
-        bodySnippet += `${indent}part, err_file := writer.CreateFormFile("${sanitize(data.key, trim)}",` +
+        bodySnippet += `${indent}part${index + 1},
+         errFile${index + 1} := writer.CreateFormFile("${sanitize(data.key, trim)}",` +
                         `filepath.Base("${data.src}"))\n`;
-        bodySnippet += `${indent}_, err_file = io.Copy(part, file)\n`;
-        bodySnippet += `${indent}if err_file !=nil {\n${indent.repeat(2)}fmt.Println(err_file)\n${indent}}\n`;
+        bodySnippet += `${indent}_, errFile${index + 1} = io.Copy(part${index + 1}, file)\n`;
+        bodySnippet += `${indent}if errFile${index + 1} !=nil {
+          \n${indent.repeat(2)}fmt.Println(errFile${index + 1})\n${indent}}\n`;
       }
       else {
         bodySnippet += `${indent}_ = writer.WriteField("${sanitize(data.key, trim)}",`;
