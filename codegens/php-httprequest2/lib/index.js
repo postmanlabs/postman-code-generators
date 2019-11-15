@@ -138,7 +138,6 @@ self = module.exports = {
     snippet += `${indentString}}\n`;
     snippet += '} catch(HTTP_Request2_Exception $e) {\n';
     snippet += `${indentString}echo 'Error: ' . $e->getMessage();\n}`;
-    console.log(snippet);
     return callback(null, snippet);
   }
 };
