@@ -215,7 +215,7 @@ function convert (request, options, callback) {
   trim = options.trimRequestBody;
 
   bodySnippet = request.body && !_.isEmpty(request.body.toJSON()) ? parseBody(request.body.toJSON(), trim,
-    request.headers.get('Content-Type')) : '';
+    indent, request.headers.get('Content-Type')) : '';
 
   codeSnippet += bodySnippet + '\n';
 
