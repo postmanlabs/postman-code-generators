@@ -86,6 +86,19 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
           }
         }
         return ` ${JSON.stringify(requestbody[requestbody.mode])}`;
+      // eslint-disable-next-line no-case-declarations
+      case 'graphql':
+        let query = requestbody[requestbody.mode].query,
+          graphqlVariables;
+        try {
+          graphqlVariables = JSON.parse(requestbody[requestbody.mode].variables);
+        }
+        catch (e) {
+          graphqlVariables = {};
+        }
+        return 'JSON.stringify({\n' +
+        `${indentString}query: "${sanitize(query, trimBody)}",\n` +
+        `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n})`;
       case 'formdata':
         return generateMultipartFormData(requestbody);
       case 'urlencoded':

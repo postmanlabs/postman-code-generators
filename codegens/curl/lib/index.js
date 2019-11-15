@@ -45,11 +45,19 @@ self = module.exports = {
       snippet += ` ${form('-X', format)} ${request.method} '${url}'`;
     }
 
-    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
-      request.addHeader({
-        key: 'Content-Type',
-        value: 'text/plain'
-      });
+    if (request.body && !request.headers.has('Content-Type')) {
+      if (request.body.mode === 'file') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'text/plain'
+        });
+      }
+      else if (request.body.mode === 'graphql') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'application/json'
+        });
+      }
     }
     headersData = request.toJSON().header;
     if (headersData) {
@@ -76,6 +84,21 @@ self = module.exports = {
             break;
           case 'raw':
             snippet += indent + `--data-raw '${sanitize(body.raw.toString(), trim)}'`;
+            break;
+          // eslint-disable-next-line no-case-declarations
+          case 'graphql':
+            let query = body.graphql.query,
+              graphqlVariables;
+            try {
+              graphqlVariables = JSON.parse(body.graphql.variables);
+            }
+            catch (e) {
+              graphqlVariables = {};
+            }
+            snippet += indent + `--data-raw '${sanitize(JSON.stringify({
+              query: query,
+              variables: graphqlVariables
+            }), trim)}'`;
             break;
           case 'formdata':
             _.forEach(body.formdata, function (data) {

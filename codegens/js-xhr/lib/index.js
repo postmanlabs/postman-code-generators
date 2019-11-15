@@ -45,6 +45,30 @@ function parseRawBody (body, trim, contentType) {
 }
 
 /**
+ * Parses graphql data
+ *
+ * @param {Object} body graphql body data
+ * @param {boolean} trim trim body option
+ * @param {String} indentString indentation to be added to the snippet
+ */
+function parseGraphQL (body, trim, indentString) {
+  let query = body.query,
+    graphqlVariables,
+    bodySnippet;
+  try {
+    graphqlVariables = JSON.parse(body.variables);
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  bodySnippet = 'var data = JSON.stringify({\n';
+  bodySnippet += `${indentString}query: "${sanitize(query, trim)}",\n`;
+  bodySnippet += `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n`;
+  bodySnippet += '});\n';
+  return bodySnippet;
+}
+
+/**
  * Parses formData body from request
  *
  * @param {*} body formData Body
@@ -88,15 +112,18 @@ function parseFile () {
  *
  * @param {*} body body object from request.
  * @param {*} trim trim body option
+ * @param {String} indentString indentation to be added to the snippet
  * @param {String} contentType Content type of the body being sent
  */
-function parseBody (body, trim, contentType) {
+function parseBody (body, trim, indentString, contentType) {
   if (!_.isEmpty(body)) {
     switch (body.mode) {
       case 'urlencoded':
         return parseURLEncodedBody(body.urlencoded, trim);
       case 'raw':
         return parseRawBody(body.raw, trim, contentType);
+      case 'graphql':
+        return parseGraphQL(body.graphql, trim, indentString);
       case 'formdata':
         return parseFormData(body.formdata, trim);
       case 'file':
@@ -206,7 +233,12 @@ function convert (request, options, callback) {
     codeSnippet += `${indent} console.log(e);\n`;
     codeSnippet += '});\n';
   }
-
+  if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
+    request.addHeader({
+      key: 'Content-Type',
+      value: 'application/json'
+    });
+  }
   headerSnippet = parseHeaders(request.toJSON().header);
 
   codeSnippet += headerSnippet + '\n';

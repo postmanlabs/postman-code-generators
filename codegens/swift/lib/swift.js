@@ -20,6 +20,31 @@ function parseRawBody (body, mode, trim) {
 }
 
 /**
+ * Parses graphql data from request to fetch syntax
+ *
+ * @param {Object} body - grqphql body data
+ * @param {String} mode - Request body type (i.e. raw, urlencoded, formdata, file)
+ * @param {boolean} trim - trim body option
+ * @returns {String} request body in the desired format
+ */
+function parseGraphQL (body, mode, trim) {
+  let query = body.query,
+    graphqlVariables, bodySnippet;
+  try {
+    graphqlVariables = JSON.parse(body.variables);
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  bodySnippet = `let parameters = ${sanitize(JSON.stringify({
+    query: query,
+    variables: graphqlVariables
+  }), mode, trim)}\n`;
+  bodySnippet += 'let postData = parameters.data(using: .utf8)';
+  return bodySnippet;
+}
+
+/**
  * Parses URLEncoded body from request to fetch syntax
  *
  * @param {Object} body - URLEncoded Body
@@ -130,6 +155,8 @@ function parseBody (body, trim, indent) {
         return parseURLEncodedBody(body.urlencoded, body.mode, trim);
       case 'raw':
         return parseRawBody(body.raw, body.mode, trim);
+      case 'graphql':
+        return parseGraphQL(body.graphql, 'raw', trim);
       case 'formdata':
         return parseFormData(body.formdata, body.mode, trim, indent);
         /* istanbul ignore next */
@@ -263,11 +290,19 @@ self = module.exports = {
     }
     codeSnippet += `var request = URLRequest(url: URL(string: "${finalUrl}")!,` +
          `timeoutInterval: ${timeout ? timeout : 'Double.infinity'})\n`;
-    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
-      request.addHeader({
-        key: 'Content-Type',
-        value: 'text/plain'
-      });
+    if (request.body && !request.headers.has('Content-Type')) {
+      if (request.body.mode === 'file') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'text/plain'
+        });
+      }
+      else if (request.body.mode === 'graphql') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'application/json'
+        });
+      }
     }
     headerSnippet = parseHeaders(request.toJSON().header, (request.body ? request.body.mode : 'raw'));
     if (headerSnippet !== '') {

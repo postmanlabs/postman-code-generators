@@ -15,11 +15,19 @@ function makeSnippet (request, indentString, options) {
   var snippet = 'var unirest = require(\'unirest\');\n';
 
   snippet += `var req = unirest('${request.method}', '${request.url.toString()}')\n`;
-  if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
-    request.addHeader({
-      key: 'Content-Type',
-      value: 'text/plain'
-    });
+  if (request.body && !request.headers.has('Content-Type')) {
+    if (request.body.mode === 'file') {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
+    }
+    else if (request.body.mode === 'graphql') {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'application/json'
+      });
+    }
   }
 
   snippet += parseRequest.parseHeader(request, indentString);

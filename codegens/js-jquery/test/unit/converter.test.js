@@ -132,4 +132,37 @@ describe('jQuery converter', function () {
       expect(snippet).to.include('"data": JSON.stringify({"json":"Test-Test"})');
     });
   });
+
+  it('should include graphql body in the snippet', function () {
+    var request = new sdk.Request({
+      'method': 'POST',
+      'header': [],
+      'body': {
+        'mode': 'graphql',
+        'graphql': {
+          'query': '{ body { graphql } }',
+          'variables': '{"variable_key": "variable_value"}'
+        }
+      },
+      'url': {
+        'raw': 'http://postman-echo.com/post',
+        'protocol': 'http',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'post'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('query: "{ body { graphql } }"');
+      expect(snippet).to.include('variables: {"variable_key":"variable_value"}');
+    });
+  });
 });
