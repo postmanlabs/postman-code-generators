@@ -148,7 +148,8 @@ self = module.exports = {
       }
     }
     jQueryCode += `${getHeaders(request, indent)}`;
-    jQueryCode += `${parseBody(request.toJSON(), options.trimRequestBody, indent)}};\n\n`;
+    jQueryCode += `${parseBody(request.toJSON(), options.trimRequestBody, indent,
+      request.headers.get('Content-Type'))}};\n\n`;
     jQueryCode += `$.ajax(settings).done(function (response) {\n${indent}console.log(response);\n});`;
 
     return callback(null, jQueryCode);

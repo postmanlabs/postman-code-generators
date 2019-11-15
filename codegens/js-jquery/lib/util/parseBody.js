@@ -7,9 +7,10 @@ var _ = require('../lodash'),
      * @param  {Object} request - postman SDK-request object
      * @param  {Boolean} trimRequestBody - whether to trim request body fields
      * @param  {String} indentation - used for indenting snippet's structure
+     * @param {String} contentType Content type of the body being sent
      * @returns {String} - request body
      */
-module.exports = function (request, trimRequestBody, indentation) {
+module.exports = function (request, trimRequestBody, indentation, contentType) {
   // used to check whether body is present in the request and return accordingly
   if (request.body) {
     var requestBody = '',
@@ -19,8 +20,21 @@ module.exports = function (request, trimRequestBody, indentation) {
     switch (request.body.mode) {
       case 'raw':
         if (!_.isEmpty(request.body[request.body.mode])) {
-          requestBody += `${indentation}"data": ` +
+          if (contentType === 'application/json') {
+            // eslint-disable-next-line max-depth
+            try {
+              let jsonBody = JSON.parse(request.body[request.body.mode]);
+              requestBody += `${indentation}"data": JSON.stringify(${JSON.stringify(jsonBody)}),\n`;
+            }
+            catch (error) {
+              requestBody += `${indentation}"data": ` +
                         `${sanitize(request.body[request.body.mode], request.body.mode, trimRequestBody)},\n`;
+            }
+          }
+          else {
+            requestBody += `${indentation}"data": ` +
+            `${sanitize(request.body[request.body.mode], request.body.mode, trimRequestBody)},\n`;
+          }
         }
         return requestBody;
       // eslint-disable-next-line no-case-declarations
