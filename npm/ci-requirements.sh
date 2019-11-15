@@ -1,5 +1,12 @@
 #!/bin/bash
 set -ev; # stop on error
+echo "Creating test files for testing form data file uploads"
+pushd /home/travis/build/postmanlabs/postman-code-generators/
+  echo "Sample file 1" >> test1.txt;
+  echo "Sample file 2" >> test2.txt;
+  echo "Sample file 3" >> test3.txt;
+popd &>/dev/null;
+
 echo "Installing dependencies required for tests in codegens/java-okhttp"
 pushd ./codegens/java-okhttp &>/dev/null;
   sudo add-apt-repository ppa:openjdk-r/ppa -y

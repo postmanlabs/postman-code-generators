@@ -23,13 +23,13 @@
               "key": "single file",
               "value": "",
               "type": "file",
-              "src": "/Users/shreyshah/Desktop/test.c"
+              "src": "/home/travis/build/postmanlabs/postman-code-generators/test1.txt"
 						},
 						{
               "key": "multiple files",
               "value": "",
               "type": "file",
-              "src": ["/Users/shreyshah/Desktop/test.c","/Users/shreyshah/Desktop/importers.js"]
+              "src": ["/home/travis/build/postmanlabs/postman-code-generators/test2.txt","/home/travis/build/postmanlabs/postman-code-generators/test3.txt"]
             }
 					]
 				},
