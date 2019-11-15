@@ -16,7 +16,7 @@ function makeSnippet (request, indentString, options) {
   var nativeModule = (request.url.protocol === 'http' ? 'http' : 'https'),
     snippet = `var ${nativeModule} = require('${nativeModule}');\n`,
     optionsArray = [],
-    postData;
+    postData = '';
 
   if (options.followRedirect) {
     snippet = `var ${nativeModule} = require('follow-redirects').${nativeModule};\n`;
@@ -41,8 +41,8 @@ function makeSnippet (request, indentString, options) {
      *  }
      */
   if (request.body && request.body[request.body.mode]) {
-    postData.push(parseRequest.parseBody(request.body.toJSON(), indentString, options.trimRequestBody,
-      request.headers.get('Content-Type')));
+    postData += parseRequest.parseBody(request.body.toJSON(), indentString, options.trimRequestBody,
+      request.headers.get('Content-Type'));
   }
   if (request.body && !request.headers.has('Content-Type')) {
     if (request.body.mode === 'file') {
