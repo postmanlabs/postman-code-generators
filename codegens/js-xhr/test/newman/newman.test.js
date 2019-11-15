@@ -7,7 +7,7 @@ describe('Convert for different types of request', function () {
       compileScript: null,
       runScript: 'node snippet.js',
       fileName: 'snippet.js',
-      skipCollections: ['redirectCollection', 'formdataCollection']
+      skipCollections: ['redirectCollection', 'formdataCollection', 'formDataFile']
     },
     options = {};
   boilerplateCode += 'var FormData = require(\'form-data\');\n\n';

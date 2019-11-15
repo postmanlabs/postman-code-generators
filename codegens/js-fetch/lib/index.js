@@ -200,8 +200,6 @@ function convert (request, options, callback) {
   headers = request.toJSON().header;
   headerSnippet = parseHeaders(headers);
 
-  body = request.body && request.body.toJSON();
-
   // The following code handles multiple files in the same formdata param.
   // It removes the form data params where the src property is an array of filepath strings
   // Splits that array into different form data params with src set as a single filepath string
@@ -222,6 +220,7 @@ function convert (request, options, callback) {
       return (item.type === 'file' && Array.isArray(item.src));
     });
   }
+  body = request.body && request.body.toJSON();
   bodySnippet = parseBody(body, trim);
 
   optionsSnippet = `var requestOptions = {\n${indent}`;

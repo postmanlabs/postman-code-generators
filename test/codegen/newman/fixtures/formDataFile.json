@@ -1,0 +1,50 @@
+{
+	"info": {
+		"_postman_id": "7da8f1cd-aeb0-420f-a989-d47db46b44b0",
+		"name": "Multipart/form-data",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "No/Single/multiple file upload via form-data",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+              "key": "no file",
+              "value": "",
+              "type": "file",
+              "src": []
+						},
+						{
+              "key": "single file",
+              "value": "",
+              "type": "file",
+              "src": "/Users/shreyshah/Desktop/test.c"
+						},
+						{
+              "key": "multiple files",
+              "value": "",
+              "type": "file",
+              "src": ["/Users/shreyshah/Desktop/test.c","/Users/shreyshah/Desktop/importers.js"]
+            }
+					]
+				},
+				"url": {
+					"raw": "https://postman-echo.com/post",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"post"
+					]
+				}
+			}
+    }
+	]
+}
