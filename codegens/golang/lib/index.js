@@ -184,6 +184,8 @@ self = module.exports = {
     if (isFile) {
       codeSnippet += `${indent}"os"\n${indent}"path/filepath"\n`;
       codeSnippet += `${indent}"io"\n`;
+      // Setting isFile as false for further calls to this function
+      isFile = false;
     }
     codeSnippet += `${indent}"net/http"\n${indent}"io/ioutil"\n)\n\n`;
 
