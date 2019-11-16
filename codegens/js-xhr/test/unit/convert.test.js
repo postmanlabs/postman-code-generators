@@ -34,6 +34,39 @@ describe('js-xhr convert function', function () {
       '"  value_containing_whitespaces  ")');
     });
   });
+  it('should include JSON.stringify in the snippet for raw json bodies', function () {
+    var request = new sdk.Request({
+      'method': 'POST',
+      'header': [
+        {
+          'key': 'Content-Type',
+          'value': 'application/json'
+        }
+      ],
+      'body': {
+        'mode': 'raw',
+        'raw': '{\n  "json": "Test-Test"\n}'
+      },
+      'url': {
+        'raw': 'https://postman-echo.com/post',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'post'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('var data = JSON.stringify({"json":"Test-Test"})');
+    });
+  });
 
   describe('Sanitize function', function () {
     it('should return empty string when input is not a string type', function () {

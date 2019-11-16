@@ -27,6 +27,22 @@ module.exports = function (request, indentation, bodyTrim) {
           requestBody = 'payload  = {}\n';
         }
         return requestBody;
+      // eslint-disable-next-line no-case-declarations
+      case 'graphql':
+        let query = request.body[request.body.mode].query,
+          graphqlVariables;
+        try {
+          graphqlVariables = JSON.parse(request.body[request.body.mode].variables);
+        }
+        catch (e) {
+          graphqlVariables = {};
+        }
+        requestBody += `payload = ${sanitize(JSON.stringify({
+          query: query,
+          variables: graphqlVariables
+        }),
+        'raw', bodyTrim)}\n`;
+        return requestBody;
       case 'urlencoded':
         enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
         if (!_.isEmpty(enabledBodyList)) {

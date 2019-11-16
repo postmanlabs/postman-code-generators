@@ -7,6 +7,7 @@ const GAP = ' ',
   URLENCODED = 'urlencoded',
   FORM_DATA = 'formdata',
   RAW = 'raw',
+  GRAPHQL = 'graphql',
   FILE = 'file';
 
 self = module.exports = {
@@ -74,6 +75,12 @@ self = module.exports = {
     Helpers.parseURLVariable(request);
     url = Helpers.addHost(request) + Helpers.addPort(request) + Helpers.addPathandQuery(request);
     timeout = options.requestTimeout;
+    if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'application/json'
+      });
+    }
     parsedHeaders = Helpers.addHeaders(request);
 
     // The following code handles multiple files in the same formdata param.
@@ -118,6 +125,13 @@ self = module.exports = {
             break;
 
           case RAW:
+            if (parsedBody) {
+              snippet += 'printf ' + parsedBody + '| ';
+            }
+            snippet += 'http ' + handleRedirect(options.followRedirect) + handleRequestTimeout(timeout);
+            snippet += request.method + GAP + url + (parsedHeaders ? (' \\\n' + parsedHeaders) : '');
+            break;
+          case GRAPHQL:
             if (parsedBody) {
               snippet += 'printf ' + parsedBody + '| ';
             }

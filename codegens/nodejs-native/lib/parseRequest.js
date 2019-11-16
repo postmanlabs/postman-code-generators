@@ -70,12 +70,35 @@ function generateMultipartFormData (requestbody) {
  * @param {Object} requestbody - json object for body of request
  * @param {String} indentString - string for indentation
  * @param {Boolean} trimBody - indicates whether to trim body fields or not
+ * @param {String} contentType Content type of the body being sent
  */
-function parseBody (requestbody, indentString, trimBody) {
+function parseBody (requestbody, indentString, trimBody, contentType) {
   if (requestbody) {
     switch (requestbody.mode) {
       case 'raw':
+        if (contentType === 'application/json') {
+          try {
+            let jsonBody = JSON.parse(requestbody[requestbody.mode]);
+            return `JSON.stringify(${JSON.stringify(jsonBody)})`;
+          }
+          catch (error) {
+            return ` ${JSON.stringify(requestbody[requestbody.mode])}`;
+          }
+        }
         return ` ${JSON.stringify(requestbody[requestbody.mode])}`;
+      // eslint-disable-next-line no-case-declarations
+      case 'graphql':
+        let query = requestbody[requestbody.mode].query,
+          graphqlVariables;
+        try {
+          graphqlVariables = JSON.parse(requestbody[requestbody.mode].variables);
+        }
+        catch (e) {
+          graphqlVariables = {};
+        }
+        return 'JSON.stringify({\n' +
+        `${indentString}query: "${sanitize(query, trimBody)}",\n` +
+        `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n})`;
       case 'formdata':
         return generateMultipartFormData(requestbody);
       case 'urlencoded':

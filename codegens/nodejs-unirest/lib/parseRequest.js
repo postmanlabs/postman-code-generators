@@ -53,13 +53,37 @@ function parseFormdata (bodyArray, indentString, trimBody) {
  * @param {Object} requestbody - json object representing body of request
  * @param {String} indentString - string required for indentation
  * @param {Boolean} trimBody - indicates whether to trim body fields or not
+ * @param {String} contentType Content type of the body being sent
  * @returns {String} - code snippet for adding body in request
  */
-function parseBody (requestbody, indentString, trimBody) {
+function parseBody (requestbody, indentString, trimBody, contentType) {
   if (requestbody) {
     switch (requestbody.mode) {
       case 'raw':
+        if (contentType === 'application/json') {
+          try {
+            let jsonBody = JSON.parse(requestbody[requestbody.mode]);
+            return `${indentString}.send(JSON.stringify(${JSON.stringify(jsonBody)}))\n`;
+          }
+          catch (error) {
+            return indentString + '.send(' + JSON.stringify(requestbody[requestbody.mode]) + ')\n';
+          }
+        }
         return indentString + '.send(' + JSON.stringify(requestbody[requestbody.mode]) + ')\n';
+      // eslint-disable-next-line no-case-declarations
+      case 'graphql':
+        let query = requestbody[requestbody.mode].query,
+          graphqlVariables;
+        try {
+          graphqlVariables = JSON.parse(requestbody[requestbody.mode].variables);
+        }
+        catch (e) {
+          graphqlVariables = {};
+        }
+        return indentString + '.send(JSON.stringify({\n' +
+          `${indentString.repeat(2)}query: '${sanitize(query, trimBody)}',\n` +
+          `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
+          `${indentString}}))\n`;
       case 'urlencoded':
         return parseFormdata(requestbody[requestbody.mode], indentString, trimBody);
       case 'formdata':

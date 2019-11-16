@@ -31,11 +31,19 @@ function convert (request, options, callback) {
   options = utils.sanitizeOptions(options, getOptions());
   snippet = `${request.method} ${utils.getEndPoint(request)} HTTP/1.1\n`;
   snippet += `Host: ${utils.getHost(request)}\n`;
-  if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
-    request.addHeader({
-      key: 'Content-Type',
-      value: 'text/plain'
-    });
+  if (request.body && !request.headers.has('Content-Type')) {
+    if (request.body.mode === 'file') {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'text/plain'
+      });
+    }
+    else if (request.body.mode === 'graphql') {
+      request.addHeader({
+        key: 'Content-Type',
+        value: 'application/json'
+      });
+    }
   }
   // The following code handles multiple files in the same formdata param.
   // It removes the form data params where the src property is an array of filepath strings

@@ -29,6 +29,12 @@ function makeSnippet (request, options) {
     snippet += 'client.FollowRedirects = false;\n';
   }
   snippet += `var request = new RestRequest(${isUnSupportedMethod ? '' : ('Method.' + request.method)});\n`;
+  if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
+    request.addHeader({
+      key: 'Content-Type',
+      value: 'application/json'
+    });
+  }
   snippet += parseRequest.parseHeader(request.toJSON(), options.trimRequestBody);
   if (request.body && request.body.mode === 'formdata') {
     let isFile = false,

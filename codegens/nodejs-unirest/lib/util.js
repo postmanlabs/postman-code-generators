@@ -11,7 +11,7 @@ function sanitize (inputString, trim) {
     return '';
   }
   (trim) && (inputString = inputString.trim());
-  return inputString.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
+  return inputString.replace(/\\/g, '\\\\').replace(/'/g, '\\\'').replace(/\n/g, '\\n');
 }
 
 /**

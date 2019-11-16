@@ -62,12 +62,36 @@ function extractFormData (dataArray, indentString, trimBody) {
  * @param {Object} requestbody - json object for body of request
  * @param {String} indentString - string for indentation
  * @param {Boolean} trimBody - indicates whether to trim body fields or not
+ * @param {String} contentType Content type of the body being sent
  */
-function parseBody (requestbody, indentString, trimBody) {
+function parseBody (requestbody, indentString, trimBody, contentType) {
   if (requestbody) {
     switch (requestbody.mode) {
       case 'raw':
+        if (contentType === 'application/json') {
+          try {
+            let jsonBody = JSON.parse(requestbody[requestbody.mode]);
+            return `body: JSON.stringify(${JSON.stringify(jsonBody)})\n`;
+          }
+          catch (error) {
+            return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
+          }
+        }
         return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
+      // eslint-disable-next-line no-case-declarations
+      case 'graphql':
+        let query = requestbody[requestbody.mode].query,
+          graphqlVariables;
+        try {
+          graphqlVariables = JSON.parse(requestbody[requestbody.mode].variables);
+        }
+        catch (e) {
+          graphqlVariables = {};
+        }
+        return 'body: JSON.stringify({\n' +
+          `${indentString.repeat(2)}query: '${sanitize(query, trimBody)}',\n` +
+          `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
+          `${indentString}})`;
       case 'formdata':
         return `formData: {\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
                         indentString + '}';
