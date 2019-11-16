@@ -6,7 +6,8 @@ describe('Convert for different types of request', function () {
     testConfig = {
       compileScript: null,
       runScript: 'node snippet.js',
-      fileName: 'snippet.js'
+      fileName: 'snippet.js',
+      skipCollections: ['formdataFileCollection']
     },
     options = {
       multiLine: true
