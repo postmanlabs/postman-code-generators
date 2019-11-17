@@ -69,16 +69,6 @@ self = module.exports = {
       ` ${sanitize(header.value)}");\n`;
       });
     }
-    body = request.body ? request.body.toJSON() : {};
-    if (body.mode && body.mode === 'formdata' && !options.useMimeType) {
-      snippet += indentString + 'headers = curl_slist_append(headers, "content-type:' +
-                ` multipart/form-data; boundary=${BOUNDARY}");\n`;
-    }
-    snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);\n';
-    if (request.method === 'HEAD') {
-      snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);\n';
-    }
-
     // The following code handles multiple files in the same formdata param.
     // It removes the form data params where the src property is an array of filepath strings
     // Splits that array into different form data params with src set as a single filepath string
@@ -99,6 +89,17 @@ self = module.exports = {
         return (item.type === 'file' && Array.isArray(item.src));
       });
     }
+
+    body = request.body ? request.body.toJSON() : {};
+    if (body.mode && body.mode === 'formdata' && !options.useMimeType) {
+      snippet += indentString + 'headers = curl_slist_append(headers, "content-type:' +
+                ` multipart/form-data; boundary=${BOUNDARY}");\n`;
+    }
+    snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);\n';
+    if (request.method === 'HEAD') {
+      snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);\n';
+    }
+
     // request body
     if (!_.isEmpty(body)) {
       switch (body.mode) {
@@ -165,8 +166,14 @@ self = module.exports = {
             BOUNDARY = '--' + BOUNDARY;
             _.forEach(body.formdata, function (data) {
               if (!data.disabled) {
-                formdataString += BOUNDARY + '\\r\\nContent-Disposition: form-data; name=' +
-                 `\\"${sanitize(data.key)}\\"\\r\\n\\r\\n${sanitize(data.value)}\\r\\n`;
+                formdataString += `${BOUNDARY}\\r\\nContent-Disposition: form-data; name=\\"${sanitize(data.key)}\\"`;
+                if (data.type === 'file') {
+                  formdataString += `; filename=\\"${sanitize(data.src)}\\"\\r\\nContent-type: ` +
+                  'text/plain\\r\\n\\r\\n\\r\\n';
+                }
+                else {
+                  formdataString += `\\r\\n\\r\\n${sanitize(data.value)}\\r\\n`;
+                }
               }
             });
             formdataString += BOUNDARY + '--';
