@@ -33,17 +33,34 @@ function extractFormData (dataArray, indentString, trimBody) {
              *      }
              *  }
              */
-      var pathArray = item.src.split(path.sep),
-        fileName = pathArray[pathArray.length - 1];
-      accumalator.push([
-        indentString.repeat(2) + `'${sanitize(item.key, trimBody)}': {`,
-        indentString.repeat(3) + `'value': fs.createReadStream('${sanitize(item.src, trimBody)}'),`,
-        indentString.repeat(3) + '\'options\': {',
-        indentString.repeat(4) + `'filename': '${sanitize(fileName, trimBody)}',`,
-        indentString.repeat(4) + '\'contentType\': null',
-        indentString.repeat(3) + '}',
-        indentString.repeat(2) + '}'
-      ].join('\n'));
+      if (Array.isArray(item.src)) {
+        let fileSnippet = '',
+          fileArray = [];
+        _.forEach(item.src, (filePath) => {
+          fileArray.push(`${indentString.repeat(3)}fs.createReadStream('${sanitize(filePath, trimBody)}')`);
+        });
+        if (fileArray.length) {
+          fileSnippet += `${indentString.repeat(2)}'${sanitize(item.key, trimBody)}': ` +
+          `[\n${fileArray.join(',\n')}\n${indentString.repeat(2)}]`;
+          accumalator.push(fileSnippet);
+        }
+        else {
+          return accumalator;
+        }
+      }
+      else {
+        var pathArray = item.src.split(path.sep),
+          fileName = pathArray[pathArray.length - 1];
+        accumalator.push([
+          indentString.repeat(2) + `'${sanitize(item.key, trimBody)}': {`,
+          indentString.repeat(3) + `'value': fs.createReadStream('${sanitize(item.src, trimBody)}'),`,
+          indentString.repeat(3) + '\'options\': {',
+          indentString.repeat(4) + `'filename': '${sanitize(fileName, trimBody)}',`,
+          indentString.repeat(4) + '\'contentType\': null',
+          indentString.repeat(3) + '}',
+          indentString.repeat(2) + '}'
+        ].join('\n'));
+      }
     }
     else {
       accumalator.push(
