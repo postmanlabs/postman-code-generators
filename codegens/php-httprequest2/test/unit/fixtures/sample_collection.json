@@ -630,7 +630,158 @@
 				"description": "The HTTP `DELETE` method is used to delete resources on a server. The exact\nuse of `DELETE` requests depends on the server implementation. In general, \n`DELETE` requests support both, Query String parameters as well as a Request \nBody.\n\nThis endpoint accepts an HTTP `DELETE` request and provides debug information\nsuch as the HTTP headers, Query String arguments, and the Request Body."
 			},
 			"response": []
-		}
+		},
+		{
+			"name": "POST multipart/form-data with text parameters",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "pl",
+							"value": "'a'",
+							"type": "text"
+						},
+						{
+							"key": "qu",
+							"value": "\"b\"",
+							"type": "text"
+						},
+						{
+							"key": "sa",
+							"value": "d",
+							"type": "text"
+						},
+						{
+							"key": "Special",
+							"value": "!@#$%&*()^_+=`~",
+							"type": "text"
+						},
+						{
+							"key": "Not Select",
+							"value": "Disabled",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "more",
+							"value": ",./';[]}{\":?><|\\\\",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://postman-echo.com/post",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"post"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Follow Redirects",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://httpbin.org/redirect-to?url=https://postman-echo.com/get",
+					"protocol": "https",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"redirect-to"
+					],
+					"query": [
+						{
+							"key": "url",
+							"value": "https://postman-echo.com/get"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Multiple headers with same name",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "key",
+						"value": "value1",
+						"type": "text"
+					},
+					{
+						"key": "key",
+						"value": "value2",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://postman-echo.com/get",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "No/Single/multiple file upload via form-data",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+              "key": "no file",
+              "value": "",
+              "type": "file",
+              "src": []
+						},
+						{
+              "key": "single file",
+              "value": "",
+              "type": "file",
+              "src": "<file path>"
+						},
+						{
+              "key": "multiple files",
+              "value": "",
+              "type": "file",
+              "src": ["<file path 1>","<file path 2>"]
+            }
+					]
+				},
+				"url": {
+					"raw": "https://postman-echo.com/post",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"post"
+					]
+				}
+			}
+    }
 	],
 	"event": [
 		{
