@@ -23,13 +23,13 @@
               "key": "single file",
               "value": "",
               "type": "file",
-              "src": "/home/travis/build/postmanlabs/postman-code-generators/test1.txt"
+              "src": "<file path>"
 						},
 						{
               "key": "multiple files",
               "value": "",
               "type": "file",
-              "src": ["/home/travis/build/postmanlabs/postman-code-generators/test2.txt","/home/travis/build/postmanlabs/postman-code-generators/test3.txt"]
+              "src": ["<file path 1>","<file path 2>"]
             }
 					]
 				},
