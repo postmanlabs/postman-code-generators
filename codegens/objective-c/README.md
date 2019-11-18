@@ -1,5 +1,5 @@
 
-> Converts Postman-SDK Request into code snippet for .
+> Converts Postman-SDK Request into code snippet for Objective-C NSURLSession.
 
 #### Prerequisites
 To run Code-Gen, ensure that you have NodeJS >= v8. A copy of the NodeJS installable can be downloaded from https://nodejs.org/en/download/package-manager.

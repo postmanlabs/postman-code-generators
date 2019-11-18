@@ -29,6 +29,7 @@ List of supported code generators:
 | NodeJs | Native |
 | NodeJs | Request |
 | NodeJs | Unirest |
+| Objective-C| NSURLSession|
 | OCaml | Cohttp | 
 |PHP | cURL |
 |PHP | pecl_http |
