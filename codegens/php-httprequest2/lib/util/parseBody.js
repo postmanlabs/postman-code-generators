@@ -1,5 +1,6 @@
 var _ = require('../lodash'),
-  sanitize = require('./sanitize').sanitize;
+  sanitize = require('./sanitize').sanitize,
+  path = require('path');
 
 module.exports = function (request, indentString, trim) {
   var bodySnippet = '',
@@ -42,7 +43,7 @@ module.exports = function (request, indentString, trim) {
           return `${indentString}'${sanitize(data.key, trim)}' => '${sanitize(data.value, trim)}'`;
         });
         bodyFileMap = _.map(_.filter(enabledBodyList, {'type': 'file'}), function (data) {
-          let pathArray = property.src.split(path.sep),
+          let pathArray = data.src.split(path.sep),
             fileName = pathArray[pathArray.length - 1];
           return `${indentString}'${sanitize(data.key, trim)}', '${data.src}', '${fileName}', <Content-Type Header>`;
         });
