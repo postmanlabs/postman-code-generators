@@ -1,4 +1,4 @@
-var _ = require('lodash'),
+var _ = require('./lodash'),
   sanitizeOptions = require('./util').sanitizeOptions,
   sanitize = require('./util').sanitize,
   self;
@@ -186,7 +186,7 @@ self = module.exports = {
     codeSnippet += 'requestWithURL:[NSURL URLWithString:@"' + encodeURI(request.url.toString()) + '"]\n';
     codeSnippet += `${indent}cachePolicy:NSURLRequestUseProtocolCachePolicy\n`;
     codeSnippet += `${indent}timeoutInterval:10.0];\n`;
-    codeSnippet += parseHeaders(_.merge(obj, request.getHeaders({enabled: true})), indent, trim);
+    codeSnippet += parseHeaders(Object.assign(obj, request.getHeaders({enabled: true})), indent, trim);
     codeSnippet += parseBody(request.body ? request.body.toJSON() : {}, indent, trim) + '\n';
     codeSnippet += '[request setHTTPMethod:@"' + request.method + '"];\n';
     codeSnippet += 'NSURLSession *session = [NSURLSession sharedSession];\n';
