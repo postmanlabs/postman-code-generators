@@ -612,7 +612,6 @@ describe('Request Snippet', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        console.log(snippet);
         expect(snippet).to.include('"query":"{ body { graphql } }"');
         expect(snippet).to.include('"variables":{"variable_key":"variable_value"}');
       });
