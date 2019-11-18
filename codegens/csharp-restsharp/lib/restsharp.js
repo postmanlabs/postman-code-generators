@@ -37,7 +37,8 @@ function makeSnippet (request, options) {
   }
   snippet += parseRequest.parseHeader(request.toJSON(), options.trimRequestBody);
   if (request.body && request.body.mode === 'formdata') {
-    let isFile = false;
+    let isFile = false,
+      formdata = request.body.formdata;
     request.body.toJSON().formdata.forEach((data) => {
       if (!data.disabled && data.type === 'file') {
         isFile = true;
@@ -48,6 +49,24 @@ function makeSnippet (request, options) {
     if (!isFile) {
       snippet += 'request.AlwaysMultipartFormData = true;\n';
     }
+
+    // The following code handles multiple files in the same formdata param.
+    // It removes the form data params where the src property is an array of filepath strings
+    // Splits that array into different form data params with src set as a single filepath string
+    formdata.members.forEach((item) => {
+      if (item.type === 'file' && Array.isArray(item.src)) {
+        item.src.forEach((filePath) => {
+          formdata.add({
+            key: item.key,
+            src: filePath,
+            type: 'file'
+          });
+        });
+      }
+    });
+    formdata.remove((item) => {
+      return (item.type === 'file' && Array.isArray(item.src));
+    });
   }
   snippet += parseRequest.parseBody(request, options.trimRequestBody);
   if (isUnSupportedMethod) {

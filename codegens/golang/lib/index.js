@@ -67,16 +67,18 @@ function parseURLEncodedBody (body, trim) {
  */
 function parseFormData (body, trim, indent) {
   var bodySnippet = `payload := &bytes.Buffer{}\n${indent}writer := multipart.NewWriter(payload)\n`;
-  _.forEach(body, function (data) {
+  _.forEach(body, function (data, index) {
     if (!data.disabled) {
       if (data.type === 'file') {
         isFile = true;
-        bodySnippet += `${indent}file, err_file := os.Open("${data.src}")\n`;
+        bodySnippet += `${indent}file, errFile${index + 1} := os.Open("${data.src}")\n`;
         bodySnippet += `${indent}defer file.Close()\n`;
-        bodySnippet += `${indent}part, err_file := writer.CreateFormFile("${sanitize(data.key, trim)}",` +
+        bodySnippet += `${indent}part${index + 1},
+         errFile${index + 1} := writer.CreateFormFile("${sanitize(data.key, trim)}",` +
                         `filepath.Base("${data.src}"))\n`;
-        bodySnippet += `${indent}_, err_file = io.Copy(part, file)\n`;
-        bodySnippet += `${indent}if err_file !=nil {\n${indent.repeat(2)}fmt.Println(err_file)\n${indent}}\n`;
+        bodySnippet += `${indent}_, errFile${index + 1} = io.Copy(part${index + 1}, file)\n`;
+        bodySnippet += `${indent}if errFile${index + 1} !=nil {
+          \n${indent.repeat(2)}fmt.Println(errFile${index + 1})\n${indent}}\n`;
       }
       else {
         bodySnippet += `${indent}_ = writer.WriteField("${sanitize(data.key, trim)}",`;
@@ -169,6 +171,26 @@ self = module.exports = {
     followRedirect = options.followRedirect;
     trim = options.trimRequestBody;
 
+    // The following code handles multiple files in the same formdata param.
+    // It removes the form data params where the src property is an array of filepath strings
+    // Splits that array into different form data params with src set as a single filepath string
+    if (request.body && request.body.mode === 'formdata') {
+      let formdata = request.body.formdata;
+      formdata.members.forEach((item) => {
+        if (item.type === 'file' && Array.isArray(item.src)) {
+          item.src.forEach((filePath) => {
+            formdata.add({
+              key: item.key,
+              src: filePath,
+              type: 'file'
+            });
+          });
+        }
+      });
+      formdata.remove((item) => {
+        return (item.type === 'file' && Array.isArray(item.src));
+      });
+    }
     if (request.body) {
       bodySnippet = parseBody(request.body.toJSON(), trim, indent);
     }
@@ -187,6 +209,8 @@ self = module.exports = {
     if (isFile) {
       codeSnippet += `${indent}"os"\n${indent}"path/filepath"\n`;
       codeSnippet += `${indent}"io"\n`;
+      // Setting isFile as false for further calls to this function
+      isFile = false;
     }
     codeSnippet += `${indent}"net/http"\n${indent}"io/ioutil"\n)\n\n`;
 

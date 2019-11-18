@@ -11,7 +11,8 @@ describe('Convert for different types of request', function () {
     testConfig = {
       compileScript: '`curl-config --cc --cflags` -o executableFile testFile.c `curl-config --libs`',
       runScript: './executableFile',
-      fileName: 'testFile.c'
+      fileName: 'testFile.c',
+      skipCollections: ['formdataFileCollection']
     };
   runNewmanTest(convert, options, testConfig);
 });

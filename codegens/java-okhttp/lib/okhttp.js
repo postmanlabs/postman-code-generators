@@ -19,7 +19,7 @@ function makeSnippet (request, indentString, options) {
 
   var isBodyRequired = !(_.includes(METHODS_WITHOUT_BODY, request.method)),
     snippet = 'OkHttpClient client = new OkHttpClient().newBuilder()\n',
-    requestBody = (request.body ? request.body.toJSON() : {});
+    requestBody;
 
   if (options.requestTimeout > 0) {
     snippet += indentString + `.setConnectTimeout(${options.requestTimeout}, TimeUnit.MILLISECONDS)\n`;
@@ -32,6 +32,27 @@ function makeSnippet (request, indentString, options) {
   snippet += indentString + '.build();\n';
 
   if (isBodyRequired) {
+    // The following code handles multiple files in the same formdata param.
+    // It removes the form data params where the src property is an array of filepath strings
+    // Splits that array into different form data params with src set as a single filepath string
+    if (request.body && request.body.mode === 'formdata') {
+      let formdata = request.body.formdata;
+      formdata.members.forEach((item) => {
+        if (item.type === 'file' && Array.isArray(item.src)) {
+          item.src.forEach((filePath) => {
+            formdata.add({
+              key: item.key,
+              src: filePath,
+              type: 'file'
+            });
+          });
+        }
+      });
+      formdata.remove((item) => {
+        return (item.type === 'file' && Array.isArray(item.src));
+      });
+    }
+    requestBody = (request.body ? request.body.toJSON() : {});
     //  snippet for creating mediatype object in java based on content-type of request
     snippet += `MediaType mediaType = MediaType.parse("${parseRequest.parseContentType(request)}");\n`;
     snippet += parseRequest.parseBody(requestBody, indentString, options.trimRequestBody);

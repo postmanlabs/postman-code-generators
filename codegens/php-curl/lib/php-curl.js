@@ -119,6 +119,27 @@ self = module.exports = {
     snippet += `${indentation}CURLOPT_FOLLOWLOCATION => ${options.followRedirect},\n`;
     snippet += `${indentation}CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,\n`;
     snippet += `${indentation}CURLOPT_CUSTOMREQUEST => "${request.method}",\n`;
+
+    // The following code handles multiple files in the same formdata param.
+    // It removes the form data params where the src property is an array of filepath strings
+    // Splits that array into different form data params with src set as a single filepath string
+    if (request.body && request.body.mode === 'formdata') {
+      let formdata = request.body.formdata;
+      formdata.members.forEach((item) => {
+        if (item.type === 'file' && Array.isArray(item.src)) {
+          item.src.forEach((filePath) => {
+            formdata.add({
+              key: item.key,
+              src: filePath,
+              type: 'file'
+            });
+          });
+        }
+      });
+      formdata.remove((item) => {
+        return (item.type === 'file' && Array.isArray(item.src));
+      });
+    }
     snippet += `${parseBody(request.toJSON(), options.trimRequestBody, indentation)}`;
     if (request.body && !request.headers.has('Content-Type')) {
       if (request.body.mode === 'file') {
