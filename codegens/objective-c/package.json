@@ -1,5 +1,5 @@
 {
-  "name": "objective-c",
+  "name": "@postman/codegen-objective-c",
   "version": "0.0.1",
   "description": "Converts Postman SDK Requests to swift code snippet",
   "main": "index.js",
