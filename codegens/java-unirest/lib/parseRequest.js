@@ -84,6 +84,20 @@ function parseBody (request, indentString, trimField) {
         return parseFormData(request.body.toJSON(), indentString, trimField);
       case 'raw':
         return indentString + `.body(${JSON.stringify(request.body.toString())})\n`;
+      // eslint-disable-next-line no-case-declarations
+      case 'graphql':
+        let query = request.body.graphql.query,
+          graphqlVariables;
+        try {
+          graphqlVariables = JSON.parse(request.body.graphql.variables);
+        }
+        catch (e) {
+          graphqlVariables = {};
+        }
+        return indentString + `.body("${sanitize(JSON.stringify({
+          query: query,
+          variables: graphqlVariables
+        }), trimField)}")\n`;
       case 'formdata':
         var formDataContent = parseFormData(request.body.toJSON(), indentString, trimField);
         if (!formDataContent.includes('.field("file", new File')) {

@@ -33,7 +33,7 @@ List of supported code generators:
 |PHP | cURL |
 |PHP | pecl_http |
 |PHP | HTTP_Request2 |
-| Powershell | RestMethod | 
+| PowerShell | RestMethod | 
 | Ruby | Net:HTTP |
 | Shell | Httpie |
 | Shell | wget |

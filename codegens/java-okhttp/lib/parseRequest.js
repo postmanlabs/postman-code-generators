@@ -69,6 +69,21 @@ function parseBody (requestBody, indentString, trimFields) {
       case 'raw':
         return 'RequestBody body = RequestBody.create(mediaType, ' +
                         `${JSON.stringify(requestBody[requestBody.mode])});\n`;
+      // eslint-disable-next-line no-case-declarations
+      case 'graphql':
+        let query = requestBody[requestBody.mode].query,
+          graphqlVariables;
+        try {
+          graphqlVariables = JSON.parse(requestBody[requestBody.mode].variables);
+        }
+        catch (e) {
+          graphqlVariables = {};
+        }
+        return 'RequestBody body = RequestBody.create(mediaType, ' +
+        `"${sanitize(JSON.stringify({
+          query: query,
+          variables: graphqlVariables
+        }), trimFields)}");\n`;
       case 'formdata':
         return 'RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
                         `${parseFormData(requestBody, indentString, trimFields)};\n`;
@@ -115,6 +130,9 @@ function parseHeader (request, indentString) {
  * @returns {String}- content-type of request body
  */
 function parseContentType (request) {
+  if (request.body && request.body.mode === 'graphql') {
+    return 'application/json';
+  }
   return request.getHeaders({enabled: true, ignoreCase: true})['content-type'] || 'text/plain';
 }
 

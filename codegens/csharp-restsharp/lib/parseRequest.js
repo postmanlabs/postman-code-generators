@@ -41,6 +41,26 @@ function parseContentType (request) {
   return request.getHeaders({enabled: true, ignoreCase: true})['content-type'] || 'text/plain';
 }
 
+/**
+ *
+ * @param {Object} requestBody - JSON object representing body of request
+ * @param {boolean} trimFields - Boolean denoting whether to trim body fields
+ * @returns {String} code snippet for graphql body
+ */
+function parseGraphQL (requestBody, trimFields) {
+  let query = requestBody.graphql.query,
+    graphqlVariables;
+  try {
+    graphqlVariables = JSON.parse(requestBody.graphql.variables);
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  return 'request.AddParameter("application/json", ' +
+          `"${sanitize(JSON.stringify({query: query, variables: graphqlVariables}), trimFields)}",
+           ParameterType.RequestBody);\n`;
+
+}
 
 /**
  * Parses request object and returns csharp-restsharp code snippet for adding request body
@@ -60,6 +80,8 @@ function parseBody (request, trimFields) {
       case 'raw':
         return `request.AddParameter("${parseContentType(request)}", ` +
                     `${JSON.stringify(requestBody[requestBody.mode])},  ParameterType.RequestBody);\n`;
+      case 'graphql':
+        return parseGraphQL(requestBody, trimFields);
         /* istanbul ignore next */
       case 'file':
         return `request.AddParameter("${parseContentType(request)}", ` +
