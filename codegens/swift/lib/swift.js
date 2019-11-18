@@ -272,7 +272,7 @@ self = module.exports = {
     var codeSnippet, indent, trim, timeout, finalUrl, // followRedirect,
       bodySnippet = '',
       headerSnippet = '',
-      requestBody = (request.body ? request.body.toJSON() : {});
+      requestBody;
 
     indent = options.indentType === 'Tab' ? '\t' : ' ';
     indent = indent.repeat(options.indentCount);
@@ -301,6 +301,7 @@ self = module.exports = {
         return (item.type === 'file' && Array.isArray(item.src));
       });
     }
+    requestBody = (request.body ? request.body.toJSON() : {});
     bodySnippet = parseBody(requestBody, trim, indent);
 
     codeSnippet = 'import Foundation\n\n';
