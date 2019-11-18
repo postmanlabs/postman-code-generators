@@ -19,6 +19,22 @@ function parseRawBody (body, indent, trim) {
 }
 
 /**
+ * Parses GraphQL body
+ *
+ * @param {Object} body GraphQL body
+ * @param {String} indent Indent
+ * @param {Boolean} trim Trim request body if this is true.
+ */
+function parseGraphqlBody (body, indent, trim) {
+  var bodySnippet = '',
+    rawBody = JSON.stringify(body);
+  bodySnippet += 'NSData *postData = [[NSData alloc] initWithData:[@"' + sanitize(rawBody, trim) + '" ' +
+  'dataUsingEncoding:NSUTF8StringEncoding]];\n';
+  bodySnippet += '[request setHTTPBody:postData];\n';
+  return bodySnippet;
+}
+
+/**
  * Parses URLEncoded body from request to fetch syntax
  *
  * @param {Object} body URLEncoded Body
@@ -134,7 +150,7 @@ function parseBody (body, indent, trim) {
       case 'file':
         return '';
       case 'graphql':
-        return '';
+        return parseGraphqlBody(body.graphql, indent, trim);
       default:
         return '';
     }
@@ -179,6 +195,20 @@ self = module.exports = {
     indent = indent.repeat(options.indentCount);
     if (!_.isFunction(callback)) {
       throw new Error('Callback is not valid function');
+    }
+    if (request.body && !request.headers.has('Content-Type')) {
+      if (request.body.mode === 'file') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'text/plain'
+        });
+      }
+      else if (request.body.mode === 'graphql') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'application/json'
+        });
+      }
     }
     let obj = {};
     codeSnippet = '#import <Foundation/Foundation.h>\n';

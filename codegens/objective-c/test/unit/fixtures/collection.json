@@ -514,7 +514,7 @@
 			"response": []
 		},
 		{
-			"name": "POST textxml with raw",
+			"name": "POST text/xml with raw",
 			"event": [
 				{
 					"listen": "test",
@@ -555,7 +555,7 @@
 			"response": []
 		},
 		{
-			"name": "POST text html with raw",
+			"name": "POST text/html with raw",
 			"event": [
 				{
 					"listen": "test",
@@ -1293,6 +1293,33 @@
 							"key": "query",
 							"value": "value2"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL query",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n    __schema\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "https://api.github.com/graphql",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"graphql"
 					]
 				}
 			},
