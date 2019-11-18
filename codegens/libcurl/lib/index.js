@@ -169,7 +169,7 @@ self = module.exports = {
                 formdataString += `${BOUNDARY}\\r\\nContent-Disposition: form-data; name=\\"${sanitize(data.key)}\\"`;
                 if (data.type === 'file') {
                   formdataString += `; filename=\\"${sanitize(data.src)}\\"\\r\\nContent-type: ` +
-                  'text/plain\\r\\n\\r\\n\\r\\n';
+                  '<Content-Type Header>\\r\\n\\r\\n<file contents here>\\r\\n';
                 }
                 else {
                   formdataString += `\\r\\n\\r\\n${sanitize(data.value)}\\r\\n`;
