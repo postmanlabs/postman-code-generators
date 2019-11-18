@@ -1,11 +1,11 @@
 #!/bin/bash
 set -ev; # stop on error
 echo "Creating test files and adding paths to collection for testing form data file uploads"
-pushd /home/travis/build/postmanlabs/postman-code-generators/
+pushd /home/travis/build/postmanlabs/postman-code-generators/ &>/dev/null;
   echo "Sample file 1" >> test1.txt;
   echo "Sample file 2" >> test2.txt;
   echo "Sample file 3" >> test3.txt;
-  node addPathToFormdataFile.js
+  node ./npm/addPathToFormdataFile.js
 popd &>/dev/null;
 
 echo "Installing dependencies required for tests in codegens/java-okhttp"
