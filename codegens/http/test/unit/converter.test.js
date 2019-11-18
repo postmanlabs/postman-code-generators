@@ -114,6 +114,58 @@ describe('Converter test', function () {
       expect(snippet).to.be.a('string');
     });
   });
+
+  it('should generate snippets(not error out) for requests with multiple/no file in formdata', function () {
+    var request = new Request({
+      'method': 'POST',
+      'header': [],
+      'body': {
+        'mode': 'formdata',
+        'formdata': [
+          {
+            'key': 'no file',
+            'value': '',
+            'type': 'file',
+            'src': []
+          },
+          {
+            'key': 'single file',
+            'value': '',
+            'type': 'file',
+            'src': '/test1.txt'
+          },
+          {
+            'key': 'multiple files',
+            'value': '',
+            'type': 'file',
+            'src': ['/test2.txt',
+              '/test3.txt']
+          }
+        ]
+      },
+      'url': {
+        'raw': 'https://postman-echo.com/post',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'post'
+        ]
+      }
+    });
+
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('test1.txt');
+      expect(snippet).to.include('test2.txt');
+      expect(snippet).to.include('test3.txt');
+    });
+  });
 });
 
 describe('Converter test using options.trimRequestBody', function () {
