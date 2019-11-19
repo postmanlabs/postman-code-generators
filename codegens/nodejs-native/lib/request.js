@@ -58,7 +58,7 @@ function makeSnippet (request, indentString, options) {
       }
     });
     formdata.remove((item) => {
-      return (item.type === 'file' && Array.isArray(item.src));
+      return (item.type === 'file' && (Array.isArray(item.src) || !item.src || typeof item.src !== 'string'));
     });
   }
   if (request.body && request.body[request.body.mode]) {

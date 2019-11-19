@@ -66,7 +66,7 @@ function makeSnippet (request, indentString, options) {
       }
     });
     formdata.remove((item) => {
-      return (item.type === 'file' && Array.isArray(item.src));
+      return (item.type === 'file' && (Array.isArray(item.src) || !item.src || typeof item.src !== 'string'));
     });
   }
   snippet += parseRequest.parseBody(request, indentString, options.trimRequestBody);

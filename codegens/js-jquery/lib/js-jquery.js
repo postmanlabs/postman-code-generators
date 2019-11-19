@@ -143,7 +143,7 @@ self = module.exports = {
         }
       });
       formdata.remove((item) => {
-        return (item.type === 'file' && Array.isArray(item.src));
+        return (item.type === 'file' && (Array.isArray(item.src) || !item.src || typeof item.src !== 'string'));
       });
       jQueryCode = createForm(request.toJSON(), options.trimRequestBody);
     }

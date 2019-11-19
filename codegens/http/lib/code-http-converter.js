@@ -62,7 +62,7 @@ function convert (request, options, callback) {
       }
     });
     formdata.remove((item) => {
-      return (item.type === 'file' && Array.isArray(item.src));
+      return (item.type === 'file' && (Array.isArray(item.src) || !item.src || typeof item.src !== 'string')));
     });
   }
   snippet += `${utils.getHeaders(request)}\n`;

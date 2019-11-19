@@ -231,7 +231,7 @@ function convert (request, options, callback) {
       }
     });
     formdata.remove((item) => {
-      return (item.type === 'file' && Array.isArray(item.src));
+      return (item.type === 'file' && (Array.isArray(item.src) || !item.src || typeof item.src !== 'string'));
     });
   }
   bodySnippet = request.body && !_.isEmpty(request.body.toJSON()) ? parseBody(request.body.toJSON(), trim,
