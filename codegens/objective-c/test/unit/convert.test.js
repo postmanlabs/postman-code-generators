@@ -11,10 +11,11 @@ describe('Objective-C-NSURLSession Converter', function () {
         const request = new sdk.Request(item.request);
         convert(request, {}, (err, snippet) => {
           if (err) {
-            console.log(err);
+            expect.fail(null, null, err);
+            return done();
           }
           expect(snippet).to.equal(expectedSnippets[item.name]);
-          done();
+          return done();
         });
       });
     });

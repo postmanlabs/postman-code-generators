@@ -177,7 +177,12 @@ function parseHeaders (obj, indent, trim) {
       headers += ',\n';
     }
     first = false;
-    headers += indent.repeat(2) + '@"' + key + '": @"' + sanitize(value, trim) + '"';
+    if (typeof value !== 'string') {
+      headers += indent.repeat(2) + '@"' + key + '":@"' + value + '"';
+    }
+    else {
+      headers += indent.repeat(2) + '@"' + key + '": @"' + sanitize(value, trim) + '"';
+    }
   });
   headers += '\n' + indent + '};\n';
   headers += indent + '[request setAllHTTPHeaderFields:headers];\n';
