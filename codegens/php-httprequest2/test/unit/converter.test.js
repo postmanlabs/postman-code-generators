@@ -3,6 +3,7 @@ var expect = require('chai').expect,
   fs = require('fs'),
 
   convert = require('../../lib/index').convert,
+  sanitize = require('../../lib/util/sanitize').sanitize,
   mainCollection = require('../unit/fixtures/sample_collection.json'),
   snippetFixture;
 
@@ -38,6 +39,113 @@ describe('PHP HTTP_Request2 converter', function () {
         expect(snippet).to.equal((snippetFixture[item.name]));
       });
       done();
+    });
+  });
+
+  it('should indent snippet with type and count specified', function () {
+    var request = new sdk.Request(mainCollection.item[0].request);
+    convert(request, {
+      indentType: 'Tab',
+      indentCount: 2
+    }, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      var snippetArray = snippet.split('\n'),
+        i;
+      for (i = 0; i < snippetArray.length; i++) {
+        if (snippetArray[i].startsWith('$request->setHeader(array(')) {
+          expect(snippetArray[i + 1].charAt(0)).to.equal('\t');
+          expect(snippetArray[i + 1].charAt(1)).to.equal('\t');
+          expect(snippetArray[i + 1].charAt(2)).to.not.equal(' ');
+        }
+      }
+    });
+  });
+
+  it('should add code for followRedirect option when set and vice versa' +
+    '(HTTP_Request2 doesn\'t follow redirect by default)', function () {
+    var request = new sdk.Request(mainCollection.item[0].request);
+    convert(request, {
+      followRedirect: true
+    }, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('\'redirect\' => TRUE');
+    });
+
+    convert(request, {
+      followRedirect: false
+    }, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.not.include('\'redirect\'');
+    });
+  });
+
+  it('should add code for requestTimeout option', function () {
+    var request = new sdk.Request(mainCollection.item[0].request);
+    convert(request, {
+      requestTimeout: 5000
+    }, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('\'timeout\' => 5');
+    });
+  });
+
+  it('should trim request body when trimRequestBody is set to true', function () {
+    var request = new sdk.Request({
+      'method': 'POST',
+      'header': [],
+      'body': {
+        'mode': 'raw',
+        'raw': '  trim this body  '
+      },
+      'url': {
+        'raw': 'https://postman-echo.com/post',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'post'
+        ]
+      }
+    });
+    convert(request, {
+      trimRequestBody: true
+    }, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.not.include('  trim this body  ');
+      expect(snippet).to.include('trim this body');
+    });
+
+
+  });
+
+  describe('Sanitize function', function () {
+
+    it('should return empty string when input is not a string type', function () {
+      expect(sanitize(123, false)).to.equal('');
+      expect(sanitize(null, false)).to.equal('');
+      expect(sanitize({}, false)).to.equal('');
+      expect(sanitize([], false)).to.equal('');
+    });
+
+    it('should trim input string when needed', function () {
+      expect(sanitize('inputString     ', true)).to.equal('inputString');
     });
   });
 });
