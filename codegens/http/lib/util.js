@@ -333,10 +333,37 @@ function sanitizeOptions (options, optionsArray) {
   return result;
 }
 
+/**
+ *
+ * @param {Array} array - form data array
+ * @param {String} key - key of form data param
+ * @param {String} type - type of form data param(file/text)
+ * @param {String} val - value/src property of form data param
+ *
+ * Appends a single param to form data array
+ */
+function addFormParam (array, key, type, val) {
+  if (type === 'file') {
+    array.push({
+      key: key,
+      type: type,
+      src: val
+    });
+  }
+  else {
+    array.push({
+      key: key,
+      type: type,
+      value: val
+    });
+  }
+}
+
 module.exports = {
   getEndPoint: getEndPoint,
   getHost: getHost,
   getHeaders: getHeaders,
   getBody: getBody,
-  sanitizeOptions: sanitizeOptions
+  sanitizeOptions: sanitizeOptions,
+  addFormParam: addFormParam
 };

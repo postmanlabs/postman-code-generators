@@ -1,6 +1,7 @@
 var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
+  addFormParam = require('./util').addFormParam,
   path = require('path');
 const VALID_METHODS = ['DEFAULT',
   'DELETE',
@@ -232,20 +233,39 @@ function convert (request, options, callback) {
   // It removes the form data params where the src property is an array of filepath strings
   // Splits that array into different form data params with src set as a single filepath string
   if (request.body && request.body.mode === 'formdata') {
-    let formdata = request.body.formdata;
-    formdata.members.forEach((item) => {
-      if (item.type === 'file' && Array.isArray(item.src)) {
-        item.src.forEach((filePath) => {
-          formdata.add({
-            key: item.key,
-            src: filePath,
-            type: 'file'
-          });
-        });
+    let formdata = request.body.formdata,
+      formdataArray = [];
+    formdata.members.forEach((param) => {
+      let key = param.key,
+        type = param.type;
+        // check if type is file or text
+      if (type === 'file') {
+        // if src is not of type string we check for array(multiple files)
+        if (typeof param.src !== 'string') {
+          // if src is an array(not empty), iterate over it and add files as separate form fields
+          if (Array.isArray(param.src) && param.src.length) {
+            param.src.forEach((filePath) => {
+              addFormParam(formdataArray, key, param.type, filePath);
+            });
+          }
+          // if src is not an array or string, or is an empty array, add a placeholder for file path(no files case)
+          else {
+            addFormParam(formdataArray, key, param.type, '/path/to/file');
+          }
+        }
+        // if src is string, directly add the param with src as filepath
+        else {
+          addFormParam(formdataArray, key, param.type, param.src);
+        }
+      }
+      // if type is text, directly add it to formdata array
+      else {
+        addFormParam(formdataArray, key, param.type, param.value);
       }
     });
-    formdata.remove((item) => {
-      return (item.type === 'file' && (Array.isArray(item.src) || !item.src || typeof item.src !== 'string'));
+    request.body.update({
+      mode: 'formdata',
+      formdata: formdataArray
     });
   }
   body = request.body ? request.body.toJSON() : {};

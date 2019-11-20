@@ -14,12 +14,6 @@
 					"mode": "formdata",
 					"formdata": [
 						{
-              "key": "no file",
-              "value": "",
-              "type": "file",
-              "src": []
-						},
-						{
               "key": "single file",
               "value": "",
               "type": "file",

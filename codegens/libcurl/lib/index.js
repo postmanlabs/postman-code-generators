@@ -1,5 +1,6 @@
 var sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
+  addFormParam = require('./util').addFormParam,
   _ = require('./lodash'),
   self;
 
@@ -73,20 +74,33 @@ self = module.exports = {
     // It removes the form data params where the src property is an array of filepath strings
     // Splits that array into different form data params with src set as a single filepath string
     if (request.body && request.body.mode === 'formdata') {
-      let formdata = request.body.formdata;
-      formdata.members.forEach((item) => {
-        if (item.type === 'file' && Array.isArray(item.src)) {
-          item.src.forEach((filePath) => {
-            formdata.add({
-              key: item.key,
-              src: filePath,
-              type: 'file'
-            });
-          });
+      let formdata = request.body.formdata,
+        formdataArray = [];
+      formdata.members.forEach((param) => {
+        let key = param.key,
+          type = param.type;
+        if (type === 'file') {
+          if (typeof param.src !== 'string') {
+            if (Array.isArray(param.src) && param.src.length) {
+              param.src.forEach((filePath) => {
+                addFormParam(formdataArray, key, param.type, filePath);
+              });
+            }
+            else {
+              addFormParam(formdataArray, key, param.type, '/path/to/file');
+            }
+          }
+          else {
+            addFormParam(formdataArray, key, param.type, param.src);
+          }
+        }
+        else {
+          addFormParam(formdataArray, key, param.type, param.value);
         }
       });
-      formdata.remove((item) => {
-        return (item.type === 'file' && (Array.isArray(item.src) || !item.src || typeof item.src !== 'string'));
+      request.body.update({
+        mode: 'formdata',
+        formdata: formdataArray
       });
     }
 
