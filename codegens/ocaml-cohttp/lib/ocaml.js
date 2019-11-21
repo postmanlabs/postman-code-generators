@@ -300,7 +300,7 @@ self = module.exports = {
     var codeSnippet, indent, trim, finalUrl, methodArg, // timeout, followRedirect,
       bodySnippet = '',
       headerSnippet = '',
-      requestBody = (request.body ? request.body.toJSON() : {}),
+      requestBody,
       requestBodyMode = (request.body ? request.body.mode : 'raw');
 
     indent = options.indentType === 'Tab' ? '\t' : ' ';
@@ -367,6 +367,8 @@ self = module.exports = {
         formdata: formdataArray
       });
     }
+
+    requestBody = (request.body ? request.body.toJSON() : {});
     bodySnippet = parseBody(requestBody, trim, indent);
 
     // Starting to add in codeSnippet

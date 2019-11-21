@@ -33,7 +33,7 @@ function extractFormData (dataArray, indentString, trimBody) {
              *      }
              *  }
              */
-      if (Array.isArray(item.src)) {
+      if (Array.isArray(item.src) && item.src.length) {
         let fileSnippet = '',
           fileArray = [];
         _.forEach(item.src, (filePath) => {
@@ -47,6 +47,17 @@ function extractFormData (dataArray, indentString, trimBody) {
         else {
           return accumalator;
         }
+      }
+      else if (typeof item.src !== 'string') {
+        accumalator.push([
+          indentString.repeat(2) + `'${sanitize(item.key, trimBody)}': {`,
+          indentString.repeat(3) + '\'value\': fs.createReadStream(\'path/to/file\'),',
+          indentString.repeat(3) + '\'options\': {',
+          indentString.repeat(4) + '\'filename\': \'filename\'',
+          indentString.repeat(4) + '\'contentType\': null',
+          indentString.repeat(3) + '}',
+          indentString.repeat(2) + '}'
+        ].join('\n'));
       }
       else {
         var pathArray = item.src.split(path.sep),

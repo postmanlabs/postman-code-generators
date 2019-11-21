@@ -2,7 +2,7 @@ var _ = require('./lodash'),
   parseBody = require('./util/parseBody'),
   sanitize = require('./util/sanitize').sanitize,
   sanitizeOptions = require('./util/sanitize').sanitizeOptions,
-  addFormParam = require('./util').addFormParam,
+  addFormParam = require('./util/sanitize').addFormParam,
   self;
 
 /**
