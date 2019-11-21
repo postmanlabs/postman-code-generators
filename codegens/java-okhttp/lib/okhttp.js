@@ -41,24 +41,26 @@ function makeSnippet (request, indentString, options) {
         formdataArray = [];
       formdata.members.forEach((param) => {
         let key = param.key,
-          type = param.type;
+          type = param.type,
+          disabled = param.disabled,
+          contentType = param.contentType;
         if (type === 'file') {
           if (typeof param.src !== 'string') {
             if (Array.isArray(param.src) && param.src.length) {
               param.src.forEach((filePath) => {
-                addFormParam(formdataArray, key, param.type, filePath);
+                addFormParam(formdataArray, key, param.type, filePath, disabled, contentType);
               });
             }
             else {
-              addFormParam(formdataArray, key, param.type, '/path/to/file');
+              addFormParam(formdataArray, key, param.type, 'path/to/file', disabled, contentType);
             }
           }
           else {
-            addFormParam(formdataArray, key, param.type, param.src);
+            addFormParam(formdataArray, key, param.type, param.src, disabled, contentType);
           }
         }
         else {
-          addFormParam(formdataArray, key, param.type, param.value);
+          addFormParam(formdataArray, key, param.type, param.value, disabled, contentType);
         }
       });
       request.body.update({

@@ -148,22 +148,28 @@ function getUrlStringfromUrlObject (urlObject) {
  * @param {String} key - key of form data param
  * @param {String} type - type of form data param(file/text)
  * @param {String} val - value/src property of form data param
+ * @param {String} disabled - Boolean denoting whether the param is disabled or not
+ * @param {String} contentType - content type header of the param
  *
  * Appends a single param to form data array
  */
-function addFormParam (array, key, type, val) {
+function addFormParam (array, key, type, val, disabled, contentType) {
   if (type === 'file') {
     array.push({
       key: key,
       type: type,
-      src: val
+      src: val,
+      disabled: disabled,
+      contentType: contentType
     });
   }
   else {
     array.push({
       key: key,
       type: type,
-      value: val
+      value: val,
+      disabled: disabled,
+      contentType: contentType
     });
   }
 }
