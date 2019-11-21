@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "No/Single/multiple file upload via form-data",
+			"name": "Single/multiple file upload via form-data",
 			"request": {
 				"method": "POST",
 				"header": [],
