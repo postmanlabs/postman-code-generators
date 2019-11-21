@@ -81,7 +81,40 @@ function sanitizeOptions (options, optionsArray) {
   return result;
 }
 
+/**
+ *
+ * @param {Array} array - form data array
+ * @param {String} key - key of form data param
+ * @param {String} type - type of form data param(file/text)
+ * @param {String} val - value/src property of form data param
+ * @param {String} disabled - Boolean denoting whether the param is disabled or not
+ * @param {String} contentType - content type header of the param
+
+ * Appends a single param to form data array
+ */
+function addFormParam (array, key, type, val, disabled, contentType) {
+  if (type === 'file') {
+    array.push({
+      key: key,
+      type: type,
+      src: val,
+      disabled: disabled,
+      contentType: contentType
+    });
+  }
+  else {
+    array.push({
+      key: key,
+      type: type,
+      value: val,
+      disabled: disabled,
+      contentType: contentType
+    });
+  }
+}
+
 module.exports = {
   sanitize: sanitize,
-  sanitizeOptions: sanitizeOptions
+  sanitizeOptions: sanitizeOptions,
+  addFormParam: addFormParam
 };

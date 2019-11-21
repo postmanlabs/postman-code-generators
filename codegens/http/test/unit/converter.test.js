@@ -140,6 +140,17 @@ describe('Converter test', function () {
             'type': 'file',
             'src': ['/test2.txt',
               '/test3.txt']
+          },
+          {
+            'key': 'no src',
+            'value': '',
+            'type': 'file'
+          },
+          {
+            'key': 'invalid src',
+            'value': '',
+            'type': 'file',
+            'src': {}
           }
         ]
       },
@@ -161,9 +172,12 @@ describe('Converter test', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('test1.txt');
-      expect(snippet).to.include('test2.txt');
-      expect(snippet).to.include('test3.txt');
+      expect(snippet).to.include('name="single file"; filename="test1.txt"');
+      expect(snippet).to.include('name="multiple files"; filename="test2.txt"');
+      expect(snippet).to.include('name="multiple files"; filename="test3.txt"');
+      expect(snippet).to.include('name="no file"; filename="file"');
+      expect(snippet).to.include('name="no src"; filename="file"');
+      expect(snippet).to.include('name="invalid src"; filename="file"');
     });
   });
 });

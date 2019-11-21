@@ -378,6 +378,17 @@ describe('Powershell-restmethod converter', function () {
               'type': 'file',
               'src': ['/test2.txt',
                 '/test3.txt']
+            },
+            {
+              'key': 'no src',
+              'value': '',
+              'type': 'file'
+            },
+            {
+              'key': 'invalid src',
+              'value': '',
+              'type': 'file',
+              'src': {}
             }
           ]
         },
@@ -399,9 +410,15 @@ describe('Powershell-restmethod converter', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('test1.txt');
-        expect(snippet).to.include('test2.txt');
-        expect(snippet).to.include('test3.txt');
+        expect(snippet).to.include('$fileHeader.Name = "no file"');
+        expect(snippet).to.include('$fileHeader.Name = "single file"');
+        expect(snippet).to.include('$fileHeader.Name = "multiple files"');
+        expect(snippet).to.include('$fileHeader.Name = "no src"');
+        expect(snippet).to.include('$fileHeader.Name = "invalid src"');
+        expect(snippet).to.include('$multipartFile = \'/path/to/file\'');
+        expect(snippet).to.include('$multipartFile = \'/test1.txt\'');
+        expect(snippet).to.include('$multipartFile = \'/test2.txt\'');
+        expect(snippet).to.include('$multipartFile = \'/test3.txt\'');
       });
     });
   });

@@ -60,6 +60,56 @@ describe('libcurl convert function', function () {
         '  value_containing_whitespaces  "');
       });
     });
+
+    it('should generate snippets for no files in form data', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'no file',
+              'value': '',
+              'type': 'file',
+              'src': []
+            },
+            {
+              'key': 'no src',
+              'value': '',
+              'type': 'file'
+            },
+            {
+              'key': 'invalid src',
+              'value': '',
+              'type': 'file',
+              'src': {}
+            }
+          ]
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('curl_mime_name(part, "no file");');
+        expect(snippet).to.include('curl_mime_filedata(part, "/path/to/file");');
+        expect(snippet).to.include('curl_mime_name(part, "no src");');
+        expect(snippet).to.include('curl_mime_name(part, "invalid src");');
+      });
+    });
   });
 
   describe('getOptions function', function () {

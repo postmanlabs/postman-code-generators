@@ -6,19 +6,13 @@
 	},
 	"item": [
 		{
-			"name": "No/Single/multiple file upload via form-data",
+			"name": "Single/multiple file upload via form-data",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
-						{
-              "key": "no file",
-              "value": "",
-              "type": "file",
-              "src": []
-						},
 						{
               "key": "single file",
               "value": "",

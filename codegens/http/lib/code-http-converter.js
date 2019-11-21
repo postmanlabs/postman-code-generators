@@ -49,20 +49,41 @@ function convert (request, options, callback) {
   // It removes the form data params where the src property is an array of filepath strings
   // Splits that array into different form data params with src set as a single filepath string
   if (request.body && request.body.mode === 'formdata') {
-    let formdata = request.body.formdata;
-    formdata.members.forEach((item) => {
-      if (item.type === 'file' && Array.isArray(item.src)) {
-        item.src.forEach((filePath) => {
-          formdata.add({
-            key: item.key,
-            src: filePath,
-            type: 'file'
-          });
-        });
+    let formdata = request.body.formdata,
+      formdataArray = [];
+    formdata.members.forEach((param) => {
+      let key = param.key,
+        type = param.type,
+        disabled = param.disabled,
+        contentType = param.contentType;
+      // check if type is file or text
+      if (type === 'file') {
+        // if src is not of type string we check for array(multiple files)
+        if (typeof param.src !== 'string') {
+          // if src is an array(not empty), iterate over it and add files as separate form fields
+          if (Array.isArray(param.src) && param.src.length) {
+            param.src.forEach((filePath) => {
+              utils.addFormParam(formdataArray, key, param.type, filePath, disabled, contentType);
+            });
+          }
+          // if src is not an array or string, or is an empty array, add a placeholder for file path(no files case)
+          else {
+            utils.addFormParam(formdataArray, key, param.type, '/path/to/file', disabled, contentType);
+          }
+        }
+        // if src is string, directly add the param with src as filepath
+        else {
+          utils.addFormParam(formdataArray, key, param.type, param.src, disabled, contentType);
+        }
+      }
+      // if type is text, directly add it to formdata array
+      else {
+        utils.addFormParam(formdataArray, key, param.type, param.value, disabled, contentType);
       }
     });
-    formdata.remove((item) => {
-      return (item.type === 'file' && Array.isArray(item.src));
+    request.body.update({
+      mode: 'formdata',
+      formdata: formdataArray
     });
   }
   snippet += `${utils.getHeaders(request)}\n`;

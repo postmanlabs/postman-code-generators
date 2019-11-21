@@ -121,23 +121,9 @@ self = module.exports = {
         }
       });
 
-      // The following code handles multiple files in the same formdata param.
-      // It removes the form data params where the src property is an array of filepath strings
-      // Splits that array into different form data params with src set as a single filepath string
-      let formdata = request.body.formdata;
-      formdata.members.forEach((item) => {
-        if (item.type === 'file' && Array.isArray(item.src)) {
-          item.src.forEach((filePath) => {
-            formdata.add({
-              key: item.key,
-              src: filePath,
-              type: 'file'
-            });
-          });
-        }
-      });
-      formdata.remove((item) => {
-        return (item.type === 'file' && Array.isArray(item.src));
+      request.body.update({
+        mode: 'formdata',
+        formdata: formdataArray
       });
     }
     if (isFormDataFile) {

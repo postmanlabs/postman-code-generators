@@ -322,6 +322,53 @@ describe('java unirest convert function for test collection', function () {
         expect(snippet).to.not.include('.multiPartContent()');
       });
     });
+
+    it('should generate snippets for no files in form data', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'no file',
+              'value': '',
+              'type': 'file',
+              'src': []
+            },
+            {
+              'key': 'no src',
+              'value': '',
+              'type': 'file'
+            },
+            {
+              'key': 'invalid src',
+              'value': '',
+              'type': 'file',
+              'src': {}
+            }
+          ]
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('.field("file", new File("/path/to/file"))');
+      });
+    });
   });
   describe('getUrlStringfromUrlObject function', function () {
     var rawUrl, urlObject, outputUrlString;
