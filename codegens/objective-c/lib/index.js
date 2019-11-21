@@ -120,8 +120,8 @@ function parseFormData (body, indent, trim) {
   bodySnippet += indent.repeat(3) + 'NSLog(@"%@", error);\n';
   bodySnippet += indent.repeat(2) + '}\n';
   bodySnippet += indent + '} else {\n';
-  // eslint-disable-next-line max-len
-  bodySnippet += indent.repeat(2) + '[body appendFormat:@"Content-Disposition:form-data; name="%@"\\r\\n\\r\\n", param[@"name"]];\n';
+  bodySnippet += indent.repeat(2) +
+    '[body appendFormat:@"Content-Disposition:form-data; name="%@"\\r\\n\\r\\n", param[@"name"]];\n';
   bodySnippet += indent.repeat(2) + '[body appendFormat:@"%@", param[@"value"]];\n';
   bodySnippet += indent + '}\n';
   bodySnippet += '}\n';
@@ -217,8 +217,8 @@ self = module.exports = {
     }
     let obj = {};
     codeSnippet = '#import <Foundation/Foundation.h>\n';
-    codeSnippet += 'NSMutableURLRequest *request = [NSMutableURLRequest';
-    codeSnippet += 'requestWithURL:[NSURL URLWithString:@"' + encodeURI(request.url.toString()) + '"]\n';
+    codeSnippet += 'NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"' +
+      encodeURI(request.url.toString()) + '"]\n';
     codeSnippet += `${indent}cachePolicy:NSURLRequestUseProtocolCachePolicy\n`;
     codeSnippet += `${indent}timeoutInterval:10.0];\n`;
     codeSnippet += parseHeaders(Object.assign(obj, request.getHeaders({enabled: true})), indent, trim);
