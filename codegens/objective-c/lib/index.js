@@ -221,6 +221,8 @@ self = module.exports = {
       encodeURI(request.url.toString()) + '"]\n';
     codeSnippet += `${indent}cachePolicy:NSURLRequestUseProtocolCachePolicy\n`;
     codeSnippet += `${indent}timeoutInterval:10.0];\n`;
+    // TODO: use defaultSessionConfiguration
+    // codeSnippet += 'NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];\n';
     codeSnippet += parseHeaders(Object.assign(obj, request.getHeaders({enabled: true})), indent, trim);
     codeSnippet += parseBody(request.body ? request.body.toJSON() : {}, indent, trim) + '\n';
     codeSnippet += '[request setHTTPMethod:@"' + request.method + '"];\n';
