@@ -191,6 +191,17 @@ describe('jQuery converter', function () {
             'type': 'file',
             'src': ['/test2.txt',
               '/test3.txt']
+          },
+          {
+            'key': 'no src',
+            'value': '',
+            'type': 'file'
+          },
+          {
+            'key': 'invalid src',
+            'value': '',
+            'type': 'file',
+            'src': {}
           }
         ]
       },
@@ -212,9 +223,12 @@ describe('jQuery converter', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('test1.txt');
-      expect(snippet).to.include('test2.txt');
-      expect(snippet).to.include('test3.txt');
+      expect(snippet).to.include('"no file", fileInput.files[0], "file"');
+      expect(snippet).to.include('"single file", fileInput.files[0], "test1.txt"');
+      expect(snippet).to.include('"multiple files", fileInput.files[0], "test2.txt"');
+      expect(snippet).to.include('"multiple files", fileInput.files[0], "test3.txt"');
+      expect(snippet).to.include('"no src", fileInput.files[0], "file"');
+      expect(snippet).to.include('"invalid src", fileInput.files[0], "file"');
     });
   });
 });
