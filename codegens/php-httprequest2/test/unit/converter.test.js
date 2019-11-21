@@ -135,6 +135,59 @@ describe('PHP HTTP_Request2 converter', function () {
 
   });
 
+  it('should generate snippets for no files in form data', function () {
+    var request = new sdk.Request({
+      'method': 'POST',
+      'header': [],
+      'body': {
+        'mode': 'formdata',
+        'formdata': [
+          {
+            'key': 'no file',
+            'value': '',
+            'type': 'file',
+            'src': []
+          },
+          {
+            'key': 'no src',
+            'value': '',
+            'type': 'file'
+          },
+          {
+            'key': 'invalid src',
+            'value': '',
+            'type': 'file',
+            'src': {}
+          }
+        ]
+      },
+      'url': {
+        'raw': 'https://postman-echo.com/post',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'post'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      /* eslint-disable max-len*/
+      /* eslint-disable quotes*/
+      expect(snippet).to.include("$request->addUpload(  'no file', '/path/to/file', 'file', <Content-Type Header>);");
+      expect(snippet).to.include("$request->addUpload(  'no src', '/path/to/file', 'file', <Content-Type Header>);");
+      expect(snippet).to.include("$request->addUpload(  'invalid src', '/path/to/file', 'file', <Content-Type Header>);");
+      /* eslint-enable max-len*/
+      /* eslint-enable quotes*/
+    });
+  });
+
   describe('Sanitize function', function () {
 
     it('should return empty string when input is not a string type', function () {
