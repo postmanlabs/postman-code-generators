@@ -4,6 +4,7 @@ var _ = require('./lodash'),
   sanitizeOptions = require('./util/sanitize').sanitizeOptions,
   addFormParam = require('./util/sanitize').addFormParam,
   self;
+const ALLOWED_METOHDS = [ 'OPTIONS', 'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'TRACE', 'CONNECT'];
 
 /**
  * Used to get the headers and put them in the desired form of the language
@@ -89,7 +90,14 @@ self = module.exports = {
     snippet += 'require_once \'HTTP/Request2.php\';\n';
     snippet += '$request = new HTTP_Request2();\n';
     snippet += `$request->setUrl('${request.url.toString()}');\n`;
-    snippet += `$request->setMethod(HTTP_Request2::METHOD_${request.method});\n`;
+    snippet += '$request->setMethod(';
+    if (ALLOWED_METOHDS.includes(request.method)) {
+      snippet += `HTTP_Request2::METHOD_${request.method});\n`;
+    }
+    else {
+      snippet += `'${request.method}');\n`;
+    }
+
     if (options.requestTimeout !== 0 || options.followRedirect) {
       let configArray = [];
 
@@ -100,7 +108,7 @@ self = module.exports = {
         configArray.push(`${indentString}'timeout' => ${requestTimeout}`);
       }
       if (options.followRedirect) {
-        configArray.push(`${indentString}'redirect' => TRUE`);
+        configArray.push(`${indentString}'follow_redirects' => TRUE`);
       }
       if (configArray.length) {
         snippet += '$request->setConfig(array(\n';

@@ -74,7 +74,7 @@ describe('PHP HTTP_Request2 converter', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('\'redirect\' => TRUE');
+      expect(snippet).to.include('\'follow_redirects\' => TRUE');
     });
 
     convert(request, {
@@ -84,7 +84,7 @@ describe('PHP HTTP_Request2 converter', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.not.include('\'redirect\'');
+      expect(snippet).to.not.include('\'follow_redirects\'');
     });
   });
 
