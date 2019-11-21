@@ -158,7 +158,7 @@ self = module.exports = {
             }
             // if src is not an array or string, or is an empty array, add a placeholder for file path(no files case)
             else {
-              addFormParam(formdataArray, key, param.type, 'path/to/file', disabled, contentType);
+              addFormParam(formdataArray, key, param.type, '/path/to/file', disabled, contentType);
             }
           }
           // if src is string, directly add the param with src as filepath

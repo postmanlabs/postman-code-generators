@@ -146,7 +146,7 @@ self = module.exports = {
               });
             }
             else {
-              addFormParam(formdataArray, key, param.type, 'path/to/file', disabled, contentType);
+              addFormParam(formdataArray, key, param.type, '/path/to/file', disabled, contentType);
             }
           }
           else {

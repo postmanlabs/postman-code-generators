@@ -105,7 +105,7 @@ describe('libcurl convert function', function () {
         }
         expect(snippet).to.be.a('string');
         expect(snippet).to.include('curl_mime_name(part, "no file");');
-        expect(snippet).to.include('curl_mime_filedata(part, "path/to/file");');
+        expect(snippet).to.include('curl_mime_filedata(part, "/path/to/file");');
         expect(snippet).to.include('curl_mime_name(part, "no src");');
         expect(snippet).to.include('curl_mime_name(part, "invalid src");');
       });

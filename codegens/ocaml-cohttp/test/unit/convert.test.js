@@ -179,12 +179,12 @@ describe('Ocaml unit tests', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('("name", "no file"); ("fileName", "path/to/file")');
+        expect(snippet).to.include('("name", "no file"); ("fileName", "/path/to/file")');
         expect(snippet).to.include('("name", "single file"); ("fileName", "/test1.txt")');
         expect(snippet).to.include('("name", "multiple files"); ("fileName", "/test2.txt")');
         expect(snippet).to.include('("name", "multiple files"); ("fileName", "/test3.txt")');
-        expect(snippet).to.include('("name", "no src"); ("fileName", "path/to/file")');
-        expect(snippet).to.include('("name", "invalid src"); ("fileName", "path/to/file")');
+        expect(snippet).to.include('("name", "no src"); ("fileName", "/path/to/file")');
+        expect(snippet).to.include('("name", "invalid src"); ("fileName", "/path/to/file")');
       });
     });
   });

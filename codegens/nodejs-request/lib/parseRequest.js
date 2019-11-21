@@ -51,7 +51,7 @@ function extractFormData (dataArray, indentString, trimBody) {
       else if (typeof item.src !== 'string') {
         accumalator.push([
           indentString.repeat(2) + `'${sanitize(item.key, trimBody)}': {`,
-          indentString.repeat(3) + '\'value\': fs.createReadStream(\'path/to/file\'),',
+          indentString.repeat(3) + '\'value\': fs.createReadStream(\'/path/to/file\'),',
           indentString.repeat(3) + '\'options\': {',
           indentString.repeat(4) + '\'filename\': \'filename\'',
           indentString.repeat(4) + '\'contentType\': null',

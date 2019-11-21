@@ -366,7 +366,7 @@ describe('java unirest convert function for test collection', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('.field("file", new File("path/to/file"))');
+        expect(snippet).to.include('.field("file", new File("/path/to/file"))');
       });
     });
   });

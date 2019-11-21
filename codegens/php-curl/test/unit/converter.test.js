@@ -79,9 +79,9 @@ describe('php-curl converter', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('\'no file\'=> new CURLFILE(\'path/to/file\')');
-      expect(snippet).to.include('\'no src\'=> new CURLFILE(\'path/to/file\')');
-      expect(snippet).to.include('\'invalid src\'=> new CURLFILE(\'path/to/file\')');
+      expect(snippet).to.include('\'no file\'=> new CURLFILE(\'/path/to/file\')');
+      expect(snippet).to.include('\'no src\'=> new CURLFILE(\'/path/to/file\')');
+      expect(snippet).to.include('\'invalid src\'=> new CURLFILE(\'/path/to/file\')');
     });
   });
 

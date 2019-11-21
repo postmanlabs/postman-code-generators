@@ -353,7 +353,7 @@ describe('nodejs-request convert function', function () {
         expect(snippet).to.include('\'no file\': {');
         expect(snippet).to.include('\'no src\': {');
         expect(snippet).to.include('\'invalid src\': {');
-        expect(snippet).to.include('\'value\': fs.createReadStream(\'path/to/file\')');
+        expect(snippet).to.include('\'value\': fs.createReadStream(\'/path/to/file\')');
       });
     });
 

@@ -101,9 +101,9 @@ describe('Ruby converter', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('[\'no file\', File.open(\'path/to/file\')]');
-      expect(snippet).to.include('[\'no src\', File.open(\'path/to/file\')]');
-      expect(snippet).to.include('[\'invalid src\', File.open(\'path/to/file\')]');
+      expect(snippet).to.include('[\'no file\', File.open(\'/path/to/file\')]');
+      expect(snippet).to.include('[\'no src\', File.open(\'/path/to/file\')]');
+      expect(snippet).to.include('[\'invalid src\', File.open(\'/path/to/file\')]');
     });
   });
 

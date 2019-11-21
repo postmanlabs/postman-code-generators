@@ -187,7 +187,7 @@ describe('nodejs unirest convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('.attach(\'file\', \'path/to/file\')');
+        expect(snippet).to.include('.attach(\'file\', \'/path/to/file\')');
       });
     });
   });

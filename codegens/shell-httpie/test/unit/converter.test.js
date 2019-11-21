@@ -138,9 +138,9 @@ describe('Shell-Httpie convert function', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('\'no file\'@path/to/file');
-      expect(snippet).to.include('\'no src\'@path/to/file');
-      expect(snippet).to.include('\'invalid src\'@path/to/file');
+      expect(snippet).to.include('\'no file\'@/path/to/file');
+      expect(snippet).to.include('\'no src\'@/path/to/file');
+      expect(snippet).to.include('\'invalid src\'@/path/to/file');
     });
   });
 });

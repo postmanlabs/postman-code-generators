@@ -676,12 +676,12 @@ describe('Request Snippet', function () {
         expect(snippet).to.be.a('string');
         /* eslint-disable quotes */
         /* eslint-disable max-len */
-        expect(snippet).to.include("array('name' => 'no file', 'type' => '<Content-type header>', 'file' => 'path/to/file', 'data' => null)");
+        expect(snippet).to.include("array('name' => 'no file', 'type' => '<Content-type header>', 'file' => '/path/to/file', 'data' => null)");
         expect(snippet).to.include("array('name' => 'single file', 'type' => '<Content-type header>', 'file' => '/test1.txt', 'data' => null)");
         expect(snippet).to.include("array('name' => 'multiple files', 'type' => '<Content-type header>', 'file' => '/test3.txt', 'data' => null)");
         expect(snippet).to.include("array('name' => 'multiple files', 'type' => '<Content-type header>', 'file' => '/test3.txt', 'data' => null)");
-        expect(snippet).to.include("array('name' => 'no src', 'type' => '<Content-type header>', 'file' => 'path/to/file', 'data' => null)");
-        expect(snippet).to.include("array('name' => 'invalid src', 'type' => '<Content-type header>', 'file' => 'path/to/file', 'data' => null)");
+        expect(snippet).to.include("array('name' => 'no src', 'type' => '<Content-type header>', 'file' => '/path/to/file', 'data' => null)");
+        expect(snippet).to.include("array('name' => 'invalid src', 'type' => '<Content-type header>', 'file' => '/path/to/file', 'data' => null)");
         /* eslint-enable quotes */
         /* eslint-enable max-len */
       });

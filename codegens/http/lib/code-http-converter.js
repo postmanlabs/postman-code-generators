@@ -68,7 +68,7 @@ function convert (request, options, callback) {
           }
           // if src is not an array or string, or is an empty array, add a placeholder for file path(no files case)
           else {
-            utils.addFormParam(formdataArray, key, param.type, 'path/to/file', disabled, contentType);
+            utils.addFormParam(formdataArray, key, param.type, '/path/to/file', disabled, contentType);
           }
         }
         // if src is string, directly add the param with src as filepath

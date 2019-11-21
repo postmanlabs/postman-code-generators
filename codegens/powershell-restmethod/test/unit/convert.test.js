@@ -415,7 +415,7 @@ describe('Powershell-restmethod converter', function () {
         expect(snippet).to.include('$fileHeader.Name = "multiple files"');
         expect(snippet).to.include('$fileHeader.Name = "no src"');
         expect(snippet).to.include('$fileHeader.Name = "invalid src"');
-        expect(snippet).to.include('$multipartFile = \'path/to/file\'');
+        expect(snippet).to.include('$multipartFile = \'/path/to/file\'');
         expect(snippet).to.include('$multipartFile = \'/test1.txt\'');
         expect(snippet).to.include('$multipartFile = \'/test2.txt\'');
         expect(snippet).to.include('$multipartFile = \'/test3.txt\'');

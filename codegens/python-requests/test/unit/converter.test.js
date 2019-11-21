@@ -106,9 +106,9 @@ describe('Python- Requests converter', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('(\'no file\', open(\'path/to/file\',\'rb\'))');
-      expect(snippet).to.include('(\'no src\', open(\'path/to/file\',\'rb\'))');
-      expect(snippet).to.include('(\'invalid src\', open(\'path/to/file\',\'rb\'))');
+      expect(snippet).to.include('(\'no file\', open(\'/path/to/file\',\'rb\'))');
+      expect(snippet).to.include('(\'no src\', open(\'/path/to/file\',\'rb\'))');
+      expect(snippet).to.include('(\'invalid src\', open(\'/path/to/file\',\'rb\'))');
     });
   });
 

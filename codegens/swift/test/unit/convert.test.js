@@ -194,7 +194,7 @@ describe('Swift Converter', function () {
         }
         expect(snippet).to.be.a('string');
         expect(snippet).to.include('"key": "no file"');
-        expect(snippet).to.include('"src": "path/to/file"');
+        expect(snippet).to.include('"src": "/path/to/file"');
         expect(snippet).to.include('"key": "no src"');
         expect(snippet).to.include('"key": "invalid src"');
       });

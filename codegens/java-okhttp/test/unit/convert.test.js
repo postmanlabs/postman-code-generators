@@ -153,7 +153,7 @@ describe('okhttp convert function', function () {
         expect(snippet).to.include('"no file","file"');
         expect(snippet).to.include('"no src","file"');
         expect(snippet).to.include('"invalid src","file"');
-        expect(snippet).to.include('new File("path/to/file")');
+        expect(snippet).to.include('new File("/path/to/file")');
       });
     });
   });

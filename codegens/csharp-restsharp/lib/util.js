@@ -98,8 +98,8 @@ function addFormParam (array, key, type, val, disabled, contentType) {
       key: key,
       type: type,
       src: val,
-disabled: disabled,
-contentType: contentType
+      disabled: disabled,
+      contentType: contentType
     });
   }
   else {
@@ -107,8 +107,8 @@ contentType: contentType
       key: key,
       type: type,
       value: val,
-disabled: disabled,
-contentType: contentType
+      disabled: disabled,
+      contentType: contentType
     });
   }
 }
