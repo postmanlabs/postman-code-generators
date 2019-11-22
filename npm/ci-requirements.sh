@@ -42,6 +42,10 @@ pushd ./codegens/csharp-restsharp &>/dev/null;
   dotnet add package RestSharp
   popd &>/dev/null;
 popd &>/dev/null;
+
+echo "Installing dependencies required for tests in codegens/php-httprequest2"
+  pear install HTTP_Request2-2.3.0
+
 echo "Installing dependencies required for tests in codegens/swift"
 pushd ./codegens/swift &>/dev/null;
   sudo apt-get update
