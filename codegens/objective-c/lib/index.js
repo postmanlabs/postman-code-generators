@@ -1,6 +1,7 @@
 var _ = require('./lodash'),
   sanitizeOptions = require('./util').sanitizeOptions,
   sanitize = require('./util').sanitize,
+  addFormParam = require('./util').addFormParam,
   self;
 
 /**
@@ -90,14 +91,7 @@ function parseFormData (body, indent, trim) {
       }
       first = false;
       if (data.type === 'file') {
-        if (Array.isArray(data.src)) {
-          data.src.forEach((src) => {
-            bodySnippet += `\n${indent}@{ @"name": @"${key}", @"fileName": @"${src}" }`;
-          });
-        }
-        else {
-          bodySnippet += `\n${indent}@{ @"name": @"${key}", @"fileName": @"${data.src}" }`;
-        }
+        bodySnippet += `\n${indent}@{ @"name": @"${key}", @"fileName": @"${data.src}" }`;
       }
       else {
         bodySnippet += `\n${indent}@{ @"name": @"${key}", @"value": @"${sanitize(value, trim)}" }`;
@@ -219,6 +213,42 @@ self = module.exports = {
           value: 'application/json'
         });
       }
+    }
+
+    // The following code handles multiple files in the same formdata param.
+    // It removes the form data params where the src property is an array of filepath strings
+    // Splits that array into different form data params with src set as a single filepath string
+    if (request.body && request.body.mode === 'formdata') {
+      let formdata = request.body.formdata,
+        formdataArray = [];
+      formdata.members.forEach((param) => {
+        let key = param.key,
+          type = param.type,
+          disabled = param.disabled,
+          contentType = param.contentType;
+        if (type === 'file') {
+          if (typeof param.src !== 'string') {
+            if (Array.isArray(param.src) && param.src.length) {
+              param.src.forEach((filePath) => {
+                addFormParam(formdataArray, key, param.type, filePath, disabled, contentType);
+              });
+            }
+            else {
+              addFormParam(formdataArray, key, param.type, '/path/to/file', disabled, contentType);
+            }
+          }
+          else {
+            addFormParam(formdataArray, key, param.type, param.src, disabled, contentType);
+          }
+        }
+        else {
+          addFormParam(formdataArray, key, param.type, param.value, disabled, contentType);
+        }
+      });
+      request.body.update({
+        mode: 'formdata',
+        formdata: formdataArray
+      });
     }
 
     let obj = {};
