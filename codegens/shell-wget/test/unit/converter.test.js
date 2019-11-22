@@ -108,6 +108,49 @@ describe('Shell-Wget converter', function () {
         expect(snippet).to.include('--header \'key_containing_whitespaces:   value_containing_whitespaces  \'');
       });
     });
+
+    it('should generate snippet for formdata body mode', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'text key',
+              'type': 'text',
+              'value': 'text value'
+
+            },
+            {
+              'key': 'file key',
+              'type': 'file',
+              'src': '/path'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('# wget doesn\'t support file upload via form data, use curl -F');
+        expect(snippet).to.not.include('file key');
+        expect(snippet).to.include('text key=text value');
+      });
+    });
   });
 
   describe('getOptions function', function () {
