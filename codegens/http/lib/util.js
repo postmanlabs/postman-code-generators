@@ -118,6 +118,39 @@ function convertPropertyListToString (propertyList, joinUsing, includeDisabled =
 }
 
 /**
+ * parses variable of request url object and sets hostname, path and query in request object
+ *
+ * @param {Object} request - Postman SDK request object
+ */
+function parseURLVariable (request) {
+  const variableArray = _.get(request.toJSON(), 'url.variable', []);
+
+  if (!variableArray.length) {
+    return;
+  }
+
+  variableArray.forEach(function (variableArrayElement) {
+    request.url.host.forEach(function (hostArrayElement, hostArrayElementIndex) {
+      if (hostArrayElement === ':' + variableArrayElement.key) {
+        request.url.host[hostArrayElementIndex] = variableArrayElement.value;
+      }
+    });
+
+    request.url.path.forEach(function (pathArrayElement, pathArrayElementIndex) {
+      if (pathArrayElement === ':' + variableArrayElement.key) {
+        request.url.path[pathArrayElementIndex] = variableArrayElement.value;
+      }
+    });
+
+    request.toJSON().url.query.forEach(function (queryArrayElement, queryArrayElementIndex) {
+      if (queryArrayElement === ':' + variableArrayElement.key) {
+        request.url.query[queryArrayElementIndex] = variableArrayElement.value;
+      }
+    });
+  });
+}
+
+/**
  * Returns the request end-point as a string.
  *
  * @param {Object} request - Postman SDK request
@@ -366,6 +399,7 @@ function addFormParam (array, key, type, val, disabled, contentType) {
 }
 
 module.exports = {
+  parseURLVariable: parseURLVariable,
   getEndPoint: getEndPoint,
   getHost: getHost,
   getHeaders: getHeaders,
