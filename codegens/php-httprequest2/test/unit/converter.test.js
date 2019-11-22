@@ -180,9 +180,9 @@ describe('PHP HTTP_Request2 converter', function () {
       expect(snippet).to.be.a('string');
       /* eslint-disable max-len*/
       /* eslint-disable quotes*/
-      expect(snippet).to.include("$request->addUpload(  'no file', '/path/to/file', 'file', <Content-Type Header>);");
-      expect(snippet).to.include("$request->addUpload(  'no src', '/path/to/file', 'file', <Content-Type Header>);");
-      expect(snippet).to.include("$request->addUpload(  'invalid src', '/path/to/file', 'file', <Content-Type Header>);");
+      expect(snippet).to.include("$request->addUpload('no file', '/path/to/file', 'file', '<Content-Type Header>');");
+      expect(snippet).to.include("$request->addUpload('no src', '/path/to/file', 'file', '<Content-Type Header>');");
+      expect(snippet).to.include("$request->addUpload('invalid src', '/path/to/file', 'file', '<Content-Type Header>');");
       /* eslint-enable max-len*/
       /* eslint-enable quotes*/
     });
