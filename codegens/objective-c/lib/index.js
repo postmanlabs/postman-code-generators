@@ -5,11 +5,11 @@ var _ = require('./lodash'),
   self;
 
 /**
- * Parses Raw data to fetch syntax
+ * Parses Raw data
  *
  * @param {Object} body Raw body data
- * @param {String} indent Indent
- * @param {Boolean} trim Trim request body if this is true.
+ * @param {String} indent indentation required for code snippet
+ * @param {Boolean} trim indicates whether to trim string or not
  */
 function parseRawBody (body, indent, trim) {
   var bodySnippet = '';
@@ -23,8 +23,8 @@ function parseRawBody (body, indent, trim) {
  * Parses GraphQL body
  *
  * @param {Object} body GraphQL body
- * @param {String} indent Indent
- * @param {Boolean} trim Trim request body if this is true.
+ * @param {String} indent indentation required for code snippet
+ * @param {Boolean} trim indicates whether to trim string or not
  */
 function parseGraphqlBody (body, indent, trim) {
   var bodySnippet = '',
@@ -36,11 +36,11 @@ function parseGraphqlBody (body, indent, trim) {
 }
 
 /**
- * Parses URLEncoded body from request to fetch syntax
+ * Parses URLEncoded body
  *
  * @param {Object} body URLEncoded Body
- * @param {String} indent Indent
- * @param {Boolean} trim Trim request body is this true.
+ * @param {String} indent indentation required for code snippet
+ * @param {Boolean} trim indicates whether to trim string or not
  */
 function parseURLEncodedBody (body, indent, trim) {
   let bodySnippet = '',
@@ -67,37 +67,33 @@ function parseURLEncodedBody (body, indent, trim) {
 }
 
 /**
- * Parses URLEncoded body from request to fetch syntax
+ * Parses form data body from request
  *
- * @param {Object} body URLEncoded Body
- * @param {String} indent Indent
- * @param {Boolean} trim Trim request body is this true.
+ * @param {Object} body form data Body
+ * @param {String} indent indentation required for code snippet
+ * @param {Boolean} trim indicates whether to trim string or not
  */
 function parseFormData (body, indent, trim) {
   let bodySnippet = '',
+    formDataArray = [],
     key,
-    value,
-    first = true;
+    value;
+
+  bodySnippet += 'NSArray *parameters = @[';
 
   _.forEach(body, function (data) {
     key = trim ? data.key.trim() : data.key;
     value = trim ? data.value.trim() : data.value;
     if (!data.disabled) {
-      if (first) {
-        bodySnippet += 'NSArray *parameters = @[';
-      }
-      if (!first) {
-        bodySnippet += ', ';
-      }
-      first = false;
       if (data.type === 'file') {
-        bodySnippet += `\n${indent}@{ @"name": @"${key}", @"fileName": @"${data.src}" }`;
+        formDataArray.push(`\n${indent}@{ @"name": @"${key}", @"fileName": @"${data.src}" }`);
       }
       else {
-        bodySnippet += `\n${indent}@{ @"name": @"${key}", @"value": @"${sanitize(value, trim)}" }`;
+        formDataArray.push(`\n${indent}@{ @"name": @"${key}", @"value": @"${sanitize(value, trim)}" }`);
       }
     }
   });
+  bodySnippet += formDataArray.join(', ');
   bodySnippet += ' ];\n';
   bodySnippet += 'NSString *boundary = @"----WebKitFormBoundary7MA4YWxkTrZu0gW";\n';
   bodySnippet += 'NSError *error;\n';
@@ -129,8 +125,8 @@ function parseFormData (body, indent, trim) {
  * Parses Body from the Request
  *
  * @param {Object} body body object from request.
- * @param {String} indent
- * @param {trim} trim
+ * @param {String} indent indentation required for code snippet
+ * @param {trim} trim indicates whether to trim string or not
  */
 function parseBody (body, indent, trim) {
   if (!_.isEmpty(body)) {
@@ -146,7 +142,7 @@ function parseBody (body, indent, trim) {
       case 'graphql':
         return parseGraphqlBody(body.graphql, indent, trim);
       default:
-        return '';
+        return '<file-content-here>';
     }
   }
   return '';
@@ -155,32 +151,27 @@ function parseBody (body, indent, trim) {
 /**
  * Parses headers from the request.
  *
- * @param {Object} obj
- * @param {String} indent
- * @param {Boolean} trim
+ * @param {Object} headersArray array containing headers
+ * @param {String} indent indentation required for code snippet
+ * @param {Boolean} trim indicates whether to trim string or not
  */
-function parseHeaders (obj, indent, trim) {
-  let headers = '';
-  if (_.isEmpty(obj)) {
-    return headers;
+function parseHeaders (headersArray, indent, trim) {
+  var headerString = '',
+    headerDictionary = [];
+  if (_.isEmpty(headersArray)) {
+    return headerString;
   }
-  headers = indent + 'NSDictionary *headers = @{\n';
-  var first = true;
-  _.forEach(obj, function (value, key) {
-    if (!first) {
-      headers += ',\n';
-    }
-    first = false;
-    if (typeof value !== 'string') {
-      headers += indent.repeat(2) + '@"' + key + '":@"' + value + '"';
-    }
-    else {
-      headers += indent.repeat(2) + '@"' + key + '": @"' + sanitize(value, trim) + '"';
+  headerString = indent + 'NSDictionary *headers = @{\n';
+
+  _.forEach(headersArray, function (header) {
+    if (!header.disabled) {
+      headerDictionary.push(indent.repeat(2) + '@"' + header.key + '": @"' + sanitize(header.value, trim) + '"');
     }
   });
-  headers += '\n' + indent + '};\n';
-  headers += indent + '[request setAllHTTPHeaderFields:headers];\n';
-  return headers;
+  headerString += headerDictionary.join(',\n');
+  headerString += '\n' + indent + '};\n';
+  headerString += indent + '[request setAllHTTPHeaderFields:headers];\n';
+  return headerString;
 }
 
 self = module.exports = {
@@ -251,7 +242,6 @@ self = module.exports = {
       });
     }
 
-    let obj = {};
     codeSnippet = '#import <Foundation/Foundation.h>\n';
     codeSnippet += 'NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"' +
       encodeURI(request.url.toString()) + '"]\n';
@@ -261,7 +251,7 @@ self = module.exports = {
     // TODO: use defaultSessionConfiguration
     // codeSnippet += 'NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];\n';
 
-    codeSnippet += parseHeaders(Object.assign(obj, request.getHeaders({enabled: true})), indent, trim);
+    codeSnippet += parseHeaders(request.headers.toJSON(), indent, trim);
     codeSnippet += parseBody(request.body ? request.body.toJSON() : {}, indent, trim) + '\n';
     codeSnippet += '[request setHTTPMethod:@"' + request.method + '"];\n';
     codeSnippet += 'NSURLSession *session = [NSURLSession sharedSession];\n';
@@ -299,7 +289,9 @@ self = module.exports = {
         name: 'Set request timeout',
         id: 'requestTimeout',
         type: 'positiveInteger',
-        default: 10000, // Using 10 secs as default
+        // Using 10 secs as default
+        // TODO: Find out a way to set infinite timeout.
+        default: 10000,
         description: 'Set number of milliseconds the request should wait for a response' +
     ' before timing out (use 0 for infinity)'
       },

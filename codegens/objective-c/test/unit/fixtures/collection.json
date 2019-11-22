@@ -1135,36 +1135,6 @@
 			"response": []
 		},
 		{
-			"name": "Same header",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "key",
-						"value": "value1",
-						"type": "text"
-					},
-					{
-						"key": "key",
-						"value": "value2",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "https://postman-echo.com/get",
-					"protocol": "https",
-					"host": [
-						"postman-echo",
-						"com"
-					],
-					"path": [
-						"get"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Post multiple files in the same parameter  via form-data",
 			"request": {
 				"method": "POST",
