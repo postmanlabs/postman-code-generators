@@ -26,7 +26,7 @@ function parseRawBody (body, indent, trim) {
  * @param {String} indent indentation required for code snippet
  * @param {Boolean} trim indicates whether to trim string or not
  */
-function parseGraphqlBody (body, indent, trim) {
+function parseGraphQLBody (body, indent, trim) {
   var bodySnippet = '',
     rawBody = JSON.stringify(body);
   bodySnippet += 'NSData *postData = [[NSData alloc] initWithData:[@"' + sanitize(rawBody, trim) + '" ' +
@@ -140,7 +140,7 @@ function parseBody (body, indent, trim) {
       case 'file':
         return '';
       case 'graphql':
-        return parseGraphqlBody(body.graphql, indent, trim);
+        return parseGraphQLBody(body.graphql, indent, trim);
       default:
         return '<file-content-here>';
     }
