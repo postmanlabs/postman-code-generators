@@ -514,7 +514,7 @@
 			"response": []
 		},
 		{
-			"name": "POST text/xml with raw",
+			"name": "POST textxml with raw",
 			"event": [
 				{
 					"listen": "test",
@@ -555,7 +555,7 @@
 			"response": []
 		},
 		{
-			"name": "POST text/html with raw",
+			"name": "POST texthtml with raw",
 			"event": [
 				{
 					"listen": "test",

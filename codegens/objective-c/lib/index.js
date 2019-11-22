@@ -53,10 +53,10 @@ function parseURLEncodedBody (body, indent, trim) {
       value = trim ? data.value.trim() : data.value;
       if (first) {
         bodySnippet += 'NSMutableData *postData = [[NSMutableData alloc] initWithData:[@"' +
-        key + '=' + sanitize(value, trim) + '" dataUsingEncoding:NSUTF8StringEncoding]];\n';
+        sanitize(key, true) + '=' + sanitize(value, trim) + '" dataUsingEncoding:NSUTF8StringEncoding]];\n';
       }
       else {
-        bodySnippet += '[postData appendData:[@"&' + key + '=' + sanitize(value, trim) +
+        bodySnippet += '[postData appendData:[@"&' + sanitize(key, true) + '=' + sanitize(value, trim) +
         '" dataUsingEncoding:NSUTF8StringEncoding]];\n';
       }
       first = false;
@@ -77,7 +77,12 @@ function parseFormData (body, indent, trim) {
   let bodySnippet = '',
     formDataArray = [],
     key,
+    foundFile = false,
     value;
+
+  if (_.isEmpty(body)) {
+    return bodySnippet;
+  }
 
   bodySnippet += 'NSArray *parameters = @[';
 
@@ -86,6 +91,7 @@ function parseFormData (body, indent, trim) {
     value = trim ? data.value.trim() : data.value;
     if (!data.disabled) {
       if (data.type === 'file') {
+        foundFile = true;
         formDataArray.push(`\n${indent}@{ @"name": @"${key}", @"fileName": @"${data.src}" }`);
       }
       else {
@@ -94,26 +100,34 @@ function parseFormData (body, indent, trim) {
     }
   });
   bodySnippet += formDataArray.join(', ');
-  bodySnippet += ' ];\n';
-  bodySnippet += 'NSString *boundary = @"----WebKitFormBoundary7MA4YWxkTrZu0gW";\n';
+  bodySnippet += ' \n];\n';
+  bodySnippet += '\nNSString *boundary = @"----WebKitFormBoundary7MA4YWxkTrZu0gW";\n';
   bodySnippet += 'NSError *error;\n';
   bodySnippet += 'NSMutableString *body = [NSMutableString string];\n';
-  bodySnippet += 'for (NSDictionary *param in parameters) {\n';
+  bodySnippet += '\nfor (NSDictionary *param in parameters) {\n';
   bodySnippet += indent + '[body appendFormat:@"--%@\\r\\n", boundary];\n';
-  bodySnippet += indent + 'if (param[@"fileName"]) {\n';
-  // eslint-disable-next-line max-len
-  bodySnippet += indent.repeat(2) + '[body appendFormat:@"Content-Disposition:form-data; name="%@"; filename="%@"\\r\\n", param[@"name"], param[@"fileName"]];\n';
-  bodySnippet += indent.repeat(2) + '[body appendFormat:@"Content-Type: %@\\r\\n\\r\\n", param[@"contentType"]];\n';
-  bodySnippet += indent.repeat(2) + '[body appendFormat:@"%@", [NSString stringWithContentsOfFile:param[@"fileName"]';
-  bodySnippet += indent.repeat(2) + ' encoding:NSUTF8StringEncoding error:&error]];\n';
-  bodySnippet += indent.repeat(2) + 'if (error) {\n';
-  bodySnippet += indent.repeat(3) + 'NSLog(@"%@", error);\n';
-  bodySnippet += indent.repeat(2) + '}\n';
-  bodySnippet += indent + '} else {\n';
-  bodySnippet += indent.repeat(2) +
-    '[body appendFormat:@"Content-Disposition:form-data; name="%@"\\r\\n\\r\\n", param[@"name"]];\n';
-  bodySnippet += indent.repeat(2) + '[body appendFormat:@"%@", param[@"value"]];\n';
-  bodySnippet += indent + '}\n';
+  if (foundFile) {
+    bodySnippet += indent + 'if (param[@"fileName"]) {\n';
+    // eslint-disable-next-line max-len
+    bodySnippet += indent.repeat(2) + '[body appendFormat:@"Content-Disposition:form-data; name=\\"%@\\"; filename=\\"%@\\"\\r\\n", param[@"name"], param[@"fileName"]];\n';
+    bodySnippet += indent.repeat(2) + '[body appendFormat:@"Content-Type: %@\\r\\n\\r\\n", param[@"contentType"]];\n';
+    // eslint-disable-next-line max-len
+    bodySnippet += indent.repeat(2) + '[body appendFormat:@"%@", [NSString stringWithContentsOfFile:param[@"fileName"]' +
+      ' encoding:NSUTF8StringEncoding error:&error]];\n';
+    bodySnippet += indent.repeat(2) + 'if (error) {\n';
+    bodySnippet += indent.repeat(3) + 'NSLog(@"%@", error);\n';
+    bodySnippet += indent.repeat(2) + '}\n';
+    bodySnippet += indent + '} else {\n';
+    bodySnippet += indent.repeat(2) +
+      '[body appendFormat:@"Content-Disposition:form-data; name=\\"%@\\"\\r\\n\\r\\n", param[@"name"]];\n';
+    bodySnippet += indent.repeat(2) + '[body appendFormat:@"%@", param[@"value"]];\n';
+    bodySnippet += indent + '}\n';
+  }
+  else {
+    bodySnippet += indent +
+      '[body appendFormat:@"Content-Disposition:form-data; name=\\"%@\\"\\r\\n\\r\\n", param[@"name"]];\n';
+    bodySnippet += indent + '[body appendFormat:@"%@", param[@"value"]];\n';
+  }
   bodySnippet += '}\n';
   bodySnippet += '[body appendFormat:@"\\r\\n--%@--\\r\\n", boundary];\n';
   bodySnippet += 'NSData *postData = [body dataUsingEncoding:NSUTF8StringEncoding];\n';
@@ -161,16 +175,16 @@ function parseHeaders (headersArray, indent, trim) {
   if (_.isEmpty(headersArray)) {
     return headerString;
   }
-  headerString = indent + 'NSDictionary *headers = @{\n';
+  headerString = 'NSDictionary *headers = @{\n';
 
   _.forEach(headersArray, function (header) {
     if (!header.disabled) {
-      headerDictionary.push(indent.repeat(2) + '@"' + header.key + '": @"' + sanitize(header.value, trim) + '"');
+      headerDictionary.push(indent + '@"' + header.key + '": @"' + sanitize(header.value, trim) + '"');
     }
   });
   headerString += headerDictionary.join(',\n');
-  headerString += '\n' + indent + '};\n';
-  headerString += indent + '[request setAllHTTPHeaderFields:headers];\n';
+  headerString += '\n};\n\n';
+  headerString += '[request setAllHTTPHeaderFields:headers];\n';
   return headerString;
 }
 
@@ -243,6 +257,7 @@ self = module.exports = {
     }
 
     codeSnippet = '#import <Foundation/Foundation.h>\n';
+    options.includeBoilerplate ? codeSnippet += 'int main(int argc, const char * argv[]) {\n' : codeSnippet += '\n';
     codeSnippet += 'NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"' +
       encodeURI(request.url.toString()) + '"]\n';
     codeSnippet += `${indent}cachePolicy:NSURLRequestUseProtocolCachePolicy\n`;
@@ -253,7 +268,7 @@ self = module.exports = {
 
     codeSnippet += parseHeaders(request.headers.toJSON(), indent, trim);
     codeSnippet += parseBody(request.body ? request.body.toJSON() : {}, indent, trim) + '\n';
-    codeSnippet += '[request setHTTPMethod:@"' + request.method + '"];\n';
+    codeSnippet += '[request setHTTPMethod:@"' + request.method + '"];\n\n';
     codeSnippet += 'NSURLSession *session = [NSURLSession sharedSession];\n';
     codeSnippet += 'NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request\n';
     codeSnippet += 'completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {\n';
@@ -265,6 +280,7 @@ self = module.exports = {
     codeSnippet += `${indent}}\n`;
     codeSnippet += '}];\n';
     codeSnippet += '[dataTask resume];';
+    options.includeBoilerplate ? codeSnippet += '\n}' : codeSnippet += '\n';
 
     callback(null, codeSnippet);
   },
@@ -301,6 +317,13 @@ self = module.exports = {
         type: 'boolean',
         default: false,
         description: 'Remove white space and additional lines that may affect the server\'s response'
+      },
+      {
+        name: 'Include boilerplate',
+        id: 'includeBoilerplate',
+        type: 'boolean',
+        default: false,
+        description: 'Include class definition and import statements in snippet'
       }
     ];
   }

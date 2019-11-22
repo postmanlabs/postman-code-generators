@@ -127,4 +127,35 @@ describe('Options Tests', function () {
       expect(snippet).to.include('trim this body');
     });
   });
+
+  it('should include boiler plate if includeBoilerplate is set to true', function () {
+    var request = new sdk.Request({
+      'method': 'POST',
+      'header': [],
+      'body': {
+        'mode': 'raw',
+        'raw': '  trim this body  '
+      },
+      'url': {
+        'raw': 'https://postman-echo.com/post',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'post'
+        ]
+      }
+    });
+    convert(request, {
+      includeBoilerplate: true
+    }, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('int main(int argc, const char * argv[])');
+    });
+  });
 });
