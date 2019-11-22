@@ -89,7 +89,7 @@ self = module.exports = {
     snippet = '<?php\n';
     snippet += 'require_once \'HTTP/Request2.php\';\n';
     snippet += '$request = new HTTP_Request2();\n';
-    snippet += `$request->setUrl('${request.url.toString()}');\n`;
+    snippet += `$request->setUrl('${sanitize(request.url.toString())}');\n`;
     snippet += '$request->setMethod(';
     if (ALLOWED_METOHDS.includes(request.method)) {
       snippet += `HTTP_Request2::METHOD_${request.method});\n`;
@@ -181,12 +181,12 @@ self = module.exports = {
     snippet += 'try {\n';
     snippet += `${indentString}$response = $request->send();\n`;
     snippet += `${indentString}if ($response->getStatus() == 200) {\n`;
-    snippet += `${indentString.repeat(2)} echo $response->getBody();\n`;
-    snippet += `${indentString}} else {\n`;
+    snippet += `${indentString.repeat(2)}echo $response->getBody();\n`;
+    snippet += `${indentString}}\n${indentString}else {\n`;
     snippet += `${indentString.repeat(2)}echo 'Unexpected HTTP status: ' . $response->getStatus() . ' ' .\n`;
-    snippet += `${indentString.repeat(3)}$response->getReasonPhrase();\n`;
+    snippet += `${indentString.repeat(2)}$response->getReasonPhrase();\n`;
     snippet += `${indentString}}\n`;
-    snippet += '} catch(HTTP_Request2_Exception $e) {\n';
+    snippet += '}\ncatch(HTTP_Request2_Exception $e) {\n';
     snippet += `${indentString}echo 'Error: ' . $e->getMessage();\n}`;
     return callback(null, snippet);
   }

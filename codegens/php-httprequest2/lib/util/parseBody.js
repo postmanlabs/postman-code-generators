@@ -33,7 +33,7 @@ module.exports = function (request, indentString, trim) {
         bodyDataMap = _.map(enabledBodyList, (data) => {
           return `${indentString}'${sanitize(data.key, trim)}' => '${sanitize(data.value, trim)}'`;
         });
-        bodySnippet += `$request->addPostParameter(array(\n${bodyDataMap.join(',\n')}));\n`;
+        bodySnippet += `$request->addPostParameter(array(\n${bodyDataMap.join(',\n')}\n));\n`;
       }
       break;
     case 'formdata':
@@ -48,7 +48,7 @@ module.exports = function (request, indentString, trim) {
           return `'${sanitize(data.key, trim)}', '${data.src}', '${fileName}', '<Content-Type Header>'`;
         });
         if (bodyDataMap.length) {
-          bodySnippet += `$request->addPostParameter(array(\n${bodyDataMap.join(',\n')}));\n`;
+          bodySnippet += `$request->addPostParameter(array(\n${bodyDataMap.join(',\n')}\n));\n`;
         }
         if (bodyFileMap.length) {
           _.forEach(bodyFileMap, (file) => {

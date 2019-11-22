@@ -12,7 +12,7 @@ module.exports = {
     }
 
     inputString = inputTrim && typeof inputTrim === 'boolean' ? inputString.trim() : inputString;
-    return inputString.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
+    return inputString.replace(/\\/g, '\\\\').replace(/'/g, '\\\'').replace(/\n/g, '\\n');
   },
 
   /**
