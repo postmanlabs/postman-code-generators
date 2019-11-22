@@ -13,7 +13,7 @@ module.exports = function (request, trimRequestBody, indentation) {
   // used to check whether body is present in the request and return accordingly
   if (request.body) {
     var requestBody = '',
-      bodyMap,
+      bodyMap = [],
       enabledBodyList;
 
     switch (request.body.mode) {
@@ -52,10 +52,10 @@ module.exports = function (request, trimRequestBody, indentation) {
       case 'formdata':
         enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
         if (!_.isEmpty(enabledBodyList)) {
-          bodyMap = _.map(enabledBodyList, function (value) {
+          _.forEach(enabledBodyList, function (value) {
             if (value.type === 'text') {
-              return `${sanitize(value.key, request.body.mode, trimRequestBody)}=` +
-                            `${sanitize(value.value, request.body.mode, trimRequestBody)}`;
+              bodyMap.push(`${sanitize(value.key, request.body.mode, trimRequestBody)}=` +
+                            `${sanitize(value.value, request.body.mode, trimRequestBody)}`);
             }
           });
           requestBody = `${indentation}--body-data '${bodyMap.join('&')}' \\\n`;
