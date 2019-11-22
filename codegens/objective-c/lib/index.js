@@ -191,8 +191,10 @@ function parseHeaders (headersArray, indent, trim) {
 self = module.exports = {
   convert: function (request, options, callback) {
     var indent,
-      codeSnippet,
+      codeSnippet = '',
       requestTimeout,
+      headerSnippet = '#import <Foundation/Foundation.h>\n',
+      footerSnippet = '',
       trim;
     options = sanitizeOptions(options, self.getOptions());
     trim = options.trimRequestBody;
@@ -255,9 +257,10 @@ self = module.exports = {
         formdata: formdataArray
       });
     }
-
-    codeSnippet = '#import <Foundation/Foundation.h>\n';
-    options.includeBoilerplate ? codeSnippet += 'int main(int argc, const char * argv[]) {\n' : codeSnippet += '\n';
+    if (options.includeBoilerplate) {
+      headerSnippet += 'int main(int argc, const char * argv[]) {\n\n';
+      footerSnippet += '}';
+    }
     codeSnippet += 'NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"' +
       encodeURI(request.url.toString()) + '"]\n';
     codeSnippet += `${indent}cachePolicy:NSURLRequestUseProtocolCachePolicy\n`;
@@ -277,12 +280,18 @@ self = module.exports = {
     codeSnippet += `${indent}} else {\n`;
     codeSnippet += `${indent.repeat(2)}NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;\n`;
     codeSnippet += `${indent.repeat(2)}NSLog(@"%@", httpResponse);\n`;
+    codeSnippet += `${indent.repeat(2)}dispatch_semaphore_signal(sema);\n`;
     codeSnippet += `${indent}}\n`;
     codeSnippet += '}];\n';
-    codeSnippet += '[dataTask resume];';
-    options.includeBoilerplate ? codeSnippet += '\n}' : codeSnippet += '\n';
+    codeSnippet += '[dataTask resume];\n';
+    codeSnippet += 'dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);';
 
-    callback(null, codeSnippet);
+
+    //  if boilerplate is included then two more indent needs to be added in snippet
+    (options.includeBoilerplate) &&
+    (codeSnippet = indent + codeSnippet.split('\n').join('\n' + indent) + '\n');
+
+    callback(null, headerSnippet + codeSnippet + footerSnippet);
   },
   getOptions: function () {
     return [
