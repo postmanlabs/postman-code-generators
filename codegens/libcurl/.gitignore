@@ -68,4 +68,5 @@ typings/
 out/
 
 *.c
+executableFile
 

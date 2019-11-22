@@ -33,17 +33,45 @@ function extractFormData (dataArray, indentString, trimBody) {
              *      }
              *  }
              */
-      var pathArray = item.src.split(path.sep),
-        fileName = pathArray[pathArray.length - 1];
-      accumalator.push([
-        indentString.repeat(2) + `'${sanitize(item.key, trimBody)}': {`,
-        indentString.repeat(3) + `'value': fs.createReadStream('${sanitize(item.src, trimBody)}'),`,
-        indentString.repeat(3) + '\'options\': {',
-        indentString.repeat(4) + `'filename': '${sanitize(fileName, trimBody)}',`,
-        indentString.repeat(4) + '\'contentType\': null',
-        indentString.repeat(3) + '}',
-        indentString.repeat(2) + '}'
-      ].join('\n'));
+      if (Array.isArray(item.src) && item.src.length) {
+        let fileSnippet = '',
+          fileArray = [];
+        _.forEach(item.src, (filePath) => {
+          fileArray.push(`${indentString.repeat(3)}fs.createReadStream('${sanitize(filePath, trimBody)}')`);
+        });
+        if (fileArray.length) {
+          fileSnippet += `${indentString.repeat(2)}'${sanitize(item.key, trimBody)}': ` +
+          `[\n${fileArray.join(',\n')}\n${indentString.repeat(2)}]`;
+          accumalator.push(fileSnippet);
+        }
+        else {
+          return accumalator;
+        }
+      }
+      else if (typeof item.src !== 'string') {
+        accumalator.push([
+          indentString.repeat(2) + `'${sanitize(item.key, trimBody)}': {`,
+          indentString.repeat(3) + '\'value\': fs.createReadStream(\'/path/to/file\'),',
+          indentString.repeat(3) + '\'options\': {',
+          indentString.repeat(4) + '\'filename\': \'filename\'',
+          indentString.repeat(4) + '\'contentType\': null',
+          indentString.repeat(3) + '}',
+          indentString.repeat(2) + '}'
+        ].join('\n'));
+      }
+      else {
+        var pathArray = item.src.split(path.sep),
+          fileName = pathArray[pathArray.length - 1];
+        accumalator.push([
+          indentString.repeat(2) + `'${sanitize(item.key, trimBody)}': {`,
+          indentString.repeat(3) + `'value': fs.createReadStream('${sanitize(item.src, trimBody)}'),`,
+          indentString.repeat(3) + '\'options\': {',
+          indentString.repeat(4) + `'filename': '${sanitize(fileName, trimBody)}',`,
+          indentString.repeat(4) + '\'contentType\': null',
+          indentString.repeat(3) + '}',
+          indentString.repeat(2) + '}'
+        ].join('\n'));
+      }
     }
     else {
       accumalator.push(
@@ -62,12 +90,36 @@ function extractFormData (dataArray, indentString, trimBody) {
  * @param {Object} requestbody - json object for body of request
  * @param {String} indentString - string for indentation
  * @param {Boolean} trimBody - indicates whether to trim body fields or not
+ * @param {String} contentType Content type of the body being sent
  */
-function parseBody (requestbody, indentString, trimBody) {
+function parseBody (requestbody, indentString, trimBody, contentType) {
   if (requestbody) {
     switch (requestbody.mode) {
       case 'raw':
+        if (contentType === 'application/json') {
+          try {
+            let jsonBody = JSON.parse(requestbody[requestbody.mode]);
+            return `body: JSON.stringify(${JSON.stringify(jsonBody)})\n`;
+          }
+          catch (error) {
+            return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
+          }
+        }
         return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
+      // eslint-disable-next-line no-case-declarations
+      case 'graphql':
+        let query = requestbody[requestbody.mode].query,
+          graphqlVariables;
+        try {
+          graphqlVariables = JSON.parse(requestbody[requestbody.mode].variables);
+        }
+        catch (e) {
+          graphqlVariables = {};
+        }
+        return 'body: JSON.stringify({\n' +
+          `${indentString.repeat(2)}query: '${sanitize(query, trimBody)}',\n` +
+          `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
+          `${indentString}})`;
       case 'formdata':
         return `formData: {\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
                         indentString + '}';

@@ -2,6 +2,7 @@ var _ = require('./lodash'),
   parseBody = require('./util/parseBody'),
   sanitize = require('./util/sanitize').sanitize,
   sanitizeOptions = require('./util/sanitize').sanitizeOptions,
+  addFormParam = require('./util/sanitize').addFormParam,
   path = require('path'),
   self;
 
@@ -126,21 +127,63 @@ self = module.exports = {
 
     indent = indentType.repeat(options.indentCount);
 
+    // The following code handles multiple files in the same formdata param.
+    // It removes the form data params where the src property is an array of filepath strings
+    // Splits that array into different form data params with src set as a single filepath string
     if (request.body && request.body.mode === 'formdata') {
+      let formdata = request.body.formdata,
+        formdataArray = [];
+      formdata.members.forEach((param) => {
+        let key = param.key,
+          type = param.type,
+          disabled = param.disabled,
+          contentType = param.contentType;
+        if (type === 'file') {
+          if (typeof param.src !== 'string') {
+            if (Array.isArray(param.src) && param.src.length) {
+              param.src.forEach((filePath) => {
+                addFormParam(formdataArray, key, param.type, filePath, disabled, contentType);
+              });
+            }
+            else {
+              addFormParam(formdataArray, key, param.type, '/path/to/file', disabled, contentType);
+            }
+          }
+          else {
+            addFormParam(formdataArray, key, param.type, param.src, disabled, contentType);
+          }
+        }
+        else {
+          addFormParam(formdataArray, key, param.type, param.value, disabled, contentType);
+        }
+      });
+      request.body.update({
+        mode: 'formdata',
+        formdata: formdataArray
+      });
       jQueryCode = createForm(request.toJSON(), options.trimRequestBody);
     }
     jQueryCode += 'var settings = {\n';
     jQueryCode += `${indent}"url": "${sanitize(request.url.toString(), 'url')}",\n`;
     jQueryCode += `${indent}"method": "${request.method}",\n`;
     jQueryCode += `${indent}"timeout": ${options.requestTimeout},\n`;
-    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
-      request.addHeader({
-        key: 'Content-Type',
-        value: 'text/plain'
-      });
+    if (request.body && !request.headers.has('Content-Type')) {
+      if (request.body.mode === 'file') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'text/plain'
+        });
+      }
+      else if (request.body.mode === 'graphql') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'application/json'
+        });
+      }
     }
     jQueryCode += `${getHeaders(request, indent)}`;
-    jQueryCode += `${parseBody(request.toJSON(), options.trimRequestBody, indent)}};\n\n`;
+    jQueryCode += `${parseBody(request.toJSON(), options.trimRequestBody, indent,
+      request.headers.get('Content-Type'))}};\n\n`;
     jQueryCode += `$.ajax(settings).done(function (response) {\n${indent}console.log(response);\n});`;
 
     return callback(null, jQueryCode);

@@ -4,7 +4,8 @@ var Sanitize = require('./sanitize'),
 const BOUNDARY_HASH = 'e4dgoae5mIkjFjfG',
   URLENCODED = 'urlencoded',
   FORM_DATA = 'formdata',
-  RAW = 'raw';
+  RAW = 'raw',
+  GRAPHQL = 'graphql';
   // APP_JSON = 'application/json',
   // APP_JS = 'application/javascript',
   // APP_XML = 'application/xml',
@@ -192,6 +193,21 @@ module.exports = {
         else {
           parsedBody = requestBody ? `${Sanitize.quote(requestBody, RAW)}` : '';
         }
+        break;
+      // eslint-disable-next-line no-case-declarations
+      case GRAPHQL:
+        let query = requestBody.query,
+          graphqlVariables;
+        try {
+          graphqlVariables = JSON.parse(requestBody.variables);
+        }
+        catch (e) {
+          graphqlVariables = {};
+        }
+        parsedBody = Sanitize.quote(JSON.stringify({
+          query: query,
+          variables: graphqlVariables
+        }), RAW);
         break;
       case 'file':
         parsedBody = requestBody.src;

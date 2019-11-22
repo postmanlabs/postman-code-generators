@@ -583,6 +583,109 @@ describe('Request Snippet', function () {
       expect(parseBody(request, {indentType: 'Space', indentCount: 4}, true)).to.be.equal('');
       done();
     });
+
+    it('should include graphql body in the snippet', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'graphql',
+          'graphql': {
+            'query': '{ body { graphql } }',
+            'variables': '{"variable_key": "variable_value"}'
+          }
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'protocol': 'http',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('"query":"{ body { graphql } }"');
+        expect(snippet).to.include('"variables":{"variable_key":"variable_value"}');
+      });
+    });
+
+    it('should generate snippets(not error out) for requests with multiple/no file in formdata', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'no file',
+              'value': '',
+              'type': 'file',
+              'src': []
+            },
+            {
+              'key': 'single file',
+              'value': '',
+              'type': 'file',
+              'src': '/test1.txt'
+            },
+            {
+              'key': 'multiple files',
+              'value': '',
+              'type': 'file',
+              'src': ['/test2.txt',
+                '/test3.txt']
+            },
+            {
+              'key': 'no src',
+              'value': '',
+              'type': 'file'
+            },
+            {
+              'key': 'invalid src',
+              'value': '',
+              'type': 'file',
+              'src': {}
+            }
+          ]
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        /* eslint-disable quotes */
+        /* eslint-disable max-len */
+        expect(snippet).to.include("array('name' => 'no file', 'type' => '<Content-type header>', 'file' => '/path/to/file', 'data' => null)");
+        expect(snippet).to.include("array('name' => 'single file', 'type' => '<Content-type header>', 'file' => '/test1.txt', 'data' => null)");
+        expect(snippet).to.include("array('name' => 'multiple files', 'type' => '<Content-type header>', 'file' => '/test3.txt', 'data' => null)");
+        expect(snippet).to.include("array('name' => 'multiple files', 'type' => '<Content-type header>', 'file' => '/test3.txt', 'data' => null)");
+        expect(snippet).to.include("array('name' => 'no src', 'type' => '<Content-type header>', 'file' => '/path/to/file', 'data' => null)");
+        expect(snippet).to.include("array('name' => 'invalid src', 'type' => '<Content-type header>', 'file' => '/path/to/file', 'data' => null)");
+        /* eslint-enable quotes */
+        /* eslint-enable max-len */
+      });
+    });
   });
 
   describe('getOptions function', function () {

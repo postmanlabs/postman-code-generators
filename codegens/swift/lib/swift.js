@@ -2,6 +2,7 @@ var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
   getUrlStringfromUrlObject = require('./util').getUrlStringfromUrlObject,
+  addFormParam = require('./util').addFormParam,
   self;
 
 /**
@@ -15,6 +16,31 @@ var _ = require('./lodash'),
 function parseRawBody (body, mode, trim) {
   var bodySnippet;
   bodySnippet = `let parameters = ${sanitize(body, mode, trim)}\n`;
+  bodySnippet += 'let postData = parameters.data(using: .utf8)';
+  return bodySnippet;
+}
+
+/**
+ * Parses graphql data from request to fetch syntax
+ *
+ * @param {Object} body - grqphql body data
+ * @param {String} mode - Request body type (i.e. raw, urlencoded, formdata, file)
+ * @param {boolean} trim - trim body option
+ * @returns {String} request body in the desired format
+ */
+function parseGraphQL (body, mode, trim) {
+  let query = body.query,
+    graphqlVariables, bodySnippet;
+  try {
+    graphqlVariables = JSON.parse(body.variables);
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  bodySnippet = `let parameters = ${sanitize(JSON.stringify({
+    query: query,
+    variables: graphqlVariables
+  }), mode, trim)}\n`;
   bodySnippet += 'let postData = parameters.data(using: .utf8)';
   return bodySnippet;
 }
@@ -130,6 +156,8 @@ function parseBody (body, trim, indent) {
         return parseURLEncodedBody(body.urlencoded, body.mode, trim);
       case 'raw':
         return parseRawBody(body.raw, body.mode, trim);
+      case 'graphql':
+        return parseGraphQL(body.graphql, 'raw', trim);
       case 'formdata':
         return parseFormData(body.formdata, body.mode, trim, indent);
         /* istanbul ignore next */
@@ -245,7 +273,7 @@ self = module.exports = {
     var codeSnippet, indent, trim, timeout, finalUrl, // followRedirect,
       bodySnippet = '',
       headerSnippet = '',
-      requestBody = (request.body ? request.body.toJSON() : {});
+      requestBody;
 
     indent = options.indentType === 'Tab' ? '\t' : ' ';
     indent = indent.repeat(options.indentCount);
@@ -254,6 +282,48 @@ self = module.exports = {
     trim = options.trimRequestBody;
     finalUrl = getUrlStringfromUrlObject(request.url);
 
+    // The following code handles multiple files in the same formdata param.
+    // It removes the form data params where the src property is an array of filepath strings
+    // Splits that array into different form data params with src set as a single filepath string
+    if (request.body && request.body.mode === 'formdata') {
+      let formdata = request.body.formdata,
+        formdataArray = [];
+      formdata.members.forEach((param) => {
+        let key = param.key,
+          type = param.type,
+          disabled = param.disabled,
+          contentType = param.contentType;
+        // check if type is file or text
+        if (type === 'file') {
+          // if src is not of type string we check for array(multiple files)
+          if (typeof param.src !== 'string') {
+            // if src is an array(not empty), iterate over it and add files as separate form fields
+            if (Array.isArray(param.src) && param.src.length) {
+              param.src.forEach((filePath) => {
+                addFormParam(formdataArray, key, param.type, filePath, disabled, contentType);
+              });
+            }
+            // if src is not an array or string, or is an empty array, add a placeholder for file path(no files case)
+            else {
+              addFormParam(formdataArray, key, param.type, '/path/to/file', disabled, contentType);
+            }
+          }
+          // if src is string, directly add the param with src as filepath
+          else {
+            addFormParam(formdataArray, key, param.type, param.src, disabled, contentType);
+          }
+        }
+        // if type is text, directly add it to formdata array
+        else {
+          addFormParam(formdataArray, key, param.type, param.value, disabled, contentType);
+        }
+      });
+      request.body.update({
+        mode: 'formdata',
+        formdata: formdataArray
+      });
+    }
+    requestBody = (request.body ? request.body.toJSON() : {});
     bodySnippet = parseBody(requestBody, trim, indent);
 
     codeSnippet = 'import Foundation\n\n';
@@ -263,11 +333,19 @@ self = module.exports = {
     }
     codeSnippet += `var request = URLRequest(url: URL(string: "${finalUrl}")!,` +
          `timeoutInterval: ${timeout ? timeout : 'Double.infinity'})\n`;
-    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
-      request.addHeader({
-        key: 'Content-Type',
-        value: 'text/plain'
-      });
+    if (request.body && !request.headers.has('Content-Type')) {
+      if (request.body.mode === 'file') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'text/plain'
+        });
+      }
+      else if (request.body.mode === 'graphql') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'application/json'
+        });
+      }
     }
     headerSnippet = parseHeaders(request.toJSON().header, (request.body ? request.body.mode : 'raw'));
     if (headerSnippet !== '') {

@@ -1,6 +1,7 @@
 var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
+  addFormParam = require('./util').addFormParam,
   path = require('path');
 
 /**
@@ -25,10 +26,46 @@ function parseURLEncodedBody (body) {
  *
  * @param {*} body Raw body data
  * @param {*} trim trim body option
+ * @param {String} contentType Content type of the body being sent
  */
-function parseRawBody (body, trim) {
-  var bodySnippet;
-  bodySnippet = `var data = "${sanitize(body.toString(), trim)}";\n`;
+function parseRawBody (body, trim, contentType) {
+  var bodySnippet = 'var data = ';
+  if (contentType === 'application/json') {
+    try {
+      let jsonBody = JSON.parse(body);
+      bodySnippet += `JSON.stringify(${JSON.stringify(jsonBody)});\n`;
+    }
+    catch (error) {
+      bodySnippet += `"${sanitize(body.toString(), trim)}";\n`;
+    }
+  }
+  else {
+    bodySnippet += `"${sanitize(body.toString(), trim)}";\n`;
+  }
+  return bodySnippet;
+}
+
+/**
+ * Parses graphql data
+ *
+ * @param {Object} body graphql body data
+ * @param {boolean} trim trim body option
+ * @param {String} indentString indentation to be added to the snippet
+ */
+function parseGraphQL (body, trim, indentString) {
+  let query = body.query,
+    graphqlVariables,
+    bodySnippet;
+  try {
+    graphqlVariables = JSON.parse(body.variables);
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  bodySnippet = 'var data = JSON.stringify({\n';
+  bodySnippet += `${indentString}query: "${sanitize(query, trim)}",\n`;
+  bodySnippet += `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n`;
+  bodySnippet += '});\n';
   return bodySnippet;
 }
 
@@ -76,14 +113,18 @@ function parseFile () {
  *
  * @param {*} body body object from request.
  * @param {*} trim trim body option
+ * @param {String} indentString indentation to be added to the snippet
+ * @param {String} contentType Content type of the body being sent
  */
-function parseBody (body, trim) {
+function parseBody (body, trim, indentString, contentType) {
   if (!_.isEmpty(body)) {
     switch (body.mode) {
       case 'urlencoded':
         return parseURLEncodedBody(body.urlencoded, trim);
       case 'raw':
-        return parseRawBody(body.raw, trim);
+        return parseRawBody(body.raw, trim, contentType);
+      case 'graphql':
+        return parseGraphQL(body.graphql, trim, indentString);
       case 'formdata':
         return parseFormData(body.formdata, trim);
       case 'file':
@@ -174,7 +215,49 @@ function convert (request, options, callback) {
   indent = indent.repeat(options.indentCount);
   trim = options.trimRequestBody;
 
-  bodySnippet = request.body && !_.isEmpty(request.body.toJSON()) ? parseBody(request.body.toJSON(), trim, indent) : '';
+  // The following code handles multiple files in the same formdata param.
+  // It removes the form data params where the src property is an array of filepath strings
+  // Splits that array into different form data params with src set as a single filepath string
+  if (request.body && request.body.mode === 'formdata') {
+    let formdata = request.body.formdata,
+      formdataArray = [];
+    formdata.members.forEach((param) => {
+      let key = param.key,
+        type = param.type,
+        disabled = param.disabled,
+        contentType = param.contentType;
+      // check if type is file or text
+      if (type === 'file') {
+        // if src is not of type string we check for array(multiple files)
+        if (typeof param.src !== 'string') {
+          // if src is an array(not empty), iterate over it and add files as separate form fields
+          if (Array.isArray(param.src) && param.src.length) {
+            param.src.forEach((filePath) => {
+              addFormParam(formdataArray, key, param.type, filePath, disabled, contentType);
+            });
+          }
+          // if src is not an array or string, or is an empty array, add a placeholder for file path(no files case)
+          else {
+            addFormParam(formdataArray, key, param.type, '/path/to/file', disabled, contentType);
+          }
+        }
+        // if src is string, directly add the param with src as filepath
+        else {
+          addFormParam(formdataArray, key, param.type, param.src, disabled, contentType);
+        }
+      }
+      // if type is text, directly add it to formdata array
+      else {
+        addFormParam(formdataArray, key, param.type, param.value, disabled, contentType);
+      }
+    });
+    request.body.update({
+      mode: 'formdata',
+      formdata: formdataArray
+    });
+  }
+  bodySnippet = request.body && !_.isEmpty(request.body.toJSON()) ? parseBody(request.body.toJSON(), trim,
+    indent, request.headers.get('Content-Type')) : '';
 
   codeSnippet += bodySnippet + '\n';
 
@@ -192,7 +275,12 @@ function convert (request, options, callback) {
     codeSnippet += `${indent} console.log(e);\n`;
     codeSnippet += '});\n';
   }
-
+  if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
+    request.addHeader({
+      key: 'Content-Type',
+      value: 'application/json'
+    });
+  }
   headerSnippet = parseHeaders(request.toJSON().header);
 
   codeSnippet += headerSnippet + '\n';

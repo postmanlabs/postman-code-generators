@@ -52,6 +52,134 @@ describe('Converter test', function () {
       expect(snippet).to.include('key_containing_whitespaces:   value_containing_whitespaces  ');
     });
   });
+
+  it('should include graphql body in the snippet', function () {
+    var request = new Request({
+      'method': 'POST',
+      'header': [],
+      'body': {
+        'mode': 'graphql',
+        'graphql': {
+          'query': '{ body { graphql } }',
+          'variables': '{"variable_key": "variable_value"}'
+        }
+      },
+      'url': {
+        'raw': 'http://postman-echo.com/post',
+        'protocol': 'http',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'post'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('{"query":"{ body { graphql } }",');
+      expect(snippet).to.include('"variables":{"variable_key":"variable_value"}}');
+    });
+  });
+
+  it('should generate snippets(not error out) for requests with no body', function () {
+    var request = new Request({
+      'method': 'GET',
+      'header': [
+        {
+          'key': 'Content-Type',
+          'value': 'text/plain'
+        }
+      ],
+      'url': {
+        'raw': 'https://postman-echo.com/get',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'get'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+    });
+  });
+
+  it('should generate snippets(not error out) for requests with multiple/no file in formdata', function () {
+    var request = new Request({
+      'method': 'POST',
+      'header': [],
+      'body': {
+        'mode': 'formdata',
+        'formdata': [
+          {
+            'key': 'no file',
+            'value': '',
+            'type': 'file',
+            'src': []
+          },
+          {
+            'key': 'single file',
+            'value': '',
+            'type': 'file',
+            'src': '/test1.txt'
+          },
+          {
+            'key': 'multiple files',
+            'value': '',
+            'type': 'file',
+            'src': ['/test2.txt',
+              '/test3.txt']
+          },
+          {
+            'key': 'no src',
+            'value': '',
+            'type': 'file'
+          },
+          {
+            'key': 'invalid src',
+            'value': '',
+            'type': 'file',
+            'src': {}
+          }
+        ]
+      },
+      'url': {
+        'raw': 'https://postman-echo.com/post',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'post'
+        ]
+      }
+    });
+
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('name="single file"; filename="test1.txt"');
+      expect(snippet).to.include('name="multiple files"; filename="test2.txt"');
+      expect(snippet).to.include('name="multiple files"; filename="test3.txt"');
+      expect(snippet).to.include('name="no file"; filename="file"');
+      expect(snippet).to.include('name="no src"; filename="file"');
+      expect(snippet).to.include('name="invalid src"; filename="file"');
+    });
+  });
 });
 
 describe('Converter test using options.trimRequestBody', function () {

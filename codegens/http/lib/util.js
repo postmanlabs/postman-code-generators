@@ -3,6 +3,7 @@ let _ = require('./lodash'),
 
 const FORM_DATA_BOUNDARY = '----WebKitFormBoundary7MA4YWxkTrZu0gW',
   RAW = 'raw',
+  GRAPHQL = 'graphql',
   URL_ENCODED = 'urlencoded',
   FORM_DATA = 'formdata',
   FILE = 'file';
@@ -168,7 +169,8 @@ function getHeaders (request) {
     headers = '';
 
   if (contentTypeIndex >= 0) {
-    if (request.headers.members[contentTypeIndex].value === 'multipart/form-data' || request.body.mode === 'formdata') {
+    if (request.headers.members[contentTypeIndex].value === 'multipart/form-data' ||
+      (request.body && request.body.mode === 'formdata')) {
       request.headers.members[contentTypeIndex].value = formDataHeader;
     }
   }
@@ -177,7 +179,7 @@ function getHeaders (request) {
     header.key = header.key.trim();
   });
   headers = convertPropertyListToString(request.headers, '\n', false);
-  if (request.body.mode === 'formdata' && contentTypeIndex < 0) {
+  if (request.body && request.body.mode === 'formdata' && contentTypeIndex < 0) {
     headers += `Content-Type: ${formDataHeader}`;
   }
   return headers;
@@ -200,7 +202,21 @@ function getBody (request, trimRequestBody) {
           requestBody += request.body[request.body.mode].toString();
         }
         return trimRequestBody ? requestBody.trim() : requestBody;
-
+      // eslint-disable-next-line no-case-declarations
+      case GRAPHQL:
+        let query = request.body[request.body.mode].query,
+          graphqlVariables;
+        try {
+          graphqlVariables = JSON.parse(request.body[request.body.mode].variables);
+        }
+        catch (e) {
+          graphqlVariables = {};
+        }
+        requestBody += JSON.stringify({
+          query: query,
+          variables: graphqlVariables
+        });
+        return trimRequestBody ? requestBody.trim() : requestBody;
       case URL_ENCODED:
         /* istanbul ignore else */
         if (!_.isEmpty(request.body[request.body.mode])) {
@@ -317,10 +333,43 @@ function sanitizeOptions (options, optionsArray) {
   return result;
 }
 
+/**
+ *
+ * @param {Array} array - form data array
+ * @param {String} key - key of form data param
+ * @param {String} type - type of form data param(file/text)
+ * @param {String} val - value/src property of form data param
+ * @param {String} disabled - Boolean denoting whether the param is disabled or not
+ * @param {String} contentType - content type header of the param
+ *
+ * Appends a single param to form data array
+ */
+function addFormParam (array, key, type, val, disabled, contentType) {
+  if (type === 'file') {
+    array.push({
+      key: key,
+      type: type,
+      src: val,
+      disabled: disabled,
+      contentType: contentType
+    });
+  }
+  else {
+    array.push({
+      key: key,
+      type: type,
+      value: val,
+      disabled: disabled,
+      contentType: contentType
+    });
+  }
+}
+
 module.exports = {
   getEndPoint: getEndPoint,
   getHost: getHost,
   getHeaders: getHeaders,
   getBody: getBody,
-  sanitizeOptions: sanitizeOptions
+  sanitizeOptions: sanitizeOptions,
+  addFormParam: addFormParam
 };

@@ -33,7 +33,7 @@ List of supported code generators:
 | OCaml | Cohttp | 
 |PHP | cURL |
 |PHP | pecl_http |
-| Powershell | RestMethod | 
+| PowerShell | RestMethod | 
 | Ruby | Net:HTTP |
 | Shell | Httpie |
 | Shell | wget |

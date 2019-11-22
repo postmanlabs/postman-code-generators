@@ -1,5 +1,6 @@
 var sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
+  addFormParam = require('./util').addFormParam,
   _ = require('./lodash'),
   self;
 
@@ -47,11 +48,19 @@ self = module.exports = {
     }
     snippet += indentString + `curl_easy_setopt(curl, CURLOPT_DEFAULT_PROTOCOL, "${protocol}");\n`;
     snippet += indentString + 'struct curl_slist *headers = NULL;\n';
-    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
-      request.addHeader({
-        key: 'Content-Type',
-        value: 'text/plain'
-      });
+    if (request.body && !request.headers.has('Content-Type')) {
+      if (request.body.mode === 'file') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'text/plain'
+        });
+      }
+      else if (request.body.mode === 'graphql') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'application/json'
+        });
+      }
     }
     headersData = request.toJSON().header;
     if (headersData) {
@@ -61,16 +70,53 @@ self = module.exports = {
       ` ${sanitize(header.value)}");\n`;
       });
     }
+    // The following code handles multiple files in the same formdata param.
+    // It removes the form data params where the src property is an array of filepath strings
+    // Splits that array into different form data params with src set as a single filepath string
+    if (request.body && request.body.mode === 'formdata') {
+      let formdata = request.body.formdata,
+        formdataArray = [];
+      formdata.members.forEach((param) => {
+        let key = param.key,
+          type = param.type,
+          disabled = param.disabled,
+          contentType = param.contentType;
+        if (type === 'file') {
+          if (typeof param.src !== 'string') {
+            if (Array.isArray(param.src) && param.src.length) {
+              param.src.forEach((filePath) => {
+                addFormParam(formdataArray, key, param.type, filePath, disabled, contentType);
+              });
+            }
+            else {
+              addFormParam(formdataArray, key, param.type, '/path/to/file', disabled, contentType);
+            }
+          }
+          else {
+            addFormParam(formdataArray, key, param.type, param.src, disabled, contentType);
+          }
+        }
+        else {
+          addFormParam(formdataArray, key, param.type, param.value, disabled, contentType);
+        }
+      });
+      request.body.update({
+        mode: 'formdata',
+        formdata: formdataArray
+      });
+    }
+
     body = request.body ? request.body.toJSON() : {};
     if (body.mode && body.mode === 'formdata' && !options.useMimeType) {
       snippet += indentString + 'headers = curl_slist_append(headers, "content-type:' +
                 ` multipart/form-data; boundary=${BOUNDARY}");\n`;
     }
     snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);\n';
-    // request body
     if (request.method === 'HEAD') {
       snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);\n';
     }
+
+    // request body
     if (!_.isEmpty(body)) {
       switch (body.mode) {
         case 'urlencoded':
@@ -85,6 +131,22 @@ self = module.exports = {
           break;
         case 'raw':
           snippet += indentString + `const char *data = "${sanitize(body.raw.toString(), trim)}";\n`;
+          snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);\n';
+          break;
+        // eslint-disable-next-line no-case-declarations
+        case 'graphql':
+          let query = body.graphql.query,
+            graphqlVariables;
+          try {
+            graphqlVariables = JSON.parse(body.graphql.variables);
+          }
+          catch (e) {
+            graphqlVariables = {};
+          }
+          snippet += indentString + `const char *data = "${sanitize(JSON.stringify({
+            query: query,
+            variables: graphqlVariables
+          }), trim)}";\n`;
           snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);\n';
           break;
         case 'formdata':
@@ -120,8 +182,14 @@ self = module.exports = {
             BOUNDARY = '--' + BOUNDARY;
             _.forEach(body.formdata, function (data) {
               if (!data.disabled) {
-                formdataString += BOUNDARY + '\\r\\nContent-Disposition: form-data; name=' +
-                 `\\"${sanitize(data.key)}\\"\\r\\n\\r\\n${sanitize(data.value)}\\r\\n`;
+                formdataString += `${BOUNDARY}\\r\\nContent-Disposition: form-data; name=\\"${sanitize(data.key)}\\"`;
+                if (data.type === 'file') {
+                  formdataString += `; filename=\\"${sanitize(data.src)}\\"\\r\\nContent-type: ` +
+                  '<Content-Type Header>\\r\\n\\r\\n<file contents here>\\r\\n';
+                }
+                else {
+                  formdataString += `\\r\\n\\r\\n${sanitize(data.value)}\\r\\n`;
+                }
               }
             });
             formdataString += BOUNDARY + '--';

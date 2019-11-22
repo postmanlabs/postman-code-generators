@@ -2,6 +2,7 @@ var _ = require('./lodash'),
 
   parseRequest = require('./parseRequest'),
   sanitize = require('./util').sanitize,
+  addFormParam = require('./util').addFormParam,
   sanitizeOptions = require('./util').sanitizeOptions;
 
 //  Since Java OkHttp requires to add extralines of code to handle methods with body
@@ -19,7 +20,7 @@ function makeSnippet (request, indentString, options) {
 
   var isBodyRequired = !(_.includes(METHODS_WITHOUT_BODY, request.method)),
     snippet = 'OkHttpClient client = new OkHttpClient().newBuilder()\n',
-    requestBody = (request.body ? request.body.toJSON() : {});
+    requestBody;
 
   if (options.requestTimeout > 0) {
     snippet += indentString + `.setConnectTimeout(${options.requestTimeout}, TimeUnit.MILLISECONDS)\n`;
@@ -32,6 +33,42 @@ function makeSnippet (request, indentString, options) {
   snippet += indentString + '.build();\n';
 
   if (isBodyRequired) {
+    // The following code handles multiple files in the same formdata param.
+    // It removes the form data params where the src property is an array of filepath strings
+    // Splits that array into different form data params with src set as a single filepath string
+    if (request.body && request.body.mode === 'formdata') {
+      let formdata = request.body.formdata,
+        formdataArray = [];
+      formdata.members.forEach((param) => {
+        let key = param.key,
+          type = param.type,
+          disabled = param.disabled,
+          contentType = param.contentType;
+        if (type === 'file') {
+          if (typeof param.src !== 'string') {
+            if (Array.isArray(param.src) && param.src.length) {
+              param.src.forEach((filePath) => {
+                addFormParam(formdataArray, key, param.type, filePath, disabled, contentType);
+              });
+            }
+            else {
+              addFormParam(formdataArray, key, param.type, '/path/to/file', disabled, contentType);
+            }
+          }
+          else {
+            addFormParam(formdataArray, key, param.type, param.src, disabled, contentType);
+          }
+        }
+        else {
+          addFormParam(formdataArray, key, param.type, param.value, disabled, contentType);
+        }
+      });
+      request.body.update({
+        mode: 'formdata',
+        formdata: formdataArray
+      });
+    }
+    requestBody = (request.body ? request.body.toJSON() : {});
     //  snippet for creating mediatype object in java based on content-type of request
     snippet += `MediaType mediaType = MediaType.parse("${parseRequest.parseContentType(request)}");\n`;
     snippet += parseRequest.parseBody(requestBody, indentString, options.trimRequestBody);
@@ -40,7 +77,12 @@ function makeSnippet (request, indentString, options) {
   snippet += 'Request request = new Request.Builder()\n';
   snippet += indentString + `.url("${sanitize(request.url.toString())}")\n`;
   snippet += indentString + `.method("${request.method}", ${isBodyRequired ? 'body' : 'null'})\n`;
-
+  if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
+    request.addHeader({
+      key: 'Content-Type',
+      value: 'application/json'
+    });
+  }
   //  java-okhttp snippet for adding headers to request
   snippet += parseRequest.parseHeader(request, indentString);
 

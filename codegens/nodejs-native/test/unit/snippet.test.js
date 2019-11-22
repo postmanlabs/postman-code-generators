@@ -94,4 +94,85 @@ describe('nodejs-native convert function', function () {
       expect(snippet).to.include('\'key_containing_whitespaces\': \'  value_containing_whitespaces  \'');
     });
   });
+  it('should include JSON.stringify in the snippet for raw json bodies', function () {
+    var request = new sdk.Request({
+      'method': 'POST',
+      'header': [
+        {
+          'key': 'Content-Type',
+          'value': 'application/json'
+        }
+      ],
+      'body': {
+        'mode': 'raw',
+        'raw': '{\n  "json": "Test-Test"\n}'
+      },
+      'url': {
+        'raw': 'https://postman-echo.com/post',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'post'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('var postData = JSON.stringify({"json":"Test-Test"})');
+    });
+  });
+  it('should generate snippets for no files in form data', function () {
+    var request = new sdk.Request({
+      'method': 'POST',
+      'header': [],
+      'body': {
+        'mode': 'formdata',
+        'formdata': [
+          {
+            'key': 'no file',
+            'value': '',
+            'type': 'file',
+            'src': []
+          },
+          {
+            'key': 'no src',
+            'value': '',
+            'type': 'file'
+          },
+          {
+            'key': 'invalid src',
+            'value': '',
+            'type': 'file',
+            'src': {}
+          }
+        ]
+      },
+      'url': {
+        'raw': 'https://postman-echo.com/post',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'post'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('name=\\"no file\\"; filename=\\"file\\"');
+      expect(snippet).to.include('name=\\"no src\\"; filename=\\"file\\"');
+      expect(snippet).to.include('name=\\"invalid src\\"; filename=\\"file\\"');
+    });
+  });
 });

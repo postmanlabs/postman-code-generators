@@ -319,6 +319,108 @@ describe('Powershell-restmethod converter', function () {
         expect(snippet).to.include('$headers.Add("key_containing_whitespaces", "  value_containing_whitespaces  ")');
       });
     });
+
+    it('should include graphql body in the snippet', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'graphql',
+          'graphql': {
+            'query': '{ body { graphql } }',
+            'variables': '{"variable_key": "variable_value"}'
+          }
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'protocol': 'http',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('"{`"query`":`"{ body { graphql } }`"');
+        expect(snippet).to.include('`"variables`":{`"variable_key`":`"variable_value`"}}"');
+      });
+    });
+
+    it('should generate snippets(not error out) for requests with multiple/no file in formdata', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'no file',
+              'value': '',
+              'type': 'file',
+              'src': []
+            },
+            {
+              'key': 'single file',
+              'value': '',
+              'type': 'file',
+              'src': '/test1.txt'
+            },
+            {
+              'key': 'multiple files',
+              'value': '',
+              'type': 'file',
+              'src': ['/test2.txt',
+                '/test3.txt']
+            },
+            {
+              'key': 'no src',
+              'value': '',
+              'type': 'file'
+            },
+            {
+              'key': 'invalid src',
+              'value': '',
+              'type': 'file',
+              'src': {}
+            }
+          ]
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('$fileHeader.Name = "no file"');
+        expect(snippet).to.include('$fileHeader.Name = "single file"');
+        expect(snippet).to.include('$fileHeader.Name = "multiple files"');
+        expect(snippet).to.include('$fileHeader.Name = "no src"');
+        expect(snippet).to.include('$fileHeader.Name = "invalid src"');
+        expect(snippet).to.include('$multipartFile = \'/path/to/file\'');
+        expect(snippet).to.include('$multipartFile = \'/test1.txt\'');
+        expect(snippet).to.include('$multipartFile = \'/test2.txt\'');
+        expect(snippet).to.include('$multipartFile = \'/test3.txt\'');
+      });
+    });
   });
 
   describe('getOptions function', function () {

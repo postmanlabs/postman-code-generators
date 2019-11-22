@@ -27,6 +27,22 @@ module.exports = function (request, indentation, bodyTrim) {
           requestBody = 'payload  = {}\n';
         }
         return requestBody;
+      // eslint-disable-next-line no-case-declarations
+      case 'graphql':
+        let query = request.body[request.body.mode].query,
+          graphqlVariables;
+        try {
+          graphqlVariables = JSON.parse(request.body[request.body.mode].variables);
+        }
+        catch (e) {
+          graphqlVariables = {};
+        }
+        requestBody += `payload = ${sanitize(JSON.stringify({
+          query: query,
+          variables: graphqlVariables
+        }),
+        'raw', bodyTrim)}\n`;
+        return requestBody;
       case 'urlencoded':
         enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
         if (!_.isEmpty(enabledBodyList)) {
@@ -48,9 +64,9 @@ module.exports = function (request, indentation, bodyTrim) {
                             `'${sanitize(value.value, request.body.mode, bodyTrim)}'`);
           });
           bodyFileMap = _.map(_.filter(enabledBodyList, {'type': 'file'}), function (value) {
-            return `'${value.key}': open('${sanitize(value.src, request.body.mode, bodyTrim)}','rb')`;
+            return `${indentation}('${value.key}', open('${sanitize(value.src, request.body.mode, bodyTrim)}','rb'))`;
           });
-          requestBody = `payload = {${bodyDataMap.join(',\n')}}\nfiles = {${bodyFileMap.join(',')}}\n`;
+          requestBody = `payload = {${bodyDataMap.join(',\n')}}\nfiles = [\n${bodyFileMap.join(',\n')}\n]\n`;
         }
         else {
           requestBody = 'payload = {}\nfiles = {}\n';

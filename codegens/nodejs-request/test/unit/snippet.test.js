@@ -273,6 +273,90 @@ describe('nodejs-request convert function', function () {
       });
     });
 
+    it('should include JSON.stringify in the snippet for raw json bodies', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [
+          {
+            'key': 'Content-Type',
+            'value': 'application/json'
+          }
+        ],
+        'body': {
+          'mode': 'raw',
+          'raw': '{\n  "json": "Test-Test"\n}'
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('body: JSON.stringify({"json":"Test-Test"})');
+      });
+    });
+
+    it('should generate snippets for no files in form data', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'no file',
+              'value': '',
+              'type': 'file',
+              'src': []
+            },
+            {
+              'key': 'no src',
+              'value': '',
+              'type': 'file'
+            },
+            {
+              'key': 'invalid src',
+              'value': '',
+              'type': 'file',
+              'src': {}
+            }
+          ]
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('\'no file\': {');
+        expect(snippet).to.include('\'no src\': {');
+        expect(snippet).to.include('\'invalid src\': {');
+        expect(snippet).to.include('\'value\': fs.createReadStream(\'/path/to/file\')');
+      });
+    });
+
     describe('getOptions function', function () {
 
       it('should return an array of specific options', function () {

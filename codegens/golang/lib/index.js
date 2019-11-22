@@ -1,6 +1,7 @@
 var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
+  addFormParam = require('./util').addFormParam,
   isFile = false,
   self;
 
@@ -13,6 +14,29 @@ var _ = require('./lodash'),
 function parseRawBody (body, trim) {
   var bodySnippet;
   bodySnippet = `payload := strings.NewReader("${sanitize(body.toString(), trim)}")`;
+  return bodySnippet;
+}
+
+/**
+ * Parses graphql data to golang syntax
+ *
+ * @param {Object} body Raw body data
+ * @param {boolean} trim trim body option
+ */
+function parseGraphQL (body, trim) {
+  let query = body.query,
+    graphqlVariables,
+    bodySnippet;
+  try {
+    graphqlVariables = JSON.parse(body.variables);
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  bodySnippet = `payload := strings.NewReader("${sanitize(JSON.stringify({
+    query: query,
+    variables: graphqlVariables
+  }), trim)}")`;
   return bodySnippet;
 }
 
@@ -44,16 +68,18 @@ function parseURLEncodedBody (body, trim) {
  */
 function parseFormData (body, trim, indent) {
   var bodySnippet = `payload := &bytes.Buffer{}\n${indent}writer := multipart.NewWriter(payload)\n`;
-  _.forEach(body, function (data) {
+  _.forEach(body, function (data, index) {
     if (!data.disabled) {
       if (data.type === 'file') {
         isFile = true;
-        bodySnippet += `${indent}file, err_file := os.Open("${data.src}")\n`;
+        bodySnippet += `${indent}file, errFile${index + 1} := os.Open("${data.src}")\n`;
         bodySnippet += `${indent}defer file.Close()\n`;
-        bodySnippet += `${indent}part, err_file := writer.CreateFormFile("${sanitize(data.key, trim)}",` +
+        bodySnippet += `${indent}part${index + 1},
+         errFile${index + 1} := writer.CreateFormFile("${sanitize(data.key, trim)}",` +
                         `filepath.Base("${data.src}"))\n`;
-        bodySnippet += `${indent}_, err_file = io.Copy(part, file)\n`;
-        bodySnippet += `${indent}if err_file !=nil {\n${indent.repeat(2)}fmt.Println(err_file)\n${indent}}\n`;
+        bodySnippet += `${indent}_, errFile${index + 1} = io.Copy(part${index + 1}, file)\n`;
+        bodySnippet += `${indent}if errFile${index + 1} !=nil {
+          \n${indent.repeat(2)}fmt.Println(errFile${index + 1})\n${indent}}\n`;
       }
       else {
         bodySnippet += `${indent}_ = writer.WriteField("${sanitize(data.key, trim)}",`;
@@ -97,6 +123,8 @@ function parseBody (body, trim, indent) {
         return parseURLEncodedBody(body.urlencoded, trim);
       case 'raw':
         return parseRawBody(body.raw, trim);
+      case 'graphql':
+        return parseGraphQL(body.graphql, trim);
       case 'formdata':
         return parseFormData(body.formdata, trim, indent);
       case 'file':
@@ -144,6 +172,41 @@ self = module.exports = {
     followRedirect = options.followRedirect;
     trim = options.trimRequestBody;
 
+    // The following code handles multiple files in the same formdata param.
+    // It removes the form data params where the src property is an array of filepath strings
+    // Splits that array into different form data params with src set as a single filepath string
+    if (request.body && request.body.mode === 'formdata') {
+      let formdata = request.body.formdata,
+        formdataArray = [];
+      formdata.members.forEach((param) => {
+        let key = param.key,
+          type = param.type,
+          disabled = param.disabled,
+          contentType = param.contentType;
+        if (type === 'file') {
+          if (typeof param.src !== 'string') {
+            if (Array.isArray(param.src) && param.src.length) {
+              param.src.forEach((filePath) => {
+                addFormParam(formdataArray, key, param.type, filePath, disabled, contentType);
+              });
+            }
+            else {
+              addFormParam(formdataArray, key, param.type, '/path/to/file', disabled, contentType);
+            }
+          }
+          else {
+            addFormParam(formdataArray, key, param.type, param.src, disabled, contentType);
+          }
+        }
+        else {
+          addFormParam(formdataArray, key, param.type, param.value, disabled, contentType);
+        }
+      });
+      request.body.update({
+        mode: 'formdata',
+        formdata: formdataArray
+      });
+    }
     if (request.body) {
       bodySnippet = parseBody(request.body.toJSON(), trim, indent);
     }
@@ -162,6 +225,8 @@ self = module.exports = {
     if (isFile) {
       codeSnippet += `${indent}"os"\n${indent}"path/filepath"\n`;
       codeSnippet += `${indent}"io"\n`;
+      // Setting isFile as false for further calls to this function
+      isFile = false;
     }
     codeSnippet += `${indent}"net/http"\n${indent}"io/ioutil"\n)\n\n`;
 
@@ -193,11 +258,19 @@ self = module.exports = {
       codeSnippet += `${indent}req, err := http.NewRequest(method, url, nil)\n\n`;
     }
     codeSnippet += `${indent}if err != nil {\n${indent.repeat(2)}fmt.Println(err)\n${indent}}\n`;
-    if (request.body && request.body.mode === 'file' && !request.headers.has('Content-Type')) {
-      request.addHeader({
-        key: 'Content-Type',
-        value: 'text/plain'
-      });
+    if (request.body && !request.headers.has('Content-Type')) {
+      if (request.body.mode === 'file') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'text/plain'
+        });
+      }
+      else if (request.body.mode === 'graphql') {
+        request.addHeader({
+          key: 'Content-Type',
+          value: 'application/json'
+        });
+      }
     }
     headerSnippet = parseHeaders(request.toJSON().header, indent);
     if (headerSnippet !== '') {
