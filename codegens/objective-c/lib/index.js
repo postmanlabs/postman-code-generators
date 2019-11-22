@@ -193,14 +193,19 @@ self = module.exports = {
   convert: function (request, options, callback) {
     var indent,
       codeSnippet,
+      requestTimeout,
       trim;
     options = sanitizeOptions(options, self.getOptions());
     trim = options.trimRequestBody;
     indent = options.indentType === 'tab' ? '\t' : ' ';
     indent = indent.repeat(options.indentCount);
+
+    requestTimeout = options.requestTimeout / 1000; // Objective-C takes time in seconds.
+
     if (!_.isFunction(callback)) {
       throw new Error('Callback is not valid function');
     }
+
     if (request.body && !request.headers.has('Content-Type')) {
       if (request.body.mode === 'file') {
         request.addHeader({
@@ -215,14 +220,17 @@ self = module.exports = {
         });
       }
     }
+
     let obj = {};
     codeSnippet = '#import <Foundation/Foundation.h>\n';
     codeSnippet += 'NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"' +
       encodeURI(request.url.toString()) + '"]\n';
     codeSnippet += `${indent}cachePolicy:NSURLRequestUseProtocolCachePolicy\n`;
-    codeSnippet += `${indent}timeoutInterval:10.0];\n`;
+    codeSnippet += `${indent}timeoutInterval:${requestTimeout}.0];\n`;
+
     // TODO: use defaultSessionConfiguration
     // codeSnippet += 'NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];\n';
+
     codeSnippet += parseHeaders(Object.assign(obj, request.getHeaders({enabled: true})), indent, trim);
     codeSnippet += parseBody(request.body ? request.body.toJSON() : {}, indent, trim) + '\n';
     codeSnippet += '[request setHTTPMethod:@"' + request.method + '"];\n';
@@ -261,7 +269,7 @@ self = module.exports = {
         name: 'Set request timeout',
         id: 'requestTimeout',
         type: 'positiveInteger',
-        default: 0,
+        default: 10000, // Using 10 secs as default
         description: 'Set number of milliseconds the request should wait for a response' +
     ' before timing out (use 0 for infinity)'
       },
@@ -271,13 +279,6 @@ self = module.exports = {
         type: 'boolean',
         default: false,
         description: 'Remove white space and additional lines that may affect the server\'s response'
-      },
-      {
-        name: 'Follow redirects',
-        id: 'followRedirect',
-        type: 'boolean',
-        default: true,
-        description: 'Automatically follow HTTP redirects'
       }
     ];
   }
