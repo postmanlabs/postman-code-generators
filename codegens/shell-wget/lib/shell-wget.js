@@ -120,11 +120,6 @@ self = module.exports = {
           isFormDataFile = true;
         }
       });
-
-      request.body.update({
-        mode: 'formdata',
-        formdata: formdataArray
-      });
     }
     if (isFormDataFile) {
       snippet = '# wget doesn\'t support file upload via form data, use curl -F \\\n';
