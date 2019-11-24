@@ -193,7 +193,7 @@ self = module.exports = {
     var indent,
       codeSnippet = '',
       requestTimeout,
-      headerSnippet = '#import <Foundation/Foundation.h>\n',
+      headerSnippet = '#import <Foundation/Foundation.h>\n\n',
       footerSnippet = '',
       trim;
     options = sanitizeOptions(options, self.getOptions());
@@ -261,6 +261,7 @@ self = module.exports = {
       headerSnippet += 'int main(int argc, const char * argv[]) {\n\n';
       footerSnippet += '}';
     }
+    codeSnippet += 'dispatch_semaphore_t sema = dispatch_semaphore_create(0);\n\n';
     codeSnippet += 'NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"' +
       encodeURI(request.url.toString()) + '"]\n';
     codeSnippet += `${indent}cachePolicy:NSURLRequestUseProtocolCachePolicy\n`;
@@ -279,7 +280,12 @@ self = module.exports = {
     codeSnippet += `${indent.repeat(2)}NSLog(@"%@", error);\n`;
     codeSnippet += `${indent}} else {\n`;
     codeSnippet += `${indent.repeat(2)}NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;\n`;
-    codeSnippet += `${indent.repeat(2)}NSLog(@"%@", httpResponse);\n`;
+    codeSnippet += `${indent.repeat(2)}if(httpResponse.statusCode) {\n`;
+    codeSnippet += `${indent.repeat(3)}NSError *parseError = nil;\n`;
+    codeSnippet += `${indent.repeat(3)}NSDictionary *responseDictionary =
+     [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];\n`;
+    codeSnippet += `${indent.repeat(3)}NSLog(@"%@",responseDictionary);\n${indent.repeat(2)}}\n`;
+    codeSnippet += `${indent.repeat(2)}else {\n${indent.repeat(3)}NSLog(@"Error");\n${indent.repeat(2)}}\n`;
     codeSnippet += `${indent.repeat(2)}dispatch_semaphore_signal(sema);\n`;
     codeSnippet += `${indent}}\n`;
     codeSnippet += '}];\n';
