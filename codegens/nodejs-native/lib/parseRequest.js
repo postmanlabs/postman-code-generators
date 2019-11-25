@@ -205,7 +205,7 @@ function parsePath (request, indentString) {
     querySnippet = '';
 
   if (pathArray && pathArray.length) {
-    pathSnippet += _.reduce(pathArray, function (accumalator, key) {
+    pathSnippet += sanitize(_.reduce(pathArray, function (accumalator, key) {
       if (key.length) {
         accumalator.push(`${sanitize(key)}`);
       }
@@ -213,7 +213,7 @@ function parsePath (request, indentString) {
         accumalator.push('');
       }
       return accumalator;
-    }, []).join('/');
+    }, []).join('/'));
   }
 
   if (queryArray && queryArray.length) {
@@ -230,7 +230,7 @@ function parsePath (request, indentString) {
       }, []).join('&');
     }
   }
-  pathSnippet += querySnippet + '\'';
+  pathSnippet += sanitize(querySnippet) + '\'';
   return pathSnippet;
 }
 
