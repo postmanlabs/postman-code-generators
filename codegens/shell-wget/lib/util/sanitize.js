@@ -26,6 +26,8 @@ module.exports = {
           return inputString.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
         case 'header':
           return inputString.replace(/'/g, '\'\\\'\'');
+        case 'url':
+          return inputString.replace(/'/g, '\'\\\'\'');
         default:
           return inputString.replace(/'/g, '\'');
       }

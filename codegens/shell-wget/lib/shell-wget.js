@@ -154,7 +154,7 @@ self = module.exports = {
     }
     snippet += `${getHeaders(request, indentation)}\n`;
     snippet += `${parseBody(request.toJSON(), options.trimRequestBody, indentation)}`;
-    snippet += `${indentation} '${request.url.toString()}'`;
+    snippet += `${indentation} '${sanitize(request.url.toString(), 'url')}'`;
 
     return callback(null, snippet);
   }
