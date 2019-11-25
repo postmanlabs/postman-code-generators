@@ -224,13 +224,13 @@ function parsePath (request, indentString) {
     if (queryExists) {
       querySnippet += '?' + _.reduce(queryArray, function (accumalator, queryElement) {
         if (!queryElement.disabled || _.get(queryElement, 'disabled') === false) {
-          accumalator.push(`${queryElement.key}=${encodeURIComponent(sanitize(queryElement.value))}`);
+          accumalator.push(`${queryElement.key}=${sanitize(encodeURIComponent(queryElement.value))}`);
         }
         return accumalator;
       }, []).join('&');
     }
   }
-  pathSnippet += sanitize(querySnippet) + '\'';
+  pathSnippet += querySnippet + '\'';
   return pathSnippet;
 }
 
