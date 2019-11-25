@@ -183,34 +183,6 @@
 			"response": []
 		},
 		{
-			"name": "GET Request with single quotes and double quotes in query",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://postman-echo.com/get?query1=b'b&query2=c\"c",
-					"protocol": "https",
-					"host": [
-						"postman-echo",
-						"com"
-					],
-					"path": [
-						"get"
-					],
-					"query": [
-						{
-							"key": "query1",
-							"value": "b'b"
-						},
-						{
-							"key": "query2",
-							"value": "c\"c"
-						}
-					]
-				}
-			}
-		},
-		{
 			"name": "POST Raw Text",
 			"event": [
 				{
