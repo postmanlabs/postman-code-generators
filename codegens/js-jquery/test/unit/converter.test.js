@@ -231,4 +231,41 @@ describe('jQuery converter', function () {
       expect(snippet).to.include('"invalid src", fileInput.files[0], "file"');
     });
   });
+
+  it('should generate valid snippet for multiple headers with same name', function () {
+    var request = new sdk.Request({
+      'method': 'POST',
+      'header': [
+        {
+          'key': 'sample_key',
+          'value': 'value1'
+        },
+        {
+          'key': 'sample_key',
+          'value': 'value2'
+        }
+      ],
+      'url': {
+        'raw': 'https://postman-echo.com/get',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'get'
+        ]
+      }
+    });
+
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('"sample_key": ["value1", "value2"]');
+      expect(snippet).to.not.include('"sample_key": "value1"');
+      expect(snippet).to.not.include('"sample_key": "value2"');
+    });
+  });
 });
