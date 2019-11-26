@@ -192,7 +192,7 @@ describe('nodejs-native convert function', function () {
         'query': [
           {
             'key': 'query1',
-            'value': 'b\'b'
+            'value': "b'b" // eslint-disable-line quotes
           },
           {
             'key': 'query2',
