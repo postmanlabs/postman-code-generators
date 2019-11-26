@@ -1,4 +1,5 @@
 var _ = require('./lodash'),
+  sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
   addFormParam = require('./util').addFormParam,
 
@@ -15,7 +16,7 @@ var _ = require('./lodash'),
 function makeSnippet (request, indentString, options) {
   var snippet = 'var unirest = require(\'unirest\');\n';
 
-  snippet += `var req = unirest('${request.method}', '${request.url.toString()}')\n`;
+  snippet += `var req = unirest('${request.method}', '${sanitize(request.url.toString())}')\n`;
   if (request.body && !request.headers.has('Content-Type')) {
     if (request.body.mode === 'file') {
       request.addHeader({

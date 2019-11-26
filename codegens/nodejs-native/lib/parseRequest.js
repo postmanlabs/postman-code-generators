@@ -205,7 +205,7 @@ function parsePath (request, indentString) {
     querySnippet = '';
 
   if (pathArray && pathArray.length) {
-    pathSnippet += _.reduce(pathArray, function (accumalator, key) {
+    pathSnippet += sanitize(_.reduce(pathArray, function (accumalator, key) {
       if (key.length) {
         accumalator.push(`${sanitize(key)}`);
       }
@@ -213,7 +213,7 @@ function parsePath (request, indentString) {
         accumalator.push('');
       }
       return accumalator;
-    }, []).join('/');
+    }, []).join('/'));
   }
 
   if (queryArray && queryArray.length) {
@@ -224,7 +224,7 @@ function parsePath (request, indentString) {
     if (queryExists) {
       querySnippet += '?' + _.reduce(queryArray, function (accumalator, queryElement) {
         if (!queryElement.disabled || _.get(queryElement, 'disabled') === false) {
-          accumalator.push(`${queryElement.key}=${encodeURIComponent(sanitize(queryElement.value))}`);
+          accumalator.push(`${queryElement.key}=${sanitize(encodeURIComponent(queryElement.value))}`);
         }
         return accumalator;
       }, []).join('&');

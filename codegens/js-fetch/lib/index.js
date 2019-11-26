@@ -305,7 +305,7 @@ function convert (request, options, callback) {
 
   codeSnippet += optionsSnippet + '\n';
 
-  fetchSnippet = `fetch('${request.url.toString()}', requestOptions)\n${indent}`;
+  fetchSnippet = `fetch("${sanitize(request.url.toString())}", requestOptions)\n${indent}`;
   fetchSnippet += `.then(response => response.text())\n${indent}`;
   fetchSnippet += `.then(result => console.log(result))\n${indent}`;
   fetchSnippet += '.catch(error => console.log(\'error\', error));';

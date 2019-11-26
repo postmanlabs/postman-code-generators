@@ -175,4 +175,39 @@ describe('nodejs-native convert function', function () {
       expect(snippet).to.include('name=\\"invalid src\\"; filename=\\"file\\"');
     });
   });
+  it('should generate valid snippet for single/double quotes in url', function () {
+    var request = new sdk.Request({
+      'method': 'GET',
+      'header': [],
+      'url': {
+        'raw': 'https://postman-echo.com/get?query1=b\'b&query2=c"c',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'get'
+        ],
+        'query': [
+          {
+            'key': 'query1',
+            'value': "b'b" // eslint-disable-line quotes
+          },
+          {
+            'key': 'query2',
+            'value': 'c"c'
+          }
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      // eslint-disable-next-line quotes
+      expect(snippet).to.include("'path': '/get?query1=b\\'b&query2=c%22c'");
+    });
+  });
 });

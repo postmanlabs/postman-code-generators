@@ -281,7 +281,7 @@ function convert (request, options, callback) {
   }
 
   if (_.includes(VALID_METHODS, request.method)) {
-    codeSnippet += `$response = Invoke-RestMethod '${request.url.toString()}' -Method '` +
+    codeSnippet += `$response = Invoke-RestMethod '${request.url.toString().replace(/'/g, '\'\'')}' -Method '` +
                         `${request.method}' -Headers $headers -Body $body`;
   }
   else {
