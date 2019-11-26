@@ -280,18 +280,15 @@ self = module.exports = {
     codeSnippet += `${indent.repeat(2)}NSLog(@"%@", error);\n`;
     codeSnippet += `${indent}} else {\n`;
     codeSnippet += `${indent.repeat(2)}NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;\n`;
-    codeSnippet += `${indent.repeat(2)}if(httpResponse.statusCode) {\n`;
-    codeSnippet += `${indent.repeat(3)}NSError *parseError = nil;\n`;
-    codeSnippet += `${indent.repeat(3)}NSDictionary *responseDictionary =
-     [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];\n`;
-    codeSnippet += `${indent.repeat(3)}NSLog(@"%@",responseDictionary);\n${indent.repeat(2)}}\n`;
-    codeSnippet += `${indent.repeat(2)}else {\n${indent.repeat(3)}NSLog(@"Error");\n${indent.repeat(2)}}\n`;
+    codeSnippet += `${indent.repeat(2)}NSError *parseError = nil;\n`;
+    // eslint-disable-next-line max-len
+    codeSnippet += `${indent.repeat(2)}NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];\n`;
+    codeSnippet += `${indent.repeat(2)}NSLog(@"%@",responseDictionary);\n`;
     codeSnippet += `${indent.repeat(2)}dispatch_semaphore_signal(sema);\n`;
     codeSnippet += `${indent}}\n`;
     codeSnippet += '}];\n';
     codeSnippet += '[dataTask resume];\n';
     codeSnippet += 'dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);';
-
 
     //  if boilerplate is included then two more indent needs to be added in snippet
     (options.includeBoilerplate) &&
