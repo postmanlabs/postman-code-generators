@@ -193,7 +193,7 @@ self = module.exports = {
     var indent,
       codeSnippet = '',
       requestTimeout,
-      headerSnippet = '#import <Foundation/Foundation.h>\n',
+      headerSnippet = '#import <Foundation/Foundation.h>\n\n',
       footerSnippet = '',
       trim;
     options = sanitizeOptions(options, self.getOptions());
@@ -261,6 +261,7 @@ self = module.exports = {
       headerSnippet += 'int main(int argc, const char * argv[]) {\n\n';
       footerSnippet += '}';
     }
+    codeSnippet += 'dispatch_semaphore_t sema = dispatch_semaphore_create(0);\n\n';
     codeSnippet += 'NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"' +
       encodeURI(request.url.toString()) + '"]\n';
     codeSnippet += `${indent}cachePolicy:NSURLRequestUseProtocolCachePolicy\n`;
@@ -279,13 +280,15 @@ self = module.exports = {
     codeSnippet += `${indent.repeat(2)}NSLog(@"%@", error);\n`;
     codeSnippet += `${indent}} else {\n`;
     codeSnippet += `${indent.repeat(2)}NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;\n`;
-    codeSnippet += `${indent.repeat(2)}NSLog(@"%@", httpResponse);\n`;
+    codeSnippet += `${indent.repeat(2)}NSError *parseError = nil;\n`;
+    // eslint-disable-next-line max-len
+    codeSnippet += `${indent.repeat(2)}NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];\n`;
+    codeSnippet += `${indent.repeat(2)}NSLog(@"%@",responseDictionary);\n`;
     codeSnippet += `${indent.repeat(2)}dispatch_semaphore_signal(sema);\n`;
     codeSnippet += `${indent}}\n`;
     codeSnippet += '}];\n';
     codeSnippet += '[dataTask resume];\n';
     codeSnippet += 'dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);';
-
 
     //  if boilerplate is included then two more indent needs to be added in snippet
     (options.includeBoilerplate) &&
