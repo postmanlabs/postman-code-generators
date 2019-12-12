@@ -25,6 +25,8 @@ then
     fi
     echo "$1 : codegen-structure test";
     mocha ./test/codegen/structure.test.js $1;
+    echo "$1 : codegen-sanity test";
+    mocha ./test/codegen/sanity/sanity.test.js $1;
     echo "$1 : npm test";
     pushd ./codegens/$CODEGEN &>/dev/null;
     npm test;
@@ -50,6 +52,21 @@ else
             exit 0;
         fi
     done
+
+    # Sanity check for each codegen.
+    echo -e "Running codegen-sanity tests on all the codegens";
+    for directory in codegens/*; do
+        if [ -d ${directory} ]; 
+        then
+            codegen_name=${directory:9}
+            echo "$codegen_name : codegen-structure test";
+            mocha ./test/codegen/sanity/sanity.test.js $codegen_name;
+        else
+            echo "No Code gen folders present";
+            exit 0;
+        fi
+    done
+
     echo -e "Running npm test on all the codegens";
     for directory in codegens/*; do
         if [ -d ${directory} ]; 
