@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "f52ee07d-6345-4220-89af-e6696b3c0122",
-		"name": "Code-Gen Test Cases",
+		"name": "Basic Collection",
 		"description": "This collection contains requests that will be used to test validity of plugin created to convert postman request into code snippet of particular language.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
