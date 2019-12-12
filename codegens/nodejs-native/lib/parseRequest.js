@@ -247,23 +247,25 @@ function parseURLVariable (request) {
   }
 
   variableArray.forEach(function (variableArrayElement) {
-    request.url.host.forEach(function (hostArrayElement, hostArrayElementIndex) {
-      if (hostArrayElement === ':' + variableArrayElement.key) {
-        request.url.host[hostArrayElementIndex] = variableArrayElement.value;
-      }
-    });
+    if (variableArrayElement.value) {
+      request.url.host.forEach(function (hostArrayElement, hostArrayElementIndex) {
+        if (hostArrayElement === ':' + variableArrayElement.key) {
+          request.url.host[hostArrayElementIndex] = variableArrayElement.value;
+        }
+      });
 
-    request.url.path.forEach(function (pathArrayElement, pathArrayElementIndex) {
-      if (pathArrayElement === ':' + variableArrayElement.key) {
-        request.url.path[pathArrayElementIndex] = variableArrayElement.value;
-      }
-    });
+      request.url.path.forEach(function (pathArrayElement, pathArrayElementIndex) {
+        if (pathArrayElement === ':' + variableArrayElement.key) {
+          request.url.path[pathArrayElementIndex] = variableArrayElement.value;
+        }
+      });
 
-    request.toJSON().url.query.forEach(function (queryArrayElement, queryArrayElementIndex) {
-      if (queryArrayElement === ':' + variableArrayElement.key) {
-        request.url.query[queryArrayElementIndex] = variableArrayElement.value;
-      }
-    });
+      request.toJSON().url.query.forEach(function (queryArrayElement, queryArrayElementIndex) {
+        if (queryArrayElement === ':' + variableArrayElement.key) {
+          request.url.query[queryArrayElementIndex] = variableArrayElement.value;
+        }
+      });
+    }
   });
 }
 

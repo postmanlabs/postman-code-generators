@@ -143,6 +143,23 @@ describe('Shell-Httpie convert function', function () {
       expect(snippet).to.include('\'invalid src\'@/path/to/file');
     });
   });
+
+  it('should generate valid snippet and should include appropriate variable name', function () {
+    var request = new sdk.Request({
+      'method': 'GET',
+      'header': [],
+      'body': {},
+      'url': 'https://postman-echo.com/:action'
+    });
+
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include(':action');
+    });
+  });
 });
 
 describe('Sanitize function', function () {
