@@ -132,7 +132,9 @@ function parseURLVariable (request) {
   variableArray.forEach(function (variableArrayElement) {
     request.url.path.forEach(function (pathArrayElement, pathArrayElementIndex) {
       if (pathArrayElement === ':' + variableArrayElement.key) {
-        request.url.path[pathArrayElementIndex] = variableArrayElement.value;
+        if (variableArrayElement.value) {
+          request.url.path[pathArrayElementIndex] = variableArrayElement.value;
+        }
       }
     });
   });

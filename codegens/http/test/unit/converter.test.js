@@ -180,6 +180,23 @@ describe('Converter test', function () {
       expect(snippet).to.include('name="invalid src"; filename="file"');
     });
   });
+
+  it('should generate valid snippet and should include appropriate variable name', function () {
+    var request = new Request({
+      'method': 'GET',
+      'header': [],
+      'body': {},
+      'url': 'https://postman-echo.com/:action'
+    });
+
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include(':action');
+    });
+  });
 });
 
 describe('Converter test using options.trimRequestBody', function () {
