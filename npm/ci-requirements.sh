@@ -11,6 +11,7 @@ popd &>/dev/null;
 echo "Installing dependencies required for tests in codegens/java-okhttp"
 pushd ./codegens/java-okhttp &>/dev/null;
   sudo add-apt-repository ppa:openjdk-r/ppa -y
+  sudo rm -rf /var/lib/apt/lists/*
   sudo apt-get update
   sudo apt-get install -y openjdk-8-jdk
   sudo wget http://central.maven.org/maven2/com/squareup/okhttp3/okhttp/3.9.1/okhttp-3.9.1.jar
