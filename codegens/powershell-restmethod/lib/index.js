@@ -224,6 +224,7 @@ function convert (request, options, callback) {
   if (!options.followRedirect) {
     codeSnippet += ' -MaximumRedirection 0';
   }
+  codeSnippet += '\n$response';
   callback(null, codeSnippet);
 }
 
