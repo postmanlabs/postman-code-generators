@@ -12,7 +12,7 @@ module.exports = function (request, trimRequestBody) {
   // used to check whether body is present in the request and return accordingly
   if (request.body) {
     var requestBody = '',
-      bodyMap,
+      bodyMap = [],
       enabledBodyList;
 
     switch (request.body.mode) {
