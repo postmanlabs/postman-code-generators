@@ -130,7 +130,6 @@ self = module.exports = {
     indentation = identity.repeat(options.indentCount);
 
     snippet += 'import http.client\n';
-    snippet += 'import mimetypes\n';
     snippet += `conn = http.client.HTTPSConnection("${request.url.host ? request.url.host.join('.') : ''}"`;
     snippet += request.url.port ? `, ${request.url.port}` : '';
     snippet += options.requestTimeout !== 0 ? `, timeout = ${options.requestTimeout})\n` : ')\n';
