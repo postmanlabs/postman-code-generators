@@ -186,7 +186,7 @@ describe('Powershell-restmethod converter', function () {
         expect(lines[1]).to.eql('$headers.Add("Content-Type", "text/plain")');
         expect(lines[3]).to.eql('$body = "Hello world"');
         expect(lines[5]).to.eql('$response = Invoke-RestMethod \'https://mockbin.org/request\' -Method \'POST\' -Headers $headers -Body $body -TimeoutSec 10'); // eslint-disable-line max-len
-        expect(lines[6]).to.eql('$response | ConvertTo-Json');
+        expect(lines[6]).to.eql('$response');
       });
     });
   });
