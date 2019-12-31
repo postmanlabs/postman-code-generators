@@ -14,6 +14,9 @@ var _ = require('./lodash'),
  * @returns {String} request body in the desired format
  */
 function parseRawBody (body, mode, trim) {
+  if (_.isEmpty(body)) {
+    return '';
+  }
   var bodySnippet;
   bodySnippet = `let parameters = ${sanitize(body, mode, trim)}\n`;
   bodySnippet += 'let postData = parameters.data(using: .utf8)';
@@ -29,6 +32,9 @@ function parseRawBody (body, mode, trim) {
  * @returns {String} request body in the desired format
  */
 function parseGraphQL (body, mode, trim) {
+  if (_.isEmpty(body)) {
+    return '';
+  }
   let query = body.query,
     graphqlVariables, bodySnippet;
   try {
@@ -54,6 +60,9 @@ function parseGraphQL (body, mode, trim) {
  * @returns {String} request body in the desired format
  */
 function parseURLEncodedBody (body, mode, trim) {
+  if (_.isEmpty(body)) {
+    return '';
+  }
   var payload, bodySnippet;
   payload = _.reduce(body, function (accumulator, data) {
     if (!data.disabled) {
@@ -150,7 +159,7 @@ function parseFile () {
  * @returns {String} utility function for getting request body in the desired format
  */
 function parseBody (body, trim, indent) {
-  if (!_.isEmpty(body) && !_.isEmpty(body[body.mode])) {
+  if (!_.isEmpty(body)) {
     switch (body.mode) {
       case 'urlencoded':
         return parseURLEncodedBody(body.urlencoded, body.mode, trim);
