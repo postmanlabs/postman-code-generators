@@ -36,7 +36,10 @@ function extractFormData (dataArray, indentString, trimBody) {
  */
 function generateMultipartFormData (requestbody) {
   const boundary = '------WebKitFormBoundary7MA4YWxkTrZu0gW\\r\\nContent-Disposition: form-data; ',
-    dataArray = requestbody[requestbody.mode],
+    dataArray = requestbody[requestbody.mode];
+  var postData = '';
+
+  if (dataArray.length) {
     postData = '"' + boundary + _.reduce(dataArray, (accumalator, dataArrayElement) => {
       if (!dataArrayElement.disabled || dataArrayElement.disabled === false) {
         const key = dataArrayElement.key.replace(/"/g, '\'');
@@ -60,6 +63,7 @@ function generateMultipartFormData (requestbody) {
       return accumalator;
       // eslint-disable-next-line no-useless-escape
     }, []).join(`${boundary}`) + '------WebKitFormBoundary7MA4YWxkTrZu0gW--\"';
+  }
 
   return postData;
 }

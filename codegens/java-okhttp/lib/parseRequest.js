@@ -85,8 +85,11 @@ function parseBody (requestBody, indentString, trimFields) {
           variables: graphqlVariables
         }), trimFields)}");\n`;
       case 'formdata':
-        return 'RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
-                        `${parseFormData(requestBody, indentString, trimFields)};\n`;
+        return requestBody.formdata.length ?
+          'RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
+            `${parseFormData(requestBody, indentString, trimFields)};\n` :
+          'MediaType JSON = MediaType.parse("application/json; charset=utf-8");\n' +
+          'RequestBody body = RequestBody.create(JSON, "{}");\n';
         /* istanbul ignore next */
       case 'file':
         // return 'RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
