@@ -77,7 +77,6 @@ function parseFormData (body, trim, indent) {
       if (!data.disabled || data.disabled === false) {
         const key = sanitize(data.key, 'formdata-key', trim);
 
-        /* istanbul ignore next */
         if (data.type === 'file') {
           const filename = data.src;
           accumalator.push(`${indent}[| ("name", "${key}"); ("fileName", "${filename}") |]`);
@@ -88,7 +87,6 @@ function parseFormData (body, trim, indent) {
         }
       }
       return accumalator;
-      // eslint-disable-next-line no-useless-escape
     }, []).join(';\n') + '\n|];;',
     bodySnippet = '';
 
@@ -117,7 +115,6 @@ function parseFormData (body, trim, indent) {
   return bodySnippet;
 }
 
-/* istanbul ignore next */
 /**
  * Parses file body from the Request
  *
