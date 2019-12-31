@@ -38,6 +38,10 @@ function parseURLEncodedBody (body) {
  * @param {boolean} trim trim body option
  */
 function parseFormData (body, trim) {
+  if (_.isEmpty(body)) {
+    return '$body = $null\n';
+  }
+
   var bodySnippet = '$multipartContent = [System.Net.Http.MultipartFormDataContent]::new()\n';
   _.forEach(body, function (data) {
     if (!data.disabled) {
