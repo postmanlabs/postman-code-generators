@@ -1,5 +1,5 @@
 
-> Converts Postman-SDK Request into code snippet for .
+> Converts Postman-SDK Request into code snippet for [QCObjects](https://qcobjects.dev).
 
 #### Prerequisites
 To run Code-Gen, ensure that you have NodeJS >= v8. A copy of the NodeJS installable can be downloaded from https://nodejs.org/en/download/package-manager.
@@ -21,7 +21,7 @@ Convert function takes three parameters
 
 ##### Example:
 ```js
-var request = new sdk.Request('www.google.com'),  //using postman sdk to create request  
+var request = new sdk.Request('www.google.com'),  //using postman sdk to create request
     options = {
         indentCount: 3,
         indentType: 'Space',
