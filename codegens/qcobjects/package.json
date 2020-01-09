@@ -28,7 +28,7 @@
   "dependencies": {
     "qcobjects": "2.1.258",
     "qcobjects-sdk": "0.0.125",
-    "request": "^2.88.0"
+    "request": "2.88.0"
   },
   "devDependencies": {},
   "engines": {
