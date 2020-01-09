@@ -24,7 +24,7 @@ function redirectMode (redirect) {
  * @param {boolean} trim trim body option
  */
 function parseURLEncodedBody (body, trim) {
-  var bodySnippet = 'var urlencoded = new URLSearchParams();\n';
+  var bodySnippet = 'const urlencoded = new URLSearchParams();\n';
   _.forEach(body, function (data) {
     if (!data.disabled) {
       bodySnippet += `urlencoded.append("${sanitize(data.key, trim)}", "${sanitize(data.value, trim)}");\n`;
@@ -40,7 +40,7 @@ function parseURLEncodedBody (body, trim) {
  * @param {boolean} trim trim body option
  */
 function parseFormData (body, trim) {
-  var bodySnippet = 'var formdata = new FormData();\n';
+  var bodySnippet = 'const formdata = new FormData();\n';
   _.forEach(body, function (data) {
     if (!data.disabled) {
       if (data.type === 'file') {
@@ -64,7 +64,7 @@ function parseFormData (body, trim) {
  * @param {String} contentType Content type of the body being sent
  */
 function parseRawBody (body, trim, contentType) {
-  var bodySnippet = 'var raw = ';
+  var bodySnippet = 'const raw = ';
   if (contentType === 'application/json') {
     try {
       let jsonBody = JSON.parse(body);
@@ -97,7 +97,7 @@ function parseGraphQL (body, trim, indentString) {
   catch (e) {
     graphqlVariables = {};
   }
-  bodySnippet = 'var graphql = JSON.stringify({\n';
+  bodySnippet = 'const graphql = JSON.stringify({\n';
   bodySnippet += `${indentString}query: "${sanitize(query, trim)}",\n`;
   bodySnippet += `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n})`;
   return bodySnippet;
@@ -109,7 +109,7 @@ function parseGraphQL (body, trim, indentString) {
  * parses binamry file data
  */
 function parseFileData () {
-  var bodySnippet = 'var file = "<file contents here>";\n';
+  var bodySnippet = 'const file = "<file contents here>";\n';
   return bodySnippet;
 }
 
@@ -150,7 +150,7 @@ function parseBody (body, trim, indentString, contentType) {
 function parseHeaders (headers) {
   var headerSnippet = '';
   if (!_.isEmpty(headers)) {
-    headerSnippet = 'var myHeaders = new Headers();\n';
+    headerSnippet = 'const myHeaders = new Headers();\n';
     headers = _.reject(headers, 'disabled');
     _.forEach(headers, function (header) {
       headerSnippet += `myHeaders.append("${sanitize(header.key, true)}", "${sanitize(header.value)}");\n`;
@@ -290,7 +290,7 @@ function convert (request, options, callback) {
   body = request.body && request.body.toJSON();
   bodySnippet = parseBody(body, trim, indent, request.headers.get('Content-Type'));
 
-  optionsSnippet = `var requestOptions = {\n${indent}`;
+  optionsSnippet = `const requestOptions = {\n${indent}`;
   optionsSnippet += `method: '${request.method}',\n${indent}`;
   if (headerSnippet !== '') {
     optionsSnippet += `headers: myHeaders,\n${indent}`;
@@ -311,7 +311,7 @@ function convert (request, options, callback) {
   fetchSnippet += '.catch(error => console.log(\'error\', error));';
 
   if (options.requestTimeout > 0) {
-    timeoutSnippet = `var promise = Promise.race([\n${indent}`;
+    timeoutSnippet = `const promise = Promise.race([\n${indent}`;
     timeoutSnippet += `fetch('${request.url.toString()}', requestOptions)\n${indent}${indent}`;
     timeoutSnippet += `.then(response => response.text()),\n${indent}`;
     timeoutSnippet += `new Promise((resolve, reject) =>\n${indent}${indent}`;
