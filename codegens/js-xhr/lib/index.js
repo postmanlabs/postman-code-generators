@@ -17,7 +17,7 @@ function parseURLEncodedBody (body) {
       payload.push(`${escape(data.key)}=${escape(data.value)}`);
     }
   });
-  bodySnippet = `var data = "${payload.join('&')}";\n`;
+  bodySnippet = `const data = "${payload.join('&')}";\n`;
   return bodySnippet;
 }
 
@@ -29,7 +29,7 @@ function parseURLEncodedBody (body) {
  * @param {String} contentType Content type of the body being sent
  */
 function parseRawBody (body, trim, contentType) {
-  var bodySnippet = 'var data = ';
+  var bodySnippet = 'const data = ';
   if (contentType === 'application/json') {
     try {
       let jsonBody = JSON.parse(body);
@@ -62,7 +62,7 @@ function parseGraphQL (body, trim, indentString) {
   catch (e) {
     graphqlVariables = {};
   }
-  bodySnippet = 'var data = JSON.stringify({\n';
+  bodySnippet = 'const data = JSON.stringify({\n';
   bodySnippet += `${indentString}query: "${sanitize(query, trim)}",\n`;
   bodySnippet += `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n`;
   bodySnippet += '});\n';
@@ -76,7 +76,7 @@ function parseGraphQL (body, trim, indentString) {
  * @param {*} trim trim body option
  */
 function parseFormData (body, trim) {
-  var bodySnippet = 'var data = new FormData();\n';
+  var bodySnippet = 'const data = new FormData();\n';
   _.forEach(body, (data) => {
     if (!(data.disabled)) {
       /* istanbul ignore next */
@@ -104,7 +104,7 @@ function parseFile () {
   // var bodySnippet = 'var data = new FormData();\n';
   // bodySnippet += `data.append("${sanitize(body.key, trim)}", "${sanitize(body.src, trim)}", `;
   // bodySnippet += `"${sanitize(body.key, trim)}");\n`;
-  var bodySnippet = 'var data = "<file contents here>";\n';
+  var bodySnippet = 'const data = "<file contents here>";\n';
   return bodySnippet;
 }
 
@@ -130,10 +130,10 @@ function parseBody (body, trim, indentString, contentType) {
       case 'file':
         return parseFile(body.file, trim);
       default:
-        return 'var data = null;\n';
+        return 'const data = null;\n';
     }
   }
-  return 'var data = null;\n';
+  return 'const data = null;\n';
 }
 
 /**
@@ -261,7 +261,7 @@ function convert (request, options, callback) {
 
   codeSnippet += bodySnippet + '\n';
 
-  codeSnippet += 'var xhr = new XMLHttpRequest();\nxhr.withCredentials = true;\n\n';
+  codeSnippet += 'const xhr = new XMLHttpRequest();\nxhr.withCredentials = true;\n\n';
 
   codeSnippet += 'xhr.addEventListener("readystatechange", function() {\n';
   codeSnippet += `${indent}if(this.readyState === 4) {\n`;
