@@ -113,7 +113,7 @@ function parseFormData (body, mode, trim, indent) {
  * @returns {String} request body in the desired format
  */
 function parseFile () {
-  var bodySnippet = '\"<file contents here>\"';
+  var bodySnippet = '"<file contents here>"';
   return bodySnippet;
 }
 
@@ -336,8 +336,6 @@ self = module.exports = {
     (failedResponse)=>{
 
     });`;
-    console.log('SNIPPET ' + requestBody.mode);
-    console.log(codeSnippet);
     return callback(null, codeSnippet);
   }
 };

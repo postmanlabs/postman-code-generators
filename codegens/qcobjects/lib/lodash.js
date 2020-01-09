@@ -343,7 +343,8 @@ module.exports = {
       return string.replace(/\s*$/, '');
     }
     chars += '$';
-    return string.replace(new RegExp(chars, 'g'), '');
+    let regxp = `/${chars}/g`;
+    return string.replace(regxp, '');
   },
 
   /**
