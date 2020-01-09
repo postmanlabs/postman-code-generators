@@ -14,8 +14,8 @@ describe('qcobjects Converter', function () {
         // Compile script required to compile the code snippet
         compileScript: null,
         // Array of name of collections for which newman tests has to be skipped.
-        skipCollections: ['sameNameHeadersCollection', 'formdataFileCollection',
-          'redirectCollection', 'formdataCollection'],
+        skipCollections: ['basicCollection', 'sameNameHeadersCollection',
+          'redirectCollection', 'formdataCollection', 'formdataFileCollection'],
 
         headerSnippet: '/* eslint-disable */\n'
       };

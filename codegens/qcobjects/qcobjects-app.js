@@ -4,9 +4,9 @@ require('qcobjects');logger.infoEnabled=false;
             name:'myservice',
             external:true,
             cached:false,
-            method:"DELETE",
-            headers:{"Content-Type":"text/plain"},
-            url:"https://postman-echo.com/delete",
+            method:"POST",
+            
+            url:"https://postman-echo.com/post",
             withCredentials:false,
             _new_:()=>{
                 // service instantiated
@@ -16,7 +16,22 @@ require('qcobjects');logger.infoEnabled=false;
             }
         });
     var service = serviceLoader(New(MyTestService,{
-      
+          data:"
+    [
+        "key": "single file",
+        "src": "<file path>",
+        "type": "file"
+    ],
+    [
+        "key": "multiple files",
+        "src": "<file path 1>",
+        "type": "file"
+    ],
+    [
+        "key": "multiple files",
+        "src": "<file path 2>",
+        "type": "file"
+    ]"
     })).then(
       (successfulResponse)=>{
             // This will show the service response as a plain text

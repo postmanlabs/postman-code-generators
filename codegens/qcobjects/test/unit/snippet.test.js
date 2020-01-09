@@ -6,7 +6,7 @@ var expect = require('chai').expect,
   convert = require('../../lib/index').convert,
   mainCollection = require('./fixtures/testcollection/collection.json');
 
-describe('nodejs-request convert function', function () {
+describe('qcobjects convert function', function () {
   describe('Convert function', function () {
     var request,
       reqObject,
