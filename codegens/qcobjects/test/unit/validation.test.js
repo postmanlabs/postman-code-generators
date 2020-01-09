@@ -11,7 +11,7 @@ describe('package.json', function () {
     expect(package.com_postman_plugin.type).to.equal('code_generator');
     expect(package.com_postman_plugin.lang).to.be.a('string');
     expect(package.com_postman_plugin.variant).to.be.a('string');
-    expect(package.com_postman_plugin.syntax_mode).to.be.equal('javascript');
+    expect(package.com_postman_plugin.syntax_mode).to.be.a('string');
   });
   it('should have main property with relative path to object with convert property', function () {
     var languageModule;

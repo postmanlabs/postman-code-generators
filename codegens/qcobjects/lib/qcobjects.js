@@ -159,7 +159,7 @@ function parseHeaders (headers, mode) {
     headerSnippet = 'headers:{';
     headers = _.reject(headers, 'disabled');
     _.forEach(headers, function (header) {
-      headerSnippet += `"${sanitize(header.key, 'header', true)}":`;
+      headerSnippet += `"${sanitize(header.key, 'header', true).trim()}":`;
       headerSnippet += `"${sanitize(header.value, 'header')}",\n`;
     });
 
@@ -173,11 +173,11 @@ function parseHeaders (headers, mode) {
 
 self = module.exports = {
   /**
-   * Used in order to get additional options for generation of Swift code snippet
+   * Used in order to get additional options for generation of qcobjects code snippet
    *
    * @module getOptions
    *
-   * @returns {Array} Additional options specific to generation of Swift-URLSession code snippet
+   * @returns {Array} Additional options specific to generation of qcobjects-serviceLoader code snippet
    */
   getOptions: function () {
     return [{
@@ -221,12 +221,12 @@ self = module.exports = {
   },
 
   /**
-     * Converts Postman sdk request object to Swift-URLSession code snippet
+     * Converts Postman sdk request object to qcobjects-serviceLoader code snippet
      *
      * @module convert
      *
      * @param  {Object} request - Postman SDK-request object
-     * @param  {Object} options - Options to tweak code snippet generated in Swift
+     * @param  {Object} options - Options to tweak code snippet generated in qcobjects
      * @param  {String} options.indentType - type of indentation eg: Space / Tab (default: Space)
      * @param  {Number} options.indentCount - frequency of indent (default: 4 for indentType: Space,
                                                      default: 1 for indentType: Tab)
@@ -244,7 +244,7 @@ self = module.exports = {
       options = {};
     }
     else if (!_.isFunction(callback)) {
-      throw new Error('Swift-Converter: callback is not valid function');
+      throw new Error('qcobjects-Converter: callback is not valid function');
     }
     options = sanitizeOptions(options, self.getOptions());
     var codeSnippet, indent, trim, finalUrl, // followRedirect,timeout
