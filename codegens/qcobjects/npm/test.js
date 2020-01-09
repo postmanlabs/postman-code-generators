@@ -6,10 +6,9 @@ var chalk = require('chalk'),
   name = require('../package.json').name;
 
 require('async').series([
-//  require('./test-lint'),
-  require('./test-newman')
-  // Add a separate folder for every new suite of tests
-  // require('./test-unit')
+  require('./test-lint'),
+  require('./test-newman'),
+  require('./test-unit')
   // require('./test-browser')
   // require('./test-integration')
 ], function (code) {
