@@ -23,5 +23,11 @@ require('qcobjects');logger.infoEnabled=false;
             console.log(successfulResponse.service.template);
     },
     (failedResponse)=>{
-
+              // The service call failed
+              console.log('The service call failed');
+              console.log(failedResponse);
+    }).catch((e)=>{
+              // Something went wrong when calling the service
+              console.log('Something went wrong when calling the service');
+              console.log(failedResponse);
     });
