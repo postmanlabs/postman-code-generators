@@ -124,7 +124,7 @@ describe('nodejs-native convert function', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('var postData = JSON.stringify({"json":"Test-Test"})');
+      expect(snippet).to.include('const postData = JSON.stringify({"json":"Test-Test"})');
     });
   });
   it('should generate snippets for no files in form data', function () {
