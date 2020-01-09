@@ -29,7 +29,7 @@ describe('nodejs-request convert function', function () {
         expect(snippet).to.be.a('string');
         snippetArray = snippet.split('\n');
         for (var i = 0; i < snippetArray.length; i++) {
-          if (snippetArray[i] === 'var options = {') { line_no = i + 1; }
+          if (snippetArray[i] === 'const options = {') { line_no = i + 1; }
         }
         expect(snippetArray[line_no].charAt(0)).to.equal('\t');
       });
@@ -218,7 +218,7 @@ describe('nodejs-request convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.not.include('var fs = require(\'fs\')');
+        expect(snippet).to.not.include('const fs = require(\'fs\')');
       });
     });
 
@@ -242,7 +242,7 @@ describe('nodejs-request convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('var fs = require(\'fs\')');
+        expect(snippet).to.include('const fs = require(\'fs\')');
       });
     });
 
