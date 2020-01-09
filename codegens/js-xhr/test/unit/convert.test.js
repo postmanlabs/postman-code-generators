@@ -64,7 +64,7 @@ describe('js-xhr convert function', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('var data = JSON.stringify({"json":"Test-Test"})');
+      expect(snippet).to.include('const data = JSON.stringify({"json":"Test-Test"})');
     });
   });
   it('should generate snippets for no files in form data', function () {
@@ -205,7 +205,7 @@ describe('js-xhr convert function', function () {
       });
 
       it('should contain formData object', function () {
-        expect(snippet).to.deep.include('var data = new FormData()');
+        expect(snippet).to.deep.include('const data = new FormData()');
         expect(snippet).to.deep.include('data.append("sdf", "helo")');
       });
 
