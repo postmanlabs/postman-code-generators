@@ -1,5 +1,105 @@
 {
   "name": "@postman/codegen-qcobjects",
   "version": "0.0.1",
-  "lockfileVersion": 1
+  "lockfileVersion": 1,
+  "requires": true,
+  "dependencies": {
+    "commander": {
+      "version": "2.20.3",
+      "resolved": "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz",
+      "integrity": "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ=="
+    },
+    "handlebars": {
+      "version": "4.5.3",
+      "resolved": "https://registry.npmjs.org/handlebars/-/handlebars-4.5.3.tgz",
+      "integrity": "sha512-3yPecJoJHK/4c6aZhSvxOyG4vJKDshV36VHp0iVCDVh7o9w2vwi3NSnL2MMPj3YdduqaBcu7cGbggJQM0br9xA==",
+      "requires": {
+        "neo-async": "^2.6.0",
+        "optimist": "^0.6.1",
+        "source-map": "^0.6.1",
+        "uglify-js": "^3.1.4"
+      }
+    },
+    "mime": {
+      "version": "2.4.4",
+      "resolved": "https://registry.npmjs.org/mime/-/mime-2.4.4.tgz",
+      "integrity": "sha512-LRxmNwziLPT828z+4YkNzloCFC2YM4wrB99k+AV5ZbEyfGNWfG8SO1FUXLmLDBSo89NrJZ4DIWeLjy1CHGhMGA=="
+    },
+    "minimist": {
+      "version": "0.0.10",
+      "resolved": "https://registry.npmjs.org/minimist/-/minimist-0.0.10.tgz",
+      "integrity": "sha1-3j+YVD2/lggr5IrRoMfNqDYwHc8="
+    },
+    "neo-async": {
+      "version": "2.6.1",
+      "resolved": "https://registry.npmjs.org/neo-async/-/neo-async-2.6.1.tgz",
+      "integrity": "sha512-iyam8fBuCUpWeKPGpaNMetEocMt364qkCsfL9JuhjXX6dRnguRVOfk2GZaDpPjcOKiiXCPINZC1GczQ7iTq3Zw=="
+    },
+    "optimist": {
+      "version": "0.6.1",
+      "resolved": "https://registry.npmjs.org/optimist/-/optimist-0.6.1.tgz",
+      "integrity": "sha1-2j6nRob6IaGaERwybpDrFaAZZoY=",
+      "requires": {
+        "minimist": "~0.0.1",
+        "wordwrap": "~0.0.2"
+      }
+    },
+    "qcobjects": {
+      "version": "2.1.258",
+      "resolved": "https://registry.npmjs.org/qcobjects/-/qcobjects-2.1.258.tgz",
+      "integrity": "sha512-f1PzhUiQRtjJS5Q2qUPVR2rLoSem2DQPN9qnlFhTMAtQWkCwaVeK9Hhv/Jl9jj+UBGS9ggYOryA56yWRyKvNkw==",
+      "requires": {
+        "qcobjects-cli": "^0.1.31",
+        "qcobjects-sdk": "^0.0.125"
+      }
+    },
+    "qcobjects-cli": {
+      "version": "0.1.31",
+      "resolved": "https://registry.npmjs.org/qcobjects-cli/-/qcobjects-cli-0.1.31.tgz",
+      "integrity": "sha512-HqKbPnbxZerJu7ZGge+P0UU/8OqXSFwrjKiIyUqEJg9eSSU7UFUJhCZxXxFjSKr18pFqHgrs5qwl+O/cW1BsFA==",
+      "requires": {
+        "commander": "^2.20.3",
+        "handlebars": "^4.5.3",
+        "mime": "^2.4.4",
+        "qcobjects": "^2.1.258",
+        "qcobjects-sdk": "^0.0.125"
+      },
+      "dependencies": {
+        "qcobjects": {
+          "version": "2.1.258",
+          "resolved": "https://registry.npmjs.org/qcobjects/-/qcobjects-2.1.258.tgz",
+          "integrity": "sha512-f1PzhUiQRtjJS5Q2qUPVR2rLoSem2DQPN9qnlFhTMAtQWkCwaVeK9Hhv/Jl9jj+UBGS9ggYOryA56yWRyKvNkw==",
+          "requires": {
+            "qcobjects-cli": "^0.1.31",
+            "qcobjects-sdk": "^0.0.125"
+          }
+        }
+      }
+    },
+    "qcobjects-sdk": {
+      "version": "0.0.125",
+      "resolved": "https://registry.npmjs.org/qcobjects-sdk/-/qcobjects-sdk-0.0.125.tgz",
+      "integrity": "sha512-0YPqpuPK4wxum0knl4qtieR9JWk7QxMahQ9AGlzGPKcn7ikRoZQSScuY1ZqviiKi/NvSOTa45T0G0c4iL4mgaQ=="
+    },
+    "source-map": {
+      "version": "0.6.1",
+      "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz",
+      "integrity": "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g=="
+    },
+    "uglify-js": {
+      "version": "3.7.4",
+      "resolved": "https://registry.npmjs.org/uglify-js/-/uglify-js-3.7.4.tgz",
+      "integrity": "sha512-tinYWE8X1QfCHxS1lBS8yiDekyhSXOO6R66yNOCdUJeojxxw+PX2BHAz/BWyW7PQ7pkiWVxJfIEbiDxyLWvUGg==",
+      "optional": true,
+      "requires": {
+        "commander": "~2.20.3",
+        "source-map": "~0.6.1"
+      }
+    },
+    "wordwrap": {
+      "version": "0.0.3",
+      "resolved": "https://registry.npmjs.org/wordwrap/-/wordwrap-0.0.3.tgz",
+      "integrity": "sha1-o9XabNXAvAAI03I0u68b7WMFkQc="
+    }
+  }
 }

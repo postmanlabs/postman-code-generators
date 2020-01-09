@@ -25,7 +25,10 @@
   "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/qcobjects",
-  "dependencies": {},
+  "dependencies": {
+    "qcobjects": "2.1.258",
+    "qcobjects-sdk": "0.0.125"
+  },
   "devDependencies": {},
   "engines": {
     "node": ">=8"
