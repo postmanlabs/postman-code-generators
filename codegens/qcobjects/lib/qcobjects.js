@@ -334,7 +334,13 @@ self = module.exports = {
     ${indent.repeat(2)}console.log(successfulResponse.service.template);
     },
     (failedResponse)=>{
-
+      ${indent.repeat(2)}// The service call failed
+      ${indent.repeat(2)}console.log('The service call failed');
+      ${indent.repeat(2)}console.log(failedResponse);
+    }).catch((e)=>{
+      ${indent.repeat(2)}// Something went wrong when calling the service
+      ${indent.repeat(2)}console.log('Something went wrong when calling the service');
+      ${indent.repeat(2)}console.log(failedResponse);
     });`;
     return callback(null, codeSnippet);
   }
