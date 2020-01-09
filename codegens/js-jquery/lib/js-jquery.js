@@ -47,7 +47,7 @@ function createForm (request, trimRequestBody) {
     enabledFormList,
     formMap;
 
-  form += 'var form = new FormData();\n';
+  form += 'const form = new FormData();\n';
   enabledFormList = _.reject(request.body[request.body.mode], 'disabled');
   if (!_.isEmpty(enabledFormList)) {
     formMap = _.map(enabledFormList, function (value) {
@@ -170,7 +170,7 @@ self = module.exports = {
       });
       jQueryCode = createForm(request.toJSON(), options.trimRequestBody);
     }
-    jQueryCode += 'var settings = {\n';
+    jQueryCode += 'const settings = {\n';
     jQueryCode += `${indent}"url": "${sanitize(request.url.toString(), 'url')}",\n`;
     jQueryCode += `${indent}"method": "${request.method}",\n`;
     jQueryCode += `${indent}"timeout": ${options.requestTimeout},\n`;
