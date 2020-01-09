@@ -4,10 +4,9 @@ require('qcobjects');logger.infoEnabled=false;
             name:'myservice',
             external:true,
             cached:false,
-            method:"GET",
-            headers:{"key":"value1",
-"key":"value2"},
-            url:"https://postman-echo.com/get",
+            method:"DELETE",
+            headers:{"Content-Type":"text/plain"},
+            url:"https://postman-echo.com/delete",
             withCredentials:false,
             _new_:()=>{
                 // service instantiated
@@ -25,4 +24,4 @@ require('qcobjects');logger.infoEnabled=false;
     },
     (failedResponse)=>{
 
-    }); 
+    });

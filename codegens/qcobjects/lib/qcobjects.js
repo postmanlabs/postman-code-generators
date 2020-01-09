@@ -18,7 +18,7 @@ function parseRawBody (body, mode, trim) {
     return '';
   }
   var bodySnippet;
-  bodySnippet = `${sanitize(body, mode, trim)}\n`;
+  bodySnippet = `data:${sanitize(body, mode, trim)}`;
   return bodySnippet;
 }
 
@@ -42,10 +42,10 @@ function parseGraphQL (body, mode, trim) {
   catch (e) {
     graphqlVariables = {};
   }
-  bodySnippet = `${sanitize(JSON.stringify({
+  bodySnippet = `data:${sanitize(JSON.stringify({
     query: query,
     variables: graphqlVariables
-  }), mode, trim)}\n`;
+  }), mode, trim)}`;
   return bodySnippet;
 }
 
@@ -69,7 +69,7 @@ function parseURLEncodedBody (body, mode, trim) {
     return accumulator;
   }, []).join('&');
 
-  bodySnippet = `${payload}\n`;
+  bodySnippet = `data:"${payload}"`;
   return bodySnippet;
 }
 
@@ -102,7 +102,7 @@ function parseFormData (body, mode, trim, indent) {
     }
   });
   parameters = String('\n' + _.join(parameters, ',\n'));
-  bodySnippet = `"${parameters}"`;
+  bodySnippet = `data:"${parameters}"`;
   return bodySnippet;
 }
 
@@ -113,7 +113,7 @@ function parseFormData (body, mode, trim, indent) {
  * @returns {String} request body in the desired format
  */
 function parseFile () {
-  var bodySnippet = '<file contents here>\n';
+  var bodySnippet = '\"<file contents here>\"';
   return bodySnippet;
 }
 
@@ -154,8 +154,9 @@ function parseBody (body, trim, indent) {
  * @returns {String} request headers in the desired format
  */
 function parseHeaders (headers, mode) {
-  var headerSnippet = 'headers:{';
+  var headerSnippet = '';
   if (!_.isEmpty(headers)) {
+    headerSnippet = 'headers:{';
     headers = _.reject(headers, 'disabled');
     _.forEach(headers, function (header) {
       headerSnippet += `"${sanitize(header.key, 'header', true)}":`;
@@ -305,7 +306,7 @@ self = module.exports = {
 
     headerSnippet = parseHeaders(request.toJSON().header, (request.body ? request.body.mode : 'raw'));
     if (bodySnippet !== '') {
-      dataSnippet = `${indent}data:${bodySnippet}`;
+      dataSnippet = `${indent}${bodySnippet}`;
     }
 
     codeSnippet = '';
@@ -334,8 +335,8 @@ self = module.exports = {
     },
     (failedResponse)=>{
 
-    }); `;
-    console.log('SNIPPET');
+    });`;
+    console.log('SNIPPET ' + requestBody.mode);
     console.log(codeSnippet);
     return callback(null, codeSnippet);
   }
