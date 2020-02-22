@@ -10,13 +10,15 @@ describe('Axios Converter', function() {
       },
       testConfig = {
         // filename along with the appropriate version of the file. This file will be used to run the snippet.
-        fileName: '',
+        fileName: 'run.js',
         // Run script required to run the generated code snippet
-        runScript: '',
+        runScript: 'node run.js',
+
         // Compile script required to compile the code snippet
-        compileScript: '',
+        compileScript: null,
         // Array of name of collections for which newman tests has to be skipped.
         skipCollections: [],
+        headerSnippet: '/* eslint-disable */\n',
       }
     runNewmanTest(convert, options, testConfig)
   })

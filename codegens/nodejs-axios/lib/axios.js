@@ -36,10 +36,13 @@ function makeSnippet(request, indentString, options) {
    *      timeout: 1000
    *  }
    */
-  optionsArray.push(indentString + `'method': '${request.method}'`)
+  optionsArray.push(
+    indentString + `'method': '${request.method.toLowerCase()}'`
+  )
   optionsArray.push(
     indentString + `'url': '${sanitize(request.url.toString())}'`
   )
+  optionsArray.push(indentString + `'responseType': 'text'`)
   if (request.body && !request.headers.has('Content-Type')) {
     if (request.body.mode === 'file') {
       request.addHeader({
@@ -76,7 +79,7 @@ function makeSnippet(request, indentString, options) {
   snippet += '};\n'
 
   snippet += 'axios(options).then(function (response) { \n'
-  snippet += indentString + 'console.log(response.body);\n'
+  snippet += indentString + 'console.log(response.data);\n'
   snippet += '}).catch(function (error) {\n'
   snippet += indentString + 'throw new Error(error);\n'
   snippet += '});\n'

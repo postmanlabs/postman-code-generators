@@ -67,3 +67,5 @@ typings/
 .env
 
 out/
+
+run.js
