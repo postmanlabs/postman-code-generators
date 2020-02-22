@@ -1,0 +1,36 @@
+{
+  "name": "@postman/codegen-nodejs-requestES6",
+  "version": "0.1.0",
+  "description": "Converts Postman-SDK Request into code snippet for NodeJS(Request)ES6",
+  "com_postman_plugin": {
+    "type": "code_generator",
+    "lang": "nodejs",
+    "variant": "RequestES6",
+    "syntax_mode": "javascript"
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node npm/test.js",
+    "test-lint": "node npm/test-lint.js",
+    "test-newman": "node npm/test-newman.js",
+    "test-unit": "node npm/test-unit.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Postman Labs <help@getpostman.com>",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/nodejs-requestES6",
+  "dependencies": {},
+  "devDependencies": {
+    "request": "2.83.0"
+  },
+  "engines": {
+    "node": ">=8"
+  }
+}
