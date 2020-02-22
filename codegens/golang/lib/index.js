@@ -280,7 +280,9 @@ self = module.exports = {
       codeSnippet += `${indent}req.Header.Set("Content-Type", writer.FormDataContentType())\n`;
     }
     responseSnippet = `${indent}res, err := client.Do(req)\n`;
+    responseSnippet += `${indent}if err != nil {\n${indent.repeat(2)}fmt.Println(err)\n${indent}}\n`;
     responseSnippet += `${indent}defer res.Body.Close()\n${indent}body, err := ioutil.ReadAll(res.Body)\n\n`;
+    responseSnippet += `${indent}if err != nil {\n${indent.repeat(2)}fmt.Println(err)\n${indent}}\n`;
     responseSnippet += `${indent}fmt.Println(string(body))\n}`;
 
     codeSnippet += responseSnippet;
