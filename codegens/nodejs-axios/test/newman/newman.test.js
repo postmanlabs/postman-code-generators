@@ -1,12 +1,12 @@
-var runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
-  convert = require('../../index').convert;
+var runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil')
+    .runNewmanTest,
+  convert = require('../../index').convert
 
-
-describe('<<CODEGEN_NAME>> Converter', function () {
-  describe('convert for different request types', function () {
+describe('Axios Converter', function() {
+  describe('convert for different request types', function() {
     var options = {
         indentType: 'Space',
-        indentCount: 4
+        indentCount: 4,
       },
       testConfig = {
         // filename along with the appropriate version of the file. This file will be used to run the snippet.
@@ -16,8 +16,8 @@ describe('<<CODEGEN_NAME>> Converter', function () {
         // Compile script required to compile the code snippet
         compileScript: '',
         // Array of name of collections for which newman tests has to be skipped.
-        skipCollections: []
-      };
-    runNewmanTest(convert, options, testConfig);
-  });
-});
+        skipCollections: [],
+      }
+    runNewmanTest(convert, options, testConfig)
+  })
+})
