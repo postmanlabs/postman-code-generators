@@ -12,6 +12,13 @@ else
     exit 1;
 fi
 popd &>/dev/null
+
+echo "Creating test files and adding paths to collection for testing form data file uploads"
+echo "Sample file 1" >> dummyFile1.txt;
+echo "Sample file 2" >> dummyFile2.txt;
+echo "Sample file 3" >> dummyFile3.txt;
+node ./npm/addPathToFormdataFile.js
+
 echo "Running newman for common collection and storing results in newmanResponses.json"
     node ./test/codegen/newman/runNewman.js
 
@@ -83,3 +90,6 @@ else
     done
 
 fi
+
+echo "Deleting test files used for testing form data file uploads"
+rm dummyFile1.txt dummyFile2.txt dummyFile3.txt;
