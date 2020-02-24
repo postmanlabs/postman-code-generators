@@ -60,6 +60,12 @@ const expectedOptions = {
       type: 'boolean',
       default: false,
       description: 'Display the requested data without showing the cURL progress meter or error messages'
+    },
+    ES6_enabled:{
+      name: 'Generate the code snippet with ES6 features',
+      type: 'boolean',
+      default: false,
+      description: 'Allows the user to generate code snippet with latest EcmaScript 6 (ES6) features'
     }
   },
   // Standard array of ids that should be used for options ids. Any new option should be updated here.
@@ -75,7 +81,8 @@ const expectedOptions = {
     'followRedirect',
     'lineContinuationCharacter',
     'protocol',
-    'useMimeType'
+    'useMimeType',
+    'ES6_enabled'
   ],
   CODEGEN_ABS_PATH = `./codegens/${codegen}`;
 describe('Code-gen repository ' + codegen, function () {
