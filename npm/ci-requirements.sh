@@ -14,8 +14,7 @@ pushd ./codegens/java-okhttp &>/dev/null;
   sudo rm -rf /var/lib/apt/lists/*
   sudo apt-get update
   sudo apt-get install -y openjdk-8-jdk
-  sudo wget http://central.maven.org/maven2/com/squareup/okhttp3/okhttp/3.9.1/okhttp-3.9.1.jar
-  sudo wget http://central.maven.org/maven2/com/squareup/okio/okio/1.14.0/okio-1.14.0.jar
+  unzip test/unit/fixtures/dependencies.zip
 popd &>/dev/null;
 
 echo "Installing dependencies required for tests in codegens/java-unirest"
