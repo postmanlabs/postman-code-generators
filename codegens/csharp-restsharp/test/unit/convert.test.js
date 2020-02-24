@@ -257,6 +257,33 @@ describe('csharp restsharp function', function () {
       sanitizedOptions = sanitizeOptions(testOptions, getOptions());
       expect(sanitizedOptions).to.deep.equal(testOptions);
     });
+
+    it('should use client.UserAgent instead of AddHeader function', function () {
+      var request = new sdk.Request({
+        'method': 'GET',
+        'header': [
+          {
+            'key': 'User-Agent',
+            'value': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15'
+          }
+        ],
+        'url': {
+          'raw': 'https://google.com',
+          'protocol': 'https',
+          'host': [
+            'google',
+            'com'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('client.UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15";');
+      });
+    });
   });
 
 });
