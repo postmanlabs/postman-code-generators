@@ -137,6 +137,28 @@ function parseBody (body, trim, indent) {
 }
 
 /**
+ * Generate boilerplate to manage errors
+ *
+ * @param {boolean} fatal flag to log error and finish program.
+ * @param {string} indent string.
+ * @param {number} indentLevel set the base indent level to this snippet.
+ */
+function addManagementError(fatal, indent, indentLevel) {
+  var indentBase = indent.repeat(indentLevel);
+  var response = '';
+
+  response = `${indentBase}if err != nil {\n${indent.repeat(indentLevel + 1)}`;
+  if (fatal === true) {
+    response += `log.Fatal(err)`;
+  } else {
+    response += `fmt.Println(err)`;
+  }
+  response += `\n${indentBase}}\n`;
+
+  return response;
+}
+
+/**
  * Parses headers from the request.
  *
  * @param {Object} headers headers from the request.
@@ -160,8 +182,7 @@ self = module.exports = {
       throw new Error('GoLang-Converter: callback is not valid function');
     }
     options = sanitizeOptions(options, self.getOptions());
-
-    var codeSnippet, indent, trim, timeout, followRedirect,
+    var codeSnippet, indent, trim, timeout, followRedirect, fatal,
       bodySnippet = '',
       responseSnippet = '',
       headerSnippet = '';
@@ -171,6 +192,7 @@ self = module.exports = {
     timeout = options.requestTimeout;
     followRedirect = options.followRedirect;
     trim = options.trimRequestBody;
+    fatal = options.fatal;
 
     // The following code handles multiple files in the same formdata param.
     // It removes the form data params where the src property is an array of filepath strings
@@ -228,6 +250,10 @@ self = module.exports = {
       // Setting isFile as false for further calls to this function
       isFile = false;
     }
+    if (fatal) {
+      codeSnippet += `${indent}"log"\n`;
+    }
+
     codeSnippet += `${indent}"net/http"\n${indent}"io/ioutil"\n)\n\n`;
 
     codeSnippet += `func main() {\n\n${indent}url := "${encodeURI(request.url.toString())}"\n`;
@@ -255,9 +281,9 @@ self = module.exports = {
       codeSnippet += `${indent}req, err := http.NewRequest(method, url, payload)\n\n`;
     }
     else {
-      codeSnippet += `${indent}req, err := http.NewRequest(method, url, nil)\n\n`;
+      codeSnippet += `${indent}req, err := http.NewRequest(method, url, nil)\n`;
     }
-    codeSnippet += `${indent}if err != nil {\n${indent.repeat(2)}fmt.Println(err)\n${indent}}\n`;
+    codeSnippet += `${addManagementError(fatal, indent, 1)}\n`;
     if (request.body && !request.headers.has('Content-Type')) {
       if (request.body.mode === 'file') {
         request.addHeader({
@@ -280,7 +306,9 @@ self = module.exports = {
       codeSnippet += `${indent}req.Header.Set("Content-Type", writer.FormDataContentType())\n`;
     }
     responseSnippet = `${indent}res, err := client.Do(req)\n`;
-    responseSnippet += `${indent}defer res.Body.Close()\n${indent}body, err := ioutil.ReadAll(res.Body)\n\n`;
+    responseSnippet += `${addManagementError(fatal, indent, 1)}\n`;
+    responseSnippet += `${indent}defer res.Body.Close()\n${indent}body, err := ioutil.ReadAll(res.Body)\n`;
+    responseSnippet += `${addManagementError(fatal, indent, 1)}\n`;
     responseSnippet += `${indent}fmt.Println(string(body))\n}`;
 
     codeSnippet += responseSnippet;
@@ -323,6 +351,14 @@ self = module.exports = {
       type: 'boolean',
       default: false,
       description: 'Remove white space and additional lines that may affect the server\'s response'
-    }];
+    },
+    {
+      name: 'Abort on error',
+      id: 'fatal',
+      type: 'boolean',
+      default: false,
+      description: 'Terminate the program if one error is raised'
+    }
+    ];
   }
 };
