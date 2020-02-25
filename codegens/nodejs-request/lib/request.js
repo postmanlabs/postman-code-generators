@@ -70,14 +70,17 @@ function makeSnippet (request, indentString, options) {
   if (options.followRedirect === false) {
     optionsArray.push(indentString + 'followRedirect: false');
   }
+  if (options.ES6_enabled === true) {
+    optionsArray.push(indentString + 'ES6_enabled: true');
+  }
   snippet += optionsArray.join(',\n') + '\n';
   ES6_snippet += optionsArray.join(',\n') + '\n';
 
   snippet += '};\n';
   ES6_snippet += '};\n';
 
-  snippet += 'request(options, function (error, response) { \n';
-  ES6_snippet += 'request(options, (error, response) => { \n';
+  snippet += 'request(options, function (error, response) {\n';
+  ES6_snippet += 'request(options, (error, response) => {\n';
 
   snippet += indentString + 'if (error) throw new Error(error);\n';
   ES6_snippet += indentString + 'if (error) throw new Error(error);\n';

@@ -51,6 +51,57 @@ describe('nodejs-request convert function', function () {
       });
     });
 
+    it('should return snippet with ES6_enabled property when ES6_enabled is set to true', function () {
+      request = new sdk.Request(mainCollection.item[0].request);
+      options = {
+        ES6_enabled: true
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+          return;
+        }
+
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('ES6_enabled: true');
+      });
+    });
+
+    it('should not return snippet with ES6_enabled property when ES6_enabled is set to non boolean value', function () {
+      request = new sdk.Request(mainCollection.item[0].request);
+      options = {
+        ES6_enabled: 'lorem_ipsum'
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+          return;
+        }
+
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.not.include('ES6_enabled: true');
+      });
+    });
+
+    it('should return snippet with ES6 features when ES6_enabled is set to true', function () {
+      request = new sdk.Request(mainCollection.item[0].request);
+      options = {
+        ES6_enabled: true
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+          return;
+        }
+
+        expect(snippet).to.be.a('string');
+        snippetArray = snippet.split('\n');
+        expect(snippetArray[0]).to.equal('const request = require(\'request\');');
+        expect(snippetArray).to.include('const options = {');
+        expect(snippetArray).to.include('request(options, (error, response) => {');
+      });
+    });
+
     it('should return snippet with followRedirect property set to ' +
         'false for no follow redirect', function () {
       request = new sdk.Request(mainCollection.item[0].request);
