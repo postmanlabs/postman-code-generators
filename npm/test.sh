@@ -12,6 +12,25 @@ else
     exit 1;
 fi
 popd &>/dev/null
+
+# Create sample files for uploading to formdataFileCollection fixture
+echo "Creating sample data files"
+if [ ! -e test1.txt ];
+then 
+    echo "Sample file 1" >> test1.txt;
+fi
+if [ ! -e test2.txt ];
+then 
+    echo "Sample file 2" >> test2.txt;
+fi
+if [ ! -e test3.txt ];
+then 
+    echo "Sample file 3" >> test3.txt;
+fi
+
+# Set the file path to formdataFileCollection
+node ./npm/addPathToFormdataFile.js
+
 echo "Running newman for common collection and storing results in newmanResponses.json"
     node ./test/codegen/newman/runNewman.js
 
@@ -83,3 +102,7 @@ else
     done
 
 fi
+
+#Delete the sample files after testing
+echo "Deleting test files used for testing form data file uploads"
+rm test1.txt test2.txt text3.txt;  
