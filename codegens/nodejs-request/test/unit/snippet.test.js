@@ -51,6 +51,25 @@ describe('nodejs-request convert function', function () {
       });
     });
 
+    it('should return snippet with ES6 features when ES6_enabled is set to true', function () {
+      request = new sdk.Request(mainCollection.item[0].request);
+      options = {
+        ES6_enabled: true
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+          return;
+        }
+
+        expect(snippet).to.be.a('string');
+        snippetArray = snippet.split('\n');
+        expect(snippetArray[0]).to.equal('let request = require(\'request\');');
+        expect(snippetArray).to.include('let options = {');
+        expect(snippetArray).to.include('request(options, (error, response) => {');
+      });
+    });
+
     it('should return snippet with followRedirect property set to ' +
         'false for no follow redirect', function () {
       request = new sdk.Request(mainCollection.item[0].request);
