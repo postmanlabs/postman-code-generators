@@ -101,4 +101,5 @@ else
 fi
 
 echo "Deleting test files used for testing form data file uploads"
-rm dummyFile1.txt dummyFile2.txt dummyFile3.txt;
+# Also handles the case when files does not exist
+rm -f -- dummyFile1.txt dummyFile2.txt dummyFile3.txt;
