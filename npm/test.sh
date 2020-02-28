@@ -14,9 +14,18 @@ fi
 popd &>/dev/null
 
 echo "Creating test files and adding paths to collection for testing form data file uploads"
-echo "Sample file 1" >> dummyFile1.txt;
-echo "Sample file 2" >> dummyFile2.txt;
-echo "Sample file 3" >> dummyFile3.txt;
+if [ ! -e dummyFile1.txt ];
+then 
+    echo "Sample file 1" >> dummyFile1.txt;
+fi
+if [ ! -e dummyFile2.txt ];
+then 
+    echo "Sample file 2" >> dummyFile2.txt;
+fi
+if [ ! -e dummyFile3.txt ];
+then 
+    echo "Sample file 3" >> dummyFile3.txt;
+fi
 node ./npm/addPathToFormdataFile.js
 
 echo "Running newman for common collection and storing results in newmanResponses.json"
