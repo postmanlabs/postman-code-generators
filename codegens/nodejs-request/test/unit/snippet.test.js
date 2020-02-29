@@ -34,7 +34,7 @@ describe('nodejs-request convert function', function () {
         expect(snippetArray[line_no].charAt(0)).to.equal('\t');
       });
     });
-
+    
     it('should return snippet with timeout property when timeout is set to non zero', function () {
       request = new sdk.Request(mainCollection.item[0].request);
       options = {

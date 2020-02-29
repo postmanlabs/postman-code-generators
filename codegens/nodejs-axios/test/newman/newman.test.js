@@ -1,23 +1,11 @@
-var runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
-  convert = require('../../index').convert;
+describe('Convert for different types of request', function () {
+  var options = {indentCount: 2, indentType: 'Space'},
+    testConfig = {
+      compileScript: null,
+      runScript: 'node run.js',
+      fileName: 'run.js',
+      headerSnippet: '/* eslint-disable */\n'
+    };
 
-
-describe('<<CODEGEN_NAME>> Converter', function () {
-  describe('convert for different request types', function () {
-    var options = {
-        indentType: 'Space',
-        indentCount: 4
-      },
-      testConfig = {
-        // filename along with the appropriate version of the file. This file will be used to run the snippet.
-        fileName: '',
-        // Run script required to run the generated code snippet
-        runScript: '',
-        // Compile script required to compile the code snippet
-        compileScript: '',
-        // Array of name of collections for which newman tests has to be skipped.
-        skipCollections: []
-      };
-    runNewmanTest(convert, options, testConfig);
-  });
+  runNewmanTest(convert, options, testConfig);
 });
