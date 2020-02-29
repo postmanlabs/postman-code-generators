@@ -2,6 +2,7 @@ var runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').ru
   convert = require('../../lib/index').convert;
 
 describe('convert for different request types', function () {
+  this.timeout(10000); // Mocha timeout implementation
   var options = {indentCount: 3, indentType: 'Space', includeBoilerplate: true},
     testConfig = {
       compileScript: 'javac -cp *: main.java',
