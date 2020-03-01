@@ -64,7 +64,7 @@ describe('nodejs-request convert function', function () {
 
         expect(snippet).to.be.a('string');
         snippetArray = snippet.split('\n');
-        expect(snippetArray[0]).to.equal('let request = require(\'request\');');
+        expect(snippetArray[0]).to.equal('const request = require(\'request\');');
         expect(snippetArray).to.include('let options = {');
         expect(snippetArray).to.include('request(options, (error, response) => {');
       });

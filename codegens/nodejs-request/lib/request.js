@@ -17,11 +17,12 @@ function makeSnippet (request, indentString, options) {
     optionsArray = [],
     isFormDataFile = false;
   if (options.ES6_enabled) {
-    snippet = 'let request = require(\'request\');\n';
+    snippet = 'const ';
   }
   else {
-    snippet = 'var request = require(\'request\');\n';
+    snippet = 'var ';
   }
+  snippet += 'request = require(\'request\');\n';
   if (request.body && request.body.mode === 'formdata') {
     _.forEach(request.body.toJSON().formdata, function (data) {
       if (!data.disabled && data.type === 'file') {
@@ -31,18 +32,20 @@ function makeSnippet (request, indentString, options) {
   }
   if (isFormDataFile) {
     if (options.ES6_enabled) {
-      snippet += 'let fs = require(\'fs\');\n';
+      snippet += 'const ';
     }
     else {
-      snippet += 'var fs = require(\'fs\');\n';
+      snippet += 'var ';
     }
+    snippet += 'fs = require(\'fs\');\n';
   }
   if (options.ES6_enabled) {
-    snippet += 'let options = {\n';
+    snippet += 'let ';
   }
   else {
-    snippet += 'var options = {\n';
+    snippet += 'var ';
   }
+  snippet += 'options = {\n';
 
   /**
      * creating string to represent options object using optionArray.join()
@@ -86,11 +89,12 @@ function makeSnippet (request, indentString, options) {
   snippet += optionsArray.join(',\n') + '\n';
   snippet += '};\n';
 
+  snippet += 'request(options, ';
   if (options.ES6_enabled) {
-    snippet += 'request(options, (error, response) => {\n';
+    snippet += '(error, response) => {\n';
   }
   else {
-    snippet += 'request(options, function (error, response) {\n';
+    snippet += 'function (error, response) {\n';
   }
   snippet += indentString + 'if (error) throw new Error(error);\n';
   snippet += indentString + 'console.log(response.body);\n';
