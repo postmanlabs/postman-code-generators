@@ -14,6 +14,5 @@
 << Anything you want to share >>
 
 
-PS: Please squash your commits before submitting PR
 
 *Thanks for contributing!* ❤️
