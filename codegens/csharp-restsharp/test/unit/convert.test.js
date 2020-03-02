@@ -164,8 +164,8 @@ describe('csharp restsharp function', function () {
     });
 
     it('should use client.UserAgent instead of AddHeader function', function () {
-      const sampleUA = 'Safari/605.1.15';
-      const expectValue = 'client.UserAgent = "Safari/605.1.15";';
+      const sampleUA = 'Safari/605.1.15',
+        expectValue = `client.UserAgent = "${sampleUA}";`;
 
       var request = new sdk.Request({
         'method': 'GET',
