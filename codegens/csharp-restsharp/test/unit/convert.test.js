@@ -3,7 +3,6 @@ var expect = require('chai').expect,
   convert = require('../../lib/index').convert,
   mainCollection = require('./fixtures/testcollection/collection.json'),
   testCollection = require('./fixtures/testcollection/collectionForEdge.json'),
-  uaTest = require('./fixtures/testUA.json'),
   getOptions = require('../../lib/index').getOptions,
   testResponse = require('./fixtures/testresponse.json'),
   sanitize = require('../../lib/util').sanitize,
@@ -260,12 +259,15 @@ describe('csharp restsharp function', function () {
     });
 
     it('should use client.UserAgent instead of AddHeader function', function () {
+      const sampleUA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15';
+      const expectValue = `client.UserAgent = \"${sampleUA}\";`;
+      
       var request = new sdk.Request({
         'method': 'GET',
         'header': [
           {
             'key': 'User-Agent',
-            'value': uaTest.sample
+            'value': sampleUA
           }
         ],
         'url': {
@@ -282,7 +284,7 @@ describe('csharp restsharp function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include(uaTest.expect);
+        expect(snippet).to.include(expectValue);
       });
     });
   });
