@@ -162,6 +162,36 @@ describe('csharp restsharp function', function () {
         expect(snippet).to.include('request.AddFile("invalid src", "/path/to/file"');
       });
     });
+
+    it('should use client.UserAgent instead of AddHeader function', function () {
+      const sampleUA = 'Safari/605.1.15';
+      const expectValue = 'client.UserAgent = "Safari/605.1.15";';
+
+      var request = new sdk.Request({
+        'method': 'GET',
+        'header': [
+          {
+            'key': 'User-Agent',
+            'value': sampleUA
+          }
+        ],
+        'url': {
+          'raw': 'https://google.com',
+          'protocol': 'https',
+          'host': [
+            'google',
+            'com'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include(expectValue);
+      });
+    });
   });
 
   describe('getOptions function', function () {
@@ -256,36 +286,6 @@ describe('csharp restsharp function', function () {
       testOptions.includeBoilerplate = true;
       sanitizedOptions = sanitizeOptions(testOptions, getOptions());
       expect(sanitizedOptions).to.deep.equal(testOptions);
-    });
-
-    it('should use client.UserAgent instead of AddHeader function', function () {
-      const sampleUA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15';
-      const expectValue = `client.UserAgent = \"${sampleUA}\";`;
-      
-      var request = new sdk.Request({
-        'method': 'GET',
-        'header': [
-          {
-            'key': 'User-Agent',
-            'value': sampleUA
-          }
-        ],
-        'url': {
-          'raw': 'https://google.com',
-          'protocol': 'https',
-          'host': [
-            'google',
-            'com'
-          ]
-        }
-      });
-      convert(request, {}, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-        }
-        expect(snippet).to.be.a('string');
-        expect(snippet).to.include(expectValue);
-      });
     });
   });
 
