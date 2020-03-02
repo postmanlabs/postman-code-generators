@@ -62,10 +62,10 @@ const expectedOptions = {
       description: 'Display the requested data without showing the cURL progress meter or error messages'
     },
     ES6_enabled:{
-      name: 'Generate the code snippet with ES6 features',
+      name: 'Enable ES6 features',
       type: 'boolean',
       default: false,
-      description: 'Allows the user to generate code snippet with latest EcmaScript 6 (ES6) features'
+      description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
     }
   },
   // Standard array of ids that should be used for options ids. Any new option should be updated here.

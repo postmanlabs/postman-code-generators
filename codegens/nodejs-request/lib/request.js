@@ -147,11 +147,11 @@ function getOptions () {
       description: 'Remove white space and additional lines that may affect the server\'s response'
     },
     {
-      name: 'Generate the code snippet with ES6 features',
+      name: 'Enable ES6 features',
       id: 'ES6_enabled',
       type: 'boolean',
       default: false,
-      description: 'Allows the user to generate code snippet with latest EcmaScript 6 (ES6) features'
+      description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
     }
   ];
 }
