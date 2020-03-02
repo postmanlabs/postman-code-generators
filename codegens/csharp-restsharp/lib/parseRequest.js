@@ -108,7 +108,8 @@ function parseHeader (requestJson) {
     if (!header.disabled) {
       if (sanitize(header.key, true).toLowerCase() === 'user-agent') {
         headerSnippet += `client.UserAgent = "${sanitize(header.value)}";\n`;
-      } else {
+      }
+      else {
         headerSnippet += `request.AddHeader("${sanitize(header.key, true)}", "${sanitize(header.value)}");\n`;
       }
     }
