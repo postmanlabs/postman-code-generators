@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-require('shelljs/global');
+require('shelljs');
 
 var chalk = require('chalk'),
   async = require('async'),

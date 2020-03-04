@@ -4,10 +4,10 @@
 // This script is intended to execute all unit tests.
 // ---------------------------------------------------------------------------------------------------------------------
 
-require('shelljs/global');
+var shell = require('shelljs'),
 
-// set directories and files for test and coverage report
-var path = require('path'),
+  // set directories and files for test and coverage report
+  path = require('path'),
 
   NYC = require('nyc'),
   chalk = require('chalk'),
@@ -20,8 +20,8 @@ module.exports = function (exit) {
   // banner line
   console.info(chalk.yellow.bold('Running newman tests using mocha on node...'));
 
-  test('-d', COV_REPORT_PATH) && rm('-rf', COV_REPORT_PATH);
-  mkdir('-p', COV_REPORT_PATH);
+  shell.test('-d', COV_REPORT_PATH) && shell.rm('-rf', COV_REPORT_PATH);
+  shell.shell.mkdir('-p', COV_REPORT_PATH);
 
   var Mocha = require('mocha'),
     nyc = new NYC({

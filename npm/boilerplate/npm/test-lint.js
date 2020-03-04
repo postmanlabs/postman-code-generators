@@ -1,7 +1,6 @@
 #!/usr/bin/env node
-require('shelljs/global');
-
-var chalk = require('chalk'),
+var shell = require('shelljs'),
+  chalk = require('chalk'),
   async = require('async'),
   ESLintCLIEngine = require('eslint').CLIEngine,
 
