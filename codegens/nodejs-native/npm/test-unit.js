@@ -19,7 +19,7 @@ module.exports = function (exit) {
   console.info(chalk.yellow.bold('Running unit tests using mocha on node...'));
 
   shell.test('-d', COV_REPORT_PATH) && shell.rm('-rf', COV_REPORT_PATH);
-  shell.shell.mkdir('-p', COV_REPORT_PATH);
+  shell.mkdir('-p', COV_REPORT_PATH);
 
   var Mocha = require('mocha'),
     nyc = new NYC({
