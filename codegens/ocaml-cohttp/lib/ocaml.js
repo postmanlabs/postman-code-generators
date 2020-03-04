@@ -389,7 +389,7 @@ self = module.exports = {
     if (bodySnippet !== '') {
       codeSnippet += '~body ';
     }
-    codeSnippet += `${methodArg} uri >>= fun (resp, body) ->\n`;
+    codeSnippet += `${methodArg} uri >>= fun (_resp, body) ->\n`;
     codeSnippet += `${indent}body |> Cohttp_lwt.Body.to_string >|= fun body -> body\n\n`;
     codeSnippet += 'let () =\n';
     codeSnippet += `${indent}let respBody = Lwt_main.run reqBody in\n`;
