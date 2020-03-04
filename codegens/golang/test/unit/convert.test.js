@@ -165,5 +165,29 @@ describe('Golang convert function', function () {
         expect(snippet).to.include('writer.CreateFormFile("invalid src",filepath.Base("/path/to/file"))');
       });
     });
+
+    it('should not ignore unused error variable', function () {
+      request = new sdk.Request({
+        'method': 'GET',
+        'header': [],
+        'url': {
+          'raw': 'https://google.com',
+          'protocol': 'https',
+          'host': [
+            'google',
+            'com'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        var errDeclared = snippet.split('err :=').length - 1,
+          errHandled = snippet.split('fmt.Println(err)').length - 1;
+        expect(errDeclared).to.eql(errHandled);
+      });
+    });
   });
 });
