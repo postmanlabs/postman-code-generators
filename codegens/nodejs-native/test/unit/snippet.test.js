@@ -94,6 +94,43 @@ describe('nodejs-native convert function', function () {
       expect(snippet).to.include('\'key_containing_whitespaces\': \'  value_containing_whitespaces  \'');
     });
   });
+
+  it('should return snippet with ES6 features when ES6_enabled is set to true', function () {
+    var request = new sdk.Request({
+        'method': 'GET',
+        'header': [
+          {
+            'key': 'lorem',
+            'value': 'lorem_ipsum'
+          }
+        ],
+        'url': {
+          'raw': 'https://google.com',
+          'protocol': 'https',
+          'host': [
+            'google',
+            'com'
+          ]
+        }
+      }),
+      nativeModule = (request.url.protocol === 'http' ? 'http' : 'https'),
+      snippetArray;
+    convert(request, {'followRedirect': true, 'ES6_enabled': true}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      snippetArray = snippet.split('\n');
+      expect(snippetArray[0]).to.equal(`const ${nativeModule} = require('follow-redirects').${nativeModule};`);
+      expect(snippetArray).to.include('const fs = require(\'fs\');');
+      expect(snippetArray).to.include('let options = {');
+      expect(snippetArray).to.include(`const req = ${nativeModule}.request(options, (res) => {`);
+      expect(snippetArray).to.include('  res.on("data", (chunk) => {');
+      expect(snippetArray).to.include('  res.on("end", (chunk) => {');
+      expect(snippetArray).to.include('  res.on("error", (error) => {');
+    });
+  });
+
   it('should include JSON.stringify in the snippet for raw json bodies', function () {
     var request = new sdk.Request({
       'method': 'POST',
