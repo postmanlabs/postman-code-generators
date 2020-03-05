@@ -66,6 +66,7 @@ const expectedOptions = {
       type: 'boolean',
       default: false,
       description: 'Display the error on console and immediately finish the program'
+    },
     ES6_enabled:{
       name: 'Enable ES6 features',
       type: 'boolean',
