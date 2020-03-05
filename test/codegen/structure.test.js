@@ -66,6 +66,11 @@ const expectedOptions = {
       type: 'boolean',
       default: false,
       description: 'Display the error on console and immediately finish the program'
+    ES6_enabled:{
+      name: 'Enable ES6 features',
+      type: 'boolean',
+      default: false,
+      description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
     }
   },
   // Standard array of ids that should be used for options ids. Any new option should be updated here.
@@ -82,7 +87,8 @@ const expectedOptions = {
     'followRedirect',
     'lineContinuationCharacter',
     'protocol',
-    'useMimeType'
+    'useMimeType',
+    'ES6_enabled'
   ],
   CODEGEN_ABS_PATH = `./codegens/${codegen}`;
 describe('Code-gen repository ' + codegen, function () {
