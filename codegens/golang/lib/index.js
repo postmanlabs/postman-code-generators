@@ -143,15 +143,16 @@ function parseBody (body, trim, indent) {
  * @param {string} indent string.
  * @param {number} indentLevel set the base indent level to this snippet.
  */
-function addManagementError(fatal, indent, indentLevel) {
-  var indentBase = indent.repeat(indentLevel);
-  var response = '';
+function addManagementError (fatal, indent, indentLevel) {
+  var indentBase = indent.repeat(indentLevel),
+    response = '';
 
   response = `${indentBase}if err != nil {\n${indent.repeat(indentLevel + 1)}`;
   if (fatal === true) {
-    response += `log.Fatal(err)`;
-  } else {
-    response += `fmt.Println(err)`;
+    response += 'log.Fatal(err)';
+  }
+  else {
+    response += 'fmt.Println(err)';
   }
   response += `\n${indentBase}}\n`;
 

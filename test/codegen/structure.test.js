@@ -62,10 +62,10 @@ const expectedOptions = {
       description: 'Display the requested data without showing the cURL progress meter or error messages'
     },
     fatal: {
-      name: 'Terminate on error',
+      name: 'Abort on error',
       type: 'boolean',
       default: false,
-      description: 'Display the error on console and immediately finish the program'
+      description: 'Terminate the program if one error is raised'
     },
     ES6_enabled:{
       name: 'Enable ES6 features',
