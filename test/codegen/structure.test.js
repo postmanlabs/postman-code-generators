@@ -60,6 +60,12 @@ const expectedOptions = {
       type: 'boolean',
       default: false,
       description: 'Display the requested data without showing the cURL progress meter or error messages'
+    },
+    fatal: {
+      name: 'Terminate on error',
+      type: 'boolean',
+      default: false,
+      description: 'Display the error on console and immediately finish the program'
     }
   },
   // Standard array of ids that should be used for options ids. Any new option should be updated here.
@@ -71,6 +77,7 @@ const expectedOptions = {
     'trimRequestBody',
     'requestTimeout',
     'silent',
+    'fatal',
     'includeBoilerplate',
     'followRedirect',
     'lineContinuationCharacter',
