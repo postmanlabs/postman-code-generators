@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "npm/test.sh",
+    "test": "node npm/test.js",
     "package": "npm/package.sh",
     "zip": "npm/zip.sh",
     "prepack": "node npm/pre-package.js",
