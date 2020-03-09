@@ -63,6 +63,7 @@ describe('nodejs unirest convert function', function () {
         expect(snippetArray[0]).to.equal('const unirest = require(\'unirest\');');
         expect(snippetArray).to.include(`const req = unirest('${mainCollection.item[0].request.method}', ` +
         `'${mainCollection.item[0].request.url.raw}')`);
+        expect(snippetArray).to.include('  .end((res) => { ');
       });
     });
 
