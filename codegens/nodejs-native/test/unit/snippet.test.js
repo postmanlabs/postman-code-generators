@@ -97,7 +97,7 @@ describe('nodejs-native convert function', function () {
 
   it('should return snippet with ES6 features when ES6_enabled is set to true', function () {
     var request = new sdk.Request({
-        'method': 'GET',
+        'method': 'POST',
         'header': [
           {
             'key': 'lorem',
@@ -105,15 +105,20 @@ describe('nodejs-native convert function', function () {
           }
         ],
         'url': {
-          'raw': 'https://google.com',
-          'protocol': 'https',
+          'raw': 'http://httpbin.org/post',
+          'protocol': 'http',
           'host': [
-            'google',
-            'com'
+            'httpbin',
+            'org'
           ]
+        },
+        'body': {
+          'mode': 'urlencoded',
+          'urlencoded': {
+            'title': 'foo-bar'
+          }
         }
       }),
-      nativeModule = (request.url.protocol === 'http' ? 'http' : 'https'),
       snippetArray;
     convert(request, {'followRedirect': true, 'ES6_enabled': true}, function (error, snippet) {
       if (error) {
@@ -121,12 +126,15 @@ describe('nodejs-native convert function', function () {
       }
       expect(snippet).to.be.a('string');
       snippetArray = snippet.split('\n');
-      expect(snippetArray[0]).to.equal(`const ${nativeModule} = require('follow-redirects').${nativeModule};`);
+      expect(snippetArray[0]).to.equal('const http = require(\'follow-redirects\').http;');
       expect(snippetArray).to.include('const fs = require(\'fs\');');
+      expect(snippetArray).to.include('const qs = require(\'querystring\');');
       expect(snippetArray).to.include('let options = {');
-      expect(snippetArray).to.include(`const req = ${nativeModule}.request(options, (res) => {`);
+      expect(snippetArray).to.include('const req = http.request(options, (res) => {');
+      expect(snippetArray).to.include('  let chunks = [];');
       expect(snippetArray).to.include('  res.on("data", (chunk) => {');
       expect(snippetArray).to.include('  res.on("end", (chunk) => {');
+      expect(snippetArray).to.include('    let body = Buffer.concat(chunks);');
       expect(snippetArray).to.include('  res.on("error", (error) => {');
     });
   });

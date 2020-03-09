@@ -24,15 +24,11 @@ function makeSnippet (request, indentString, options) {
   else {
     snippet = 'var ';
   }
-  snippet += `${nativeModule} = require('${nativeModule}');\n`;
   if (options.followRedirect) {
-    if (options.ES6_enabled) {
-      snippet = 'const ';
-    }
-    else {
-      snippet = 'var ';
-    }
     snippet += `${nativeModule} = require('follow-redirects').${nativeModule};\n`;
+  }
+  else {
+    snippet += `${nativeModule} = require('${nativeModule}');\n`;
   }
   if (options.ES6_enabled) {
     snippet += 'const ';
