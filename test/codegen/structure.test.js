@@ -61,7 +61,7 @@ const expectedOptions = {
       default: false,
       description: 'Display the requested data without showing the cURL progress meter or error messages'
     },
-    ES6_enabled:{
+    ES6_enabled: {
       name: 'Enable ES6 features',
       type: 'boolean',
       default: false,
