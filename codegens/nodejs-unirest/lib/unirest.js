@@ -6,7 +6,7 @@ var _ = require('./lodash'),
   parseRequest = require('./parseRequest');
 
 /**
- * retuns snippet of nodejs(unirest) by parsing data from Postman-SDK request object
+ * returns snippet of nodejs(unirest) by parsing data from Postman-SDK request object
  *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required for code snippet
