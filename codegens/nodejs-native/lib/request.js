@@ -6,7 +6,7 @@ const _ = require('./lodash'),
 var self;
 
 /**
- * retuns snippet of nodejs(native) by parsing data from Postman-SDK request object
+ * returns snippet of nodejs(native) by parsing data from Postman-SDK request object
  *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required for code snippet

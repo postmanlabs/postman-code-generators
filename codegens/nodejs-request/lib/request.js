@@ -5,7 +5,7 @@ var _ = require('./lodash'),
   sanitizeOptions = require('./util').sanitizeOptions;
 
 /**
- * retuns snippet of nodejs(request) by parsing data from Postman-SDK request object
+ * returns snippet of nodejs(request) by parsing data from Postman-SDK request object
  *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required for code snippet
