@@ -158,7 +158,7 @@ function getOptions () {
  * @param {Object} options
  * @param {String} options.indentType - type for indentation eg: Space, Tab
  * @param {String} options.indentCount - number of spaces or tabs for indentation.
- * @param {Boolean} [options.includeBoilerplate] - indicates whether to include class defination in java
+ * @param {Boolean} [options.includeBoilerplate] - indicates whether to include class definition in java
  * @param {Boolean} options.followRedirect - whether to enable followredirect
  * @param {Boolean} options.trimRequestBody - whether to trim fields in request body or not
  * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out

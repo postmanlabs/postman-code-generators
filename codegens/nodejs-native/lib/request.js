@@ -6,7 +6,7 @@ const _ = require('./lodash'),
 var self;
 
 /**
- * retuns snippet of nodejs(native) by parsing data from Postman-SDK request object
+ * returns snippet of nodejs(native) by parsing data from Postman-SDK request object
  *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required for code snippet
@@ -15,19 +15,44 @@ var self;
  */
 function makeSnippet (request, indentString, options) {
   var nativeModule = (request.url.protocol === 'http' ? 'http' : 'https'),
-    snippet = `var ${nativeModule} = require('${nativeModule}');\n`,
+    snippet,
     optionsArray = [],
     postData = '';
-
+  if (options.ES6_enabled) {
+    snippet = 'const ';
+  }
+  else {
+    snippet = 'var ';
+  }
   if (options.followRedirect) {
-    snippet = `var ${nativeModule} = require('follow-redirects').${nativeModule};\n`;
+    snippet += `${nativeModule} = require('follow-redirects').${nativeModule};\n`;
   }
-  snippet += 'var fs = require(\'fs\');\n\n';
+  else {
+    snippet += `${nativeModule} = require('${nativeModule}');\n`;
+  }
+  if (options.ES6_enabled) {
+    snippet += 'const ';
+  }
+  else {
+    snippet += 'var ';
+  }
+  snippet += 'fs = require(\'fs\');\n\n';
   if (_.get(request, 'body.mode') && request.body.mode === 'urlencoded') {
-    snippet += 'var qs = require(\'querystring\');\n\n';
+    if (options.ES6_enabled) {
+      snippet += 'const ';
+    }
+    else {
+      snippet += 'var ';
+    }
+    snippet += 'qs = require(\'querystring\');\n\n';
   }
-
-  snippet += 'var options = {\n';
+  if (options.ES6_enabled) {
+    snippet += 'let ';
+  }
+  else {
+    snippet += 'var ';
+  }
+  snippet += 'options = {\n';
 
   /**
      * creating string to represent options object using optionArray.join()
@@ -117,27 +142,55 @@ function makeSnippet (request, indentString, options) {
 
   snippet += optionsArray.join(',\n') + '\n';
   snippet += '};\n\n';
-
-  snippet += `var req = ${nativeModule}.request(options, function (res) {\n`;
-
-  snippet += indentString + 'var chunks = [];\n\n';
-  snippet += indentString + 'res.on("data", function (chunk) {\n';
+  if (options.ES6_enabled) {
+    snippet += 'const ';
+  }
+  else {
+    snippet += 'var ';
+  }
+  snippet += `req = ${nativeModule}.request(options, `;
+  if (options.ES6_enabled) {
+    snippet += '(res) => {\n';
+    snippet += indentString + 'let chunks = [];\n\n';
+    snippet += indentString + 'res.on("data", (chunk) => {\n';
+  }
+  else {
+    snippet += 'function (res) {\n';
+    snippet += indentString + 'var chunks = [];\n\n';
+    snippet += indentString + 'res.on("data", function (chunk) {\n';
+  }
   snippet += indentString.repeat(2) + 'chunks.push(chunk);\n';
   snippet += indentString + '});\n\n';
 
-  snippet += indentString + 'res.on("end", function (chunk) {\n';
-  snippet += indentString.repeat(2) + 'var body = Buffer.concat(chunks);\n';
+  if (options.ES6_enabled) {
+    snippet += indentString + 'res.on("end", (chunk) => {\n';
+    snippet += indentString.repeat(2) + 'let body = Buffer.concat(chunks);\n';
+  }
+  else {
+    snippet += indentString + 'res.on("end", function (chunk) {\n';
+    snippet += indentString.repeat(2) + 'var body = Buffer.concat(chunks);\n';
+  }
   snippet += indentString.repeat(2) + 'console.log(body.toString());\n';
   snippet += indentString + '});\n\n';
+  if (options.ES6_enabled) {
+    snippet += indentString + 'res.on("error", (error) => {\n';
+  }
+  else {
+    snippet += indentString + 'res.on("error", function (error) {\n';
+  }
 
-  snippet += indentString + 'res.on("error", function (error) {\n';
   snippet += indentString.repeat(2) + 'console.error(error);\n';
   snippet += indentString + '});\n';
-
   snippet += '});\n\n';
 
   if (request.body && !(_.isEmpty(request.body)) && postData.length) {
-    snippet += `var postData = ${postData};\n\n`;
+    if (options.ES6_enabled) {
+      snippet += 'let ';
+    }
+    else {
+      snippet += 'var ';
+    }
+    snippet += `postData = ${postData};\n\n`;
 
     if (request.method === 'DELETE') {
       snippet += 'req.setHeader(\'Content-Length\', postData.length);\n\n';
@@ -170,6 +223,7 @@ function makeSnippet (request, indentString, options) {
  * @param {String} options.indentCount - number of spaces or tabs for indentation.
  * @param {Boolean} options.followRedirect - whether to enable followredirect
  * @param {Boolean} options.trimRequestBody - whether to trim fields in request body or not
+ * @param {Boolean} options.ES6_enabled - whether to generate snippet with ES6 features
  * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
  * @param {Function} callback - callback function with parameters (error, snippet)
  */
@@ -216,6 +270,13 @@ self = module.exports = {
       type: 'boolean',
       default: false,
       description: 'Remove white space and additional lines that may affect the server\'s response'
+    },
+    {
+      name: 'Enable ES6 features',
+      id: 'ES6_enabled',
+      type: 'boolean',
+      default: false,
+      description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
     }];
   },
 

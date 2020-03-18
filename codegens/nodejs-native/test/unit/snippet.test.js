@@ -94,6 +94,51 @@ describe('nodejs-native convert function', function () {
       expect(snippet).to.include('\'key_containing_whitespaces\': \'  value_containing_whitespaces  \'');
     });
   });
+
+  it('should return snippet with ES6 features when ES6_enabled is set to true', function () {
+    var request = new sdk.Request({
+        'method': 'POST',
+        'header': [
+          {
+            'key': 'lorem',
+            'value': 'lorem_ipsum'
+          }
+        ],
+        'url': {
+          'raw': 'http://httpbin.org/post',
+          'protocol': 'http',
+          'host': [
+            'httpbin',
+            'org'
+          ]
+        },
+        'body': {
+          'mode': 'urlencoded',
+          'urlencoded': {
+            'title': 'foo-bar'
+          }
+        }
+      }),
+      snippetArray;
+    convert(request, {'followRedirect': true, 'ES6_enabled': true}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      snippetArray = snippet.split('\n');
+      expect(snippetArray[0]).to.equal('const http = require(\'follow-redirects\').http;');
+      expect(snippetArray).to.include('const fs = require(\'fs\');');
+      expect(snippetArray).to.include('const qs = require(\'querystring\');');
+      expect(snippetArray).to.include('let options = {');
+      expect(snippetArray).to.include('const req = http.request(options, (res) => {');
+      expect(snippetArray).to.include('  let chunks = [];');
+      expect(snippetArray).to.include('  res.on("data", (chunk) => {');
+      expect(snippetArray).to.include('  res.on("end", (chunk) => {');
+      expect(snippetArray).to.include('    let body = Buffer.concat(chunks);');
+      expect(snippetArray).to.include('  res.on("error", (error) => {');
+    });
+  });
+
   it('should include JSON.stringify in the snippet for raw json bodies', function () {
     var request = new sdk.Request({
       'method': 'POST',
