@@ -37,6 +37,7 @@ List of supported code generators:
 | PowerShell | RestMethod | 
 | Ruby | Net:HTTP |
 | Shell | Httpie |
+| Shell | Apache Bench |
 | Shell | wget |
 | Swift | URLSession | 
 ## Table of contents 
