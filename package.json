@@ -44,7 +44,7 @@
     "js-yaml": "3.13.1",
     "jsdoc": "3.6.3",
     "lodash": "4.17.15",
-    "mocha": "5.0.3",
+    "mocha": "7.1.1",
     "newman": "4.5.7",
     "nyc": "14.1.1",
     "parse-gitignore": "1.0.1",
