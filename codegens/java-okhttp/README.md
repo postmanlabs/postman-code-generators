@@ -61,7 +61,7 @@ console.log(options);
 ```
 
 ### Guideline for using generated snippet
-* Generated snippet requires dependecies [okhttp3](https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp/3.9.1) and [okio](https://mvnrepository.com/artifact/com.squareup.okio/okio/1.13.0) to compile and run
+* Generated snippet requires dependencies [okhttp3](https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp/3.9.1) and [okio](https://mvnrepository.com/artifact/com.squareup.okio/okio/1.13.0) to compile and run
 
 * Generated snippet uses `.method(nameOfMethod, body)` from `Request` class to form HTTP request. If the `method` doesn't require body then the value of `body` will be `null`. 
 

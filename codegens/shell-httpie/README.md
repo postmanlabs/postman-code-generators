@@ -13,7 +13,7 @@ Convert function takes three parameters
 
 * `request` - Postman-SDK Request Object
 
-* `options` - options is an object which hsa following properties
+* `options` - options is an object which has following properties
     * `followRedirect` - Boolean denoting whether to redirect a request
     * `requestTimeout` - Integer denoting time after which the request will bail out in milli-seconds
 
