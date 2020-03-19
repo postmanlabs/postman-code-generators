@@ -21,11 +21,6 @@ commandOut = shell.exec('source ./npm/package/require_clean_work_tree.sh');
 if (commandOut.code !== 0) {
     shell.exit(1);
 }
-/* commandOut = shell.exec('require_clean_work_tree "create package"');
-if (commandOut.code !== 0) {
-    console.log('Working tree is not clean, please commit/stash your changes');
-    shell.exit(1);
-} */
 
 getSubfolders = (folder) => {
     return fs.readdirSync(folder)
@@ -37,16 +32,6 @@ individual_test = (codegen) => {
 
     console.log(`Creating package for ${codegen}`);
     async.series([
-        function (next) {
-            console.log(`Running deepinstall for codegen ${codegen}`);
-            commandOut = shell.exec(`npm run deepinstall ${codegen} --color always`, {silent: true});
-            if(commandOut.code !==0) {
-                console.error(`Failed to run deepinstall on codegen ${codegen}, here\'s the error:`);
-                return next(commandOut.stderr);
-            }
-            console.log(commandOut.stdout);
-            return next();
-        },
         function (next) {
             console.log(`Running codegen test for codegen ${codegen}`);
             commandOut = shell.exec(`npm run test ${codegen} --color always`, {silent: true});
