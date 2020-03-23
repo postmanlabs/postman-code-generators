@@ -30,9 +30,10 @@ It requires 3 mandatory parameters `request`, `callback` and `options`
 
 #### Example
 ```javascript
-sdk = require('postman-collection');
+const sdk = require('postman-collection');
+const convert = require('.').convert;
 
-var request = sdk.Request('https://www.google.com'),
+var request = new sdk.Request('https://www.google.com'),
     options = {indentType: 'Tab', indentCount: 4, followRediredirect: false, trimRequestBody: true, requestTimeout: 0};
 
 convert(request, options, function (err, snippet) {
