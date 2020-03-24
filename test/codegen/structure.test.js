@@ -42,7 +42,7 @@ const expectedOptions = {
       type: 'positiveInteger',
       default: 0,
       description: 'Set number of milliseconds the request should wait' +
-      'for a response before timing out (use 0 for infinity)'
+      ' for a response before timing out (use 0 for infinity)'
     },
     followRedirect: {
       name: 'Follow redirects',
