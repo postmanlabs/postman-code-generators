@@ -26,7 +26,7 @@
   "dependencies": {
     "async": "2.5.0",
     "path": "0.12.7",
-    "postman-collection": "3.5.1",
+    "postman-collection": "3.6.0",
     "shelljs": "0.7.8"
   },
   "devDependencies": {
@@ -48,7 +48,7 @@
     "newman": "4.5.7",
     "nyc": "14.1.1",
     "parse-gitignore": "1.0.1",
-    "postman-collection": "3.5.1",
+    "postman-collection": "3.6.0",
     "pretty-ms": "3.0.1",
     "recursive-readdir": "2.1.0",
     "watchify": "3.11.1"
