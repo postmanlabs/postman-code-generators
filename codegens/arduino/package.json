@@ -1,0 +1,33 @@
+{
+  "name": "@postman/codegen-arduino",
+  "version": "0.1.1",
+  "description": "Generates Arduino code from a Postman request",
+  "main": "index.js",
+  "com_postman_plugin": {
+    "type": "code_generator",
+    "lang": "arduino",
+    "variant": "WiFi",
+    "syntax_mode": "text"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "codegen",
+    "arduino"
+  ],
+  "author": "Tirta Rachman <tirtawening@gmail.com.com>",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/arduino",
+  "dependencies": {},
+  "scripts": {
+    "test": "node npm/test.js",
+    "test-lint": "node npm/test-lint.js",
+    "test-unit": "node npm/test-unit.js"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=8"
+  }
+}
