@@ -13,6 +13,7 @@ describe('convert', () => {
         expect.fail('error object should be falsy');
       }
       expect(snippet).to.be.a('string');
+      console.log(snippet);
     });
   });
 });
@@ -21,6 +22,6 @@ describe('getOptions', () => {
   it('should return an empty array', () => {
     const options = getOptions();
     expect(options).to.be.an('array');
-    expect(options.length).to.equal(0);
+    expect(options.length).to.equal(1);
   });
 });

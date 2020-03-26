@@ -1,51 +1,41 @@
 /**
- * Get the code snippet
+ * Get the client code snippet
  *
+ * @param {String} httpSnippet - snippet of http messages
  * @returns {String} returns the snippet.
  */
-function getSnippet () {
-  return '#include <SPI.h>\n' +
-    '#include <WiFi.h>\n' +
-    '\n' +
-    'char ssid[] = "myNetwork";    // your network SSID (name)\n' +
-    'char pass[] = "myPassword";   // your network password\n' +
-    '\n' +
-    'int status = WL_IDLE_STATUS;\n' +
-    'char server[] = "www.example.com";\n' +
-    '\n' +
-    '// Initialize the client library\n' +
-    'WiFiClient client;\n' +
-    '\n' +
-    'void setup() {\n' +
-    '  Serial.begin(9600);\n' +
-    '  Serial.println("Attempting to connect to WPA network...");\n' +
-    '  Serial.print("SSID: ");\n' +
-    '  Serial.println(ssid);\n' +
-    '\n' +
-    '  status = WiFi.begin(ssid, pass);\n' +
-    '  if ( status != WL_CONNECTED) {\n' +
-    '    Serial.println("Couldn\'t get a wifi connection");\n' +
-    '    // don\'t do anything else:\n' +
-    '    while(true);\n' +
-    '  }\n' +
-    '  else {\n' +
-    '    Serial.println("Connected to wifi");\n' +
-    '    Serial.println("\nStarting connection...");\n' +
-    '    // if you get a connection, report back via serial:\n' +
-    '    if (client.connect(server, 80)) {\n' +
-    '      Serial.println("connected");\n' +
-    '      // Make a HTTP request:\n' +
-    '      client.println("GET / HTTP/1.0");\n' +
-    '      client.println();\n' +
-    '    }\n' +
-    '  }\n' +
-    '}\n' +
-    '\n' +
-    'void loop() {\n' +
-    '\n' +
-    '}';
+function getClientHttpSnippet (httpSnippet) {
+  let snippet = '';
+  httpSnippet.split(/\n/).forEach((line) => {
+    snippet += `      client.println(${line})\n`;
+  });
+  return snippet;
+}
+
+/**
+ * Get the host value from a request object
+ *
+ * @param {Object} request - Postman SDK request
+ * @returns {String} returns the host value.
+ */
+// eslint-disable-next-line no-unused-vars
+function getHost (request) {
+  return 'example.com';
+}
+
+/**
+ * Get the target port of the request
+ *
+ * @param {Object} request - Postman SDK request
+ * @returns {String} returns the port value.
+ */
+// eslint-disable-next-line no-unused-vars
+function getPort (request) {
+  return '80';
 }
 
 module.exports = {
-  getSnippet: getSnippet
+  getClientHttpSnippet: getClientHttpSnippet,
+  getHost: getHost,
+  getPort: getPort
 };
