@@ -4,13 +4,13 @@ const { getClientHttpSnippet, getHost, getPort } = require('../../lib/util'),
 describe('getClientHttpSnippet()', () => {
   it('should generate a correct output', () => {
     expectedSnippet = '';
-    expectedSnippet += '      client.println(line1);\n';
-    expectedSnippet += '      client.println(line2);\n';
-    expectedSnippet += '      client.println(line3);\n';
-    expectedSnippet += '      client.println(line4withescapednewline\\n);\n';
-    expectedSnippet += '      client.println();\n';
-    expectedSnippet += '      client.println();\n';
-    expectedSnippet += '      client.println();\n';
+    expectedSnippet += '      client.println("line1");\n';
+    expectedSnippet += '      client.println("line2");\n';
+    expectedSnippet += '      client.println("line3");\n';
+    expectedSnippet += '      client.println("line4withescapednewline\\n");\n';
+    expectedSnippet += '      client.println("");\n';
+    expectedSnippet += '      client.println("");\n';
+    expectedSnippet += '      client.println("");\n';
 
     snippet = getClientHttpSnippet('line1\nline2\nline3\nline4withescapednewline\\n\n\n\n');
 

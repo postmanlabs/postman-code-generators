@@ -9,7 +9,7 @@ const _ = require('./lodash');
 function getClientHttpSnippet (httpSnippet) {
   let snippet = '';
   httpSnippet.split(/\n/).forEach((line) => {
-    snippet += `      client.println(${line});\n`;
+    snippet += `      client.println("${line}");\n`;
   });
   return snippet;
 }
