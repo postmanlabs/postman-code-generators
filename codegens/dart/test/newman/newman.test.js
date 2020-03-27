@@ -15,7 +15,11 @@ describe('dart Converter', function () {
         runScript: 'dart codesnippet.dart',
         // Compile script required to compile the code snippet
         // eslint-disable-next-line max-len
+<<<<<<< HEAD
         compileScript: 'pub get',
+=======
+        compileScript: '',
+>>>>>>> c1a27f34e124690031949719f92b438925e28b52
         // Array of name of collections for which newman tests has to be skipped.
         skipCollections: ['sameNameHeadersCollection', 'formdataCollection', 'formdataFileCollection']
       };
