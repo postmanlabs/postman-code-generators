@@ -23,7 +23,8 @@ describe('getHost()', () => {
     { url: 'http://example.com', expected_host: 'example.com' },
     { url: 'https://example.com/watch?v=ClkQA2Lb_iE', expected_host: 'example.com' },
     { url: 'http://192.168.100.0:1234', expected_host: '192.168.100.0' },
-    { url: { host: 'example.com' }, expected_host: 'example.com' }
+    { url: { host: ['example', 'com'] }, expected_host: 'example.com' },
+    { url: { host: ['subdomain', 'example', 'com'] }, expected_host: 'subdomain.example.com' }
   ];
 
   testCases.forEach(function (testCase) {
@@ -41,7 +42,9 @@ describe('getPort()', () => {
     { url: 'https://example.com:8080', expected_port: '8080' },
     { url: 'http://192.168.100.0:1234', expected_port: '1234' },
     { url: 'http://192.168.100.0', expected_port: '80' },
-    { url: { port: '23' }, expected_port: '23' }
+    { url: { protocol: 'https', port: '23' }, expected_port: '23' },
+    { url: { protocol: 'http' }, expected_port: 80 },
+    { url: { protocol: 'https' }, expected_port: '443' }
   ];
 
   testCases.forEach(function (testCase) {
@@ -50,3 +53,4 @@ describe('getPort()', () => {
     });
   });
 });
+

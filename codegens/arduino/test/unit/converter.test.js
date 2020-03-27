@@ -3,11 +3,29 @@ let { convert, getOptions } = require('../../index'),
   Request = require('postman-collection').Request;
 
 describe('convert()', () => {
-  it('should generate an output', () => {
+  it.only('should generate an output', () => {
+
     const request = new Request({
-      url: 'http://example.com',
-      method: 'GET'
+      description: 'This is a sample POST request',
+      url: 'https://echo.getpostman.com/post',
+      method: 'POST',
+      header: [
+        {
+          key: 'Content-Type',
+          value: 'application/json'
+        }
+      ],
+      body: {
+        mode: 'urlencoded',
+        urlencoded: [
+          {
+            key: 'my-body-variable',
+            value: 'Something Awesome!'
+          }
+        ]
+      }
     });
+
     convert(request, {}, function (error, snippet) {
       if (error) {
         expect.fail('error object should be falsy');

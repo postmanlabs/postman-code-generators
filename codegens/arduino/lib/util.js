@@ -1,3 +1,5 @@
+const _ = require('./lodash');
+
 /**
  * Get the client code snippet
  *
@@ -24,7 +26,7 @@ function getHost (request) {
     return url.hostname;
   }
 
-  return request.url.host;
+  return _.join(request.url.host, '.');
 }
 
 /**
@@ -42,7 +44,11 @@ function getPort (request) {
     return url.port;
   }
 
-  return request.url.port;
+  if (request.url.port) {
+    return request.url.port;
+  }
+
+  return request.url.protocol === 'https' ? '443' : '80';
 }
 
 module.exports = {
