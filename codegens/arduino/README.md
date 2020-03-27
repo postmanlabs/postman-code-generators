@@ -41,7 +41,22 @@ var options = getOptions();
 
 console.log(options);
 // output
-// []
+// [
+//   {
+//     name: 'Trim request body fields',
+//     id: 'trimRequestBody',
+//     type: 'boolean',
+//     default: false,
+//     description: "Remove white space and additional lines that may affect the server's response"
+//   },
+//   {
+//     name: 'WiFi Library',
+//     id: 'arduinoWifiLibrary',
+//     type: 'string',
+//     default: 'WiFiNINA',
+//     description: 'The Wifi library your Arduino is using, supported values are WiFiNINA|WiFi101|WiFi'
+//   }
+// ]
 ```
 ### Guidelines for using generated snippet
 
