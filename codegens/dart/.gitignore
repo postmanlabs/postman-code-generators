@@ -16,7 +16,7 @@ yarn-error.log*
 # Dependency directories
 node_modules/
 jspm_packages/
-.dart_tools/
+.dart_tool/
 # Typescript v1 declaration files
 typings/
 
@@ -38,9 +38,8 @@ typings/
 # dotenv environment variables file
 .env
 
-snippet.dart
+codesnippet.dart
 out/
-
 #yaml package list
 .packages
 

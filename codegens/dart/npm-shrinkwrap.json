@@ -1,5 +1,47 @@
 {
   "name": "@postman/codegen-dart",
   "version": "0.0.1",
-  "lockfileVersion": 1
+  "lockfileVersion": 1,
+  "requires": true,
+  "dependencies": {
+    "append": {
+      "version": "0.1.1",
+      "resolved": "https://registry.npmjs.org/append/-/append-0.1.1.tgz",
+      "integrity": "sha1-fl3TJ3RweNh3KG+7Yksej00rOWs="
+    },
+    "confdir": {
+      "version": "0.0.2",
+      "resolved": "https://registry.npmjs.org/confdir/-/confdir-0.0.2.tgz",
+      "integrity": "sha1-6teNkaLc5Kr4Zd3JfAms/0ANW3s="
+    },
+    "minimist": {
+      "version": "0.0.10",
+      "resolved": "https://registry.npmjs.org/minimist/-/minimist-0.0.10.tgz",
+      "integrity": "sha1-3j+YVD2/lggr5IrRoMfNqDYwHc8="
+    },
+    "optimist": {
+      "version": "0.6.1",
+      "resolved": "https://registry.npmjs.org/optimist/-/optimist-0.6.1.tgz",
+      "integrity": "sha1-2j6nRob6IaGaERwybpDrFaAZZoY=",
+      "requires": {
+        "minimist": "~0.0.1",
+        "wordwrap": "~0.0.2"
+      }
+    },
+    "pub": {
+      "version": "0.2.0",
+      "resolved": "https://registry.npmjs.org/pub/-/pub-0.2.0.tgz",
+      "integrity": "sha1-P48tYfh+zqUETtoYoHsDyve8h8g=",
+      "requires": {
+        "append": ">=0.1.1",
+        "confdir": ">=0.0.2",
+        "optimist": ">=0.3.0"
+      }
+    },
+    "wordwrap": {
+      "version": "0.0.3",
+      "resolved": "https://registry.npmjs.org/wordwrap/-/wordwrap-0.0.3.tgz",
+      "integrity": "sha1-o9XabNXAvAAI03I0u68b7WMFkQc="
+    }
+  }
 }
