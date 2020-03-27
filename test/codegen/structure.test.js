@@ -83,7 +83,8 @@ const expectedOptions = {
     'lineContinuationCharacter',
     'protocol',
     'useMimeType',
-    'ES6_enabled'
+    'ES6_enabled',
+    'arduinoWifiLibrary'
   ],
   CODEGEN_ABS_PATH = `./codegens/${codegen}`;
 describe('Code-gen repository ' + codegen, function () {

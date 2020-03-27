@@ -21,6 +21,6 @@ describe('getOptions()', () => {
   it('should return an empty array', () => {
     const options = getOptions();
     expect(options).to.be.an('array');
-    expect(options.length).to.equal(1);
+    expect(options.length).to.equal(2);
   });
 });

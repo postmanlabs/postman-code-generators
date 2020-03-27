@@ -15,6 +15,13 @@ function getOptions () {
     type: 'boolean',
     default: false,
     description: 'Remove white space and additional lines that may affect the server\'s response'
+  },
+  {
+    name: 'WiFi Library',
+    id: 'arduinoWifiLibrary',
+    type: 'string',
+    default: 'WiFiNINA',
+    description: 'The Wifi library your Arduino is using, supported values are WiFiNINA|WiFi101|WiFi'
   }];
 }
 
@@ -24,6 +31,7 @@ function getOptions () {
  * @param {Object} request - Postman SDK request
  * @param {Object} options - Options for converter
  * @param {Boolean} options.trimRequestBody - determines whether to trim the body or not
+ * @param {String} options.arduinoWifiLibrary - determines the wifi library used. Default: WiFiNINA
  * @param {Function} callback callback
  * @returns {Function} returns the snippet with the callback function.
  */
@@ -33,9 +41,14 @@ function convert (request, options, callback) {
       port = utils.getPort(request),
       host = utils.getHost(request);
 
-    let arduinoSnippet = '';
+    let wifiLibrary = 'WiFiNINA',
+      arduinoSnippet = '';
+    if (['WiFi', 'WiFi101'].includes(options.wifiLibrary)) {
+      wifiLibrary = options.wifiLibrary;
+    }
+
     arduinoSnippet += '#include <SPI.h>\n';
-    arduinoSnippet += '#include <WiFiNINA.h>\n';
+    arduinoSnippet += `#include <${wifiLibrary}.h>\n`;
     arduinoSnippet += '\n';
     arduinoSnippet += 'char ssid[] = "myNetwork";    //  your network SSID (name)\n';
     arduinoSnippet += 'char pass[] = "myPassword";   // your network password\n';
