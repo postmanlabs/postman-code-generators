@@ -38,7 +38,7 @@ typings/
 # dotenv environment variables file
 .env
 
-snippet.dart
+codesnippet.dart
 out/
 
 #yaml package list
