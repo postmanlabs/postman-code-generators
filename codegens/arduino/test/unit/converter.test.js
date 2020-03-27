@@ -2,7 +2,7 @@ let { convert, getOptions } = require('../../index'),
   { expect } = require('chai'),
   Request = require('postman-collection').Request;
 
-describe('convert', () => {
+describe('convert()', () => {
   it('should generate an output', () => {
     const request = new Request({
       url: 'http://example.com',
@@ -13,12 +13,11 @@ describe('convert', () => {
         expect.fail('error object should be falsy');
       }
       expect(snippet).to.be.a('string');
-      console.log(snippet);
     });
   });
 });
 
-describe('getOptions', () => {
+describe('getOptions()', () => {
   it('should return an empty array', () => {
     const options = getOptions();
     expect(options).to.be.an('array');

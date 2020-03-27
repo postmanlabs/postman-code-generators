@@ -7,7 +7,7 @@
 function getClientHttpSnippet (httpSnippet) {
   let snippet = '';
   httpSnippet.split(/\n/).forEach((line) => {
-    snippet += `      client.println(${line})\n`;
+    snippet += `      client.println(${line});\n`;
   });
   return snippet;
 }
@@ -18,9 +18,13 @@ function getClientHttpSnippet (httpSnippet) {
  * @param {Object} request - Postman SDK request
  * @returns {String} returns the host value.
  */
-// eslint-disable-next-line no-unused-vars
 function getHost (request) {
-  return 'example.com';
+  if (typeof request.url === 'string' || request.url instanceof String) {
+    const url = new URL(request.url);
+    return url.hostname;
+  }
+
+  return request.url.host;
 }
 
 /**
@@ -29,9 +33,16 @@ function getHost (request) {
  * @param {Object} request - Postman SDK request
  * @returns {String} returns the port value.
  */
-// eslint-disable-next-line no-unused-vars
 function getPort (request) {
-  return '80';
+  if (typeof request.url === 'string' || request.url instanceof String) {
+    const url = new URL(request.url);
+    if (url.port === '') {
+      return url.protocol === 'https:' ? '443' : '80';
+    }
+    return url.port;
+  }
+
+  return request.url.port;
 }
 
 module.exports = {
