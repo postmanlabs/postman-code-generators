@@ -1,4 +1,4 @@
-# codegen-nodejs-request
+# codegen-nodejs-axios
 
 > Converts Postman-SDK Request into code snippet for NodeJS-axios.
 
@@ -6,7 +6,7 @@
 To run the module, ensure that you have NodeJS >= v8. A copy of the NodeJS installable can be downloaded from https://nodejs.org/en/download/package-manager.
 
 ## Using the Module
-The module will expose an object which will have property `convert` which is the function for converting the Postman-SDK request to nodejs-request code snippet and `getOptions` function which returns an array of supported options.
+The module will expose an object which will have property `convert` which is the function for converting the Postman-SDK request to nodejs-axios code snippet and `getOptions` function which returns an array of supported options.
 
 ### convert function
 Convert function will take three parameters
