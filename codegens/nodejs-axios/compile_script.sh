@@ -1,0 +1,1 @@
+mkdir collection-sdk;cd collection-sdk;npm init -y;npm install axios
