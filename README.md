@@ -153,7 +153,7 @@ This function takes in five parameters and returns a callback with error and gen
 * `language` - lang key from the language list returned from getLanguageList function
 * `variant` - variant key provided by getLanguageList function
 * `request` - [Postman-SDK](https://github.com/postmanlabs/postman-collection) Request Object
-* `options` - Options that can be used to configure generated code snippet. Defaults will be used for the  
+* `options` - Options that can be used to configure generated code snippet. Defaults will be used for the unspecified attributes  
 * `callback` - callback function with first parameter as error and second parameter as string for code snippet
 
 ##### Example:
