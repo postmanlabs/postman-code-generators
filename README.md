@@ -17,6 +17,7 @@ List of supported code generators:
 
 | Language | Variant        |
 |-----------|---------------|
+| C | libcurl |
 | C# | RestSharp | 
 | cURL | cURL | 
 | Go | Native | 
@@ -35,6 +36,8 @@ List of supported code generators:
 |PHP | pecl_http |
 |PHP | HTTP_Request2 |
 | PowerShell | RestMethod | 
+| Python | http.client |
+| Python | Requests |
 | Ruby | Net:HTTP |
 | Shell | Httpie |
 | Shell | wget |
