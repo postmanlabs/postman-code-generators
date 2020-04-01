@@ -99,13 +99,13 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
         if (contentType === 'application/json') {
           try {
             let jsonBody = JSON.parse(requestbody[requestbody.mode]);
-            return `body: JSON.stringify(${JSON.stringify(jsonBody)})\n`;
+            return `JSON.stringify(${JSON.stringify(jsonBody)})\n`;
           }
           catch (error) {
-            return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
+            return `${JSON.stringify(requestbody[requestbody.mode])}\n`;
           }
         }
-        return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
+        return `${JSON.stringify(requestbody[requestbody.mode])}\n`;
       // eslint-disable-next-line no-case-declarations
       case 'graphql':
         let query = requestbody[requestbody.mode].query,
@@ -116,22 +116,22 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
         catch (e) {
           graphqlVariables = {};
         }
-        return 'body: JSON.stringify({\n' +
+        return 'JSON.stringify({\n' +
           `${indentString.repeat(2)}query: '${sanitize(query, trimBody)}',\n` +
           `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
           `${indentString}})`;
       case 'formdata':
-        return `formData: {\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
+        return `{\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
                         indentString + '}';
       case 'urlencoded':
-        return `form: {\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
+        return `{\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
                         indentString + '}';
         /* istanbul ignore next */
       case 'file':
         // return 'formData: {\n' +
         //                 extractFormData(requestbody[requestbody.mode], indentString, trimBody) +
         //                 indentString + '}';
-        return 'body: "<file contents here>"\n';
+        return '"<file contents here>"\n';
       default:
         return '';
     }
@@ -148,7 +148,7 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
  */
 function parseHeader (request, indentString) {
   var headerObject = request.getHeaders({enabled: true}),
-    headerSnippet = indentString + '\'headers\': {\n';
+    headerSnippet = '{\n';
 
   if (!_.isEmpty(headerObject)) {
     headerSnippet += _.reduce(Object.keys(headerObject), function (accumalator, key) {

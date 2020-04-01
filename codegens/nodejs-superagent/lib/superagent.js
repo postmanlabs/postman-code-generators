@@ -14,7 +14,6 @@ var _ = require('./lodash'),
  */
 function makeSnippet (request, indentString, options) {
   var snippet,
-    optionsArray = [],
     isFormDataFile = false;
   if (options.ES6_enabled) {
     snippet = 'const ';
@@ -39,25 +38,7 @@ function makeSnippet (request, indentString, options) {
     }
     snippet += 'fs = require(\'fs\');\n';
   }
-  if (options.ES6_enabled) {
-    snippet += 'let ';
-  }
-  else {
-    snippet += 'var ';
-  }
-  snippet += 'options = {\n';
 
-  /**
-     * creating string to represent options object using optionArray.join()
-     * example:
-     *  options: {
-     *      method: 'GET',
-     *      url: 'www.google.com',
-     *      timeout: 1000
-     *  }
-     */
-  optionsArray.push(indentString + `'method': '${request.method}'`);
-  optionsArray.push(indentString + `'url': '${sanitize(request.url.toString())}'`);
   if (request.body && !request.headers.has('Content-Type')) {
     if (request.body.mode === 'file') {
       request.addHeader({
@@ -72,33 +53,35 @@ function makeSnippet (request, indentString, options) {
       });
     }
   }
-  optionsArray.push(parseRequest.parseHeader(request, indentString));
+
+  snippet += 'superagent\n';
+  snippet += indentString + `.${request.method.toLowerCase()}('${sanitize(request.url.toString())}')\n`;
+  snippet += indentString + `.send(${parseRequest.parseHeader(request, indentString)})\n`;
 
   if (request.body && request.body[request.body.mode]) {
-    optionsArray.push(
-      indentString + parseRequest.parseBody(request.body.toJSON(), indentString, options.trimRequestBody,
-        request.headers.get('Content-Type'))
-    );
+    snippet += indentString + `.set(${parseRequest.parseBody(request.body.toJSON(),
+      indentString, options.trimRequestBody, request.headers.get('Content-Type'))})\n`;
   }
-  if (options.requestTimeout) {
-    optionsArray.push(indentString + `timeout: ${options.requestTimeout}`);
-  }
-  if (options.followRedirect === false) {
-    optionsArray.push(indentString + 'followRedirect: false');
-  }
-  snippet += optionsArray.join(',\n') + '\n';
-  snippet += '};\n';
 
-  snippet += 'superagent(options, ';
+  if (options.requestTimeout) {
+    snippet += indentString + `.timeout(${options.requestTimeout})\n`;
+  }
+
+  if (options.followRedirect === false) {
+    snippet += indentString + '.redirects(0)\n';
+  }
+
+  snippet += indentString + '.end(';
   if (options.ES6_enabled) {
     snippet += '(error, response) => {\n';
   }
   else {
     snippet += 'function (error, response) {\n';
   }
-  snippet += indentString + 'if (error) throw new Error(error);\n';
-  snippet += indentString + 'console.log(response.body);\n';
-  snippet += '});\n';
+  snippet += indentString.repeat(2) + 'if (error) throw new Error(error);\n';
+  snippet += indentString.repeat(2) + 'console.log(response.body);\n';
+  snippet += indentString + '});';
+
   return snippet;
 }
 
@@ -157,7 +140,7 @@ function getOptions () {
 }
 
 /**
- * Converts Postman sdk request object to nodejs request code snippet
+ * Converts Postman sdk request object to nodejs superagent code snippet
  *
  * @param {Object} request - postman-SDK request object
  * @param {Object} options
@@ -166,12 +149,12 @@ function getOptions () {
  * @param {Boolean} options.followRedirect - whether to enable followredirect
  * @param {Boolean} options.trimRequestBody - whether to trim fields in request body or not
  * @param {Boolean} options.ES6_enabled - whether to generate snippet with ES6 features
- * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
+ * @param {Number} options.requestTimeout : time in milliseconds after which request will bail out
  * @param {Function} callback - callback function with parameters (error, snippet)
  */
 function convert (request, options, callback) {
   if (!_.isFunction(callback)) {
-    throw new Error('NodeJS-Request-Converter: callback is not valid function');
+    throw new Error('NodeJS-SuperAgent-Converter: callback is not valid function');
   }
   options = sanitizeOptions(options, getOptions());
 
