@@ -1,4 +1,3 @@
-// TODO
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
   sanitize = require('../../lib/util').sanitize,
@@ -30,7 +29,7 @@ describe('nodejs-superagent convert function', function () {
         expect(snippet).to.be.a('string');
         snippetArray = snippet.split('\n');
         for (var i = 0; i < snippetArray.length; i++) {
-          if (snippetArray[i] === 'var options = {') { line_no = i + 1; }
+          if (snippetArray[i] === 'superagent') { line_no = i + 1; }
         }
         expect(snippetArray[line_no].charAt(0)).to.equal('\t');
       });
@@ -48,7 +47,7 @@ describe('nodejs-superagent convert function', function () {
         }
 
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('timeout: 1000');
+        expect(snippet).to.include('.timeout(1000)');
       });
     });
 
@@ -65,9 +64,8 @@ describe('nodejs-superagent convert function', function () {
 
         expect(snippet).to.be.a('string');
         snippetArray = snippet.split('\n');
-        expect(snippetArray[0]).to.equal('const request = require(\'request\');');
-        expect(snippetArray).to.include('let options = {');
-        expect(snippetArray).to.include('request(options, (error, response) => {');
+        expect(snippetArray[0]).to.equal('const superagent = require(\'superagent\');');
+        expect(snippetArray).to.include('.end((error, response) => {');
       });
     });
 
@@ -84,7 +82,7 @@ describe('nodejs-superagent convert function', function () {
         }
 
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('followRedirect: false');
+        expect(snippet).to.include('.redirects(0)');
       });
     });
 
@@ -101,7 +99,7 @@ describe('nodejs-superagent convert function', function () {
           return;
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('\'headers\': {\n  }');
+        expect(snippet).to.include('.set({})');
       });
     });
 
@@ -117,7 +115,7 @@ describe('nodejs-superagent convert function', function () {
           return;
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.not.include('body:');
+        expect(snippet).to.include('.set({})');
       });
     });
 
@@ -146,6 +144,7 @@ describe('nodejs-superagent convert function', function () {
       });
     });
 
+    // TODO
     it('should return snippet with proper semicolon placed where required', function () {
       // testing for the below snippet
       /*
@@ -172,7 +171,7 @@ describe('nodejs-superagent convert function', function () {
         expect(snippet).to.be.a('string');
         var snippetArray = snippet.split('\n');
         snippetArray.forEach(function (line, index) {
-          if (line.charAt(line.length - 2) === ')') {
+          if (line.contains('.') === ')') {
             expect(line.charAt(line.length - 1)).to.equal(';');
           }
           expect(line.charAt(line.length - 1)).to.not.equal(')');
@@ -185,6 +184,7 @@ describe('nodejs-superagent convert function', function () {
       });
     });
 
+    // TODO
     it('should return snippet with no trailing comma when requestTimeout ' +
       'is set to non zero and followRedirect as true', function () {
       request = new sdk.Request(mainCollection.item[0].request);
@@ -203,6 +203,7 @@ describe('nodejs-superagent convert function', function () {
       });
     });
 
+    // TODO:
     it('should return snippet with just a single comma when requestTimeout ' +
       'is set to non zero and followRedirect as false', function () {
       request = new sdk.Request(mainCollection.item[0].request);
@@ -238,7 +239,7 @@ describe('nodejs-superagent convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.not.include('var fs = require(\'fs\')');
+        expect(snippet).to.not.include('var fs = require(\'fs\');');
       });
     });
 
@@ -262,7 +263,7 @@ describe('nodejs-superagent convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('var fs = require(\'fs\')');
+        expect(snippet).to.include('var fs = require(\'fs\');');
       });
     });
 
@@ -323,7 +324,7 @@ describe('nodejs-superagent convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('body: JSON.stringify({"json":"Test-Test"})');
+        expect(snippet).to.include('JSON.stringify({"json":"Test-Test"})');
       });
     });
 
