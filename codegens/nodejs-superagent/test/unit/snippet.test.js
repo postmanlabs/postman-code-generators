@@ -190,8 +190,8 @@ describe('nodejs-superagent convert function', function () {
         'method': 'GET',
         'header': [
           {
-            'key': '   key_containing_whitespaces  ',
-            'value': '  value_containing_whitespaces  '
+            'key': '   key_containing_whitespace  ',
+            'value': '  value_containing_whitespace  '
           }
         ],
         'url': {
@@ -208,7 +208,7 @@ describe('nodejs-superagent convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('\'key_containing_whitespaces\': \'  value_containing_whitespaces  \'');
+        expect(snippet).to.include('\'key_containing_whitespace\': \'  value_containing_whitespace  \'');
       });
     });
 

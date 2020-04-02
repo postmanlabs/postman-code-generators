@@ -147,7 +147,7 @@ function getOptions () {
  * @param {Object} options
  * @param {String} options.indentType - type for indentation eg: Space, Tab
  * @param {String} options.indentCount - number of spaces or tabs for indentation.
- * @param {Boolean} options.followRedirect - whether to enable followredirect
+ * @param {Boolean} options.followRedirect - whether to enable follow redirect
  * @param {Boolean} options.trimRequestBody - whether to trim fields in request body or not
  * @param {Boolean} options.ES6_enabled - whether to generate snippet with ES6 features
  * @param {Number} options.requestTimeout : time in milliseconds after which request will bail out
