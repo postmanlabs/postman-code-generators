@@ -38,6 +38,7 @@ function makeSnippet (request, indentString, options) {
     }
     snippet += 'fs = require(\'fs\');\n';
   }
+  snippet += '\n';
 
   if (request.body && !request.headers.has('Content-Type')) {
     if (request.body.mode === 'file') {
@@ -56,11 +57,11 @@ function makeSnippet (request, indentString, options) {
 
   snippet += 'superagent\n';
   snippet += indentString + `.${request.method.toLowerCase()}('${sanitize(request.url.toString())}')\n`;
-  snippet += indentString + `.send(${parseRequest.parseHeader(request, indentString)})\n`;
+  snippet += indentString + `.set(${parseRequest.parseHeader(request, indentString)})\n`;
 
   if (request.body && request.body[request.body.mode]) {
-    snippet += indentString + `.set(${parseRequest.parseBody(request.body.toJSON(),
-      indentString, options.trimRequestBody, request.headers.get('Content-Type'))})\n`;
+    snippet += indentString + parseRequest.parseBody(request.body.toJSON(),
+      indentString, options.trimRequestBody, request.headers.get('Content-Type'));
   }
 
   if (options.requestTimeout) {
@@ -79,7 +80,7 @@ function makeSnippet (request, indentString, options) {
     snippet += 'function (error, response) {\n';
   }
   snippet += indentString.repeat(2) + 'if (error) throw new Error(error);\n';
-  snippet += indentString.repeat(2) + 'console.log(response.body);\n';
+  snippet += indentString.repeat(2) + 'console.log(JSON.stringify(response.body));\n';
   snippet += indentString + '});';
 
   return snippet;
