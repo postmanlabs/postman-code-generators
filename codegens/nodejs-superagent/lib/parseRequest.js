@@ -10,8 +10,9 @@ var _ = require('./lodash'),
  * @param {Array<Object>} dataArray - array containing body elements of request
  * @param {String} indentString - string required for indentation
  * @param {Boolean} trimBody - indicates whether to trim body or not
+ * @param {String} requestType - indicates whether the requestBody is to be parsed as urlencoded or formdata
  */
-function extractFormData (dataArray, indentString, trimBody) {
+function extractFormData (dataArray, indentString, trimBody, requestType) {
   if (!dataArray) {
     return '';
   }
@@ -34,14 +35,12 @@ function extractFormData (dataArray, indentString, trimBody) {
              *  }
              */
       if (Array.isArray(item.src) && item.src.length) {
-        let fileSnippet = '',
-          fileArray = [];
+        let fileSnippet = '';
         _.forEach(item.src, (filePath) => {
-          fileArray.push(`${indentString.repeat(3)}fs.createReadStream('${sanitize(filePath, trimBody)}')`);
+          fileSnippet += indentString + `.attach('${sanitize(item.key, trimBody)}',
+            '${sanitize(filePath, trimBody)}')\n`;
         });
-        if (fileArray.length) {
-          fileSnippet += `${indentString.repeat(2)}'${sanitize(item.key, trimBody)}': ` +
-          `[\n${fileArray.join(',\n')}\n${indentString.repeat(2)}]`;
+        if (fileSnippet !== '') {
           accumalator.push(fileSnippet);
         }
         else {
@@ -49,39 +48,26 @@ function extractFormData (dataArray, indentString, trimBody) {
         }
       }
       else if (typeof item.src !== 'string') {
-        accumalator.push([
-          indentString.repeat(2) + `'${sanitize(item.key, trimBody)}': {`,
-          indentString.repeat(3) + '\'value\': fs.createReadStream(\'/path/to/file\'),',
-          indentString.repeat(3) + '\'options\': {',
-          indentString.repeat(4) + '\'filename\': \'filename\'',
-          indentString.repeat(4) + '\'contentType\': null',
-          indentString.repeat(3) + '}',
-          indentString.repeat(2) + '}'
-        ].join('\n'));
+        accumalator.push(indentString + `.attach('${sanitize(item.key, trimBody)}', '/path/to/file')`);
       }
       else {
         var pathArray = item.src.split(path.sep),
           fileName = pathArray[pathArray.length - 1];
-        accumalator.push([
-          indentString.repeat(2) + `'${sanitize(item.key, trimBody)}': {`,
-          indentString.repeat(3) + `'value': fs.createReadStream('${sanitize(item.src, trimBody)}'),`,
-          indentString.repeat(3) + '\'options\': {',
-          indentString.repeat(4) + `'filename': '${sanitize(fileName, trimBody)}',`,
-          indentString.repeat(4) + '\'contentType\': null',
-          indentString.repeat(3) + '}',
-          indentString.repeat(2) + '}'
-        ].join('\n'));
+        accumalator.push(indentString + `.attach('${sanitize(item.key, trimBody)}', 
+              '${sanitize(item.src, trimBody)}', '${sanitize(fileName, trimBody)}')`);
       }
     }
-    else {
-      accumalator.push(
-        indentString.repeat(2) +
-                `'${sanitize(item.key, trimBody)}': '${sanitize(item.value, trimBody)}'`
-      );
+    else if (requestType === 'urlencoded') {
+      accumalator.push(indentString +
+        `.send({'${sanitize(item.key, trimBody)}':'${sanitize(item.value, trimBody)}'})`);
+    }
+    else if (requestType === 'formdata') {
+      accumalator.push(indentString +
+        `.field('${sanitize(item.key, trimBody)}', '${sanitize(item.value, trimBody)}')`);
     }
     return accumalator;
   }, []);
-  return snippetString.join(',\n') + '\n';
+  return snippetString.join('\n') + '\n';
 }
 
 /**
@@ -99,13 +85,13 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
         if (contentType === 'application/json') {
           try {
             let jsonBody = JSON.parse(requestbody[requestbody.mode]);
-            return `JSON.stringify(${JSON.stringify(jsonBody)})\n`;
+            return `.send(JSON.stringify(${JSON.stringify(jsonBody)}))\n`;
           }
           catch (error) {
-            return `${JSON.stringify(requestbody[requestbody.mode])}\n`;
+            return `.send(${JSON.stringify(requestbody[requestbody.mode])})\n`;
           }
         }
-        return `${JSON.stringify(requestbody[requestbody.mode])}\n`;
+        return `.send(${JSON.stringify(requestbody[requestbody.mode])})\n`;
       // eslint-disable-next-line no-case-declarations
       case 'graphql':
         let query = requestbody[requestbody.mode].query,
@@ -116,22 +102,21 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
         catch (e) {
           graphqlVariables = {};
         }
-        return 'JSON.stringify({\n' +
+        return '.send(JSON.stringify({\n' +
           `${indentString.repeat(2)}query: '${sanitize(query, trimBody)}',\n` +
           `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
-          `${indentString}})`;
+          `${indentString}}))\n`;
       case 'formdata':
-        return `{\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
-                        indentString + '}';
+        return `${extractFormData(requestbody[requestbody.mode], indentString, trimBody, requestbody.mode)}`;
       case 'urlencoded':
-        return `{\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
-                        indentString + '}';
+        return `.type('form')\n${extractFormData(requestbody[requestbody.mode],
+          indentString, trimBody, requestbody.mode)}\n`;
         /* istanbul ignore next */
       case 'file':
         // return 'formData: {\n' +
         //                 extractFormData(requestbody[requestbody.mode], indentString, trimBody) +
         //                 indentString + '}';
-        return '"<file contents here>"\n';
+        return '.send("<file contents here>")\n';
       default:
         return '';
     }
@@ -140,11 +125,11 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
 }
 
 /**
- * parses header of request object and returns code snippet of nodejs superagent to add header
+ * parses header of request object and returns code snippet of nodejs request to add header
  *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required in code snippet
- * @returns {String} - code snippet of nodejs superagent to add header
+ * @returns {String} - code snippet of nodejs request to add header
  */
 function parseHeader (request, indentString) {
   var headerObject = request.getHeaders({enabled: true}),
