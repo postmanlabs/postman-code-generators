@@ -57,10 +57,10 @@ function makeSnippet (request, indentString, options) {
 
   snippet += 'superagent\n';
   snippet += indentString + `.${request.method.toLowerCase()}('${sanitize(request.url.toString())}')\n`;
-  snippet += indentString + `.set(${parseRequest.parseHeader(request, indentString)})\n`;
+  snippet += parseRequest.parseHeader(request, indentString);
 
   if (request.body && request.body[request.body.mode]) {
-    snippet += indentString + parseRequest.parseBody(request.body.toJSON(),
+    snippet += parseRequest.parseBody(request.body.toJSON(),
       indentString, options.trimRequestBody, request.headers.get('Content-Type'));
   }
 

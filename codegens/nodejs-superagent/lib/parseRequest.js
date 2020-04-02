@@ -67,7 +67,7 @@ function extractFormData (dataArray, indentString, trimBody, requestType) {
     }
     return accumalator;
   }, []);
-  return snippetString.join('\n') + '\n';
+  return snippetString.join('\n');
 }
 
 /**
@@ -80,18 +80,22 @@ function extractFormData (dataArray, indentString, trimBody, requestType) {
  */
 function parseBody (requestbody, indentString, trimBody, contentType) {
   if (requestbody) {
+    var bodySnippet = indentString;
     switch (requestbody.mode) {
       case 'raw':
         if (contentType === 'application/json') {
           try {
             let jsonBody = JSON.parse(requestbody[requestbody.mode]);
-            return `.send(JSON.stringify(${JSON.stringify(jsonBody)}))\n`;
+            bodySnippet += `.send(JSON.stringify(${JSON.stringify(jsonBody)}))\n`;
+            break;
           }
           catch (error) {
-            return `.send(${JSON.stringify(requestbody[requestbody.mode])})\n`;
+            bodySnippet += `.send(${JSON.stringify(requestbody[requestbody.mode])})\n`;
+            break;
           }
         }
-        return `.send(${JSON.stringify(requestbody[requestbody.mode])})\n`;
+        bodySnippet += `.send(${JSON.stringify(requestbody[requestbody.mode])})\n`;
+        break;
       // eslint-disable-next-line no-case-declarations
       case 'graphql':
         let query = requestbody[requestbody.mode].query,
@@ -102,24 +106,29 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
         catch (e) {
           graphqlVariables = {};
         }
-        return '.send(JSON.stringify({\n' +
+        bodySnippet += '.send(JSON.stringify({\n' +
           `${indentString.repeat(2)}query: '${sanitize(query, trimBody)}',\n` +
           `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
           `${indentString}}))\n`;
+        break;
       case 'formdata':
-        return `${extractFormData(requestbody[requestbody.mode], indentString, trimBody, requestbody.mode)}`;
+        bodySnippet = `${extractFormData(requestbody[requestbody.mode], indentString, trimBody, requestbody.mode)}`;
+        break;
       case 'urlencoded':
-        return `.type('form')\n${extractFormData(requestbody[requestbody.mode],
+        bodySnippet += `.type('form')\n${extractFormData(requestbody[requestbody.mode],
           indentString, trimBody, requestbody.mode)}\n`;
+        break;
         /* istanbul ignore next */
       case 'file':
         // return 'formData: {\n' +
         //                 extractFormData(requestbody[requestbody.mode], indentString, trimBody) +
         //                 indentString + '}';
-        return '.send("<file contents here>")\n';
+        bodySnippet += '.send("<file contents here>")\n';
+        break;
       default:
-        return '';
+        bodySnippet = '';
     }
+    return bodySnippet;
   }
   return '';
 }
@@ -133,7 +142,7 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
  */
 function parseHeader (request, indentString) {
   var headerObject = request.getHeaders({enabled: true}),
-    headerSnippet = '{\n';
+    headerSnippet = `${indentString}.set({\n`;
 
   if (!_.isEmpty(headerObject)) {
     headerSnippet += _.reduce(Object.keys(headerObject), function (accumalator, key) {
@@ -154,8 +163,11 @@ function parseHeader (request, indentString) {
       return accumalator;
     }, []).join(',\n') + '\n';
   }
+  else {
+    return '';
+  }
 
-  headerSnippet += indentString + '}';
+  headerSnippet += indentString + '})\n';
   return headerSnippet;
 }
 

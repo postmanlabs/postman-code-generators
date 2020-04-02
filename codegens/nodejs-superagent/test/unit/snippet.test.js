@@ -65,7 +65,7 @@ describe('nodejs-superagent convert function', function () {
         expect(snippet).to.be.a('string');
         snippetArray = snippet.split('\n');
         expect(snippetArray[0]).to.equal('const superagent = require(\'superagent\');');
-        expect(snippetArray).to.include('.end((error, response) => {');
+        expect(snippet).to.include('.end((error, response) => {');
       });
     });
 
@@ -99,7 +99,7 @@ describe('nodejs-superagent convert function', function () {
           return;
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('.set({})');
+        expect(snippet).to.not.include('.set(');
       });
     });
 
@@ -115,7 +115,6 @@ describe('nodejs-superagent convert function', function () {
           return;
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('.set({})');
       });
     });
 
@@ -141,87 +140,6 @@ describe('nodejs-superagent convert function', function () {
         }
         expect(snippet).to.be.a('string');
         expect(snippet).to.not.equal('');
-      });
-    });
-
-    // TODO
-    it('should return snippet with proper semicolon placed where required', function () {
-      // testing for the below snippet
-      /*
-       var request = require('request');
-       var fs = require('fs');
-       var options = {
-         'method': 'GET',
-         'url': 'https://postman-echo.com/headers',
-         'headers': {
-           'my-sample-header': 'Lorem ipsum dolor sit amet',
-           'not-disabled-header': 'ENABLED'
-         }
-       };
-       request(options, function (error, response) {
-         if (error) throw new Error(error);
-         console.log(response.body);
-       }); */
-      request = new sdk.Request(mainCollection.item[0].request);
-      options = {};
-      convert(request, options, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-        }
-        expect(snippet).to.be.a('string');
-        var snippetArray = snippet.split('\n');
-        snippetArray.forEach(function (line, index) {
-          if (line.contains('.') === ')') {
-            expect(line.charAt(line.length - 1)).to.equal(';');
-          }
-          expect(line.charAt(line.length - 1)).to.not.equal(')');
-          // check for the closing curly bracket of options object
-          if (line.startsWith('request')) {
-            var previousLine = snippetArray[index - 1];
-            expect(previousLine.charAt(previousLine.length - 1)).to.equal(';');
-          }
-        });
-      });
-    });
-
-    // TODO
-    it('should return snippet with no trailing comma when requestTimeout ' +
-      'is set to non zero and followRedirect as true', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
-      options = {
-        requestTimeout: 1000
-      };
-      convert(request, options, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-          return;
-        }
-
-        expect(snippet).to.be.a('string');
-        expect(snippet).to.not.include('timeout: 1000,');
-        expect(snippet).to.include('timeout: 1000');
-      });
-    });
-
-    // TODO:
-    it('should return snippet with just a single comma when requestTimeout ' +
-      'is set to non zero and followRedirect as false', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
-      options = {
-        requestTimeout: 1000,
-        followRedirect: false,
-        indentCount: 1,
-        indentType: 'space'
-      };
-      convert(request, options, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-          return;
-        }
-
-        expect(snippet).to.be.a('string');
-        expect(snippet).to.not.include('timeout: 1000,,');
-        expect(snippet).to.include('timeout: 1000,\n followRedirect: false');
       });
     });
 
@@ -371,10 +289,10 @@ describe('nodejs-superagent convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('\'no file\': {');
-        expect(snippet).to.include('\'no src\': {');
-        expect(snippet).to.include('\'invalid src\': {');
-        expect(snippet).to.include('\'value\': fs.createReadStream(\'/path/to/file\')');
+        expect(snippet).to.include('\'no file\',');
+        expect(snippet).to.include('\'no src\',');
+        expect(snippet).to.include('\'invalid src\',');
+        expect(snippet).to.include(', \'/path/to/file\')');
       });
     });
 
