@@ -9,7 +9,7 @@ var _ = require('./lodash'),
 const METHODS_WITHOUT_BODY = ['GET', 'HEAD', 'COPY', 'UNLOCK', 'UNLINK', 'PURGE', 'LINK', 'VIEW'];
 
 /**
- * retuns snippet of java okhttp by parsing data from Postman-SDK request object
+ * returns snippet of java okhttp by parsing data from Postman-SDK request object
  *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required for code snippet
@@ -157,7 +157,7 @@ function getOptions () {
  * @param {Object} options - Options to tweak code snippet generated in Java-OkHttp
  * @param {String} options.indentType - type for indentation eg: Space, Tab
  * @param {String} options.indentCount - number of spaces or tabs for indentation.
- * @param {Boolean} [options.includeBoilerplate] - indicates whether to include class defination in java
+ * @param {Boolean} [options.includeBoilerplate] - indicates whether to include class definition in java
  * @param {Boolean} options.followRedirect - whether to enable followredirect
  * @param {Boolean} options.trimRequestBody - whether to trim fields in request body or not
  * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out

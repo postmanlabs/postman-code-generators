@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-var shell = require('shelljs'),
-  chalk = require('chalk'),
+require('shelljs/global');
+
+var chalk = require('chalk'),
   async = require('async'),
   ESLintCLIEngine = require('eslint').CLIEngine,
 
@@ -11,9 +12,7 @@ var shell = require('shelljs'),
      */
   LINT_SOURCE_DIRS = [
     './lib',
-    './bin',
     './test',
-    './examples/*.js',
     './npm/*.js',
     './index.js'
   ];
@@ -45,7 +44,6 @@ module.exports = function (exit) {
     function (report, next) {
       var errorReport = ESLintCLIEngine.getErrorResults(report.results);
       // log the result to CLI
-
       console.info(ESLintCLIEngine.getFormatter()(report.results));
       // log the success of the parser if it has no errors
       (errorReport && !errorReport.length) && console.info(chalk.green('eslint ok!'));
@@ -56,4 +54,4 @@ module.exports = function (exit) {
 };
 
 // ensure we run this script exports if this is a direct stdin.tty run
-!module.parent && module.exports(shell.exit);
+!module.parent && module.exports(exit);

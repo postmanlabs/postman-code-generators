@@ -8,13 +8,14 @@
   },
   "scripts": {
     "test": "npm/test.sh",
-    "package": "npm/package.sh",
-    "zip": "npm/zip.sh",
+    "package": "node npm/package.js",
+    "zip": "node npm/zip.js",
     "prepack": "node npm/pre-package.js",
     "postinstall": "node npm/deepinstall.js",
     "deepinstall": "node npm/deepinstall.js",
     "boilerplate": "node npm/boilerplate.js",
-    "cirequirements": "npm/ci-requirements.sh"
+    "cirequirements": "npm/ci-requirements.sh",
+    "test-lint": "node npm/test-lint.js"
   },
   "repository": {
     "type": "git",
@@ -48,7 +49,6 @@
     "newman": "4.5.7",
     "nyc": "14.1.1",
     "parse-gitignore": "1.0.1",
-    "postman-collection": "3.5.1",
     "pretty-ms": "3.0.1",
     "recursive-readdir": "2.1.0",
     "watchify": "3.11.1"
