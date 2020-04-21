@@ -28,7 +28,7 @@
   "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/nodejs-native",
   "dependencies": {},
   "devDependencies": {
-    "follow-redirects": "1.4.1"
+    "follow-redirects": "1.11.0"
   },
   "engines": {
     "node": ">=8"
