@@ -6,7 +6,8 @@ describe('convert for different request types', function () {
     testConfig = {
       compileScript: 'javac -cp *: main.java',
       runScript: 'java -cp *: main',
-      fileName: 'main.java'
+      fileName: 'main.java',
+      skipCollections: ['sameNameHeadersCollection']
     };
   runNewmanTest(convert, options, testConfig);
 });
