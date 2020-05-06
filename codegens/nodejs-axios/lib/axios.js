@@ -94,11 +94,12 @@ function makeSnippet (request, indentString, options) {
   // https://github.com/axios/axios/issues/789#issuecomment-577177492
   if (!_.isEmpty(body) && body.formdata ) {
     // we can assume that data object is filled up
-    headers.push(`\n${indentString.repeat(2)}...data.getHeaders()`);
+    headers.push(`\n${indentString}...data.getHeaders()`);
   }
   let headerSnippet = indentString + "'headers': { " 
   if(headers.length >0 ) {
-    headerSnippet += indentString.repeat(2) + headers.join(', \n') + '\n'
+    headerSnippet += "\n"
+    headerSnippet += indentString+ headers.join(', \n'+indentString) + "\n"
     headerSnippet += indentString + '}'
   } else {
     headerSnippet += '}'
