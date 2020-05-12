@@ -100,7 +100,7 @@ function parseBody (requestBody, indentString, trimBody, contentType) {
           `${indentString}}))\n`;
         break;
       case 'formdata':
-        bodySnippet = `${extractFormData(requestBody[requestBody.mode], indentString, trimBody, requestBody.mode)}`;
+        bodySnippet = `${extractFormData(requestBody[requestBody.mode], indentString, trimBody, requestBody.mode)}\n`;
         break;
       case 'urlencoded':
         bodySnippet += `.type('form')\n${extractFormData(requestBody[requestBody.mode],
