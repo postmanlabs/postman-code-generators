@@ -23,7 +23,7 @@
               "key": "multiple files",
               "value": "",
               "type": "file",
-              "src": ["<file path 1>", "<file path 2>"]
+              "src": ["<file path 1>","<file path 2>"]
             }
           ]
         },
