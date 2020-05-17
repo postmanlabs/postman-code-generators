@@ -33,6 +33,50 @@ describe('curl convert function', function () {
         }
       });
     });
+    it('should return snippet with url in single quote(\') as line continuation ' +
+            'character for multiline code generation', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        }
+      });
+      options = {
+        quoteType: '\''
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        snippetArray = snippet.split(' ');
+        expect(snippetArray[4][0]).to.equal('\'');
+      });
+    });
+    it('should return snippet with url in double quote(") as line continuation ' +
+            'character for multiline code generation', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        }
+      });
+      options = {
+        quoteType: '"'
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        snippetArray = snippet.split(' ');
+        expect(snippetArray[4][0]).to.equal('"');
+      });
+    });
 
     it('should parse header with string value properly', function () {
       request = new sdk.Request({
