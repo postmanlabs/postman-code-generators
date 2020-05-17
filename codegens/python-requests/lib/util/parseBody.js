@@ -66,7 +66,8 @@ module.exports = function (request, indentation, bodyTrim) {
           bodyFileMap = _.map(_.filter(enabledBodyList, {'type': 'file'}), function (value) {
             return `${indentation}('${value.key}', open('${sanitize(value.src, request.body.mode, bodyTrim)}','rb'))`;
           });
-          requestBody = `payload = {${bodyDataMap.join(',\n')}}\nfiles = [\n${bodyFileMap.join(',\n')}\n]\n`;
+          requestBody = `payload = MultipartEncoder(\nfields={${bodyDataMap.join(',\n')}})\n` +
+           `files = [\n${bodyFileMap.join(',\n')}\n]\n`;
         }
         else {
           requestBody = 'payload = {}\nfiles = {}\n';

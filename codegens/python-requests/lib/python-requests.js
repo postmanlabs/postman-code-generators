@@ -103,6 +103,10 @@ self = module.exports = {
 
     identity = options.indentType === 'Tab' ? '\t' : ' ';
     indentation = identity.repeat(options.indentCount);
+
+    if (request.body && request.body.mode === 'formdata') {
+      snippet += 'from requests_toolbelt import MultipartEncoder\n';
+    }
     snippet += 'import requests\n\n';
     snippet += `url = "${sanitize(request.url.toString(), 'url')}"\n\n`;
 
