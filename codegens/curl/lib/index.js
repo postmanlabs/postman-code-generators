@@ -40,10 +40,10 @@ self = module.exports = {
     }
     url = getUrlStringfromUrlObject(request.url);
     if (request.method === 'HEAD') {
-      snippet += ` ${form('-I', format)} '${url}'`;
+      snippet += ` ${form('-I', format)} ${options.quoteType + url + options.quoteType}`;
     }
     else {
-      snippet += ` ${form('-X', format)} ${request.method} '${url}'`;
+      snippet += ` ${form('-X', format)} ${request.method} ${options.quoteType + url + options.quoteType}`;
     }
 
     if (request.body && !request.headers.has('Content-Type')) {
@@ -185,6 +185,15 @@ self = module.exports = {
         default: '\\',
         description: 'Set a character used to mark the continuation of a statement on the next line ' +
           '(generally, \\ for OSX/Linux, ^ for Windows)'
+      },
+      {
+        name: 'Quote Type',
+        id: 'quoteType',
+        availableOptions: ['\'', '"'],
+        type: 'enum',
+        default: '\'',
+        description: 'Set a Quote type to be used(Single or Double) to be used,' +
+          '(generally, \' for OSX/Linux, " for Windows)'
       },
       {
         name: 'Set request timeout',
