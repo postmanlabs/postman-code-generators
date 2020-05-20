@@ -1,8 +1,7 @@
 var runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../index').convert;
 
-  // eslint-disable-next-line
-describe.skip('Convert for different types of request', function () {
+describe('Convert for different types of request', function () {
   var testConfig = {compileScript: null, runScript: null, fileName: null},
     options = {
       indentCount: 3,
