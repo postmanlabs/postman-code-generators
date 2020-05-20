@@ -293,8 +293,8 @@
 					}
 				},
 				"url": {
-					"raw": "http://postman-echo.com/post",
-					"protocol": "http",
+					"raw": "https://postman-echo.com/post",
+					"protocol": "https",
 					"host": [
 						"postman-echo",
 						"com"
