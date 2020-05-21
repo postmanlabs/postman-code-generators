@@ -8,17 +8,19 @@ var _ = require('./lodash'),
  *
  * @param {Object} body URLEncoded Body
  * @param {boolean} trim trim body option
+ * @param {boolean} ES6_enabled ES6 syntax option
  */
-function parseURLEncodedBody (body, trim) {
-  var bodySnippet = 'const qs = require(\'qs\')\n',
-      dataArray = [];
+function parseURLEncodedBody (body, trim, ES6_enabled) {
+  var varDeclare = ES6_enabled ? 'const' : 'var',
+    bodySnippet = varDeclare + ' qs = require(\'qs\')\n',
+    dataArray = [];
 
   _.forEach(body, function (data) {
     if (!data.disabled) {
-      dataArray.push(`'${sanitize(data.key, trim)}': '${sanitize(data.value, trim)}'`)
+      dataArray.push(`'${sanitize(data.key, trim)}': '${sanitize(data.value, trim)}'`);
     }
   });
-  bodySnippet += `const data = qs.stringify({\n ${dataArray.join(',\n')} \n});`;
+  bodySnippet += varDeclare + ` data = qs.stringify({\n ${dataArray.join(',\n')} \n});`;
   return bodySnippet;
 }
 
@@ -27,23 +29,25 @@ function parseURLEncodedBody (body, trim) {
  *
  * @param {Object} body FormData body
  * @param {boolean} trim trim body option
+ * @param {boolean} ES6_enabled ES6 syntax option
  */
-function parseFormData (body, trim) {
-  var bodySnippet = 'const FormData = require(\'form-data\')\n';
-  bodySnippet += 'const data = new FormData();\n';
+function parseFormData (body, trim, ES6_enabled) {
+  var varDeclare = ES6_enabled ? 'const' : 'var',
+    bodySnippet = varDeclare + ' FormData = require(\'form-data\')\n';
+  bodySnippet += varDeclare + ' data = new FormData();\n';
   // check if there's file
-  const fileArray = body.filter(function(item){ return !item.disabled && item.type === 'file'})
+  const fileArray = body.filter(function (item) { return !item.disabled && item.type === 'file'; });
   if (fileArray.length > 0) {
-    bodySnippet += 'const fs = require(\'fs\')\n';
+    bodySnippet += varDeclare + ' fs = require(\'fs\')\n';
   }
   _.forEach(body, function (data) {
     if (!data.disabled) {
       if (data.type === 'file') {
         // var pathArray = data.src.split(path.sep),
         //   fileName = pathArray[pathArray.length - 1],
-          var fileContent = `fs.createReadStream("${data.src}")`
-          // options = `{ knownLength: fs.statSync("${data.src}").size }`;
-          bodySnippet += `data.append("${sanitize(data.key, trim)}", ${fileContent});\n`;
+        var fileContent = `fs.createReadStream("${data.src}")`;
+        // options = `{ knownLength: fs.statSync("${data.src}").size }`;
+        bodySnippet += `data.append("${sanitize(data.key, trim)}", ${fileContent});\n`;
       }
       else {
         bodySnippet += `data.append("${sanitize(data.key, trim)}", "${sanitize(data.value, trim)}");\n`;
@@ -59,9 +63,11 @@ function parseFormData (body, trim) {
  * @param {Object} body Raw body data
  * @param {boolean} trim trim body option
  * @param {String} contentType Content type of the body being sent
+ * @param {boolean} ES6_enabled ES6 syntax option
  */
-function parseRawBody (body, trim, contentType) {
-  var bodySnippet = 'const data = ';
+function parseRawBody (body, trim, contentType, ES6_enabled) {
+  var varDeclare = ES6_enabled ? 'const' : 'var',
+    bodySnippet = varDeclare + ' data = ';
   if (contentType === 'application/json') {
     try {
       let jsonBody = JSON.parse(body);
@@ -83,8 +89,10 @@ function parseRawBody (body, trim, contentType) {
  * @param {Object} body graphql body data
  * @param {boolean} trim trim body option
  * @param {String} indentString indentation to be added to the snippet
+ * @param {boolean} ES6_enabled ES6 syntax option
  */
-function parseGraphQL (body, trim, indentString) {
+function parseGraphQL (body, trim, indentString, ES6_enabled) {
+  var varDeclare = ES6_enabled ? 'const' : 'var';
   let query = body.query,
     graphqlVariables,
     bodySnippet;
@@ -94,7 +102,7 @@ function parseGraphQL (body, trim, indentString) {
   catch (e) {
     graphqlVariables = {};
   }
-  bodySnippet = 'const data = JSON.stringify({\n';
+  bodySnippet = varDeclare + ' data = JSON.stringify({\n';
   bodySnippet += `${indentString}query: "${sanitize(query, trim)}",\n`;
   bodySnippet += `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n})`;
   return bodySnippet;
@@ -104,9 +112,12 @@ function parseGraphQL (body, trim, indentString) {
 /* istanbul ignore next */
 /**
  * parses binamry file data
+ *
+ * @param {boolean} ES6_enabled ES6 syntax option
  */
-function parseFileData () {
-  var bodySnippet = 'const data = "<file contents here>";\n';
+function parseFileData (ES6_enabled) {
+  var varDeclare = ES6_enabled ? 'const' : 'var',
+    bodySnippet = varDeclare + ' data = "<file contents here>";\n';
   return bodySnippet;
 }
 
@@ -117,23 +128,24 @@ function parseFileData () {
  * @param {boolean} trim trim body option
  * @param {String} indentString indentation to be added to the snippet
  * @param {String} contentType Content type of the body being sent
+ * @param {boolean} ES6_enabled ES6 syntax option
  */
-function parseBody (body, trim, indentString, contentType) {
+function parseBody (body, trim, indentString, contentType, ES6_enabled) {
   if (!_.isEmpty(body)) {
     switch (body.mode) {
       case 'urlencoded':
-        return parseURLEncodedBody(body.urlencoded, trim);
+        return parseURLEncodedBody(body.urlencoded, trim, ES6_enabled);
       case 'raw':
-        return parseRawBody(body.raw, trim, contentType);
+        return parseRawBody(body.raw, trim, contentType, ES6_enabled);
       case 'graphql':
-        return parseGraphQL(body.graphql, trim, indentString);
+        return parseGraphQL(body.graphql, trim, indentString, ES6_enabled);
       case 'formdata':
-        return parseFormData(body.formdata, trim);
+        return parseFormData(body.formdata, trim, ES6_enabled);
         /* istanbul ignore next */
       case 'file':
-        return parseFileData(body.file, trim);
+        return parseFileData(ES6_enabled);
       default:
-        return parseRawBody(body[body.mode], trim);
+        return parseRawBody(body[body.mode], trim, contentType, ES6_enabled);
     }
   }
   return '';
@@ -150,7 +162,7 @@ function parseBody (body, trim, indentString, contentType) {
 function parseHeader (request, indentString) {
   var headerObject = request.getHeaders({enabled: true}),
     // headerSnippet = indentString + '\'headers\': {\n';
-    headerArray = []
+    headerArray = [];
 
   if (!_.isEmpty(headerObject)) {
     headerArray = _.reduce(Object.keys(headerObject), function (accumalator, key) {
@@ -169,7 +181,7 @@ function parseHeader (request, indentString) {
         );
       }
       return accumalator;
-    }, [])
+    }, []);
   }
   // headerSnippet += indentString + '}';
 

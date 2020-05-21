@@ -50,26 +50,6 @@ describe('nodejs-axios convert function', function () {
       });
     });
 
-    // it('should return snippet with Async Await pattern when AsyncAwait_enabled is set to true', function () {
-    //   request = new sdk.Request(mainCollection.item[0].request);
-    //   options = {
-    //     AsyncAwait_enabled: true
-    //   };
-    //   convert(request, options, function (error, snippet) {
-    //     if (error) {
-    //       expect.fail(null, null, error);
-    //       return;
-    //     }
-    //     expect(snippet).to.be.a('string');
-    //     snippetArray = snippet.split('\n');
-    //     expect(snippetArray[0]).to.equal('const axios = require(\'axios\');');
-    //     expect(snippetArray).to.include('try {');
-    //     // TODO: trim leading spaces
-    //     expect(snippetArray).to.include('    response = await axios(config);');
-    //     expect(snippetArray).to.include('} catch(error){ ');
-    //   });
-    // });
-
     it('should return snippet with maxRedirects property set to ' +
         '0 for no follow redirect', function () {
       request = new sdk.Request(mainCollection.item[0].request);

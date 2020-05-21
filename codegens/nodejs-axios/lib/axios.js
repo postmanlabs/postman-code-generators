@@ -20,10 +20,10 @@ function makeSnippet (request, indentString, options) {
     body,
     headers,
     indentType = options.indentType === 'Tab' ? '\t' : ' ',
-    indent = indentType.repeat(options.indentCount);
-  
-  snippet = 'const axios = require(\'axios\');\n';
+    indent = indentType.repeat(options.indentCount),
+    varDeclare = options.ES6_enabled ? 'const' : 'var';
 
+  snippet = varDeclare + ' axios = require(\'axios\');\n';
   if (request.body && !request.headers.has('Content-Type')) {
     if (request.body.mode === 'file') {
       request.addHeader({
@@ -84,7 +84,11 @@ function makeSnippet (request, indentString, options) {
   
   body = request.body && request.body.toJSON();
     
-  dataSnippet = parseRequest.parseBody(body, options.trimRequestBody, indent, request.headers.get('Content-Type'));
+  dataSnippet = parseRequest.parseBody(body, 
+                                    options.trimRequestBody,
+                                    indent,
+                                    request.headers.get('Content-Type'),
+                                    options.ES6_enabled);
   snippet += dataSnippet+'\n';
 
   configArray.push(indentString + `'method': '${request.method.toLowerCase()}'`);
@@ -119,7 +123,7 @@ function makeSnippet (request, indentString, options) {
     // although just data is enough, whatever :shrug:
     configArray.push(indentString +`data : data`)
   }
-  snippet += 'const config = {\n';
+  snippet += varDeclare + ' config = {\n';
   snippet += configArray.join(',\n') + '\n';
   snippet += '}\n';
   snippet += 'axios(config)\n';
@@ -176,6 +180,13 @@ function getOptions () {
       type: 'boolean',
       default: false,
       description: 'Remove white space and additional lines that may affect the server\'s response'
+    },
+    {
+      name: 'Enable ES6 features',
+      id: 'ES6_enabled',
+      type: 'boolean',
+      default: false,
+      description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
     }
   ];
 }
