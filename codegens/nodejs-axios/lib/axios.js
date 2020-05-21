@@ -130,16 +130,6 @@ function makeSnippet (request, indentString, options) {
   snippet += indentString + 'console.log(error);\n';
   snippet += '});\n';
 
-  // if(options.AsyncAwait_enabled === true) {
-  //   snippet += 'try {\n'
-  //   snippet += indentString.repeat(2) + 'response = await axios(config);\n'
-  //   snippet += indentString.repeat(2) + 'console.log(JSON.stringify(response.data));\n'
-  //   snippet += '} catch(error){ \n'
-  //   snippet += indentString.repeat(2) + 'console.log(error);\n'
-  //   snippet += '}'
-  // } else { 
-    
-  // }
   return snippet;
 }
 
@@ -187,14 +177,6 @@ function getOptions () {
       default: false,
       description: 'Remove white space and additional lines that may affect the server\'s response'
     }
-    // ,
-    // {
-    //   name: 'Enable Async/Await feature',
-    //   id: 'AsyncAwait_enabled',
-    //   type: 'boolean',
-    //   default: false,
-    //   description: 'Modifies code snippet to incorporate to async await pattern'
-    // }
   ];
 }
 
@@ -208,7 +190,6 @@ function getOptions () {
  * @param {String} options.indentCount - number of spaces or tabs for indentation.
  * @param {Boolean} options.followRedirect - whether to enable followredirect
  * @param {Boolean} options.trimRequestBody - whether to trim fields in request body or not
- * @param {Boolean} options.AsyncAwait_enabled : whether to enable async await pattern
  * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
  * @param {Function} callback - callback function with parameters (error, snippet)
  */

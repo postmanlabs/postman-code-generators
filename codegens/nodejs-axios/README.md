@@ -18,7 +18,6 @@ Convert function will take three parameters
     * `requestTimeout` : Integer denoting time after which the request will bail out in milli-seconds
     * `trimRequestBody` : Trim request body fields
     * `followRedirect` : Boolean denoting whether to redirect a request
-    * `AsyncAwait_enabled` : Boolean denoting whether to generate snippet with async await coding style (WIP)
 
 * `callback`- callback function with first parameter as error and second parameter as string for code snippet
 
