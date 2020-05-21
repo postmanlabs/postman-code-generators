@@ -53,7 +53,10 @@ self = module.exports = {
       parsedHeaders,
       bodyMode,
       timeout,
-      url = '',
+      // https://httpie.org/docs#request-url
+      // default scheme is `http://` for httpie
+      // thus, for url starting with `http://`, no need to add protocol
+      url = request.url.toString().startsWith('https') ? 'https://' : '',
       handleRedirect = (enableRedirect) => { if (enableRedirect) { return GAP + '--follow' + GAP; } return GAP; },
       handleRequestTimeout = (time) => {
         if (time) {
@@ -74,7 +77,7 @@ self = module.exports = {
     options = sanitizeOptions(options, self.getOptions());
 
     Helpers.parseURLVariable(request);
-    url = Helpers.addHost(request) + Helpers.addPort(request) + Helpers.addPathandQuery(request);
+    url += Helpers.addHost(request) + Helpers.addPort(request) + Helpers.addPathandQuery(request);
     timeout = options.requestTimeout;
     if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
       request.addHeader({
