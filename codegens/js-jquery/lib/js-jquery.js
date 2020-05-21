@@ -171,7 +171,6 @@ self = module.exports = {
       });
       jQueryCode = createForm(request.toJSON(), options.trimRequestBody);
     }
-    console.log(jQueryCode);
     jQueryCode += 'var settings = {\n';
     jQueryCode += `${indent}"url": "${sanitize(request.url.toString(), 'url')}",\n`;
     jQueryCode += `${indent}"method": "${request.method}",\n`;
