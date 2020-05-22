@@ -183,7 +183,6 @@ function parseHeader (request, indentString) {
       return accumalator;
     }, []);
   }
-  // headerSnippet += indentString + '}';
 
   return headerArray;
 }

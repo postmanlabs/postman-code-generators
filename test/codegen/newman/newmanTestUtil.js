@@ -125,7 +125,8 @@ function runSnippet (testConfig, snippets, collectionName) {
             'x-forwarded-port',
             'if-none-match',
             'referer',
-            'x-amzn-trace-id'
+            'x-amzn-trace-id',
+            'transfer-encoding'
           ];
         if (result[0]) {
           propertiesTodelete.forEach(function (property) {

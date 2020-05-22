@@ -29,7 +29,7 @@ describe('nodejs-axios convert function', function () {
         expect(snippet).to.be.a('string');
         snippetArray = snippet.split('\n');
         for (var i = 0; i < snippetArray.length; i++) {
-          if (snippetArray[i] === 'const config = {') { line_no = i + 1; }
+          if (snippetArray[i] === 'var config = {') { line_no = i + 1; }
         }
         expect(snippetArray[line_no].charAt(0)).to.equal('\t');
       });
@@ -241,7 +241,7 @@ describe('nodejs-axios convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('const data = new FormData()');
+        expect(snippet).to.include('var data = new FormData()');
       });
     });
 
@@ -302,7 +302,7 @@ describe('nodejs-axios convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('const data = JSON.stringify({"json":"Test-Test"});');
+        expect(snippet).to.include('var data = JSON.stringify({"json":"Test-Test"});');
       });
     });
 
