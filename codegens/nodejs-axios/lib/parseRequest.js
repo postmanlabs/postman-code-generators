@@ -12,7 +12,7 @@ var _ = require('./lodash'),
  */
 function parseURLEncodedBody (body, trim, ES6_enabled) {
   var varDeclare = ES6_enabled ? 'const' : 'var',
-    bodySnippet = varDeclare + ' qs = require(\'qs\')\n',
+    bodySnippet = varDeclare + ' qs = require(\'qs\');\n',
     dataArray = [];
 
   _.forEach(body, function (data) {
@@ -33,12 +33,12 @@ function parseURLEncodedBody (body, trim, ES6_enabled) {
  */
 function parseFormData (body, trim, ES6_enabled) {
   var varDeclare = ES6_enabled ? 'const' : 'var',
-    bodySnippet = varDeclare + ' FormData = require(\'form-data\')\n';
+    bodySnippet = varDeclare + ' FormData = require(\'form-data\');\n';
   bodySnippet += varDeclare + ' data = new FormData();\n';
   // check if there's file
   const fileArray = body.filter(function (item) { return !item.disabled && item.type === 'file'; });
   if (fileArray.length > 0) {
-    bodySnippet += varDeclare + ' fs = require(\'fs\')\n';
+    bodySnippet += varDeclare + ' fs = require(\'fs\');\n';
   }
   _.forEach(body, function (data) {
     if (!data.disabled) {
@@ -47,10 +47,10 @@ function parseFormData (body, trim, ES6_enabled) {
         //   fileName = pathArray[pathArray.length - 1],
         var fileContent = `fs.createReadStream("${data.src}")`;
         // options = `{ knownLength: fs.statSync("${data.src}").size }`;
-        bodySnippet += `data.append("${sanitize(data.key, trim)}", ${fileContent});\n`;
+        bodySnippet += `data.append('${sanitize(data.key, trim)}', ${fileContent});\n`;
       }
       else {
-        bodySnippet += `data.append("${sanitize(data.key, trim)}", "${sanitize(data.value, trim)}");\n`;
+        bodySnippet += `data.append('${sanitize(data.key, trim)}', '${sanitize(data.value, trim)}');\n`;
       }
     }
   });
@@ -104,7 +104,7 @@ function parseGraphQL (body, trim, indentString, ES6_enabled) {
   }
   bodySnippet = varDeclare + ' data = JSON.stringify({\n';
   bodySnippet += `${indentString}query: "${sanitize(query, trim)}",\n`;
-  bodySnippet += `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n})`;
+  bodySnippet += `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n});`;
   return bodySnippet;
 }
 

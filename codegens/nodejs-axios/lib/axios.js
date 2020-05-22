@@ -81,36 +81,37 @@ function makeSnippet (request, indentString, options) {
       formdata: formdataArray
     });
   }
-  
-  body = request.body && request.body.toJSON();
-    
-  dataSnippet = parseRequest.parseBody(body, 
-                                    options.trimRequestBody,
-                                    indent,
-                                    request.headers.get('Content-Type'),
-                                    options.ES6_enabled);
-  snippet += dataSnippet+'\n';
 
-  configArray.push(indentString + `'method': '${request.method.toLowerCase()}'`);
-  configArray.push(indentString + `'url': '${sanitize(request.url.toString())}'`);  
-  
-  headers = parseRequest.parseHeader(request, indentString)
+  body = request.body && request.body.toJSON();
+
+  dataSnippet = !_.isEmpty(body) ? parseRequest.parseBody(body,
+    options.trimRequestBody,
+    indent,
+    request.headers.get('Content-Type'),
+    options.ES6_enabled) : '';
+  snippet += dataSnippet + '\n';
+
+  configArray.push(indentString + `method: '${request.method.toLowerCase()}'`);
+  configArray.push(indentString + `url: '${sanitize(request.url.toString())}'`);
+
+  headers = parseRequest.parseHeader(request, indentString);
   // https://github.com/axios/axios/issues/789#issuecomment-577177492
-  if (!_.isEmpty(body) && body.formdata ) {
+  if (!_.isEmpty(body) && body.formdata) {
     // we can assume that data object is filled up
-    headers.push(`\n${indentString}...data.getHeaders()`);
+    headers.push(`${indentString}...data.getHeaders()`);
   }
-  let headerSnippet = indentString + "'headers': { " 
-  if(headers.length >0 ) {
-    headerSnippet += "\n"
-    headerSnippet += indentString+ headers.join(', \n'+indentString) + "\n"
-    headerSnippet += indentString + '}'
-  } else {
-    headerSnippet += '}'
+  let headerSnippet = indentString + 'headers: { ';
+  if (headers.length > 0) {
+    headerSnippet += '\n';
+    headerSnippet += indentString + headers.join(', \n' + indentString) + '\n';
+    headerSnippet += indentString + '}';
   }
-  
+  else {
+    headerSnippet += '}';
+  }
+
   configArray.push(headerSnippet);
-  
+
   if (options.requestTimeout) {
     configArray.push(indentString + `timeout: ${options.requestTimeout}`);
   }
@@ -121,11 +122,11 @@ function makeSnippet (request, indentString, options) {
   }
   if (dataSnippet !== '') {
     // although just data is enough, whatever :shrug:
-    configArray.push(indentString +`data : data`)
+    configArray.push(indentString + 'data : data');
   }
   snippet += varDeclare + ' config = {\n';
   snippet += configArray.join(',\n') + '\n';
-  snippet += '}\n';
+  snippet += '}\n;';
   snippet += 'axios(config)\n';
   snippet += '.then(function (response) {\n';
   snippet += indentString + 'console.log(JSON.stringify(response.data));\n';
