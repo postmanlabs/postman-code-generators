@@ -45,7 +45,7 @@ function parseFormData (body, trim, ES6_enabled) {
       if (data.type === 'file') {
         // var pathArray = data.src.split(path.sep),
         //   fileName = pathArray[pathArray.length - 1],
-        var fileContent = `fs.createReadStream("${data.src}")`;
+        var fileContent = `fs.createReadStream('${data.src}')`;
         // options = `{ knownLength: fs.statSync("${data.src}").size }`;
         bodySnippet += `data.append('${sanitize(data.key, trim)}', ${fileContent});\n`;
       }
@@ -74,11 +74,11 @@ function parseRawBody (body, trim, contentType, ES6_enabled) {
       bodySnippet += `JSON.stringify(${JSON.stringify(jsonBody)});\n`;
     }
     catch (error) {
-      bodySnippet += `"${sanitize(body.toString(), trim)}";\n`;
+      bodySnippet += `'${sanitize(body.toString(), trim)}';\n`;
     }
   }
   else {
-    bodySnippet += `"${sanitize(body.toString(), trim)}";\n`;
+    bodySnippet += `'${sanitize(body.toString(), trim)}';\n`;
   }
   return bodySnippet;
 }
@@ -103,7 +103,7 @@ function parseGraphQL (body, trim, indentString, ES6_enabled) {
     graphqlVariables = {};
   }
   bodySnippet = varDeclare + ' data = JSON.stringify({\n';
-  bodySnippet += `${indentString}query: "${sanitize(query, trim)}",\n`;
+  bodySnippet += `${indentString}query: '${sanitize(query, trim)}',\n`;
   bodySnippet += `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n});`;
   return bodySnippet;
 }
@@ -117,7 +117,7 @@ function parseGraphQL (body, trim, indentString, ES6_enabled) {
  */
 function parseFileData (ES6_enabled) {
   var varDeclare = ES6_enabled ? 'const' : 'var',
-    bodySnippet = varDeclare + ' data = "<file contents here>";\n';
+    bodySnippet = varDeclare + ' data = \'<file contents here>\';\n';
   return bodySnippet;
 }
 
