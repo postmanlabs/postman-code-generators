@@ -126,7 +126,7 @@ function makeSnippet (request, indentString, options) {
   }
   snippet += varDeclare + ' config = {\n';
   snippet += configArray.join(',\n') + '\n';
-  snippet += '}\n;';
+  snippet += '};\n';
   snippet += 'axios(config)\n';
   snippet += '.then(function (response) {\n';
   snippet += indentString + 'console.log(JSON.stringify(response.data));\n';
