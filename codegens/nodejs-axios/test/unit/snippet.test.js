@@ -349,9 +349,9 @@ describe('nodejs-axios convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('data.append(\'no file\', fs.createReadStream("/path/to/file"));');
-        expect(snippet).to.include('data.append(\'no src\', fs.createReadStream("/path/to/file"));');
-        expect(snippet).to.include('data.append(\'invalid src\', fs.createReadStream("/path/to/file"));');
+        expect(snippet).to.include('data.append(\'no file\', fs.createReadStream(\'/path/to/file\'));');
+        expect(snippet).to.include('data.append(\'no src\', fs.createReadStream(\'/path/to/file\'));');
+        expect(snippet).to.include('data.append(\'invalid src\', fs.createReadStream(\'/path/to/file\'));');
       });
     });
 
