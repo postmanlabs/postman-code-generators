@@ -1,7 +1,5 @@
 var _ = require('./lodash'),
   sanitize = require('./util').sanitize;
-  // path = require('path');
-
 
 /**
  * Parses URLEncoded body from request to axios syntax
@@ -43,10 +41,7 @@ function parseFormData (body, trim, ES6_enabled) {
   _.forEach(body, function (data) {
     if (!data.disabled) {
       if (data.type === 'file') {
-        // var pathArray = data.src.split(path.sep),
-        //   fileName = pathArray[pathArray.length - 1],
         var fileContent = `fs.createReadStream('${data.src}')`;
-        // options = `{ knownLength: fs.statSync("${data.src}").size }`;
         bodySnippet += `data.append('${sanitize(data.key, trim)}', ${fileContent});\n`;
       }
       else {
@@ -161,7 +156,6 @@ function parseBody (body, trim, indentString, contentType, ES6_enabled) {
  */
 function parseHeader (request, indentString) {
   var headerObject = request.getHeaders({enabled: true}),
-    // headerSnippet = indentString + '\'headers\': {\n';
     headerArray = [];
 
   if (!_.isEmpty(headerObject)) {
