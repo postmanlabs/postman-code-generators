@@ -98,12 +98,12 @@ function makeSnippet (request, indentString, options) {
   // https://github.com/axios/axios/issues/789#issuecomment-577177492
   if (!_.isEmpty(body) && body.formdata) {
     // we can assume that data object is filled up
-    headers.push(`${indentString}...data.getHeaders()`);
+    headers.push(`${indentString.repeat(2)}...data.getHeaders()`);
   }
   let headerSnippet = indentString + 'headers: { ';
   if (headers.length > 0) {
     headerSnippet += '\n';
-    headerSnippet += indentString + headers.join(', \n' + indentString) + '\n';
+    headerSnippet += headers.join(', \n') + '\n';
     headerSnippet += indentString + '}';
   }
   else {
@@ -126,7 +126,7 @@ function makeSnippet (request, indentString, options) {
   }
   snippet += varDeclare + ' config = {\n';
   snippet += configArray.join(',\n') + '\n';
-  snippet += '};\n';
+  snippet += '};\n\n';
   snippet += 'axios(config)\n';
   snippet += '.then(function (response) {\n';
   snippet += indentString + 'console.log(JSON.stringify(response.data));\n';
