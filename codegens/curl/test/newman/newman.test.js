@@ -12,7 +12,7 @@ describe('Convert for different types of request', function () {
       longFormat: true,
       silent: true,
       lineContinuationCharacter: '\\',
-      quoteType: '\''
+      quoteType: 'single'
     };
 
   runNewmanTest(convert, options, testConfig);

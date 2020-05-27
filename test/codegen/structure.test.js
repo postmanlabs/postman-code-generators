@@ -71,9 +71,8 @@ const expectedOptions = {
     quoteType: {
       name: 'Quote Type',
       type: 'enum',
-      default: '\'',
-      description: 'Set a Quote type to be used(Single or Double) to be used,' +
-        '(generally, \' for OSX/Linux, " for Windows)'
+      default: 'single',
+      description: 'String denoting the quote type to use (single or double) for url parameter'
     }
   },
   // Standard array of ids that should be used for options ids. Any new option should be updated here.
