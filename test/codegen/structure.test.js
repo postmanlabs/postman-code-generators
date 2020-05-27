@@ -70,7 +70,7 @@ const expectedOptions = {
     },
     quoteType: {
       name: 'Quote Type',
-      type: 'enum',
+      type: 'string',
       default: 'single',
       description: 'String denoting the quote type to use (single or double) for url parameter'
     }

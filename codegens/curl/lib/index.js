@@ -191,7 +191,7 @@ self = module.exports = {
         name: 'Quote Type',
         id: 'quoteType',
         availableOptions: ['single', 'double'],
-        type: 'enum',
+        type: 'string',
         default: 'single',
         description: 'String denoting the quote type to use (single or double) for url parameter'
       },
