@@ -23,6 +23,7 @@ self = module.exports = {
     format = options.longFormat;
     trim = options.trimRequestBody;
     silent = options.silent;
+    url = getUrlStringfromUrlObject(request.url);
 
     snippet = silent ? `curl ${form('-s', format)}` : 'curl';
     if (redirect) {
@@ -31,6 +32,10 @@ self = module.exports = {
     if (timeout > 0) {
       snippet += ` ${form('-m', format)} ${timeout}`;
     }
+    // eslint-disable-next-line no-useless-escape
+    if ((url.match(/[\{\[]/g) || []).length > 1) {
+      snippet += ' -g';
+    }
     if (multiLine) {
       indent = options.indentType === 'Tab' ? '\t' : ' ';
       indent = ' ' + options.lineContinuationCharacter + '\n' + indent.repeat(options.indentCount); // eslint-disable-line max-len
@@ -38,7 +43,6 @@ self = module.exports = {
     else {
       indent = ' ';
     }
-    url = getUrlStringfromUrlObject(request.url);
     if (request.method === 'HEAD') {
       snippet += ` ${form('-I', format)} '${url}'`;
     }
@@ -159,6 +163,7 @@ self = module.exports = {
         }
       }
     }
+    console.log(snippet + '\n');
     callback(null, snippet);
   },
   getOptions: function () {

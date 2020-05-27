@@ -59,6 +59,45 @@ describe('curl convert function', function () {
       });
     });
 
+    it('should generate snippet with -g parameter when nested {}[] are present in url parameter', function () {
+      request = new sdk.Request({
+        'method': 'GET',
+        'header': [
+          {
+            'key': 'foo',
+            'value': '"bar"'
+          }
+        ],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        },
+        'url': {
+          'raw': 'https://google.com?a={{x:[[{[',
+          'protocol': 'https',
+          'host': [
+            'google',
+            'com'
+          ],
+          'query': [
+            {
+              'key': 'a',
+              'value': '{{x:[[{['
+            }
+          ]
+        }
+      });
+      options = {
+        longFormat: false
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.include("-g"); // eslint-disable-line quotes
+      });
+    });
+
     it('should return snippet without errors when request object has no body property', function () {
       request = new sdk.Request({
         'method': 'GET',
