@@ -170,7 +170,7 @@ self = module.exports = {
     snippet += !options.followRedirect ? ', allow_redirects = False' : '';
     snippet += options.requestTimeout !== 0 ? `, timeout=${options.requestTimeout}` : '';
     snippet += ')\n\n';
-    snippet += 'print(response.text.encode(\'utf8\'))\n';
+    snippet += 'print(response.text)\n';
 
     callback(null, snippet);
   }
