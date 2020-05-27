@@ -163,7 +163,6 @@ self = module.exports = {
         }
       }
     }
-    console.log(snippet + '\n');
     callback(null, snippet);
   },
   getOptions: function () {
