@@ -26,7 +26,8 @@ List of supported code generators:
 | Java | Unirest |
 | JavaScript | Fetch | 
 | JavaScript | jQuery | 
-| JavaScript | XHR | 
+| JavaScript | XHR |
+| NodeJs | Axios | 
 | NodeJs | Native |
 | NodeJs | Request |
 | NodeJs | Unirest |

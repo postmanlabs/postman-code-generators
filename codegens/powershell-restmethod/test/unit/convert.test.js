@@ -458,6 +458,41 @@ describe('Powershell-restmethod converter', function () {
         expect(snippet).to.include("'https://postman-echo.com/get?query1=b''b&query2=c\"c'");
       });
     });
+
+    it('should generate snippet for form data params with no type key present', function () {
+      var request = new sdk.Request({
+        method: 'POST',
+        header: [],
+        url: {
+          raw: 'https://postman-echo.com/post',
+          protocol: 'https',
+          host: [
+            'postman-echo',
+            'com'
+          ],
+          path: [
+            'post'
+          ]
+        },
+        body: {
+          mode: 'formdata',
+          formdata: [
+            {
+              key: 'sample_key',
+              value: 'sample_value'
+            }
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        expect(error).to.be.null;
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('$stringHeader = [System.Net.Http.Headers.ContentDispositionHeaderValue]' +
+        '::new("form-data")');
+        expect(snippet).to.include('$stringHeader.Name = "sample_key"');
+        expect(snippet).to.include('$StringContent = [System.Net.Http.StringContent]::new("sample_value")');
+      });
+    });
   });
 
   describe('getOptions function', function () {
