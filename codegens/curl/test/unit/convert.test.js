@@ -59,7 +59,7 @@ describe('curl convert function', function () {
       });
     });
 
-    it('should generate snippet with -g parameter when nested {}[] are present in url parameter', function () {
+    it('should generate snippet with -g parameter when nested {{ are present in url parameter', function () {
       request = new sdk.Request({
         'method': 'GET',
         'header': [
@@ -73,7 +73,7 @@ describe('curl convert function', function () {
           'raw': ''
         },
         'url': {
-          'raw': 'https://google.com?a={{x:[[{[',
+          'raw': 'https://google.com?a={x:{',
           'protocol': 'https',
           'host': [
             'google',
@@ -82,19 +82,128 @@ describe('curl convert function', function () {
           'query': [
             {
               'key': 'a',
-              'value': '{{x:[[{['
+              'value': '{x:{'
             }
           ]
         }
       });
-      options = {
-        longFormat: false
-      };
+      options = {};
       convert(request, options, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
         }
-        expect(snippet).to.include("-g"); // eslint-disable-line quotes
+        expect(snippet).to.include('-g');
+      });
+    });
+
+    it('should generate snippet with -g parameter when nested [[ are present in url parameter', function () {
+      request = new sdk.Request({
+        'method': 'GET',
+        'header': [
+          {
+            'key': 'foo',
+            'value': '"bar"'
+          }
+        ],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        },
+        'url': {
+          'raw': 'https://google.com?a=[[ab',
+          'protocol': 'https',
+          'host': [
+            'google',
+            'com'
+          ],
+          'query': [
+            {
+              'key': 'a',
+              'value': '[[ab'
+            }
+          ]
+        }
+      });
+      options = {};
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.include('-g');
+      });
+    });
+
+    it('should generate snippet with -g parameter when nested {[ are present in url parameter', function () {
+      request = new sdk.Request({
+        'method': 'GET',
+        'header': [
+          {
+            'key': 'foo',
+            'value': '"bar"'
+          }
+        ],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        },
+        'url': {
+          'raw': 'https://google.com?a={x:[',
+          'protocol': 'https',
+          'host': [
+            'google',
+            'com'
+          ],
+          'query': [
+            {
+              'key': 'a',
+              'value': '{x:['
+            }
+          ]
+        }
+      });
+      options = {};
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.include('-g');
+      });
+    });
+
+    it('should generate snippet with -g parameter when nested [{ are present in url parameter', function () {
+      request = new sdk.Request({
+        'method': 'GET',
+        'header': [
+          {
+            'key': 'foo',
+            'value': '"bar"'
+          }
+        ],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        },
+        'url': {
+          'raw': 'https://google.com?a=[x{',
+          'protocol': 'https',
+          'host': [
+            'google',
+            'com'
+          ],
+          'query': [
+            {
+              'key': 'a',
+              'value': '[x{'
+            }
+          ]
+        }
+      });
+      options = {};
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.include('-g');
       });
     });
 

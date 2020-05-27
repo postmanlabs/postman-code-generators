@@ -32,8 +32,7 @@ self = module.exports = {
     if (timeout > 0) {
       snippet += ` ${form('-m', format)} ${timeout}`;
     }
-    // eslint-disable-next-line no-useless-escape
-    if ((url.match(/[\{\[]/g) || []).length > 1) {
+    if ((url.match(/[{[]/g) || []).length > 1) {
       snippet += ' -g';
     }
     if (multiLine) {
@@ -163,6 +162,7 @@ self = module.exports = {
         }
       }
     }
+    // console.log(snippet);
     callback(null, snippet);
   },
   getOptions: function () {
