@@ -67,3 +67,6 @@ typings/
 out/
 
 newmanResponses.json
+
+#history of files
+.history
