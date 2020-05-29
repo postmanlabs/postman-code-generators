@@ -27,7 +27,8 @@ function getOptions () {
  * @returns {Function} returns the snippet with the callback function.
  */
 function convert (request, options, callback) {
-  let snippet = '';
+  let snippet = '',
+    body;
   options = utils.sanitizeOptions(options, getOptions());
   utils.parseURLVariable(request);
   snippet = `${request.method} ${utils.getEndPoint(request)} HTTP/1.1\n`;
@@ -47,14 +48,6 @@ function convert (request, options, callback) {
     }
   }
 
-  if (request.body && !request.headers.has('Content-Length')) {
-    if (request.body.mode === 'raw' && request.body.raw.length !== 0) {
-      request.addHeader({
-        key: 'Content-Length',
-        value: request.body.raw.length
-      });
-    }
-  }
   // The following code handles multiple files in the same formdata param.
   // It removes the form data params where the src property is an array of filepath strings
   // Splits that array into different form data params with src set as a single filepath string
@@ -96,9 +89,15 @@ function convert (request, options, callback) {
       formdata: formdataArray
     });
   }
+  body = utils.getBody(request, options.trimRequestBody);
+  if (body && body.length !== 0 && !request.headers.has('Content-Length')) {
+    request.addHeader({
+      key: 'Content-Length',
+      value: body.length
+    });
+  }
   snippet += `${utils.getHeaders(request)}\n`;
-  snippet += `\n${utils.getBody(request, options.trimRequestBody)}`;
-
+  snippet += `\n${body}`;
   return callback(null, snippet);
 }
 

@@ -198,8 +198,7 @@ describe('Converter test', function () {
     });
   });
 
-  it('should generate valid snippet with Content-Length header if request body is of raw type ' +
-  'and has non zero content length', function () {
+  it('should generate valid snippet with Content-Length header if request has body', function () {
     var request = new Request({
       'method': 'GET',
       'header': [
