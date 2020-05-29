@@ -46,6 +46,15 @@ function convert (request, options, callback) {
       });
     }
   }
+
+  if (request.body && !request.headers.has('Content-Length')) {
+    if (request.body.mode === 'raw' && request.body.raw.length !== 0) {
+      request.addHeader({
+        key: 'Content-Length',
+        value: request.body.raw.length
+      });
+    }
+  }
   // The following code handles multiple files in the same formdata param.
   // It removes the form data params where the src property is an array of filepath strings
   // Splits that array into different form data params with src set as a single filepath string
