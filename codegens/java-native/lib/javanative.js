@@ -67,6 +67,7 @@ function makeSnippet (request, indentString, options) {
   snippet += parseRequest.parseHeader(request, indentString);
 
   snippet += `con.setDoOutput(${isBodyRequired ? 'true' : 'false'});\n`;
+
   if (isBodyRequired) {
     // The following code handles multiple files in the same formdata param.
     // It removes the form data params where the src property is an array of filepath strings
@@ -108,18 +109,15 @@ function makeSnippet (request, indentString, options) {
     if (request.body && request.body.mode === 'file') {
       snippet += multiPartSnippet();
     }
+    if (request.body && request.body.mode === 'graphql') {
+      snippet += 'con.setRequestProperty("Content-Type", "application/json");\n';
+    }
     let requestBody = (request.body ? request.body.toJSON() : {});
     //  snippet for creating mediatype object in java based on content-type of request
     // snippet += `con.setRequestProperty("Content-Type", "${parseRequest.parseContentType(request)}");\n`
     snippet += parseRequest.parseBody(requestBody, indentString, options.trimRequestBody);
   }
 
-  if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
-    request.addHeader({
-      key: 'Content-Type',
-      value: 'application/json'
-    });
-  }
 
   snippet += 'BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));\n' +
   'String temp = null;\n' +
