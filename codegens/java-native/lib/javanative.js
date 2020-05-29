@@ -113,8 +113,6 @@ function makeSnippet (request, indentString, options) {
       snippet += 'con.setRequestProperty("Content-Type", "application/json");\n';
     }
     let requestBody = (request.body ? request.body.toJSON() : {});
-    //  snippet for creating mediatype object in java based on content-type of request
-    // snippet += `con.setRequestProperty("Content-Type", "${parseRequest.parseContentType(request)}");\n`
     snippet += parseRequest.parseBody(requestBody, indentString, options.trimRequestBody);
   }
 

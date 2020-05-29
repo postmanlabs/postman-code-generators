@@ -179,13 +179,11 @@ function parseBody (requestBody, indentString, trimFields) {
                   'out.close();\n';
         return snippet;
       case 'formdata':
-        // snippet += generateBoilerPlateHeader();
         snippet += requestBody.formdata.length ?
           generateBoilerPlateHeader() + parseFormData(requestBody, indentString, trimFields) +
           generateBoilerPlateFooter() :
           'out.writeBytes("{}");\n' +
                   'out.close();\n';
-        // snippet += generateBoilerPlateFooter();
         return snippet;
 
       case 'file':
