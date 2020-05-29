@@ -102,7 +102,8 @@ function makeSnippet (request, indentString, options) {
         mode: 'formdata',
         formdata: formdataArray
       });
-      snippet += multiPartSnippet();
+      snippet += formdataArray.length > 0 ? multiPartSnippet() :
+        'con.setRequestProperty("Content-Type", "application/json");\n';
     }
     if (request.body && request.body.mode === 'file') {
       snippet += multiPartSnippet();

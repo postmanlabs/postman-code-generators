@@ -179,16 +179,13 @@ function parseBody (requestBody, indentString, trimFields) {
                   'out.close();\n';
         return snippet;
       case 'formdata':
-        snippet += generateBoilerPlateHeader();
+        // snippet += generateBoilerPlateHeader();
         snippet += requestBody.formdata.length ?
-          `${parseFormData(requestBody, indentString, trimFields)}` :
-          'writer.append("--" + boundary).append(LINE_FEED)\n' +
-          indentString + '.append("Content-Disposition: form-data;")\n' +
-          indentString + '.append(LINE_FEED)\n' +
-          indentString + '.append("Content-Type: text/plain; charset=UTF-8")\n' +
-          indentString + '.append(LINE_FEED);\n' +
-          'writer.flush();\n';
-        snippet += generateBoilerPlateFooter();
+          generateBoilerPlateHeader() + parseFormData(requestBody, indentString, trimFields) +
+          generateBoilerPlateFooter() :
+          'out.writeBytes("{}");\n' +
+                  'out.close();\n';
+        // snippet += generateBoilerPlateFooter();
         return snippet;
 
       case 'file':
