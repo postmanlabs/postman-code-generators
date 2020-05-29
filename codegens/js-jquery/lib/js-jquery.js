@@ -51,14 +51,15 @@ function createForm (request, trimRequestBody) {
   enabledFormList = _.reject(request.body[request.body.mode], 'disabled');
   if (!_.isEmpty(enabledFormList)) {
     formMap = _.map(enabledFormList, function (value) {
-      if (value.type === 'text') {
-        return (`form.append("${sanitize(value.key, request.body.mode, trimRequestBody)}", "` +
-                    `${sanitize(value.value, request.body.mode, trimRequestBody)}");`);
+      if (value.type === 'file') {
+        var pathArray = value.src.split(path.sep),
+          fileName = pathArray[pathArray.length - 1];
+        return (`form.append("${sanitize(value.key, request.body.mode, trimRequestBody)}", fileInput.files[0], ` +
+          `"${sanitize(fileName, request.body.mode, trimRequestBody)}");`);
       }
-      var pathArray = value.src.split(path.sep),
-        fileName = pathArray[pathArray.length - 1];
-      return (`form.append("${sanitize(value.key, request.body.mode, trimRequestBody)}", fileInput.files[0], ` +
-                    `"${sanitize(fileName, request.body.mode, trimRequestBody)}");`);
+      return (`form.append("${sanitize(value.key, request.body.mode, trimRequestBody)}", "` +
+        `${sanitize(value.value, request.body.mode, trimRequestBody)}");`);
+
     });
     form += `${formMap.join('\n')}\n\n`;
   }
