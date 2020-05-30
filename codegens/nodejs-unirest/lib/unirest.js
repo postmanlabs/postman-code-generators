@@ -6,7 +6,7 @@ var _ = require('./lodash'),
   parseRequest = require('./parseRequest');
 
 /**
- * retuns snippet of nodejs(unirest) by parsing data from Postman-SDK request object
+ * returns snippet of nodejs(unirest) by parsing data from Postman-SDK request object
  *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required for code snippet
@@ -14,9 +14,21 @@ var _ = require('./lodash'),
  * @returns {String} - nodejs(unirest) code snippet for given request object
  */
 function makeSnippet (request, indentString, options) {
-  var snippet = 'var unirest = require(\'unirest\');\n';
-
-  snippet += `var req = unirest('${request.method}', '${sanitize(request.url.toString())}')\n`;
+  var snippet;
+  if (options.ES6_enabled) {
+    snippet = 'const ';
+  }
+  else {
+    snippet = 'var ';
+  }
+  snippet += 'unirest = require(\'unirest\');\n';
+  if (options.ES6_enabled) {
+    snippet += 'const ';
+  }
+  else {
+    snippet += 'var ';
+  }
+  snippet += `req = unirest('${request.method}', '${sanitize(request.url.toString())}')\n`;
   if (request.body && !request.headers.has('Content-Type')) {
     if (request.body.mode === 'file') {
       request.addHeader({
@@ -80,13 +92,17 @@ function makeSnippet (request, indentString, options) {
       request.headers.get('Content-Type'));
   }
   if (options.requestTimeout) {
-    snippet += indentString + `.timeout(${options.requestTimeout})`;
+    snippet += indentString + `.timeout(${options.requestTimeout})\n`;
   }
   if (options.followRedirect === false) {
     snippet += indentString + '.followRedirect(false)\n';
   }
-
-  snippet += indentString + '.end(function (res) { \n';
+  if (options.ES6_enabled) {
+    snippet += indentString + '.end((res) => { \n';
+  }
+  else {
+    snippet += indentString + '.end(function (res) { \n';
+  }
   snippet += indentString.repeat(2) + 'if (res.error) throw new Error(res.error); \n';
   snippet += indentString.repeat(2) + 'console.log(res.raw_body);\n';
   snippet += indentString + '});\n';
@@ -137,6 +153,13 @@ function getOptions () {
       type: 'boolean',
       default: false,
       description: 'Remove white space and additional lines that may affect the server\'s response'
+    },
+    {
+      name: 'Enable ES6 features',
+      id: 'ES6_enabled',
+      type: 'boolean',
+      default: false,
+      description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
     }
   ];
 }
@@ -150,6 +173,7 @@ function getOptions () {
  * @param {String} options.indentCount - number of spaces or tabs for indentation.
  * @param {Boolean} options.followRedirect - whether to enable followredirect
  * @param {Boolean} options.trimRequestBody - whether to trim fields in request body or not
+ * @param {Boolean} options.ES6_enabled - whether to generate snippet with ES6 features
  * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
  * @param {Function} callback - callback function with parameters (error, snippet)
  */

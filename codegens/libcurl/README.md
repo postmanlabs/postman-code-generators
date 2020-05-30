@@ -13,7 +13,7 @@ Convert function takes three parameters
 
 * `request` - Postman-SDK Request Object
 
-* `options` - options is an object which hsa following properties
+* `options` - options is an object which has following properties
     * `indentType` - String denoting type of indentation for code snippet. eg: 'Space', 'Tab'
     * `indentCount` - Integer denoting count of indentation required
     * `trimRequestBody` - Boolean denoting whether to trim request body fields

@@ -172,7 +172,7 @@ self = module.exports = {
      * @param {String} options.indentType - type for indentation eg: Space, Tab (default: Space)
      * @param {String} options.indentCount - number of spaces or tabs for indentation. (default: 4 for indentType:
                                                                          Space, default: 1 for indentType: Tab)
-     * @param {Boolean} [options.includeBoilerplate] - indicates whether to include class defination in C#
+     * @param {Boolean} [options.includeBoilerplate] - indicates whether to include class definition in C#
      * @param {Boolean} options.followRedirect - whether to enable followredirect
      * @param {Boolean} options.trimRequestBody - whether to trim fields in request body or not (default: false)
      * @param {Number} options.requestTimeout - time in milli-seconds after which request will bail out

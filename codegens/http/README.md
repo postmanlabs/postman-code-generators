@@ -13,7 +13,7 @@ Convert function takes three parameters
 
 * `request` - Postman-SDK Request Object
 
-* `options` - options is an object which hsa following properties
+* `options` - options is an object which has following properties
     * `trimRequestBody` - Trim request body fields
 
 * `callback` - callback function with first parameter as error and second parameter as string for code snippet

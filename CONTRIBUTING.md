@@ -10,7 +10,7 @@
   - [Pull request guidelines](#pull-request-guidelines)
   - [Tests](#tests)
   - [Build Failures](build-failures)
-  - [Security guildelines](security-guidelines)
+  - [Security guidelines](security-guidelines)
 
 ## Getting Started Quick
 
@@ -33,7 +33,7 @@ Installs all `dependencies` of all the codegens. This runs the command `npm inst
 The script associated with `npm test` will run all tests that ensures that your commit does not break anything in the
 repository. Additional requirements to run these tests have been listed down in [ADDITIONAL_DEPENDENCIES](/ADDITIONAL_DEPENDENCIES.md)
 
-* `npm test`: Runs strucutre, unit, newman and system tests for all codegens
+* `npm test`: Runs structure, unit, newman and system tests for all codegens
 * `npm run test <codegen-name>`: Runs tests for a particular codegen.
 
 
@@ -86,7 +86,7 @@ One of the following two contributions are possible for postman-code-generators:
   - All pull requests should be to the develop branch. 
   - Every pull request should have associated issue(s) on our [issue tracker](https://github.com/postmanlabs/postman-code-generators/issues).
   - For any non-trivial fixes, regression tests should be added as well. For a bug, we also recommend adding a request to the `testCollection.json` found inside `test/codegen/newman/fixtures` to run the request using common newman tests.
-  - For a new language to be added as a part of postman-code-generators, we will need some level of community support before we are able to accept the pull request. Feel free to add links to any sort of report/statistics from trusted sources that might help us understand the relavance and popularity of this language among users.
+  - For a new language to be added as a part of postman-code-generators, we will need some level of community support before we are able to accept the pull request. Feel free to add links to any sort of report/statistics from trusted sources that might help us understand the relevance and popularity of this language among users.
 
 
 ## Tests

@@ -268,4 +268,36 @@ describe('jQuery converter', function () {
       expect(snippet).to.not.include('"sample_key": "value2"');
     });
   });
+
+  it('should generate snippet for form data params with no type key present', function () {
+    var request = new sdk.Request({
+      method: 'POST',
+      header: [],
+      url: {
+        raw: 'https://postman-echo.com/post',
+        protocol: 'https',
+        host: [
+          'postman-echo',
+          'com'
+        ],
+        path: [
+          'post'
+        ]
+      },
+      body: {
+        mode: 'formdata',
+        formdata: [
+          {
+            key: 'sample_key',
+            value: 'sample_value'
+          }
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      expect(error).to.be.null;
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('form.append("sample_key", "sample_value")');
+    });
+  });
 });

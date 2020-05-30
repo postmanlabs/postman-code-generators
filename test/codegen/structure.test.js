@@ -41,7 +41,8 @@ const expectedOptions = {
       name: 'Set request timeout',
       type: 'positiveInteger',
       default: 0,
-      description: 'Set number of milliseconds the request should wait for a response before timing out (use 0 for infinity)'
+      description: 'Set number of milliseconds the request should wait' +
+      ' for a response before timing out (use 0 for infinity)'
     },
     followRedirect: {
       name: 'Follow redirects',
@@ -60,6 +61,12 @@ const expectedOptions = {
       type: 'boolean',
       default: false,
       description: 'Display the requested data without showing the cURL progress meter or error messages'
+    },
+    ES6_enabled: {
+      name: 'Enable ES6 features',
+      type: 'boolean',
+      default: false,
+      description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
     }
   },
   // Standard array of ids that should be used for options ids. Any new option should be updated here.
@@ -75,7 +82,8 @@ const expectedOptions = {
     'followRedirect',
     'lineContinuationCharacter',
     'protocol',
-    'useMimeType'
+    'useMimeType',
+    'ES6_enabled'
   ],
   CODEGEN_ABS_PATH = `./codegens/${codegen}`;
 describe('Code-gen repository ' + codegen, function () {
