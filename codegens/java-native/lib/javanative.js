@@ -45,8 +45,9 @@ function makeSnippet (request, indentString, options) {
     indentString.repeat(2) + 'e.printStackTrace();\n' +
     indentString + '};\n';
   }
-
-  snippet += `URL obj = new URL("${sanitize(request.url.toString())}");\n` +
+  snippet += 'System.err.close();\n' +
+            'System.setErr(System.out);\n' +
+           `URL obj = new URL("${sanitize(request.url.toString())}");\n` +
   'URLConnection connection = obj.openConnection();\n' +
   'HttpURLConnection con = null;\n' +
   'if(connection instanceof HttpsURLConnection){\n' +
