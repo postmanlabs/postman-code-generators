@@ -205,41 +205,54 @@ function parseBody (requestBody, indentString, trimFields) {
 }
 
 /**
+* Generate java reusable code snippet for adding headers to the request
+*
+* @param {String} indentString - string for indentation
+* @returns {String} - reusable code snippet for adding headers in java
+*/
+function generateBoilderPlateForHeaders (indentString) {
+  return 'Map<String, String> headers = new HashMap<>();\n' +
+    'BiConsumer<String,String> headerMap = (key,value) -> {\n' +
+    indentString + 'if(headers.get(key)!=null){\n' +
+    indentString.repeat(2) + 'String val = headers.get(key);\n' +
+    indentString.repeat(2) + 'val = val + ", "+ value;\n' +
+    indentString.repeat(2) + 'headers.put(key, val);\n' +
+    indentString + '}else{\n' +
+    indentString.repeat(2) + 'headers.put(key,value) ;\n' +
+    indentString + '}\n' +
+    '};\n';
+}
+
+/**
 * Parses header in Postman-SDK request and returns code snippet of java  for adding headers
 *
 * @param {Object} request - Postman SDK request object
+* @param {String} indentString - string for indentation
 * @returns {String} - code snippet for adding headers in java
 */
-function parseHeader (request) {
+function parseHeader (request, indentString) {
   var headerArray = request.toJSON().header,
     headerSnippet = '';
 
   if (!_.isEmpty(headerArray)) {
     headerArray = _.reject(headerArray, 'disabled');
-    headerSnippet += _.reduce(headerArray, function (accumalator, header) {
-      accumalator += `con.setRequestProperty("${sanitize(header.key, true)}", ` +
+    if (!_.isEmpty(headerArray)) {
+      headerSnippet += generateBoilderPlateForHeaders(indentString);
+      headerSnippet += _.reduce(headerArray, function (accumalator, header) {
+        accumalator += `headerMap.accept("${sanitize(header.key, true)}", ` +
       `"${sanitize(header.value)}");\n`;
-      return accumalator;
-    }, '');
+        return accumalator;
+      }, '');
+      headerSnippet += 'for (Map.Entry<String, String> entry : headers.entrySet()) {\n' +
+        indentString + 'con.setRequestProperty(entry.getKey(), entry.getValue());\n' +
+        '}';
+    }
   }
   return headerSnippet;
 }
 
-/**
-* returns content-type of request body if available else returns text/plain as default
-*
-* @param {Object} request - Postman SDK request object
-* @returns {String}- content-type of request body
-*/
-function parseContentType (request) {
-  if (request.body && request.body.mode === 'graphql') {
-    return 'application/json';
-  }
-  return request.getHeaders({enabled: true, ignoreCase: true})['content-type'] || 'text/plain';
-}
 
 module.exports = {
   parseBody: parseBody,
-  parseHeader: parseHeader,
-  parseContentType: parseContentType
+  parseHeader: parseHeader
 };

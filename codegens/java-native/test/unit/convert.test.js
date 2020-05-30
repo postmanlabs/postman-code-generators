@@ -39,8 +39,8 @@ describe('java convert function', function () {
           return;
         }
         expect(snippet).to.include('import java.io.*;\nimport javax.net.ssl.HttpsURLConnection;\n' +
-        'import java.net.*;\nimport java.lang.reflect.*;\nimport java.util.function.BiConsumer;\n' +
-        'public class main {\n');
+        'import java.net.*;\nimport java.lang.reflect.*;\nimport java.util.*;\n' +
+        'import java.util.function.BiConsumer;\npublic class main {\n');
       });
     });
 
@@ -104,7 +104,7 @@ describe('java convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('.setRequestProperty("key_containing_whitespaces", ' +
+        expect(snippet).to.include('headerMap.accept("key_containing_whitespaces", ' +
         '"  value_containing_whitespaces  ")');
       });
     });
@@ -305,6 +305,77 @@ describe('java convert function', function () {
     });
   });
 
+  it('should generate snippets for combining multiple same headers', function () {
+    var request = new sdk.Request({
+      'method': 'GET',
+      'header': [
+        {
+          'key': 'key',
+          'value': 'value1',
+          'type': 'text'
+        },
+        {
+          'key': 'key',
+          'value': 'value2',
+          'type': 'text'
+        }
+      ],
+      'url': {
+        'raw': 'https://postman-echo.com/get',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'get'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('headerMap.accept("key", "value1")');
+      expect(snippet).to.include('headerMap.accept("key", "value2")');
+      expect(snippet).to.include('con.setRequestProperty(entry.getKey(), entry.getValue())');
+      expect(snippet).to.include('BiConsumer<String,String> headerMap');
+      expect(snippet).to.include('Map<String, String> headers = new HashMap<>()');
+    });
+  });
+
+  it('should generate snippets for graph QL body', function () {
+    var request = new sdk.Request({
+      'method': 'POST',
+      'header': [],
+      'body': {
+        'mode': 'graphql',
+        'graphql': {
+          'query': '{\n    body{\n        graphql\n    }\n}',
+          'variables': '{\n\t"variable_key": "variable_value"\n}'
+        }
+      },
+      'url': {
+        'raw': 'https://postman-echo.com/post',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'post'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('con.setRequestProperty("Content-Type", "application/json")');
+    });
+  });
 
   describe('getOptions function', function () {
     it('should return array of options for csharp-restsharp converter', function () {

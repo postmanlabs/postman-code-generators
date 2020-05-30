@@ -65,7 +65,7 @@ function makeSnippet (request, indentString, options) {
   }
 
   snippet += parseRequest.parseHeader(request, indentString);
-
+  snippet += 'con.setRequestProperty("Accept","application/json");\n';
   snippet += `con.setDoOutput(${isBodyRequired ? 'true' : 'false'});\n`;
 
   if (isBodyRequired) {
@@ -229,6 +229,7 @@ function convert (request, options, callback) {
                         'import javax.net.ssl.HttpsURLConnection;\n' +
                         'import java.net.*;\n' +
                         'import java.lang.reflect.*;\n' +
+                        'import java.util.*;\n' +
                         'import java.util.function.BiConsumer;\n' +
                         'public class main {\n' +
                         indentString + 'public static void main(String []args) throws IOException{\n';
