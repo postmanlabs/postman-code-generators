@@ -139,7 +139,7 @@ module.exports = function (request, indentation, bodyTrim) {
           bodyFileMap = _.map(_.filter(enabledBodyList, {'type': 'file'}), function (value) {
             var filesrc = value.src,
               filetype = filesrc.split('.')[filesrc.split('.').length - 1];
-            return `${indentation}('${value.key}',('${filesrc}'` +
+            return `${indentation}('${value.key}',('${filesrc.split('/')[filesrc.split('/').length - 1]}'` +
                     `,open('${sanitize(filesrc, request.body.mode, bodyTrim)}','rb'),` +
                     `'${contentTypeHeaderMap[filetype]}'))`;
           });
