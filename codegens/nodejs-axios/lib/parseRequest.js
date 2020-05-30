@@ -18,7 +18,13 @@ function parseURLEncodedBody (body, trim, ES6_enabled) {
       dataArray.push(`'${sanitize(data.key, trim)}': '${sanitize(data.value, trim)}'`);
     }
   });
-  bodySnippet += varDeclare + ` data = qs.stringify({\n ${dataArray.join(',\n')} \n});`;
+  if (ES6_enabled) {
+    bodySnippet += 'let';
+  }
+  else {
+    bodySnippet += 'var';
+  }
+  bodySnippet += ` data = qs.stringify({\n ${dataArray.join(',\n')} \n});`;
   return bodySnippet;
 }
 
@@ -32,12 +38,19 @@ function parseURLEncodedBody (body, trim, ES6_enabled) {
 function parseFormData (body, trim, ES6_enabled) {
   var varDeclare = ES6_enabled ? 'const' : 'var',
     bodySnippet = varDeclare + ' FormData = require(\'form-data\');\n';
-  bodySnippet += varDeclare + ' data = new FormData();\n';
   // check if there's file
   const fileArray = body.filter(function (item) { return !item.disabled && item.type === 'file'; });
   if (fileArray.length > 0) {
     bodySnippet += varDeclare + ' fs = require(\'fs\');\n';
   }
+  if (ES6_enabled) {
+    bodySnippet += 'let';
+  }
+  else {
+    bodySnippet += 'var';
+  }
+  bodySnippet += ' data = new FormData();\n';
+
   _.forEach(body, function (data) {
     if (!data.disabled) {
       if (data.type === 'file') {
@@ -61,7 +74,7 @@ function parseFormData (body, trim, ES6_enabled) {
  * @param {boolean} ES6_enabled ES6 syntax option
  */
 function parseRawBody (body, trim, contentType, ES6_enabled) {
-  var varDeclare = ES6_enabled ? 'const' : 'var',
+  var varDeclare = ES6_enabled ? 'let' : 'var',
     bodySnippet = varDeclare + ' data = ';
   if (contentType === 'application/json') {
     try {
@@ -87,7 +100,7 @@ function parseRawBody (body, trim, contentType, ES6_enabled) {
  * @param {boolean} ES6_enabled ES6 syntax option
  */
 function parseGraphQL (body, trim, indentString, ES6_enabled) {
-  var varDeclare = ES6_enabled ? 'const' : 'var';
+  var varDeclare = ES6_enabled ? 'let' : 'var';
   let query = body.query,
     graphqlVariables,
     bodySnippet;
@@ -99,7 +112,7 @@ function parseGraphQL (body, trim, indentString, ES6_enabled) {
   }
   bodySnippet = varDeclare + ' data = JSON.stringify({\n';
   bodySnippet += `${indentString}query: '${sanitize(query, trim)}',\n`;
-  bodySnippet += `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n});`;
+  bodySnippet += `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n});\n`;
   return bodySnippet;
 }
 
@@ -111,7 +124,7 @@ function parseGraphQL (body, trim, indentString, ES6_enabled) {
  * @param {boolean} ES6_enabled ES6 syntax option
  */
 function parseFileData (ES6_enabled) {
-  var varDeclare = ES6_enabled ? 'const' : 'var',
+  var varDeclare = ES6_enabled ? 'let' : 'var',
     bodySnippet = varDeclare + ' data = \'<file contents here>\';\n';
   return bodySnippet;
 }
