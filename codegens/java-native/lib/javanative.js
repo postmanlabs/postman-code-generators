@@ -31,7 +31,9 @@ function makeSnippet (request, indentString, options) {
   var isBodyRequired = !(_.includes(METHODS_WITHOUT_BODY, request.method)),
     snippet = '';
   if (request.method === 'PATCH') {
-    snippet += 'try {\n' +
+    snippet += 'System.err.close();\n' +
+    'System.setErr(System.out);\n' +
+    'try {\n' +
     indentString + 'Field methodsField = HttpURLConnection.class.getDeclaredField("methods");\n' +
     indentString + 'methodsField.setAccessible(true);\n' +
     indentString + 'Field modifiersField = Field.class.getDeclaredField("modifiers");\n' +
@@ -45,9 +47,7 @@ function makeSnippet (request, indentString, options) {
     indentString.repeat(2) + 'e.printStackTrace();\n' +
     indentString + '};\n';
   }
-  snippet += 'System.err.close();\n' +
-            'System.setErr(System.out);\n' +
-           `URL obj = new URL("${sanitize(request.url.toString())}");\n` +
+  snippet += `URL obj = new URL("${sanitize(request.url.toString())}");\n` +
   'URLConnection connection = obj.openConnection();\n' +
   'HttpURLConnection con = null;\n' +
   'if(connection instanceof HttpsURLConnection){\n' +
