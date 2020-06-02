@@ -141,11 +141,16 @@ self = module.exports = {
               if (!(data.disabled)) {
                 if (data.type === 'file') {
                   snippet += indent + `${form('-F', format)}`;
-                  snippet += ` '${sanitize(data.key, trim)}=@${sanitize(data.src, trim)}'`;
+                  snippet += data.value.match(/[,;]/g) ?
+                    ` '${sanitize(data.key, trim)}=@"${sanitize(data.src, trim, true, true)}"'` :
+                    ` '${sanitize(data.key, trim)}=@${sanitize(data.src, trim)}'`;
                 }
                 else {
                   snippet += indent + `${form('-F', format)}`;
-                  snippet += ` '${sanitize(data.key, trim)}=${sanitize(data.value, trim)}'`;
+                  snippet += data.value.match(/[,;]/g) ?
+                    // eslint-disable-next-line max-len
+                    ` '${sanitize(data.key, trim)}="${sanitize(data.value, trim, true, true)}"'` :
+                    ` '${sanitize(data.key, trim)}=${sanitize(data.value, trim)}'`;
                 }
               }
             });
@@ -159,6 +164,7 @@ self = module.exports = {
         }
       }
     }
+    console.log(snippet);
     callback(null, snippet);
   },
   getOptions: function () {
