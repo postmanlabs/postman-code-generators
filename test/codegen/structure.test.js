@@ -72,7 +72,7 @@ const expectedOptions = {
       name: 'Quote Type',
       type: 'string',
       default: 'single',
-      description: 'String denoting the quote type to use (single or double) for url parameter'
+      description: 'String denoting the quote type to use (single or double) for URL'
     }
   },
   // Standard array of ids that should be used for options ids. Any new option should be updated here.

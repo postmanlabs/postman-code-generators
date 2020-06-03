@@ -21,7 +21,7 @@ Convert function takes three parameters
     * `requestTimeout` - Integer denoting time after which the request will bail out in milli-seconds
     * `multiLine` - Boolean denoting whether to output code snippet with multi line breaks
     * `longFormat` - Boolean denoting whether to use longform cURL options in snippet
-    * `quoteType` - String denoting the quote type to use (single or double) for url parameter
+    * `quoteType` - String denoting the quote type to use (single or double) for URL
 
 * `callback` - callback function with first parameter as error and second parameter as string for code snippet
 

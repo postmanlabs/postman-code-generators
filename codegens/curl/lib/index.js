@@ -193,7 +193,7 @@ self = module.exports = {
         availableOptions: ['single', 'double'],
         type: 'string',
         default: 'single',
-        description: 'String denoting the quote type to use (single or double) for url parameter'
+        description: 'String denoting the quote type to use (single or double) for URL'
       },
       {
         name: 'Set request timeout',
