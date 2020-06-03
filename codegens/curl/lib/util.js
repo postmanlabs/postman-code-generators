@@ -15,11 +15,11 @@ module.exports = {
     }
 
     if (backSlash) {
-      inputString = inputString.replace('\\', '\\\\');
+      inputString = inputString.replace(/\\/g, '\\\\');
     }
 
     if (doubleQuotes) {
-      inputString = inputString.replace('"', '\\"');
+      inputString = inputString.replace(/"/g, '\\"');
     }
 
     // for curl escaping of single quotes inside single quotes involves changing of ' to '\''
