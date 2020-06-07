@@ -18,7 +18,7 @@ function makeSnippet (request, indentString, options) {
     isFormDataFile = false;
   // These checkpoints are usefull to extract required content from the generated snippet
   // These checkpoints are placed at different blocks of snippet further
-  snippet += options.SDKGEN_enabled ? '// ---> IMPORTS BEGIN <---\n' : '';
+  snippet += options.SDKGEN_enabled ? '// ---> IMPORTS <---\n' : '';
   if (options.ES6_enabled) {
     snippet += 'const ';
   }
@@ -42,9 +42,9 @@ function makeSnippet (request, indentString, options) {
     }
     snippet += 'fs = require(\'fs\');\n';
   }
-  snippet += options.SDKGEN_enabled ? '// ---> IMPORTS ENDS <---\n' : '';
+  snippet += options.SDKGEN_enabled ? '// ---> IMPORTS <---\n' : '';
 
-  snippet += options.SDKGEN_enabled ? '// ---> CONFIG BEGIN <---\n' : '';
+  snippet += options.SDKGEN_enabled ? '// ---> CONFIG <---\n' : '';
   if (options.ES6_enabled) {
     snippet += 'let ';
   }
@@ -94,9 +94,9 @@ function makeSnippet (request, indentString, options) {
   }
   snippet += optionsArray.join(',\n') + '\n';
   snippet += '};\n';
-  snippet += options.SDKGEN_enabled ? '// ---> CONFIG ENDS <---\n' : '';
+  snippet += options.SDKGEN_enabled ? '// ---> CONFIG <---\n' : '';
 
-  snippet += options.SDKGEN_enabled ? '// ---> REQUEST STARTS <---\n' : '';
+  snippet += options.SDKGEN_enabled ? '// ---> REQUEST <---\n' : '';
   snippet += 'request(options, ';
   if (options.ES6_enabled) {
     snippet += '(error, response) => {\n';
@@ -109,8 +109,8 @@ function makeSnippet (request, indentString, options) {
   snippet += indentString;
   snippet += options.SDKGEN_enabled ? 'callback(error, response);\n' : 'console.log(response.body);\n';
   snippet += '});\n';
-  snippet += options.SDKGEN_enabled ? '// ---> REQUEST ENDS <---\n' : '';
-  console.log(snippet);
+  snippet += options.SDKGEN_enabled ? '// ---> REQUEST <---\n' : '';
+  console.log(JSON.stringify(snippet));
   console.log();
   return snippet;
 }
