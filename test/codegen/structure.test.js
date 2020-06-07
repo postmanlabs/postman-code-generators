@@ -67,6 +67,12 @@ const expectedOptions = {
       type: 'boolean',
       default: false,
       description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
+    },
+    SDKGEN_enables: {
+      name: 'Codegen for SDK generator',
+      type: 'boolean',
+      default: false,
+      description: 'Adds checkpoints and snippets changes to be used for postman collection code generator'
     }
   },
   // Standard array of ids that should be used for options ids. Any new option should be updated here.
@@ -83,7 +89,8 @@ const expectedOptions = {
     'lineContinuationCharacter',
     'protocol',
     'useMimeType',
-    'ES6_enabled'
+    'ES6_enabled',
+    'SDKGEN_enabled'
   ],
   CODEGEN_ABS_PATH = `./codegens/${codegen}`;
 describe('Code-gen repository ' + codegen, function () {

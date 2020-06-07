@@ -19,6 +19,7 @@ Convert function will take three parameters
     * `trimRequestBody` : Trim request body fields
     * `followRedirect` : Boolean denoting whether to redirect a request
     * `ES6_enabled` : Boolean denoting whether to generate snippet with ES6 features
+    * `SDKGEN_enabled` : Boolean denoting wether to add checkpoints and other snippets required for postman collection code generator
 
 * `callback`- callback function with first parameter as error and second parameter as string for code snippet
 

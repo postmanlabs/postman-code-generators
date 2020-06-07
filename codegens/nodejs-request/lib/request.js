@@ -13,14 +13,17 @@ var _ = require('./lodash'),
  * @returns {String} - nodejs(request) code snippet for given request object
  */
 function makeSnippet (request, indentString, options) {
-  var snippet,
+  var snippet = '',
     optionsArray = [],
     isFormDataFile = false;
+  // These checkpoints are usefull to extract required content from the generated snippet
+  // These checkpoints are placed at different blocks of snippet further
+  snippet += options.SDKGEN_enabled ? '// ---> IMPORTS BEGIN <---\n' : '';
   if (options.ES6_enabled) {
-    snippet = 'const ';
+    snippet += 'const ';
   }
   else {
-    snippet = 'var ';
+    snippet += 'var ';
   }
   snippet += 'request = require(\'request\');\n';
   if (request.body && request.body.mode === 'formdata') {
@@ -39,6 +42,9 @@ function makeSnippet (request, indentString, options) {
     }
     snippet += 'fs = require(\'fs\');\n';
   }
+  snippet += options.SDKGEN_enabled ? '// ---> IMPORTS ENDS <---\n' : '';
+
+  snippet += options.SDKGEN_enabled ? '// ---> CONFIG BEGIN <---\n' : '';
   if (options.ES6_enabled) {
     snippet += 'let ';
   }
@@ -48,8 +54,8 @@ function makeSnippet (request, indentString, options) {
   snippet += 'options = {\n';
 
   /**
-     * creating string to represent options object using optionArray.join()
-     * example:
+   * creating string to represent options object using optionArray.join()
+   * example:
      *  options: {
      *      method: 'GET',
      *      url: 'www.google.com',
@@ -88,7 +94,9 @@ function makeSnippet (request, indentString, options) {
   }
   snippet += optionsArray.join(',\n') + '\n';
   snippet += '};\n';
+  snippet += options.SDKGEN_enabled ? '// ---> CONFIG ENDS <---\n' : '';
 
+  snippet += options.SDKGEN_enabled ? '// ---> REQUEST STARTS <---\n' : '';
   snippet += 'request(options, ';
   if (options.ES6_enabled) {
     snippet += '(error, response) => {\n';
@@ -96,9 +104,14 @@ function makeSnippet (request, indentString, options) {
   else {
     snippet += 'function (error, response) {\n';
   }
-  snippet += indentString + 'if (error) throw new Error(error);\n';
-  snippet += indentString + 'console.log(response.body);\n';
+  snippet += indentString;
+  snippet += options.SDKGEN_enabled ? '' : 'if (error) throw new Error(error);\n';
+  snippet += indentString;
+  snippet += options.SDKGEN_enabled ? 'callback(error, response);\n' : 'console.log(response.body);\n';
   snippet += '});\n';
+  snippet += options.SDKGEN_enabled ? '// ---> REQUEST ENDS <---\n' : '';
+  console.log(snippet);
+  console.log();
   return snippet;
 }
 
@@ -152,6 +165,13 @@ function getOptions () {
       type: 'boolean',
       default: false,
       description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
+    },
+    {
+      name: 'Codegen for SDK generator',
+      id: 'SDKGEN_enabled',
+      type: 'boolean',
+      default: false,
+      description: 'Adds checkpoints and snippets changes to be used for postman collection code generator'
     }
   ];
 }
