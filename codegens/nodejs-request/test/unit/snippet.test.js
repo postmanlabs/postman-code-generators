@@ -376,7 +376,7 @@ describe('nodejs-request convert function', function () {
       });
     });
 
-    it('should return snippets with checkpoints and snippets for sdkgenerator', function () {
+    it('should return snippets without imports', function () {
       var request = new sdk.Request({
         'method': 'GET',
         'header': [],
@@ -394,12 +394,9 @@ describe('nodejs-request convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('// ---> IMPORTS BEGINS <---\n');
-        expect(snippet).to.include('// ---> IMPORTS ENDS <---\n');
-        expect(snippet).to.include('// ---> CONFIG BEGINS <---\n');
-        expect(snippet).to.include('// ---> CONFIG ENDS <---\n');
-        expect(snippet).to.include('// ---> REQUEST BEGINS <---\n');
-        expect(snippet).to.include('// ---> REQUEST ENDS <---\n');
+        expect(snippet).not.to.include('var request = require(\'request\');');
+        expect(snippet).not.to.include('var fs = require(\'fs\');');
+        expect(snippet).to.include('callback(error, response);');
       });
     });
 

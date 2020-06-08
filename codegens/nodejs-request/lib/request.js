@@ -18,33 +18,31 @@ function makeSnippet (request, indentString, options) {
     isFormDataFile = false;
   // These checkpoints are usefull to extract required content from the generated snippet
   // These checkpoints are placed at different blocks of snippet further
-  snippet += options.SDKGEN_enabled ? '// ---> IMPORTS <---\n' : '';
-  if (options.ES6_enabled) {
-    snippet += 'const ';
-  }
-  else {
-    snippet += 'var ';
-  }
-  snippet += 'request = require(\'request\');\n';
-  if (request.body && request.body.mode === 'formdata') {
-    _.forEach(request.body.toJSON().formdata, function (data) {
-      if (!data.disabled && data.type === 'file') {
-        isFormDataFile = true;
-      }
-    });
-  }
-  if (isFormDataFile) {
+  if (!options.SDKGEN_enabled) {
     if (options.ES6_enabled) {
       snippet += 'const ';
     }
     else {
       snippet += 'var ';
     }
-    snippet += 'fs = require(\'fs\');\n';
+    snippet += 'request = require(\'request\');\n';
+    if (request.body && request.body.mode === 'formdata') {
+      _.forEach(request.body.toJSON().formdata, function (data) {
+        if (!data.disabled && data.type === 'file') {
+          isFormDataFile = true;
+        }
+      });
+    }
+    if (isFormDataFile) {
+      if (options.ES6_enabled) {
+        snippet += 'const ';
+      }
+      else {
+        snippet += 'var ';
+      }
+      snippet += 'fs = require(\'fs\');\n';
+    }
   }
-  snippet += options.SDKGEN_enabled ? '// ---> IMPORTS <---\n' : '';
-
-  snippet += options.SDKGEN_enabled ? '// ---> CONFIG <---\n' : '';
   if (options.ES6_enabled) {
     snippet += 'let ';
   }
@@ -94,9 +92,6 @@ function makeSnippet (request, indentString, options) {
   }
   snippet += optionsArray.join(',\n') + '\n';
   snippet += '};\n';
-  snippet += options.SDKGEN_enabled ? '// ---> CONFIG <---\n' : '';
-
-  snippet += options.SDKGEN_enabled ? '// ---> REQUEST <---\n' : '';
   snippet += 'request(options, ';
   if (options.ES6_enabled) {
     snippet += '(error, response) => {\n';
@@ -109,9 +104,7 @@ function makeSnippet (request, indentString, options) {
   snippet += indentString;
   snippet += options.SDKGEN_enabled ? 'callback(error, response);\n' : 'console.log(response.body);\n';
   snippet += '});\n';
-  snippet += options.SDKGEN_enabled ? '// ---> REQUEST <---\n' : '';
-  console.log(JSON.stringify(snippet));
-  console.log();
+  console.log(snippet);
   return snippet;
 }
 
@@ -171,7 +164,7 @@ function getOptions () {
       id: 'SDKGEN_enabled',
       type: 'boolean',
       default: false,
-      description: 'Adds checkpoints and snippets changes to be used for postman collection code generator'
+      description: 'Generates snippet for SDK generator.'
     }
   ];
 }

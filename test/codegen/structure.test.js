@@ -72,7 +72,7 @@ const expectedOptions = {
       name: 'Codegen for SDK generator',
       type: 'boolean',
       default: false,
-      description: 'Adds checkpoints and snippets changes to be used for postman collection code generator'
+      description: 'Generates snippet for SDK generator.'
     }
   },
   // Standard array of ids that should be used for options ids. Any new option should be updated here.
