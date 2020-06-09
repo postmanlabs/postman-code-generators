@@ -104,7 +104,6 @@ function makeSnippet (request, indentString, options) {
   snippet += indentString;
   snippet += options.SDKGEN_enabled ? 'callback(error, response);\n' : 'console.log(response.body);\n';
   snippet += '});\n';
-  console.log(snippet);
   return snippet;
 }
 
