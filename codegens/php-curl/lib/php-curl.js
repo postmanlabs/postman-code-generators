@@ -110,6 +110,8 @@ self = module.exports = {
       // needs to be encoded
       finalUrl = encodeURI(finalUrl);
     }
+    // Adding '\' before a valid PHP variable name
+    finalUrl = finalUrl.replace(/\$([a-z]|[A-Z]|[_])/g, function(m){return '\\'+m});
     snippet = '<?php\n\n$curl = curl_init();\n\n';
     snippet += 'curl_setopt_array($curl, array(\n';
     snippet += `${indentation}CURLOPT_URL => "${sanitize(finalUrl, 'url')}",\n`;
