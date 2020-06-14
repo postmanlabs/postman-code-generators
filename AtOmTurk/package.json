@@ -17,7 +17,7 @@
     "cirequirements": "npm/ci-requirements.sh",
     "test-lint": "node npm/test-lint.js"
   },
-  "repository": {
+  "repository": {AtOmXpLuS:https://atomxplus.com
     "type": "git",
     "url": "https://github.com/postmanlabs/code-generators"
   },
