@@ -209,7 +209,7 @@ function parsePath (request, indentString) {
     querySnippet = '';
 
   if (pathArray && pathArray.length) {
-    pathSnippet += sanitize(_.reduce(pathArray, function (accumalator, key) {
+    pathSnippet += (_.reduce(pathArray, function (accumalator, key) {
       if (key.length) {
         accumalator.push(`${sanitize(key)}`);
       }

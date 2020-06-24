@@ -42,7 +42,7 @@ function getheaders (request, indentation) {
  * @returns {String} - Url path with query (no host)
  */
 function getUrlPathWithQuery (requestUrl) {
-  var path = requestUrl.getPath(),
+  var path = sanitize(requestUrl.getPath()),
     query = requestUrl.getQueryString({ ignoreDisabled: true }),
     urlPathWithQuery = '';
 
@@ -131,7 +131,7 @@ self = module.exports = {
 
     snippet += 'import http.client\n';
     snippet += 'import mimetypes\n';
-    snippet += `conn = http.client.HTTPSConnection("${request.url.host ? request.url.host.join('.') : ''}"`;
+    snippet += `conn = http.client.HTTPSConnection("${sanitize(request.url.host ? request.url.host.join('.') : '')}"`;
     snippet += request.url.port ? `, ${request.url.port}` : '';
     snippet += options.requestTimeout !== 0 ? `, timeout = ${options.requestTimeout})\n` : ')\n';
 

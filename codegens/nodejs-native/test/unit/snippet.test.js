@@ -272,4 +272,18 @@ describe('nodejs-native convert function', function () {
       expect(snippet).to.include(':action');
     });
   });
+
+  it('should generate valid snippet paths for single/double quotes in URL', function () {
+    // url = https://a"b'c.com/'d/"e
+    var request = new sdk.Request("https://a\"b'c.com/'d/\"e"); // eslint-disable-line quotes
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      // expect => 'hostname': 'a"b\'c.com'
+      expect(snippet).to.include("'hostname': 'a\"b\\'c.com'"); // eslint-disable-line quotes
+      // expect => 'path': '\'d/"e'
+      expect(snippet).to.include("'path': '/\\'d/\"e'"); // eslint-disable-line quotes
+    });
+  });
 });
