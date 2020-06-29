@@ -369,6 +369,19 @@ describe('java unirest convert function for test collection', function () {
         expect(snippet).to.include('.field("file", new File("/path/to/file"))');
       });
     });
+
+    it('should generate valid snippets for single/double quotes in URL', function () {
+      // url = https://a"b'c.com/'d/"e
+      var request = new sdk.Request("https://a\"b'c.com/'d/\"e"); // eslint-disable-line quotes
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        // expect => Unirest.get("https://a\"b'c.com/'d/\"e")
+        expect(snippet).to.include('Unirest.get("https://a\\"b\'c.com/\'d/\\"e")');
+      });
+    });
+
   });
   describe('getUrlStringfromUrlObject function', function () {
     var rawUrl, urlObject, outputUrlString;
