@@ -288,7 +288,6 @@ self = module.exports = {
     responseSnippet += `${indent}fmt.Println(string(body))\n}`;
 
     codeSnippet += responseSnippet;
-    console.log(codeSnippet);
     callback(null, codeSnippet);
   },
   getOptions: function () {
