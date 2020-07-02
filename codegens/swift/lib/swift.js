@@ -367,6 +367,7 @@ self = module.exports = {
     codeSnippet += '\nlet task = URLSession.shared.dataTask(with: request) { data, response, error in \n';
     codeSnippet += `${indent}guard let data = data else {\n`;
     codeSnippet += `${indent.repeat(2)}print(String(describing: error))\n`;
+    codeSnippet += `${indent.repeat(2)}semaphore.signal()`;
     codeSnippet += `${indent.repeat(2)}return\n`;
     codeSnippet += `${indent}}\n`;
     codeSnippet += `${indent}print(String(data: data, encoding: .utf8)!)\n`;
