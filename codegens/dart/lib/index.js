@@ -7,8 +7,8 @@ var _ = require('./lodash'),
 function getArrayBody (body, bodyString, indent) {
   let insideOfBody = [];
   body.forEach((item) => {
-    let keys = Object.keys(item);
-    let values = Object.values(item);
+    let keys = Object.keys(item),
+      values = Object.values(item);
 
     for (let i = 0; i < keys.length; i++) {
       let value = values[i];
@@ -39,8 +39,8 @@ function parseRawBody (body, indent, trim) {
   }
 
   bodySnippet += 'var body = {\n';
-  let bodyString = body.toString();
-  let items = '';
+  let bodyString = body.toString(),
+    items = '';
 
   if (Array.isArray(body)) {
     items = getArrayBody(body, bodyString, indent);
@@ -68,46 +68,13 @@ function parseRawBody (body, indent, trim) {
  * Parses GraphQL body
  *
  * @param {Object} body GraphQL body
- * @param {String} indent indentation required for code snippet
- * @param {Boolean} trim indicates whether to trim string or not
  */
-function parseGraphQLBody (body, indent, trim) {
+function parseGraphQLBody (body) {
   var bodySnippet = '',
     rawBody = JSON.stringify(body);
 
   bodySnippet += `var body = '${rawBody}';\n`;
 
-  return bodySnippet;
-}
-
-/**
- * Parses URLEncoded body
- *
- * @param {Object} body URLEncoded Body
- * @param {String} indent indentation required for code snippet
- * @param {Boolean} trim indicates whether to trim string or not
- */
-function parseURLEncodedBody (body, indent, trim) {
-  let bodySnippet = '',
-    key,
-    value,
-    first = true;
-  _.forEach(body, function (data) {
-    if (!data.disabled) {
-      key = trim ? data.key.trim() : data.key;
-      value = trim ? data.value.trim() : data.value;
-      if (first) {
-        bodySnippet += 'NSMutableData *postData = [[NSMutableData alloc] initWithData:[@"' +
-        sanitize(key, true) + '=' + sanitize(value, trim) + '" dataUsingEncoding:NSUTF8StringEncoding]];\n';
-      }
-      else {
-        bodySnippet += '[postData appendData:[@"&' + sanitize(key, true) + '=' + sanitize(value, trim) +
-        '" dataUsingEncoding:NSUTF8StringEncoding]];\n';
-      }
-      first = false;
-    }
-  });
-  bodySnippet += '[request setHTTPBody:postData];\n';
   return bodySnippet;
 }
 
@@ -191,7 +158,7 @@ function parseBody (body, indent, trim) {
       case 'file':
         return '';
       case 'graphql':
-        return parseGraphQLBody(body.graphql, indent, trim);
+        return parseGraphQLBody(body.graphql);
       default:
         return '<file-content-here>';
     }
@@ -294,15 +261,15 @@ self = module.exports = {
       });
     }
 
-    var headerParam = ', headers: headers';
-    const headers = parseHeaders(request.headers.toJSON(), indent, trim);
+    let headerParam = ', headers: headers';
+    const headers = parseHeaders(request.headers.toJSON(), indent, trim),
+      requestBody = request.body ? request.body.toJSON() : {},
+      body = parseBody(requestBody, indent, trim) + '\n';
+
     codeSnippet += headers;
     if (headers === '') {
       headerParam = '';
     }
-
-    const requestBody = request.body ? request.body.toJSON() : {};
-    const body = parseBody(requestBody, indent, trim) + '\n';
 
     if (isFileFormData(requestBody)) {
       codeSnippet += `http.MultipartRequest request = http.MultipartRequest('${request.method.toUpperCase()}',` +
