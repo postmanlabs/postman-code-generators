@@ -4,7 +4,7 @@ var _ = require('./lodash'),
   addFormParam = require('./util').addFormParam,
   self;
 
-function getArrayBody(body, bodyString, indent) {
+function getArrayBody (body, bodyString, indent) {
   let insideOfBody = [];
   body.forEach((item) => {
     let keys = Object.keys(item);
@@ -14,7 +14,8 @@ function getArrayBody(body, bodyString, indent) {
       let value = values[i];
       if (typeof value === 'string') {
         insideOfBody.push(`{ '${keys[i]}': '${value}' }`);
-      } else {
+      }
+      else {
         insideOfBody.push(`{ '${keys[i]}': ${value} }`);
       }
     }
@@ -43,13 +44,15 @@ function parseRawBody (body, indent, trim) {
 
   if (Array.isArray(body)) {
     items = getArrayBody(body, bodyString, indent);
-  } else if (typeof body === 'string') {
+  }
+  else if (typeof body === 'string') {
     bodyString = body;
     if (body.includes('$') && !body.includes('\\$')) {
       bodyString = body.replace('$', '\\$');
     }
     return 'final String body = \'\'\'' + bodyString + '\'\'\';\n';
-  } else {
+  }
+  else {
     items = sanitize(bodyString, trim)
       .replace('}', '')
       .replace('{', '')
@@ -108,6 +111,18 @@ function parseURLEncodedBody (body, indent, trim) {
   return bodySnippet;
 }
 
+function isFileFormData (body) {
+  if (!body || body.mode !== 'formdata') {
+    return false;
+  }
+
+  if (!Array.isArray(body.formdata)) {
+    return false;
+  }
+
+  return body.formdata.some((k) => { return k.type === 'file'; });
+}
+
 /**
  * Parses form data body from request
  *
@@ -118,6 +133,7 @@ function parseURLEncodedBody (body, indent, trim) {
 function parseFormData (body, indent, trim) {
   let bodySnippet = '',
     formDataArray = [],
+    formDataFileArray = [],
     key,
     foundFile = false,
     value;
@@ -126,39 +142,31 @@ function parseFormData (body, indent, trim) {
     return bodySnippet;
   }
 
-  bodySnippet += 'var body = {';
-
   _.forEach(body, function (data) {
     key = trim ? data.key.trim() : data.key;
     value = trim ? data.value.trim() : data.value;
     if (!data.disabled) {
       if (data.type === 'file') {
         foundFile = true;
-        formDataArray.push(`\n${indent}'${key}': '${data.src}'`);
+        formDataFileArray.push(`request.files.add(await http.MultipartFile.fromPath('${key}', '${data.src}'));`);
       }
       else {
-        formDataArray.push(`\n${indent}'${key}': '${sanitize(value, trim)}'`);
+        formDataArray.push(`${indent}'${key}': '${sanitize(value, trim)}'`);
       }
     }
   });
-  bodySnippet += formDataArray.join(', ');
-  bodySnippet += ' \n};\n\n';
+
+  if (formDataArray.length > 0) {
+    bodySnippet += 'var body = {\n';
+    bodySnippet += formDataArray.join(',\n');
+    bodySnippet += ' \n};\n';
+    if (foundFile) {
+      bodySnippet += 'request.fields.addAll(x);\n';
+    }
+  }
+
   if (foundFile) {
-    bodySnippet += indent + 'if (param[@"fileName"]) {\n';
-    // eslint-disable-next-line max-len
-    bodySnippet += indent.repeat(2) + '[body appendFormat:@"Content-Disposition:form-data; name=\\"%@\\"; filename=\\"%@\\"\\r\\n", param[@"name"], param[@"fileName"]];\n';
-    bodySnippet += indent.repeat(2) + '[body appendFormat:@"Content-Type: %@\\r\\n\\r\\n", param[@"contentType"]];\n';
-    // eslint-disable-next-line max-len
-    bodySnippet += indent.repeat(2) + '[body appendFormat:@"%@", [NSString stringWithContentsOfFile:param[@"fileName"]' +
-      ' encoding:NSUTF8StringEncoding error:&error]];\n';
-    bodySnippet += indent.repeat(2) + 'if (error) {\n';
-    bodySnippet += indent.repeat(3) + 'NSLog(@"%@", error);\n';
-    bodySnippet += indent.repeat(2) + '}\n';
-    bodySnippet += indent + '} else {\n';
-    bodySnippet += indent.repeat(2) +
-      '[body appendFormat:@"Content-Disposition:form-data; name=\\"%@\\"\\r\\n\\r\\n", param[@"name"]];\n';
-    bodySnippet += indent.repeat(2) + '[body appendFormat:@"%@", param[@"value"]];\n';
-    bodySnippet += indent + '}\n';
+    bodySnippet += formDataFileArray.join('\n');
   }
 
   return bodySnippet;
@@ -288,10 +296,7 @@ self = module.exports = {
         formdata: formdataArray
       });
     }
-    if (options.includeBoilerplate) {
-      headerSnippet += 'int main(int argc, const char * argv[]) {\n\n';
-      footerSnippet += '}';
-    }
+
     var headerParam = ', headers: headers';
     const headers = parseHeaders(request.headers.toJSON(), indent, trim);
     codeSnippet += headers;
@@ -299,21 +304,44 @@ self = module.exports = {
       headerParam = '';
     }
 
-    const body = parseBody(request.body ? request.body.toJSON() : {}, indent, trim) + '\n';
-    codeSnippet += body;
+    const requestBody = request.body ? request.body.toJSON() : {};
+    const body = parseBody(requestBody, indent, trim) + '\n';
 
-    var bodyParam = ', body: body';
-    if (typeof body === undefined || body.trim() === '') {
-      bodyParam = '';
+    if (isFileFormData(requestBody)) {
+      codeSnippet += `http.MultipartRequest request = http.MultipartRequest('${request.method.toUpperCase()}',` +
+        `"${encodeURI(request.url.toString())}");\n`;
+
+      codeSnippet += body;
+
+      if (headers !== '') {
+        codeSnippet += 'request.headers.addAll(headers);';
+      }
+
+      codeSnippet += '\n';
+
+      codeSnippet += 'http.StreamedResponse response = await request.send();\n';
+      codeSnippet += 'if (response.statusCode == 200) {\n';
+      codeSnippet += `${indent}print(await response.stream.bytesToString());\n`;
+      codeSnippet += '} else {\n';
+      codeSnippet += `${indent}print(response.reasonPhrase);\n`;
+      codeSnippet += '}\n';
     }
+    else {
+      codeSnippet += body;
 
-    codeSnippet += `final response = await http.${request.method.toLowerCase()}("` +
-      encodeURI(request.url.toString()) + `"${headerParam}${bodyParam});\n\n`;
-    codeSnippet += 'if (response.statusCode == 200) {\n';
-    codeSnippet += `${indent}print(json.decode(response.body));\n`;
-    codeSnippet += '} else {\n';
-    codeSnippet += `${indent}print(response.reasonPhrase);\n`;
-    codeSnippet += '}\n';
+      let bodyParam = ', body: body';
+      if (typeof body === undefined || body.trim() === '') {
+        bodyParam = '';
+      }
+
+      codeSnippet += `final response = await http.${request.method.toLowerCase()}("` +
+        encodeURI(request.url.toString()) + `"${headerParam}${bodyParam});\n`;
+      codeSnippet += 'if (response.statusCode == 200) {\n';
+      codeSnippet += `${indent}print(json.decode(response.body));\n`;
+      codeSnippet += '} else {\n';
+      codeSnippet += `${indent}print(response.reasonPhrase);\n`;
+      codeSnippet += '}\n';
+    }
 
     //  if boilerplate is included then two more indent needs to be added in snippet
     (options.includeBoilerplate) &&
