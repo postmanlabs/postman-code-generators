@@ -231,7 +231,6 @@ self = module.exports = {
   convert: function (request, options, callback) {
     var indent,
       codeSnippet = '',
-      requestTimeout,
       headerSnippet = 'import \'dart:convert\';\nimport \'package:http/http.dart\' as http;\n\n',
       footerSnippet = '',
       trim;
@@ -239,8 +238,6 @@ self = module.exports = {
     trim = options.trimRequestBody;
     indent = options.indentType === 'tab' ? '\t' : ' ';
     indent = indent.repeat(options.indentCount);
-
-    requestTimeout = options.requestTimeout / 1000; // Objective-C takes time in seconds.
 
     if (!_.isFunction(callback)) {
       throw new Error('Callback is not valid function');
