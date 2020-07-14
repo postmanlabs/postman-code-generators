@@ -14,8 +14,6 @@ describe('Dart Converter', function () {
             expect.fail(null, null, err);
             return done();
           }
-          console.log('snippet:\n' + snippet);
-          console.log('expectedSnippets[item.name]: \n' + expectedSnippets[item.name]);
           expect(snippet).to.equal(expectedSnippets[item.name]);
           return done();
         });
