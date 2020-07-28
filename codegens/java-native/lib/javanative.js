@@ -49,7 +49,7 @@ function makeSnippet (request, indentString, options) {
   }
   snippet += `URL obj = new URL("${sanitize(request.url.toString())}");\n` +
   'URLConnection connection = obj.openConnection();\n' +
-  'HttpURLConnection con = (HttpsURLConnection) connection;\n' +
+  'HttpURLConnection con = (HttpURLConnection) connection;\n' +
   `con.setRequestMethod("${request.method}");\n`;
 
   if (options.requestTimeout > 0) {
