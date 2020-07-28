@@ -139,7 +139,7 @@ function getUrlStringfromUrlObject (urlObject) {
     url += '#' + urlObject.hash;
   }
 
-  return url;
+  return sanitize(url, 'url');
 }
 
 /**

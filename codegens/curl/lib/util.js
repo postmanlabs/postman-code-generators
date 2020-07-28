@@ -1,4 +1,4 @@
-module.exports = {
+var self = module.exports = {
   /**
      * sanitizes input string by handling escape characters eg: converts '''' to '\'\''
      * and trim input if required
@@ -149,7 +149,7 @@ module.exports = {
       url += '#' + urlObject.hash;
     }
 
-    return url;
+    return self.sanitize(url);
   },
 
   /**
