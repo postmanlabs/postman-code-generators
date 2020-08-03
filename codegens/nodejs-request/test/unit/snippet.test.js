@@ -376,6 +376,30 @@ describe('nodejs-request convert function', function () {
       });
     });
 
+    it('should return snippets without imports', function () {
+      var request = new sdk.Request({
+        'method': 'GET',
+        'header': [],
+        'url': {
+          'raw': 'https://google.com',
+          'protocol': 'https',
+          'host': [
+            'google',
+            'com'
+          ]
+        }
+      });
+      convert(request, { SDKGEN_enabled: true}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).not.to.include('var request = require(\'request\');');
+        expect(snippet).not.to.include('var fs = require(\'fs\');');
+        expect(snippet).to.include('callback(error, response);');
+      });
+    });
+
     describe('getOptions function', function () {
 
       it('should return an array of specific options', function () {

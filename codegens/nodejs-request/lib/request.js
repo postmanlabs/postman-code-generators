@@ -13,31 +13,35 @@ var _ = require('./lodash'),
  * @returns {String} - nodejs(request) code snippet for given request object
  */
 function makeSnippet (request, indentString, options) {
-  var snippet,
+  var snippet = '',
     optionsArray = [],
     isFormDataFile = false;
-  if (options.ES6_enabled) {
-    snippet = 'const ';
-  }
-  else {
-    snippet = 'var ';
-  }
-  snippet += 'request = require(\'request\');\n';
-  if (request.body && request.body.mode === 'formdata') {
-    _.forEach(request.body.toJSON().formdata, function (data) {
-      if (!data.disabled && data.type === 'file') {
-        isFormDataFile = true;
-      }
-    });
-  }
-  if (isFormDataFile) {
+  // These checkpoints are usefull to extract required content from the generated snippet
+  // These checkpoints are placed at different blocks of snippet further
+  if (!options.SDKGEN_enabled) {
     if (options.ES6_enabled) {
       snippet += 'const ';
     }
     else {
       snippet += 'var ';
     }
-    snippet += 'fs = require(\'fs\');\n';
+    snippet += 'request = require(\'request\');\n';
+    if (request.body && request.body.mode === 'formdata') {
+      _.forEach(request.body.toJSON().formdata, function (data) {
+        if (!data.disabled && data.type === 'file') {
+          isFormDataFile = true;
+        }
+      });
+    }
+    if (isFormDataFile) {
+      if (options.ES6_enabled) {
+        snippet += 'const ';
+      }
+      else {
+        snippet += 'var ';
+      }
+      snippet += 'fs = require(\'fs\');\n';
+    }
   }
   if (options.ES6_enabled) {
     snippet += 'let ';
@@ -48,8 +52,8 @@ function makeSnippet (request, indentString, options) {
   snippet += 'options = {\n';
 
   /**
-     * creating string to represent options object using optionArray.join()
-     * example:
+   * creating string to represent options object using optionArray.join()
+   * example:
      *  options: {
      *      method: 'GET',
      *      url: 'www.google.com',
@@ -88,7 +92,6 @@ function makeSnippet (request, indentString, options) {
   }
   snippet += optionsArray.join(',\n') + '\n';
   snippet += '};\n';
-
   snippet += 'request(options, ';
   if (options.ES6_enabled) {
     snippet += '(error, response) => {\n';
@@ -96,8 +99,10 @@ function makeSnippet (request, indentString, options) {
   else {
     snippet += 'function (error, response) {\n';
   }
-  snippet += indentString + 'if (error) throw new Error(error);\n';
-  snippet += indentString + 'console.log(response.body);\n';
+  snippet += indentString;
+  snippet += options.SDKGEN_enabled ? '' : 'if (error) throw new Error(error);\n';
+  snippet += indentString;
+  snippet += options.SDKGEN_enabled ? 'callback(error, response);\n' : 'console.log(response.body);\n';
   snippet += '});\n';
   return snippet;
 }
@@ -152,6 +157,13 @@ function getOptions () {
       type: 'boolean',
       default: false,
       description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
+    },
+    {
+      name: 'Codegen for SDK generator',
+      id: 'SDKGEN_enabled',
+      type: 'boolean',
+      default: false,
+      description: 'Generates snippet for SDK generator.'
     }
   ];
 }
