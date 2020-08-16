@@ -138,7 +138,7 @@ function makeSnippet (request, indentString, options) {
     snippet += indentString + indentString + 'const response = await axios(config);\n';
     snippet += indentString + indentString + 'console.log(JSON.stringify(response.data));\n';
     snippet += indentString + '} catch (error) {\n';
-    snippet += indentString + indentString + 'console.log(error) {\n';
+    snippet += indentString + indentString + 'console.log(error);\n';
     snippet += indentString + '}\n';
     snippet += '}\n'
     snippet += 'makeCall(config);'
