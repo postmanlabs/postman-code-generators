@@ -168,7 +168,7 @@ function makeSnippet (request, indentString, options) {
   }
   else {
     snippet += indentString + 'res.on("end", function (chunk) {\n';
-    snippet += indentString.repeat(2) + 'var body = Buffer.concat(chunks);\n';
+    snippet += indentString.repeat(2) + 'var body = Buffer.concat(chunk);\n';
   }
   snippet += indentString.repeat(2) + 'console.log(body.toString());\n';
   snippet += indentString + '});\n\n';
