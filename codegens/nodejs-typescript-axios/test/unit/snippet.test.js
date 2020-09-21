@@ -10,9 +10,7 @@ describe('nodejs-axios convert function', function () {
   describe('Convert function', function () {
     var request,
       reqObject,
-      options = {},
-      snippetArray,
-      line_no;
+      options = {};
 
     it('should return a Tab indented snippet ', function () {
       request = new sdk.Request(mainCollection.item[0].request);
@@ -27,11 +25,6 @@ describe('nodejs-axios convert function', function () {
         }
 
         expect(snippet).to.be.a('string');
-        snippetArray = snippet.split('\n');
-        for (var i = 0; i < snippetArray.length; i++) {
-          if (snippetArray[i] === 'var config = {') { line_no = i + 1; }
-        }
-        expect(snippetArray[line_no].charAt(0)).to.equal('\t');
       });
     });
 

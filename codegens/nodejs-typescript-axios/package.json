@@ -6,7 +6,7 @@
     "type": "code_generator",
     "lang": "nodejs",
     "variant": "Axios",
-    "syntax_mode": "typescript"
+    "syntax_mode": "javascript"
   },
   "main": "index.js",
   "directories": {
@@ -26,7 +26,11 @@
   "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/nodejs-axios",
-  "dependencies": {},
+  "dependencies": {
+    "@types/node": "14.11.1",
+    "ts-node": "9.0.0",
+    "typescript": "4.0.3"
+  },
   "devDependencies": {
     "axios": "0.19.2",
     "form-data": "3.0.0",
