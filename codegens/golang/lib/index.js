@@ -78,8 +78,9 @@ function parseFormData (body, trim, indent) {
          errFile${index + 1} := writer.CreateFormFile("${sanitize(data.key, trim)}",` +
                         `filepath.Base("${data.src}"))\n`;
         bodySnippet += `${indent}_, errFile${index + 1} = io.Copy(part${index + 1}, file)\n`;
-        bodySnippet += `${indent}if errFile${index + 1} !=nil {
-          \n${indent.repeat(2)}fmt.Println(errFile${index + 1})\n${indent}}\n`;
+        bodySnippet += `${indent}if errFile${index + 1} != nil {` + 
+          `\n${indent.repeat(2)}fmt.Println(errFile${index + 1})\n` + 
+          `${indent.repeat(2)}return\n${indent}}\n`;
       }
       else {
         bodySnippet += `${indent}_ = writer.WriteField("${sanitize(data.key, trim)}",`;
@@ -88,7 +89,8 @@ function parseFormData (body, trim, indent) {
     }
   });
   bodySnippet += `${indent}err := writer.Close()\n${indent}if err != nil ` +
-  `{\n${indent.repeat(2)}fmt.Println(err)\n${indent}}\n`;
+  `{\n${indent.repeat(2)}fmt.Println(err)\n` +
+  `${indent.repeat(2)}return\n${indent}}\n`;
   return bodySnippet;
 }
 
