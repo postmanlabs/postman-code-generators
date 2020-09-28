@@ -257,7 +257,8 @@ self = module.exports = {
     else {
       codeSnippet += `${indent}req, err := http.NewRequest(method, url, nil)\n\n`;
     }
-    codeSnippet += `${indent}if err != nil {\n${indent.repeat(2)}fmt.Println(err)\n${indent}}\n`;
+    codeSnippet += `${indent}if err != nil {\n${indent.repeat(2)}fmt.Println(err)\n`;
+    codeSnippet += `${indent.repeat(2)}return\n${indent}}\n`;
     if (request.body && !request.headers.has('Content-Type')) {
       if (request.body.mode === 'file') {
         request.addHeader({
