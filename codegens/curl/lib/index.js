@@ -32,7 +32,7 @@ self = module.exports = {
     if (timeout > 0) {
       snippet += ` ${form('-m', format)} ${timeout}`;
     }
-    if ((url.match(/[{[]/g) || []).length > 1) {
+    if ((url.match(/[{[}\]]/g) || []).length > 0) {
       snippet += ' -g';
     }
     if (multiLine) {

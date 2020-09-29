@@ -59,151 +59,37 @@ describe('curl convert function', function () {
       });
     });
 
-    it('should generate snippet with -g parameter when nested {{ are present in url parameter', function () {
-      request = new sdk.Request({
-        'method': 'GET',
-        'header': [
-          {
-            'key': 'foo',
-            'value': '"bar"'
+    it('should generate snippet with -g parameter when either of {,[,},] are present in url parameter', function () {
+      [
+        '{world}',
+        '{{world',
+        '[world]',
+        ']world',
+        'world}'
+      ].forEach(function (value) {
+        request = new sdk.Request({
+          'method': 'GET',
+          'url': {
+            'raw': `http://example.com?hello=${value}`,
+            'protocol': 'http',
+            'host': [
+              'example',
+              'com'
+            ],
+            'query': [
+              {
+                'key': 'hello',
+                'value': value
+              }
+            ]
           }
-        ],
-        'body': {
-          'mode': 'raw',
-          'raw': ''
-        },
-        'url': {
-          'raw': 'https://google.com?a={x:{',
-          'protocol': 'https',
-          'host': [
-            'google',
-            'com'
-          ],
-          'query': [
-            {
-              'key': 'a',
-              'value': '{x:{'
-            }
-          ]
-        }
-      });
-      options = {};
-      convert(request, options, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-        }
-        expect(snippet).to.include('-g');
-      });
-    });
-
-    it('should generate snippet with -g parameter when nested [[ are present in url parameter', function () {
-      request = new sdk.Request({
-        'method': 'GET',
-        'header': [
-          {
-            'key': 'foo',
-            'value': '"bar"'
+        });
+        convert(request, {}, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
           }
-        ],
-        'body': {
-          'mode': 'raw',
-          'raw': ''
-        },
-        'url': {
-          'raw': 'https://google.com?a=[[ab',
-          'protocol': 'https',
-          'host': [
-            'google',
-            'com'
-          ],
-          'query': [
-            {
-              'key': 'a',
-              'value': '[[ab'
-            }
-          ]
-        }
-      });
-      options = {};
-      convert(request, options, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-        }
-        expect(snippet).to.include('-g');
-      });
-    });
-
-    it('should generate snippet with -g parameter when nested {[ are present in url parameter', function () {
-      request = new sdk.Request({
-        'method': 'GET',
-        'header': [
-          {
-            'key': 'foo',
-            'value': '"bar"'
-          }
-        ],
-        'body': {
-          'mode': 'raw',
-          'raw': ''
-        },
-        'url': {
-          'raw': 'https://google.com?a={x:[',
-          'protocol': 'https',
-          'host': [
-            'google',
-            'com'
-          ],
-          'query': [
-            {
-              'key': 'a',
-              'value': '{x:['
-            }
-          ]
-        }
-      });
-      options = {};
-      convert(request, options, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-        }
-        expect(snippet).to.include('-g');
-      });
-    });
-
-    it('should generate snippet with -g parameter when nested [{ are present in url parameter', function () {
-      request = new sdk.Request({
-        'method': 'GET',
-        'header': [
-          {
-            'key': 'foo',
-            'value': '"bar"'
-          }
-        ],
-        'body': {
-          'mode': 'raw',
-          'raw': ''
-        },
-        'url': {
-          'raw': 'https://google.com?a=[x{',
-          'protocol': 'https',
-          'host': [
-            'google',
-            'com'
-          ],
-          'query': [
-            {
-              'key': 'a',
-              'value': '[x{'
-            }
-          ]
-        }
-      });
-      options = {};
-      convert(request, options, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-        }
-        expect(snippet).to.include('-g');
+          expect(snippet).to.include('-g');
+        });
       });
     });
 
