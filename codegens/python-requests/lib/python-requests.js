@@ -166,8 +166,8 @@ self = module.exports = {
     snippet += `response = requests.request("${request.method}", url, headers=headers`;
 
     snippet += request.body && request.body.mode && request.body.mode === 'formdata' ?
-      ', data = payload, files = files' : ', data = payload';
-    snippet += !options.followRedirect ? ', allow_redirects = False' : '';
+      ', data=payload, files=files' : ', data=payload';
+    snippet += !options.followRedirect ? ', allow_redirects=False' : '';
     snippet += options.requestTimeout !== 0 ? `, timeout=${options.requestTimeout}` : '';
     snippet += ')\n\n';
     snippet += 'print(response.text.encode(\'utf8\'))\n';
