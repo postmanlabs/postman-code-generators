@@ -24,7 +24,7 @@ function getheaders (request, indentation) {
     });
     return `headers = {\n${headerMap.join(',\n')}\n}\n`;
   }
-  return 'headers= {}\n';
+  return 'headers = {}\n';
 }
 
 self = module.exports = {
