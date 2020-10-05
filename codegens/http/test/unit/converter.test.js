@@ -200,22 +200,16 @@ describe('Converter test', function () {
 
   it('should generate valid snippet with Content-Length header if request has body', function () {
     var request = new Request({
-      'method': 'GET',
-      'header': [
-        {
-          'key': '  key_containing_whitespaces  ',
-          'value': '  value_containing_whitespaces  '
-        }
-      ],
+      'method': 'POST',
       'body': {
         'mode': 'raw',
         'raw': 'aaaaa'
       },
       'url': {
-        'raw': 'https://google.com',
+        'raw': 'https://example.com',
         'protocol': 'https',
         'host': [
-          'google',
+          'example',
           'com'
         ]
       }
