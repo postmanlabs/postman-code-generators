@@ -27,6 +27,7 @@
     "node": ">=8"
   },
   "devDependencies": {
-    "xmlhttprequest": "1.8.0"
+    "xmlhttprequest": "1.8.0",
+    "form-data": "3.0.0"
   }
 }
