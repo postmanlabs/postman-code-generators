@@ -19,14 +19,8 @@ module.exports = {
           return JSON.stringify(inputString);
         case 'urlencoded':
           return escape(inputString);
-        case 'formdata':
-          return inputString.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
-        case 'file':
-          return inputString.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
-        case 'header':
-          return inputString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
         default:
-          return inputString.replace(/"/g, '\\"');
+          return inputString.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
       }
     }
     return inputString;
