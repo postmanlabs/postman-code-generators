@@ -1,5 +1,6 @@
 var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
+  sanitizeMultiline = require('./util').sanitizeMultiline,
   sanitizeOptions = require('./util').sanitizeOptions,
   addFormParam = require('./util').addFormParam,
   isFile = false,
@@ -13,7 +14,7 @@ var _ = require('./lodash'),
  */
 function parseRawBody (body, trim) {
   var bodySnippet;
-  bodySnippet = `payload := strings.NewReader("${sanitize(body.toString(), trim)}")`;
+  bodySnippet = `payload := strings.NewReader(\`${sanitizeMultiline(body.toString(), trim)}\`)`;
   return bodySnippet;
 }
 
