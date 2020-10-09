@@ -117,7 +117,7 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
           graphqlVariables = {};
         }
         return 'body: JSON.stringify({\n' +
-          `${indentString.repeat(2)}query: \`${sanitize(query, trimBody)}\`,\n` +
+          `${indentString.repeat(2)}query: \`${query.trim()}\`,\n` +
           `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
           `${indentString}})`;
       case 'formdata':

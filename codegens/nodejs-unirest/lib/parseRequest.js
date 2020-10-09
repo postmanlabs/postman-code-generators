@@ -81,7 +81,7 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
           graphqlVariables = {};
         }
         return indentString + '.send(JSON.stringify({\n' +
-          `${indentString.repeat(2)}query: \`${sanitize(query, trimBody)}\`,\n` +
+          `${indentString.repeat(2)}query: \`${query.trim()}\`,\n` +
           `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
           `${indentString}}))\n`;
       case 'urlencoded':
