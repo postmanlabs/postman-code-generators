@@ -165,5 +165,54 @@ describe('Golang convert function', function () {
         expect(snippet).to.include('writer.CreateFormFile("invalid src",filepath.Base("/path/to/file"))');
       });
     });
+
+    it('should add error handling code everytime an error is possible', function () {
+      var requests = [];
+      requests.push(new sdk.Request({
+        'method': 'GET',
+        'header': [
+          {
+            'key': 'foo',
+            'value': 'bar'
+          }
+        ],
+        'url': {
+          'raw': 'https://example.com',
+          'protocol': 'http',
+          'host': [
+            'example',
+            'com'
+          ]
+        }
+      }));
+      requests.push(new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': 'hello world'
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      }));
+      requests.forEach(function (request) {
+        convert(request, {}, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet.match('err := ').length).to.be.equal(snippet.match('if err != nil {').length);
+        });
+      });
+    });
   });
 });

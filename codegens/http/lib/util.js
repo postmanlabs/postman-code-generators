@@ -203,7 +203,7 @@ function getHeaders (request) {
   });
   headers = convertPropertyListToString(request.headers, '\n', false);
   if (request.body && request.body.mode === 'formdata' && contentTypeIndex < 0) {
-    headers += `Content-Type: ${formDataHeader}`;
+    headers += `\nContent-Type: ${formDataHeader}`;
   }
   return headers;
 }
