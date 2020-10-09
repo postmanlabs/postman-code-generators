@@ -197,6 +197,32 @@ describe('Converter test', function () {
       expect(snippet).to.include(':action');
     });
   });
+
+  it('should generate valid snippet with Content-Length header if request has body', function () {
+    var request = new Request({
+      'method': 'POST',
+      'body': {
+        'mode': 'raw',
+        'raw': 'aaaaa'
+      },
+      'url': {
+        'raw': 'https://example.com',
+        'protocol': 'https',
+        'host': [
+          'example',
+          'com'
+        ]
+      }
+    });
+
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('Content-Length: 5');
+    });
+  });
 });
 
 describe('Converter test using options.trimRequestBody', function () {

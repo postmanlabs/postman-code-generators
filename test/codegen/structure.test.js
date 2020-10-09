@@ -41,7 +41,8 @@ const expectedOptions = {
       name: 'Set request timeout',
       type: 'positiveInteger',
       default: 0,
-      description: 'Set number of milliseconds the request should wait for a response before timing out (use 0 for infinity)'
+      description: 'Set number of milliseconds the request should wait' +
+      ' for a response before timing out (use 0 for infinity)'
     },
     followRedirect: {
       name: 'Follow redirects',
@@ -61,7 +62,7 @@ const expectedOptions = {
       default: false,
       description: 'Display the requested data without showing the cURL progress meter or error messages'
     },
-    ES6_enabled:{
+    ES6_enabled: {
       name: 'Enable ES6 features',
       type: 'boolean',
       default: false,

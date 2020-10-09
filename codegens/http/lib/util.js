@@ -104,7 +104,7 @@ function getMembersOfPropertyList (propertyList, includeDisabled = false) {
  * @param {Object} propertyList propertyList
  * @param {String} joinUsing specify string that should be used to join the list of properties
  * @param {Boolean} includeDisabled indicated whether or not to include disabled properties
- * @param {Boolean} trimRequestBody indicates whether or not to trin request body
+ * @param {Boolean} trimRequestBody indicates whether or not to trim request body
  * @returns {String} Stringified property List
  */
 function convertPropertyListToString (propertyList, joinUsing, includeDisabled = false, trimRequestBody = false) {
@@ -203,7 +203,7 @@ function getHeaders (request) {
   });
   headers = convertPropertyListToString(request.headers, '\n', false);
   if (request.body && request.body.mode === 'formdata' && contentTypeIndex < 0) {
-    headers += `Content-Type: ${formDataHeader}`;
+    headers += `\nContent-Type: ${formDataHeader}`;
   }
   return headers;
 }

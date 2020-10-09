@@ -256,6 +256,19 @@ describe('curl convert function', function () {
       });
     });
 
+    it('should generate valid snippets for single/double quotes in URL', function () {
+      // url = https://a"b'c.com/'d/"e
+      var request = new sdk.Request("https://a\"b'c.com/'d/\"e"); // eslint-disable-line quotes
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        // for curl escaping of single quotes inside single quotes involves changing of ' to '\''
+        // expect => 'https://a"b'\''c.com/'\''d/"e'
+        expect(snippet).to.include("'https://a\"b'\\''c.com/'\\''d/\"e'"); // eslint-disable-line quotes
+      });
+    });
+
     describe('getUrlStringfromUrlObject function', function () {
       var rawUrl, urlObject, outputUrlString;
 

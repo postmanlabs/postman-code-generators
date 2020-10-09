@@ -96,7 +96,7 @@ function parseBody (request, trimFields) {
 /**
  * Parses header in Postman-SDK request and returns code snippet of csharp-restsharp for adding headers
  *
- * @param {Object} requestJson - Postman SDK reqeust object
+ * @param {Object} requestJson - Postman SDK request object
  * @returns {String} code snippet for adding headers in csharp-restsharp
  */
 function parseHeader (requestJson) {

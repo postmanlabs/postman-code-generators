@@ -61,7 +61,7 @@ console.log(options);
 ```
 
 ### Guideline for using generated snippet
-* To download dependecies to use snippet please see [unirest-doc](http://unirest.io/java.html)
+* To download dependencies to use snippet please see [unirest-doc](http://unirest.io/java.html)
 
 * This module supports six HTTP request methods. 
     **GET** **POST** **PUT** **PATCH** **DELETE**  **OPTIONS** **HEAD**

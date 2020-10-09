@@ -107,7 +107,7 @@ function parseBody (requestBody, indentString, trimFields) {
 /**
  * Parses header in Postman-SDK request and returns code snippet of java okhttp for adding headers
  *
- * @param {Object} request - Postman SDK reqeust object
+ * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation for code snippet
  * @returns {String} - code snippet for adding headers in java-okhttp
  */
