@@ -198,10 +198,15 @@ self = module.exports = {
   convert: function (request, options, callback) {
     var indent,
       codeSnippet = '',
-      headerSnippet = 'import \'dart:convert\';\nimport \'package:http/http.dart\' as http;\n\n',
+      headerSnippet = '',
       footerSnippet = '',
       trim;
     options = sanitizeOptions(options, self.getOptions());
+    if (options.includeBoilerplate) {
+      headerSnippet = 'import \'dart:convert\';\nimport \'package:http/http.dart\' as http;\n\n';
+      headerSnippet += 'void main() async {\n';
+      footerSnippet = '}\n';
+    }
     trim = options.trimRequestBody;
     indent = options.indentType === 'tab' ? '\t' : ' ';
     indent = indent.repeat(options.indentCount);
