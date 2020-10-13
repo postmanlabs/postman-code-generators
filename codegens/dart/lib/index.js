@@ -25,6 +25,27 @@ function getArrayBody (body, bodyString, indent) {
 }
 
 /**
+ * Parses Url encoded data
+ *
+ * @param {Object} body body data
+ * @param {String} indent indentation required for code snippet
+ * @param {Boolean} trim indicates whether to trim string or not
+ */
+function parseUrlEncoded (body, indent, trim) {
+  var bodySnippet = 'var body = {',
+    enabledBodyList = _.reject(body, 'disabled'),
+    bodyDataMap;
+  if (!_.isEmpty(enabledBodyList)) {
+    bodyDataMap = _.map(enabledBodyList, function (value) {
+      return `${indent}'${sanitize(value.key, trim)}': '${sanitize(value.value, trim)}'`;
+    });
+    bodySnippet += '\n' + bodyDataMap.join(',\n') + '\n';
+  }
+  bodySnippet += '};';
+  return bodySnippet;
+}
+
+/**
  * Parses Raw data
  *
  * @param {Object} body Raw body data
@@ -46,11 +67,7 @@ function parseRawBody (body, indent, trim) {
     items = getArrayBody(body, bodyString, indent);
   }
   else if (typeof body === 'string') {
-    bodyString = body;
-    if (body.includes('$') && !body.includes('\\$')) {
-      bodyString = body.replace('$', '\\$');
-    }
-    return 'final String body = \'\'\'' + bodyString + '\'\'\';\n';
+    return `final String body = '''${sanitize(body, trim)}''';`;
   }
   else {
     items = sanitize(bodyString, trim)
@@ -68,12 +85,24 @@ function parseRawBody (body, indent, trim) {
  * Parses GraphQL body
  *
  * @param {Object} body GraphQL body
+ * @param {String} indent indentation required for code snippet
+ * @param {Boolean} trim indicates whether to trim string or not
  */
-function parseGraphQLBody (body) {
+function parseGraphQLBody (body, indent, trim) {
   var bodySnippet = '',
-    rawBody = JSON.stringify(body);
+    query = body.query,
+    graphqlVariables;
+  try {
+    graphqlVariables = JSON.parse(body.variables);
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
 
-  bodySnippet += `var body = '${rawBody}';\n`;
+  bodySnippet += `var body = '''${sanitize(JSON.stringify({
+    query: query,
+    variables: graphqlVariables
+  }), trim)}''';\n`;
 
   return bodySnippet;
 }
@@ -118,7 +147,7 @@ function parseFormData (body, indent, trim) {
         formDataFileArray.push(`request.files.add(await http.MultipartFile.fromPath('${key}', '${data.src}'));`);
       }
       else {
-        formDataArray.push(`${indent}'${key}': '${sanitize(value, trim)}'`);
+        formDataArray.push(`${indent}'${sanitize(key)}': '${sanitize(value, trim)}'`);
       }
     }
   });
@@ -150,7 +179,7 @@ function parseBody (body, indent, trim) {
   if (!_.isEmpty(body)) {
     switch (body.mode) {
       case 'urlencoded':
-        return parseRawBody(body.urlencoded, indent, trim);
+        return parseUrlEncoded(body.urlencoded, indent, trim);
       case 'raw':
         return parseRawBody(body.raw, indent, trim);
       case 'formdata':
@@ -158,7 +187,7 @@ function parseBody (body, indent, trim) {
       case 'file':
         return '';
       case 'graphql':
-        return parseGraphQLBody(body.graphql);
+        return parseGraphQLBody(body.graphql, indent, trim);
       default:
         return '<file-content-here>';
     }
