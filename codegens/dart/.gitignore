@@ -43,3 +43,8 @@ typings/
 
 out/
 /.idea/
+pubspec.lock
+pubspec.yaml
+.packages
+snippet.dart
+.dart_tool/
