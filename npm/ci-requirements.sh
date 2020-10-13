@@ -46,3 +46,15 @@ sudo apt-get install -y mono-complete
 
 echo "Installing dependencies required for tests in codegens/shell-httpie"
 sudo apt-get install httpie
+
+echo "Installing dart"
+pushd ./codegens/dart &>/dev/null;
+  wget -q https://storage.googleapis.com/dart-archive/channels/stable/release/latest/linux_packages/dart_2.10.1-1_amd64.deb
+  sudo dpkg -i dart_2.10.1-1_amd64.deb
+  echo '''name: test
+dependencies:
+  http: ^0.12.2
+''' > pubspec.yaml
+  dart pub get
+popd &>/dev/null;
+
