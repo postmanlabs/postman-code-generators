@@ -278,7 +278,7 @@ self = module.exports = {
 
     if (isFileFormData(requestBody)) {
       codeSnippet += `http.MultipartRequest request = http.MultipartRequest('${request.method.toUpperCase()}',` +
-        `"${encodeURI(request.url.toString())}");\n`;
+        `'${encodeURI(request.url.toString())}');\n`;
 
       codeSnippet += body;
 
@@ -303,10 +303,10 @@ self = module.exports = {
         bodyParam = '';
       }
 
-      codeSnippet += `final response = await http.${request.method.toLowerCase()}("` +
-        encodeURI(request.url.toString()) + `"${headerParam}${bodyParam});\n`;
+      codeSnippet += `final response = await http.${request.method.toLowerCase()}('` +
+        encodeURI(request.url.toString()) + `'${headerParam}${bodyParam});\n`;
       codeSnippet += 'if (response.statusCode == 200) {\n';
-      codeSnippet += `${indent}print(json.decode(response.body));\n`;
+      codeSnippet += `${indent}print(response.body);\n`;
       codeSnippet += '} else {\n';
       codeSnippet += `${indent}print(response.reasonPhrase);\n`;
       codeSnippet += '}\n';
