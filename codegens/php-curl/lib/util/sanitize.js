@@ -15,8 +15,6 @@ module.exports = {
     inputString = inputTrim && typeof inputTrim === 'boolean' ? inputString.trim() : inputString;
     if (escapeCharFor && typeof escapeCharFor === 'string') {
       switch (escapeCharFor) {
-        case 'raw':
-          return JSON.stringify(inputString);
         case 'urlencoded':
           return escape(inputString);
         default:
