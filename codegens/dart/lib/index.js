@@ -165,7 +165,8 @@ self = module.exports = {
       codeSnippet = '',
       headerSnippet = '',
       footerSnippet = '',
-      trim;
+      trim,
+      timeout;
     options = sanitizeOptions(options, self.getOptions());
     if (options.includeBoilerplate) {
       headerSnippet = 'import \'package:http/http.dart\' as http;\n\n';
@@ -175,6 +176,7 @@ self = module.exports = {
     trim = options.trimRequestBody;
     indent = options.indentType === 'tab' ? '\t' : ' ';
     indent = indent.repeat(options.indentCount);
+    timeout = options.requestTimeout;
 
     if (!_.isFunction(callback)) {
       throw new Error('Callback is not valid function');
@@ -253,7 +255,11 @@ self = module.exports = {
 
       codeSnippet += '\n';
 
-      codeSnippet += 'http.StreamedResponse response = await request.send();\n';
+      codeSnippet += 'http.StreamedResponse response = await request.send()';
+      if (timeout > 0) {
+        codeSnippet += `.timeout(Duration(milliseconds: ${timeout}))`;
+      }
+      codeSnippet += ';\n';
       codeSnippet += 'if (response.statusCode == 200) {\n';
       codeSnippet += `${indent}print(await response.stream.bytesToString());\n`;
       codeSnippet += '} else {\n';
@@ -268,8 +274,16 @@ self = module.exports = {
         bodyParam = '';
       }
 
-      codeSnippet += `final response = await http.${request.method.toLowerCase()}('` +
-        encodeURI(request.url.toString()) + `'${headerParam}${bodyParam});\n`;
+      codeSnippet += 'final response = await http';
+      if (timeout > 0) {
+        codeSnippet += `\n${indent}`;
+      }
+      codeSnippet += `.${request.method.toLowerCase()}('` +
+        encodeURI(request.url.toString()) + `'${headerParam}${bodyParam})`;
+      if (timeout > 0) {
+        codeSnippet += `\n${indent}.timeout(Duration(milliseconds: ${timeout}))`;
+      }
+      codeSnippet += ';\n';
       codeSnippet += 'if (response.statusCode == 200) {\n';
       codeSnippet += `${indent}print(response.body);\n`;
       codeSnippet += '} else {\n';
@@ -304,9 +318,7 @@ self = module.exports = {
         name: 'Set request timeout',
         id: 'requestTimeout',
         type: 'positiveInteger',
-        // Using 10 secs as default
-        // TODO: Find out a way to set infinite timeout.
-        default: 10000,
+        default: 0,
         description: 'Set number of milliseconds the request should wait for a response' +
     ' before timing out (use 0 for infinity)'
       },
