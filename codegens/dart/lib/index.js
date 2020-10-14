@@ -276,12 +276,12 @@ self = module.exports = {
 
       codeSnippet += 'final response = await http';
       if (timeout > 0) {
-        codeSnippet += `\n${indent}`;
+        codeSnippet += `\n${indent.repeat(2)}`;
       }
       codeSnippet += `.${request.method.toLowerCase()}('` +
         encodeURI(request.url.toString()) + `'${headerParam}${bodyParam})`;
       if (timeout > 0) {
-        codeSnippet += `\n${indent}.timeout(Duration(milliseconds: ${timeout}))`;
+        codeSnippet += `\n${indent.repeat(2)}.timeout(Duration(milliseconds: ${timeout}))`;
       }
       codeSnippet += ';\n';
       codeSnippet += 'if (response.statusCode == 200) {\n';
