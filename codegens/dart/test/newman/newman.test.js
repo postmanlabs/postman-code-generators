@@ -5,10 +5,12 @@ var runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').ru
 describe('Convert for different types of request', function () {
   var options = {indentCount: 2, indentType: 'Space', includeBoilerplate: true },
     testConfig = {
-      // compileScript: 'clang -framework Foundation snippet.m -o prog',
       runScript: 'dart snippet.dart',
       fileName: 'snippet.dart',
-      headerSnippet: ''
+      headerSnippet: '',
+      // http uses Map<String, String> to store headers, so there is no way to 
+      // keep multiple headers with the same key
+      skipCollections: ['sameNameHeadersCollection'],
     };
 
   runNewmanTest(convert, options, testConfig);
