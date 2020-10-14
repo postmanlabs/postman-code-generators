@@ -1,24 +1,71 @@
 var convert = require('../../index').convert,
   expect = require('chai').expect,
   collection = require('./fixtures/collection.json'),
-  sdk = require('postman-collection'),
-  expectedSnippets = require('./fixtures/snippets.json');
+  sdk = require('postman-collection');
 
 // Disable check with expected snippets as we now have proper newman tests
-describe.skip('Dart Converter', function () {
-  describe('convert for different request types', function () {
-    collection.item.forEach((item) => {
-      it(item.name, function (done) {
-        const request = new sdk.Request(item.request);
-        convert(request, {}, (err, snippet) => {
-          if (err) {
-            expect.fail(null, null, err);
-            return done();
-          }
-          expect(snippet).to.equal(expectedSnippets[item.name]);
-          return done();
-        });
-      });
+describe('Dart Converter', function () {
+  it('should add timeout if requestTimeout options is used', function () {
+    var request = new sdk.Request({
+      "method": "POST",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"json\": \"Test-Test\"\n}"
+      },
+      "url": {
+        "raw": "https://postman-echo.com/post",
+        "protocol": "https",
+        "host": [
+          "postman-echo",
+          "com"
+        ],
+        "path": [
+          "post"
+        ]
+      },
     });
+
+    convert(request, {requestTimeout: 5000}, function (err, snippet) {
+      if (err) {
+        expect.fail(err);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.contain('.timeout(Duration(milliseconds: 5000))');
+    });
+  });
+
+  it('should use http.MultipartRequest for formdata requests', function () {
+    var request = new sdk.Request({
+      "method": "POST",
+      "header": [],
+      "body": {
+        "mode": "formdata",
+        "formdata": []
+      },
+      "url": {
+        "raw": "https://postman-echo.com/post",
+        "protocol": "https",
+        "host": [
+          "postman-echo",
+          "com"
+        ],
+        "path": [
+          "post"
+        ]
+      }
+    });
+    convert(request, {}, function (err, snippet) {
+      if (err) {
+        expect.fail(err);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.contain('http.MultipartRequest');
+    })
   });
 });
