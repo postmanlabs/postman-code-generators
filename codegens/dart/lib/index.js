@@ -228,7 +228,7 @@ self = module.exports = {
       trim;
     options = sanitizeOptions(options, self.getOptions());
     if (options.includeBoilerplate) {
-      headerSnippet = 'import \'dart:convert\';\nimport \'package:http/http.dart\' as http;\n\n';
+      headerSnippet = 'import \'package:http/http.dart\' as http;\n\n';
       headerSnippet += 'void main() async {\n';
       footerSnippet = '}\n';
     }
