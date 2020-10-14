@@ -4,26 +4,6 @@ var _ = require('./lodash'),
   addFormParam = require('./util').addFormParam,
   self;
 
-function getArrayBody (body, bodyString, indent) {
-  let insideOfBody = [];
-  body.forEach((item) => {
-    let keys = Object.keys(item),
-      values = Object.values(item);
-
-    for (let i = 0; i < keys.length; i++) {
-      let value = values[i];
-      if (typeof value === 'string') {
-        insideOfBody.push(`{ '${keys[i]}': '${value}' }`);
-      }
-      else {
-        insideOfBody.push(`{ '${keys[i]}': ${value} }`);
-      }
-    }
-  });
-  bodyString = insideOfBody.join(',\n' + indent);
-  return bodyString;
-}
-
 /**
  * Parses Url encoded data
  *
@@ -49,46 +29,19 @@ function parseUrlEncoded (body, indent, trim) {
  * Parses Raw data
  *
  * @param {Object} body Raw body data
- * @param {String} indent indentation required for code snippet
  * @param {Boolean} trim indicates whether to trim string or not
  */
-function parseRawBody (body, indent, trim) {
-  var bodySnippet = '';
-
-  if (Object.keys(body).length === 0) {
-    return bodySnippet;
-  }
-
-  bodySnippet += 'var body = {\n';
-  let bodyString = body.toString(),
-    items = '';
-
-  if (Array.isArray(body)) {
-    items = getArrayBody(body, bodyString, indent);
-  }
-  else if (typeof body === 'string') {
-    return `final String body = '''${sanitize(body, trim)}''';`;
-  }
-  else {
-    items = sanitize(bodyString, trim)
-      .replace('}', '')
-      .replace('{', '')
-      .split(',').join(',\n' + indent);
-  }
-
-  bodySnippet += indent + items + '\n';
-  bodySnippet += '};\n';
-  return bodySnippet;
+function parseRawBody (body, trim) {
+  return `final String body = '''${sanitize(body, trim)}''';`;
 }
 
 /**
  * Parses GraphQL body
  *
  * @param {Object} body GraphQL body
- * @param {String} indent indentation required for code snippet
  * @param {Boolean} trim indicates whether to trim string or not
  */
-function parseGraphQLBody (body, indent, trim) {
+function parseGraphQLBody (body, trim) {
   var bodySnippet = '',
     query = body.query,
     graphqlVariables;
@@ -106,19 +59,6 @@ function parseGraphQLBody (body, indent, trim) {
 
   return bodySnippet;
 }
-
-// function isFileFormData (body) {
-//   return body && body.mode === 'formdata';
-//   // if (!body || body.mode !== 'formdata') {
-//   //   return false;
-//   // }
-
-//   // if (!Array.isArray(body.formdata)) {
-//   //   return false;
-//   // }
-
-//   // return body.formdata.some((k) => { return k.type === 'file'; });
-// }
 
 /**
  * Parses form data body from request
@@ -177,13 +117,13 @@ function parseBody (body, indent, trim) {
       case 'urlencoded':
         return parseUrlEncoded(body.urlencoded, indent, trim);
       case 'raw':
-        return parseRawBody(body.raw, indent, trim);
+        return parseRawBody(body.raw, trim);
       case 'formdata':
         return parseFormData(body.formdata, indent, trim);
       case 'file':
         return '';
       case 'graphql':
-        return parseGraphQLBody(body.graphql, indent, trim);
+        return parseGraphQLBody(body.graphql, trim);
       default:
         return '<file-content-here>';
     }
