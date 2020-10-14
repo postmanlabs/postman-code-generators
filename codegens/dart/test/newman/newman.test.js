@@ -1,16 +1,15 @@
 var runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../lib/index').convert;
 
-  // Skipping for CI, can be run locally to check snippet generation
 describe('Convert for different types of request', function () {
   var options = {indentCount: 2, indentType: 'Space', includeBoilerplate: true },
     testConfig = {
       runScript: 'dart snippet.dart',
       fileName: 'snippet.dart',
       headerSnippet: '',
-      // http uses Map<String, String> to store headers, so there is no way to 
+      // http uses Map<String, String> to store headers, so there is no way to
       // keep multiple headers with the same key
-      skipCollections: ['sameNameHeadersCollection'],
+      skipCollections: ['sameNameHeadersCollection']
     };
 
   runNewmanTest(convert, options, testConfig);

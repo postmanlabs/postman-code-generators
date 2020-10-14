@@ -4,7 +4,8 @@ var convert = require('../../index').convert,
   sdk = require('postman-collection'),
   expectedSnippets = require('./fixtures/snippets.json');
 
-describe('Dart Converter', function () {
+// Disable check with expected snippets as we now have proper newman tests
+describe.skip('Dart Converter', function () {
   describe('convert for different request types', function () {
     collection.item.forEach((item) => {
       it(item.name, function (done) {
