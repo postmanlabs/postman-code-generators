@@ -107,17 +107,18 @@ function parseGraphQLBody (body, indent, trim) {
   return bodySnippet;
 }
 
-function isFileFormData (body) {
-  if (!body || body.mode !== 'formdata') {
-    return false;
-  }
+// function isFileFormData (body) {
+//   return body && body.mode === 'formdata';
+//   // if (!body || body.mode !== 'formdata') {
+//   //   return false;
+//   // }
 
-  if (!Array.isArray(body.formdata)) {
-    return false;
-  }
+//   // if (!Array.isArray(body.formdata)) {
+//   //   return false;
+//   // }
 
-  return body.formdata.some((k) => { return k.type === 'file'; });
-}
+//   // return body.formdata.some((k) => { return k.type === 'file'; });
+// }
 
 /**
  * Parses form data body from request
@@ -131,7 +132,6 @@ function parseFormData (body, indent, trim) {
     formDataArray = [],
     formDataFileArray = [],
     key,
-    foundFile = false,
     value;
 
   if (_.isEmpty(body)) {
@@ -143,7 +143,6 @@ function parseFormData (body, indent, trim) {
     value = trim ? data.value.trim() : data.value;
     if (!data.disabled) {
       if (data.type === 'file') {
-        foundFile = true;
         formDataFileArray.push(`request.files.add(await http.MultipartFile.fromPath('${key}', '${data.src}'));`);
       }
       else {
@@ -153,15 +152,12 @@ function parseFormData (body, indent, trim) {
   });
 
   if (formDataArray.length > 0) {
-    bodySnippet += 'var body = {\n';
+    bodySnippet += 'request.fields.addAll({\n';
     bodySnippet += formDataArray.join(',\n');
-    bodySnippet += ' \n};\n';
-    if (foundFile) {
-      bodySnippet += 'request.fields.addAll(x);\n';
-    }
+    bodySnippet += '\n});\n';
   }
 
-  if (foundFile) {
+  if (formDataFileArray.length > 0) {
     bodySnippet += formDataFileArray.join('\n');
   }
 
@@ -305,9 +301,9 @@ self = module.exports = {
       headerParam = '';
     }
 
-    if (isFileFormData(requestBody)) {
+    if (requestBody && requestBody.mode === 'formdata') {
       codeSnippet += `http.MultipartRequest request = http.MultipartRequest('${request.method.toUpperCase()}',` +
-        `'${encodeURI(request.url.toString())}');\n`;
+        ` Uri.parse('${request.url.toString()}'));\n`;
 
       codeSnippet += body;
 
