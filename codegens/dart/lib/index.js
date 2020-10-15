@@ -12,7 +12,7 @@ var _ = require('./lodash'),
  * @param {Boolean} trim indicates whether to trim string or not
  */
 function parseUrlEncoded (body, indent, trim) {
-  var bodySnippet = 'var body = {',
+  var bodySnippet = 'request.bodyFields = {',
     enabledBodyList = _.reject(body, 'disabled'),
     bodyDataMap;
   if (!_.isEmpty(enabledBodyList)) {
@@ -32,7 +32,7 @@ function parseUrlEncoded (body, indent, trim) {
  * @param {Boolean} trim indicates whether to trim string or not
  */
 function parseRawBody (body, trim) {
-  return `final String body = '''${sanitize(body, trim)}''';`;
+  return `request.body = '''${sanitize(body, trim)}''';`;
 }
 
 /**
@@ -52,7 +52,7 @@ function parseGraphQLBody (body, trim) {
     graphqlVariables = {};
   }
 
-  bodySnippet += `var body = '''${sanitize(JSON.stringify({
+  bodySnippet += `request.body = '''${sanitize(JSON.stringify({
     query: query,
     variables: graphqlVariables
   }), trim)}''';\n`;
@@ -120,12 +120,10 @@ function parseBody (body, indent, trim) {
         return parseRawBody(body.raw, trim);
       case 'formdata':
         return parseFormData(body.formdata, indent, trim);
-      case 'file':
-        return '';
       case 'graphql':
         return parseGraphQLBody(body.graphql, trim);
       default:
-        return '<file-content-here>';
+        return '';
     }
   }
   return '';
@@ -166,7 +164,8 @@ self = module.exports = {
       headerSnippet = '',
       footerSnippet = '',
       trim,
-      timeout;
+      timeout,
+      followRedirect;
     options = sanitizeOptions(options, self.getOptions());
     if (options.includeBoilerplate) {
       headerSnippet = 'import \'package:http/http.dart\' as http;\n\n';
@@ -177,6 +176,7 @@ self = module.exports = {
     indent = options.indentType === 'tab' ? '\t' : ' ';
     indent = indent.repeat(options.indentCount);
     timeout = options.requestTimeout;
+    followRedirect = options.followRedirect;
 
     if (!_.isFunction(callback)) {
       throw new Error('Callback is not valid function');
@@ -233,63 +233,43 @@ self = module.exports = {
       });
     }
 
-    let headerParam = ', headers: headers';
     const headers = parseHeaders(request.headers.toJSON(), indent, trim),
       requestBody = request.body ? request.body.toJSON() : {},
       body = parseBody(requestBody, indent, trim) + '\n';
 
     codeSnippet += headers;
-    if (headers === '') {
-      headerParam = '';
-    }
 
     if (requestBody && requestBody.mode === 'formdata') {
-      codeSnippet += `http.MultipartRequest request = http.MultipartRequest('${request.method.toUpperCase()}',` +
+      codeSnippet += `var request = http.MultipartRequest('${request.method.toUpperCase()}',` +
         ` Uri.parse('${request.url.toString()}'));\n`;
-
-      codeSnippet += body;
-
-      if (headers !== '') {
-        codeSnippet += 'request.headers.addAll(headers);';
-      }
-
-      codeSnippet += '\n';
-
-      codeSnippet += 'http.StreamedResponse response = await request.send()';
-      if (timeout > 0) {
-        codeSnippet += `.timeout(Duration(milliseconds: ${timeout}))`;
-      }
-      codeSnippet += ';\n';
-      codeSnippet += 'if (response.statusCode == 200) {\n';
-      codeSnippet += `${indent}print(await response.stream.bytesToString());\n`;
-      codeSnippet += '} else {\n';
-      codeSnippet += `${indent}print(response.reasonPhrase);\n`;
-      codeSnippet += '}\n';
     }
     else {
-      codeSnippet += body;
-
-      let bodyParam = ', body: body';
-      if (typeof body === undefined || body.trim() === '') {
-        bodyParam = '';
-      }
-
-      codeSnippet += 'final response = await http';
-      if (timeout > 0) {
-        codeSnippet += `\n${indent.repeat(2)}`;
-      }
-      codeSnippet += `.${request.method.toLowerCase()}('` +
-        encodeURI(request.url.toString()) + `'${headerParam}${bodyParam})`;
-      if (timeout > 0) {
-        codeSnippet += `\n${indent.repeat(2)}.timeout(Duration(milliseconds: ${timeout}))`;
-      }
-      codeSnippet += ';\n';
-      codeSnippet += 'if (response.statusCode == 200) {\n';
-      codeSnippet += `${indent}print(response.body);\n`;
-      codeSnippet += '} else {\n';
-      codeSnippet += `${indent}print(response.reasonPhrase);\n`;
-      codeSnippet += '}\n';
+      codeSnippet += `var request = http.Request('${request.method.toUpperCase()}',` +
+      ` Uri.parse('${request.url.toString()}'));\n`;
     }
+
+    if (body !== '') {
+      codeSnippet += body;
+    }
+    if (headers !== '') {
+      codeSnippet += 'request.headers.addAll(headers);\n';
+    }
+    if (!followRedirect) {
+      codeSnippet += 'request.followRedirects = false;\n';
+    }
+
+    codeSnippet += '\n';
+
+    codeSnippet += 'http.StreamedResponse response = await request.send()';
+    if (timeout > 0) {
+      codeSnippet += `.timeout(Duration(milliseconds: ${timeout}))`;
+    }
+    codeSnippet += ';\n';
+    codeSnippet += 'if (response.statusCode == 200) {\n';
+    codeSnippet += `${indent}print(await response.stream.bytesToString());\n`;
+    codeSnippet += '} else {\n';
+    codeSnippet += `${indent}print(response.reasonPhrase);\n`;
+    codeSnippet += '}\n';
 
     //  if boilerplate is included then two more indent needs to be added in snippet
     (options.includeBoilerplate) &&
@@ -335,6 +315,13 @@ self = module.exports = {
         type: 'boolean',
         default: false,
         description: 'Include class definition and import statements in snippet'
+      },
+      {
+        name: 'Follow redirects',
+        id: 'followRedirect',
+        type: 'boolean',
+        default: true,
+        description: 'Automatically follow HTTP redirects'
       }
     ];
   }
