@@ -1,6 +1,5 @@
 var convert = require('../../index').convert,
   expect = require('chai').expect,
-  collection = require('./fixtures/collection.json'),
   sdk = require('postman-collection');
 
 // Disable check with expected snippets as we now have proper newman tests
