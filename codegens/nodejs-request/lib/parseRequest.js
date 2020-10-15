@@ -102,10 +102,10 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
             return `body: JSON.stringify(${JSON.stringify(jsonBody)})\n`;
           }
           catch (error) {
-            return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
+            return `body: '${sanitize(requestbody[requestbody.mode])}'\n`;
           }
         }
-        return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
+        return `body: '${sanitize(requestbody[requestbody.mode])}'\n`;
       // eslint-disable-next-line no-case-declarations
       case 'graphql':
         let query = requestbody[requestbody.mode].query,
@@ -117,7 +117,7 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
           graphqlVariables = {};
         }
         return 'body: JSON.stringify({\n' +
-          `${indentString.repeat(2)}query: '${sanitize(query, trimBody)}',\n` +
+          `${indentString.repeat(2)}query: \`${query.trim()}\`,\n` +
           `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
           `${indentString}})`;
       case 'formdata':

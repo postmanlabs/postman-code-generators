@@ -20,11 +20,11 @@ module.exports = function (request, indentation, bodyTrim) {
     switch (request.body.mode) {
       case 'raw':
         if (!_.isEmpty(request.body[request.body.mode])) {
-          requestBody += `payload = ${sanitize(request.body[request.body.mode],
+          requestBody += `payload=${sanitize(request.body[request.body.mode],
             request.body.mode, bodyTrim)}\n`;
         }
         else {
-          requestBody = 'payload  = {}\n';
+          requestBody = 'payload={}\n';
         }
         return requestBody;
       // eslint-disable-next-line no-case-declarations
@@ -37,7 +37,7 @@ module.exports = function (request, indentation, bodyTrim) {
         catch (e) {
           graphqlVariables = {};
         }
-        requestBody += `payload = ${sanitize(JSON.stringify({
+        requestBody += `payload=${sanitize(JSON.stringify({
           query: query,
           variables: graphqlVariables
         }),
@@ -50,10 +50,10 @@ module.exports = function (request, indentation, bodyTrim) {
             return `${sanitize(value.key, request.body.mode, bodyTrim)}=` +
                         `${sanitize(value.value, request.body.mode, bodyTrim)}`;
           });
-          requestBody += `payload = '${bodyDataMap.join('&')}'\n`;
+          requestBody += `payload='${bodyDataMap.join('&')}'\n`;
         }
         else {
-          requestBody = 'payload = {}\n';
+          requestBody = 'payload={}\n';
         }
         return requestBody;
       case 'formdata':
@@ -66,19 +66,19 @@ module.exports = function (request, indentation, bodyTrim) {
           bodyFileMap = _.map(_.filter(enabledBodyList, {'type': 'file'}), function (value) {
             return `${indentation}('${value.key}', open('${sanitize(value.src, request.body.mode, bodyTrim)}','rb'))`;
           });
-          requestBody = `payload = {${bodyDataMap.join(',\n')}}\nfiles = [\n${bodyFileMap.join(',\n')}\n]\n`;
+          requestBody = `payload={${bodyDataMap.join(',\n')}}\nfiles=[\n${bodyFileMap.join(',\n')}\n]\n`;
         }
         else {
-          requestBody = 'payload = {}\nfiles = {}\n';
+          requestBody = 'payload={}\nfiles={}\n';
         }
         return requestBody;
       case 'file':
-        // return `payload = {open('${request.body[request.body.mode].src}', 'rb').read()\n}`;
-        return 'payload = "<file contents here>"\n';
+        // return `payload={open('${request.body[request.body.mode].src}', 'rb').read()\n}`;
+        return 'payload="<file contents here>"\n';
       default:
-        return 'payload = {}\n';
+        return 'payload={}\n';
     }
   }
-  return 'payload = {}\n';
+  return 'payload={}\n';
 }
 ;
