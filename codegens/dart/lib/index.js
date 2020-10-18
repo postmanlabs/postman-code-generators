@@ -123,7 +123,7 @@ function parseBody (body, indent, trim) {
       case 'graphql':
         return parseGraphQLBody(body.graphql, trim);
       case 'file':
-        return 'request.body = r\'<file contents here>\';\n'
+        return 'request.body = r\'<file contents here>\';\n';
       default:
         return '';
     }
