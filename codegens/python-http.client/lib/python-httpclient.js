@@ -134,6 +134,7 @@ self = module.exports = {
     if (request.body && request.body.mode === 'formdata') {
       snippet += 'from codecs import encode\n';
     }
+    snippet += '\n';
     snippet += `conn = http.client.HTTPSConnection("${sanitize(request.url.host ? request.url.host.join('.') : '')}"`;
     snippet += request.url.port ? `, ${request.url.port}` : '';
     snippet += options.requestTimeout !== 0 ? `, timeout = ${options.requestTimeout})\n` : ')\n';
