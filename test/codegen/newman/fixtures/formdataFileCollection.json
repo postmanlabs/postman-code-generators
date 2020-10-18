@@ -40,7 +40,6 @@
 				}
 			}
     },
-    ,
     {
       "name": "Binary file upload via form-data",
       "request": {
