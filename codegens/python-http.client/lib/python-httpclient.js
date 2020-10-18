@@ -130,8 +130,8 @@ self = module.exports = {
     indentation = identity.repeat(options.indentCount);
 
     snippet += 'import http.client\n';
-    snippet += 'import mimetypes\n';
     if (request.body && request.body.mode === 'formdata') {
+      snippet += 'import mimetypes\n';
       snippet += 'from codecs import encode\n';
     }
     snippet += '\n';
