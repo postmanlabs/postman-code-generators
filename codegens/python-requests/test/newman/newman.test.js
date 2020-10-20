@@ -11,6 +11,9 @@ describe('Convert for different types of request', function () {
         fileName: 'codesnippet.py',
         runScript: 'python codesnippet.py',
         compileScript: null,
+        // Requests does not support multipart/form-data unless we are also
+        // uploading a file. Headers are stored in a dict so we cannot have
+        // two headers with same key
         skipCollections: ['formdataCollection', 'sameNameHeadersCollection']
       };
     runNewmanTest(convert, options, testConfig);
@@ -25,6 +28,9 @@ describe('Convert for different types of request', function () {
         fileName: 'codesnippet.py',
         runScript: 'python3 codesnippet.py',
         compileScript: null,
+        // Requests does not support multipart/form-data unless we are also
+        // uploading a file. Headers are stored in a dict so we cannot have
+        // two headers with same key
         skipCollections: ['formdataCollection', 'sameNameHeadersCollection']
       };
     runNewmanTest(convert, options, testConfig);
