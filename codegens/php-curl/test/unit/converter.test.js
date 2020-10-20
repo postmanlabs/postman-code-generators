@@ -32,7 +32,7 @@ describe('php-curl converter', function () {
       }
       expect(snippet).to.be.a('string');
       // one extra space in matching the output because we add key:<space>value in the snippet
-      expect(snippet).to.include('"key_containing_whitespaces:   value_containing_whitespaces  "');
+      expect(snippet).to.include('\'key_containing_whitespaces:   value_containing_whitespaces  \'');
     });
   });
 

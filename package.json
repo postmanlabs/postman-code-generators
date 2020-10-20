@@ -1,6 +1,6 @@
 {
   "name": "postman-code-generators",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Generates code snippets for a postman collection",
   "main": "index.js",
   "directories": {
@@ -25,32 +25,32 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/postmanlabs/code-generators",
   "dependencies": {
-    "async": "2.5.0",
+    "async": "2.6.3",
     "path": "0.12.7",
-    "postman-collection": "3.5.1",
+    "postman-collection": "3.6.7",
     "shelljs": "0.8.4"
   },
   "devDependencies": {
     "browserify": "14.4.0",
     "chai": "4.1.2",
     "chalk": "2.4.2",
-    "dependency-check": "2.9.1",
-    "editorconfig": "0.14.2",
     "eslint": "5.0.0",
+    "dependency-check": "2.10.1",
+    "editorconfig": "0.15.3",
     "eslint-plugin-jsdoc": "3.15.1",
     "eslint-plugin-lodash": "2.7.0",
     "eslint-plugin-mocha": "4.11.0",
     "eslint-plugin-security": "1.4.0",
     "istanbul": "0.4.5",
     "js-yaml": "3.13.1",
-    "jsdoc": "3.6.3",
+    "jsdoc": "3.6.6",
     "mocha": "5.2.0",
     "lodash": "4.17.20",
     "newman": "4.5.7",
     "nyc": "14.1.1",
     "parse-gitignore": "1.0.1",
     "pretty-ms": "3.0.1",
-    "recursive-readdir": "2.1.0",
+    "recursive-readdir": "2.2.2",
     "watchify": "3.11.1"
   },
   "engines": {

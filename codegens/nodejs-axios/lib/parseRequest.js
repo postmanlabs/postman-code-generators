@@ -111,7 +111,7 @@ function parseGraphQL (body, trim, indentString, ES6_enabled) {
     graphqlVariables = {};
   }
   bodySnippet = varDeclare + ' data = JSON.stringify({\n';
-  bodySnippet += `${indentString}query: '${sanitize(query, trim)}',\n`;
+  bodySnippet += `${indentString}query: \`${query.trim()}\`,\n`;
   bodySnippet += `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n});\n`;
   return bodySnippet;
 }
