@@ -203,7 +203,7 @@ function getHeaders (request) {
   });
   headers = convertPropertyListToString(request.headers, '\n', false);
   if (request.body && request.body.mode === 'formdata' && contentTypeIndex < 0) {
-    headers += `Content-Type: ${formDataHeader}`;
+    headers += `\nContent-Type: ${formDataHeader}`;
   }
   return headers;
 }
@@ -225,8 +225,8 @@ function getBody (request, trimRequestBody) {
           requestBody += request.body[request.body.mode].toString();
         }
         return trimRequestBody ? requestBody.trim() : requestBody;
-      // eslint-disable-next-line no-case-declarations
       case GRAPHQL:
+        // eslint-disable-next-line no-case-declarations
         let query = request.body[request.body.mode].query,
           graphqlVariables;
         try {

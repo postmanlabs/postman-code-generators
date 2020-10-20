@@ -335,7 +335,8 @@ self = module.exports = {
     requestBody = (request.body ? request.body.toJSON() : {});
     bodySnippet = parseBody(requestBody, trim, indent);
 
-    codeSnippet = 'import Foundation\n\n';
+    codeSnippet = 'import Foundation\n';
+    codeSnippet += '#if canImport(FoundationNetworking)\nimport FoundationNetworking\n#endif\n\n';
     codeSnippet += 'var semaphore = DispatchSemaphore (value: 0)\n\n';
     if (bodySnippet !== '') {
       codeSnippet += `${bodySnippet}\n\n`;
@@ -367,6 +368,7 @@ self = module.exports = {
     codeSnippet += '\nlet task = URLSession.shared.dataTask(with: request) { data, response, error in \n';
     codeSnippet += `${indent}guard let data = data else {\n`;
     codeSnippet += `${indent.repeat(2)}print(String(describing: error))\n`;
+    codeSnippet += `${indent.repeat(2)}semaphore.signal()\n`;
     codeSnippet += `${indent.repeat(2)}return\n`;
     codeSnippet += `${indent}}\n`;
     codeSnippet += `${indent}print(String(data: data, encoding: .utf8)!)\n`;

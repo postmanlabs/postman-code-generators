@@ -1,5 +1,6 @@
 var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
+  sanitizeMultiline = require('./util').sanitizeMultiline,
   sanitizeOptions = require('./util').sanitizeOptions,
   addFormParam = require('./util').addFormParam,
   isFile = false,
@@ -13,7 +14,7 @@ var _ = require('./lodash'),
  */
 function parseRawBody (body, trim) {
   var bodySnippet;
-  bodySnippet = `payload := strings.NewReader("${sanitize(body.toString(), trim)}")`;
+  bodySnippet = `payload := strings.NewReader(\`${sanitizeMultiline(body.toString(), trim)}\`)`;
   return bodySnippet;
 }
 
@@ -78,8 +79,9 @@ function parseFormData (body, trim, indent) {
          errFile${index + 1} := writer.CreateFormFile("${sanitize(data.key, trim)}",` +
                         `filepath.Base("${data.src}"))\n`;
         bodySnippet += `${indent}_, errFile${index + 1} = io.Copy(part${index + 1}, file)\n`;
-        bodySnippet += `${indent}if errFile${index + 1} !=nil {
-          \n${indent.repeat(2)}fmt.Println(errFile${index + 1})\n${indent}}\n`;
+        bodySnippet += `${indent}if errFile${index + 1} != nil {` +
+          `\n${indent.repeat(2)}fmt.Println(errFile${index + 1})\n` +
+          `${indent.repeat(2)}return\n${indent}}\n`;
       }
       else {
         bodySnippet += `${indent}_ = writer.WriteField("${sanitize(data.key, trim)}",`;
@@ -88,7 +90,8 @@ function parseFormData (body, trim, indent) {
     }
   });
   bodySnippet += `${indent}err := writer.Close()\n${indent}if err != nil ` +
-  `{\n${indent.repeat(2)}fmt.Println(err)\n${indent}}\n`;
+  `{\n${indent.repeat(2)}fmt.Println(err)\n` +
+  `${indent.repeat(2)}return\n${indent}}\n`;
   return bodySnippet;
 }
 
@@ -257,7 +260,8 @@ self = module.exports = {
     else {
       codeSnippet += `${indent}req, err := http.NewRequest(method, url, nil)\n\n`;
     }
-    codeSnippet += `${indent}if err != nil {\n${indent.repeat(2)}fmt.Println(err)\n${indent}}\n`;
+    codeSnippet += `${indent}if err != nil {\n${indent.repeat(2)}fmt.Println(err)\n`;
+    codeSnippet += `${indent.repeat(2)}return\n${indent}}\n`;
     if (request.body && !request.headers.has('Content-Type')) {
       if (request.body.mode === 'file') {
         request.addHeader({
@@ -280,7 +284,11 @@ self = module.exports = {
       codeSnippet += `${indent}req.Header.Set("Content-Type", writer.FormDataContentType())\n`;
     }
     responseSnippet = `${indent}res, err := client.Do(req)\n`;
-    responseSnippet += `${indent}defer res.Body.Close()\n${indent}body, err := ioutil.ReadAll(res.Body)\n\n`;
+    responseSnippet += `${indent}if err != nil {\n${indent.repeat(2)}fmt.Println(err)\n`;
+    responseSnippet += `${indent.repeat(2)}return\n${indent}}\n`;
+    responseSnippet += `${indent}defer res.Body.Close()\n\n${indent}body, err := ioutil.ReadAll(res.Body)\n`;
+    responseSnippet += `${indent}if err != nil {\n${indent.repeat(2)}fmt.Println(err)\n`;
+    responseSnippet += `${indent.repeat(2)}return\n${indent}}\n`;
     responseSnippet += `${indent}fmt.Println(string(body))\n}`;
 
     codeSnippet += responseSnippet;
