@@ -37,8 +37,8 @@ module.exports = function (request, trimRequestBody, indentation, contentType) {
           }
         }
         return requestBody;
-      // eslint-disable-next-line no-case-declarations
       case 'graphql':
+        // eslint-disable-next-line no-case-declarations
         let query = request.body[request.body.mode].query,
           graphqlVariables;
         try {

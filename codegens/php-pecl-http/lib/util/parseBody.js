@@ -23,8 +23,8 @@ module.exports = function (request, indentation, bodyTrim) {
           requestBody += `$body->append('${request.body[request.body.mode]}');\n`;
         }
         return requestBody;
-      // eslint-disable-next-line no-case-declarations
       case 'graphql':
+        // eslint-disable-next-line no-case-declarations
         let query = request.body[request.body.mode].query,
           graphqlVariables;
         try {

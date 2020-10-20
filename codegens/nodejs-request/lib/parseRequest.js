@@ -106,8 +106,8 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
           }
         }
         return `body: '${sanitize(requestbody[requestbody.mode])}'\n`;
-      // eslint-disable-next-line no-case-declarations
       case 'graphql':
+        // eslint-disable-next-line no-case-declarations
         let query = requestbody[requestbody.mode].query,
           graphqlVariables;
         try {
