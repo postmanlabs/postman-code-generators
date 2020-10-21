@@ -12,7 +12,9 @@ var self = module.exports = {
       return '';
     }
     // for curl escaping of single quotes inside single quotes involves changing of ' to '\''
-    inputString = inputString.replace(/'/g, "'\\''"); // eslint-disable-line quotes
+    inputString = inputString.replace(/'/g, "'\\''") // eslint-disable-line quotes
+      .replace(/\n/g, '\\n')
+      .replace(/\r/g, '\\r');
     return trim ? inputString.trim() : inputString;
   },
   form: function (option, format) {
