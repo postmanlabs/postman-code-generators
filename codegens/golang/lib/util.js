@@ -33,7 +33,7 @@ module.exports = {
     }
     inputString = inputString
       .replace(/`/g, '`+"`"+`')
-      .replace(/\r/g, '`+"\r"+`');  // Go discards \r from raw strings, so manually keep them
+      .replace(/\r/g, '`+"\r"+`'); // Go discards \r from raw strings, so manually keep them
     return trim ? inputString.trim() : inputString;
 
   },
