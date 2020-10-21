@@ -11,7 +11,10 @@ module.exports = {
     if (typeof inputString !== 'string') {
       return '';
     }
-    inputString = inputString.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
+    inputString = inputString.replace(/\\/g, '\\\\')
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, '\\n')
+      .replace(/\r/g, '\\r');
     return trim ? inputString.trim() : inputString;
 
   },
@@ -28,7 +31,9 @@ module.exports = {
     if (typeof inputString !== 'string') {
       return '';
     }
-    inputString = inputString.replace(/`/g, '`+"`"+`');
+    inputString = inputString
+      .replace(/`/g, '`+"`"+`')
+      .replace(/\r/g, '`+"\r"+`');  // Go discards \r from raw strings, so manually keep them
     return trim ? inputString.trim() : inputString;
 
   },
