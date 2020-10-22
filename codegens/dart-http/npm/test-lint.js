@@ -12,9 +12,7 @@ var chalk = require('chalk'),
      */
   LINT_SOURCE_DIRS = [
     './lib',
-    './bin',
     './test',
-    './examples/*.js',
     './npm/*.js',
     './index.js'
   ];
