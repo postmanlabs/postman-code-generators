@@ -175,7 +175,7 @@ self = module.exports = {
       footerSnippet = '}\n';
     }
     trim = options.trimRequestBody;
-    indent = options.indentType === 'tab' ? '\t' : ' ';
+    indent = options.indentType === 'Tab' ? '\t' : ' ';
     indent = indent.repeat(options.indentCount);
     timeout = options.requestTimeout;
     followRedirect = options.followRedirect;

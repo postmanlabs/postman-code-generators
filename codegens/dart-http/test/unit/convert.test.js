@@ -67,4 +67,84 @@ describe('Dart Converter', function () {
       expect(snippet).to.contain('http.MultipartRequest');
     });
   });
+
+  it('should add code for followRedirects if given in the option', function () {
+    var request = new sdk.Request({
+      'method': 'GET',
+      'header': [],
+      'url': {
+        'raw': 'https://postman-echo.com/',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ]
+      }
+    });
+    convert(request, { followRedirect: false }, function (err, snippet) {
+      if (err) {
+        expect.fail(err);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.contain('request.followRedirects = false;');
+    });
+  });
+
+  it('should add boilerplate if given in the option', function () {
+    var request = new sdk.Request({
+      'method': 'GET',
+      'header': [],
+      'url': {
+        'raw': 'https://postman-echo.com/',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ]
+      }
+    });
+    convert(request, { includeBoilerplate: true }, function (err, snippet) {
+      if (err) {
+        expect.fail(err);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.contain('import \'package:http/http.dart\' as http;');
+      expect(snippet).to.contain('void main() async {');
+    });
+  });
+
+  it('should add correct indentation', function () {
+    var request = new sdk.Request({
+      'method': 'POST',
+      'header': [],
+      'body': {
+        'mode': 'formdata',
+        'formdata': [
+          {
+            'key': 'hello',
+            'value': 'world',
+            'type': 'text'
+          }
+        ]
+      },
+      'url': {
+        'raw': 'https://postman-echo.com/post',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'post'
+        ]
+      }
+    });
+    convert(request, { includeBoilerplate: true, indentType: 'Tab' }, function (err, snippet) {
+      if (err) {
+        expect.fail(err);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.contain('\t\t\'hello\': \'world\'');
+    });
+  });
 });
