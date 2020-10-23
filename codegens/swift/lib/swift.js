@@ -335,7 +335,8 @@ self = module.exports = {
     requestBody = (request.body ? request.body.toJSON() : {});
     bodySnippet = parseBody(requestBody, trim, indent);
 
-    codeSnippet = 'import Foundation\n\n';
+    codeSnippet = 'import Foundation\n';
+    codeSnippet += '#if canImport(FoundationNetworking)\nimport FoundationNetworking\n#endif\n\n';
     codeSnippet += 'var semaphore = DispatchSemaphore (value: 0)\n\n';
     if (bodySnippet !== '') {
       codeSnippet += `${bodySnippet}\n\n`;

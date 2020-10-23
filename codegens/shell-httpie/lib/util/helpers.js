@@ -196,8 +196,8 @@ module.exports = {
           parsedBody = requestBody ? `${Sanitize.quote(requestBody, RAW)}` : '';
         }
         break;
-      // eslint-disable-next-line no-case-declarations
       case GRAPHQL:
+        // eslint-disable-next-line no-case-declarations
         let query = requestBody.query,
           graphqlVariables;
         try {
