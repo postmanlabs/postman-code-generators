@@ -3,7 +3,7 @@
 > Converts Postman-SDK Request into code snippet for cURL.
 
 #### Prerequisites
-To run Code-Gen, ensure that you have NodeJS >= v8. A copy of the NodeJS installable can be downloaded from 
+To run Code-Gen, ensure that you have NodeJS >= v8. A copy of the NodeJS installable can be downloaded from
 
 ## Using the Module
 The module will expose an object which will have property `convert` which is the function for converting the Postman-SDK request to cURL code snippet and `getOptions` function which returns an array of supported options.
@@ -21,12 +21,13 @@ Convert function takes three parameters
     * `requestTimeout` - Integer denoting time after which the request will bail out in milli-seconds
     * `multiLine` - Boolean denoting whether to output code snippet with multi line breaks
     * `longFormat` - Boolean denoting whether to use longform cURL options in snippet
+    * `shellType` - Enum denoting which type of shell curl will run in
 
 * `callback` - callback function with first parameter as error and second parameter as string for code snippet
 
 ##### Example:
 ```js
-var request = new sdk.Request('www.google.com'),  //using postman sdk to create request  
+var request = new sdk.Request('www.google.com'),  //using postman sdk to create request
     options = {
         indentCount: 3,
         indentType: 'Space',

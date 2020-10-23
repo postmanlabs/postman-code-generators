@@ -11,7 +11,7 @@ describe('Convert for different types of request', function () {
       followRedirect: true,
       longFormat: true,
       silent: true,
-      lineContinuationCharacter: '\\'
+      shellType: 'sh'
     };
 
   runNewmanTest(convert, options, testConfig);

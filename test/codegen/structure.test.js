@@ -80,7 +80,7 @@ const expectedOptions = {
     'silent',
     'includeBoilerplate',
     'followRedirect',
-    'lineContinuationCharacter',
+    'shellType',
     'protocol',
     'useMimeType',
     'ES6_enabled'
