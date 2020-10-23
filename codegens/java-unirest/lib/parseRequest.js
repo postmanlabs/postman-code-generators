@@ -84,8 +84,8 @@ function parseBody (request, indentString, trimField) {
         return parseFormData(request.body.toJSON(), indentString, trimField);
       case 'raw':
         return indentString + `.body(${JSON.stringify(request.body.toString())})\n`;
-      // eslint-disable-next-line no-case-declarations
       case 'graphql':
+        // eslint-disable-next-line no-case-declarations
         let query = request.body.graphql.query,
           graphqlVariables;
         try {

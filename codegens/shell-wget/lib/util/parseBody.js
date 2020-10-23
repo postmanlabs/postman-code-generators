@@ -23,8 +23,8 @@ module.exports = function (request, trimRequestBody, indentation) {
                         `'${sanitize(request.body[request.body.mode], request.body.mode, trimRequestBody)}' \\\n`;
         }
         return requestBody;
-      // eslint-disable-next-line no-case-declarations
       case 'graphql':
+        // eslint-disable-next-line no-case-declarations
         let query = request.body[request.body.mode].query,
           graphqlVariables;
         try {
