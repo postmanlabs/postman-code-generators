@@ -138,10 +138,15 @@ module.exports = function (request, indentation, bodyTrim) {
           });
           bodyFileMap = _.map(_.filter(enabledBodyList, {'type': 'file'}), function (value) {
             var filesrc = value.src,
-              filetype = filesrc.split('.')[filesrc.split('.').length - 1];
+              fileType = filesrc.split('.')[filesrc.split('.').length - 1],
+              contentType = contentTypeHeaderMap[fileType];
+
+            if (!contentType) {
+              contentType = 'application/octet-stream';
+            }
             return `${indentation}('${value.key}',('${filesrc.split('/')[filesrc.split('/').length - 1]}'` +
                     `,open('${sanitize(filesrc, request.body.mode, bodyTrim)}','rb'),` +
-                    `'${contentTypeHeaderMap[filetype]}'))`;
+                    `'${contentType}'))`;
           });
           requestBody = `payload = {${bodyDataMap.join(',\n')}}\nfiles = [\n${bodyFileMap.join(',\n')}\n]\n`;
         }
