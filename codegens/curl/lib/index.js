@@ -162,7 +162,6 @@ self = module.exports = {
         }
       }
     }
-    // console.log(snippet);
     callback(null, snippet);
   },
   getOptions: function () {
