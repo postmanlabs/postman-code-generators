@@ -16,7 +16,7 @@ module.exports = {
     if (escapeCharFor && typeof escapeCharFor === 'string') {
       switch (escapeCharFor) {
         case 'urlencoded':
-          return escape(inputString);
+          return encodeURIComponent(inputString).replace(/'/g, '\\\'');
         default:
           return inputString.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
       }

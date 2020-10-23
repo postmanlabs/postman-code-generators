@@ -51,7 +51,7 @@ function parseURLEncodedBody (body, trim) {
   var payload, bodySnippet;
   payload = _.reduce(body, function (accumulator, data) {
     if (!data.disabled) {
-      accumulator.push(`${escape(data.key, trim)}=${escape(data.value, trim)}`);
+      accumulator.push(`${encodeURIComponent(data.key, trim)}=${encodeURIComponent(data.value, trim)}`);
     }
     return accumulator;
   }, []).join('&');

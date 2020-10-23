@@ -17,7 +17,7 @@ function sanitize (inputString, escapeCharFor, inputTrim) {
       case 'raw':
         return JSON.stringify(inputString);
       case 'urlencoded':
-        return escape(inputString);
+        return encodeURIComponent(inputString);
       case 'formdata':
         return inputString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
         /* istanbul ignore next */

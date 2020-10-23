@@ -24,7 +24,7 @@ function parseURLEncodedBody (body) {
     urlencodedArray = [];
   _.forEach(body, function (data) {
     if (!data.disabled) {
-      urlencodedArray.push(`${escape(data.key)}=${escape(data.value)}`);
+      urlencodedArray.push(`${encodeURIComponent(data.key)}=${encodeURIComponent(data.value)}`);
     }
   });
   bodySnippet += urlencodedArray.join('&') + '"\n';

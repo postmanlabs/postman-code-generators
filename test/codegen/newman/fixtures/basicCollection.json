@@ -483,6 +483,11 @@
 							"key": "more",
 							"value": ",./';[]}{\":?><|\\\\    ",
 							"type": "text"
+						},
+						{
+							"key": "non-ascii",
+							"value": "테스트",
+							"type": "text"
 						}
 					]
 				},
