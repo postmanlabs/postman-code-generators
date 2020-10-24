@@ -20,14 +20,14 @@ const VALID_METHODS = ['DEFAULT',
  * @param {Object} body URLEncoded Body
  */
 function parseURLEncodedBody (body) {
-  var bodySnippet = '$body = "',
+  var bodySnippet = '$body = @"',
     urlencodedArray = [];
   _.forEach(body, function (data) {
     if (!data.disabled) {
       urlencodedArray.push(`${escape(data.key)}=${escape(data.value)}`);
     }
   });
-  bodySnippet += urlencodedArray.join('&') + '"\n';
+  bodySnippet += urlencodedArray.join('&') + '"@\n';
   return bodySnippet;
 }
 
@@ -78,7 +78,7 @@ function parseFormData (body, trim) {
  * @param {boolean} trim trim body option
  */
 function parseRawBody (body, trim) {
-  return `$body = "${sanitize(body.toString(), trim)}"\n`;
+  return `$body = @"${sanitize(body.toString(), trim)}"@\n`;
 }
 
 /**
@@ -96,10 +96,10 @@ function parseGraphQL (body, trim) {
   catch (e) {
     graphqlVariables = {};
   }
-  return `$body = "${sanitize(JSON.stringify({
+  return `$body = @"${sanitize(JSON.stringify({
     query: query,
     variables: graphqlVariables
-  }), trim)}"\n`;
+  }), trim)}"@\n`;
 }
 
 /* eslint-disable no-unused-vars*/
@@ -111,7 +111,7 @@ function parseGraphQL (body, trim) {
  * @param {boolean} trim trim body option
  */
 function parseFileData (src, trim) {
-  return '$body = "<file-contents-here>"\n';
+  return '$body = @"<file-contents-here>"@\n';
 }
 /* eslint-enable no-unused-vars*/
 
