@@ -11,7 +11,6 @@ function sanitize (inputString, trim) {
   if (typeof inputString !== 'string') {
     return '';
   }
-  /* inputString = inputString.replace(/\\/g, '\`\\').replace(/\"/g, '\"').replace(/\n/g, '\`n'); */
   return trim ? inputString.trim() : inputString;
 }
 
