@@ -17,16 +17,13 @@
               "key": "single file",
               "value": "",
               "type": "file",
-              "src": "/mnt/c/Users/INVICTUS/Desktop/GSoC/postman-code-generators/dummyFile1.txt"
+              "src": "<file path>"
             },
             {
               "key": "multiple files",
               "value": "",
               "type": "file",
-              "src": [
-                "/mnt/c/Users/INVICTUS/Desktop/GSoC/postman-code-generators/dummyFile2.txt",
-                "/mnt/c/Users/INVICTUS/Desktop/GSoC/postman-code-generators/dummyFile3.txt"
-              ]
+              "src": ["<file path 1>","<file path 2>"]
             }
           ]
         },
@@ -55,7 +52,7 @@
               "key": "binary file",
               "value": "",
               "type": "file",
-              "src": "/mnt/c/Users/INVICTUS/Desktop/GSoC/postman-code-generators/dummyBinaryFile"
+              "src": "<file path>"
             }
           ]
         },
