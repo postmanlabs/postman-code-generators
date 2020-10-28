@@ -5,7 +5,7 @@ const _ = require('./lodash'),
   addFormParam = require('./util').addFormParam;
 
 /**
- * returns snippet of nodejs(axios) by parsing data from Postman-SDK request object
+ * retuns snippet of nodejs(axios) by parsing data from Postman-SDK request object
  *
  * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation required for code snippet
@@ -14,13 +14,16 @@ const _ = require('./lodash'),
  */
 function makeSnippet (request, indentString, options) {
 
-  var snippet = options.ES6_enabled ? 'const' : 'var',
+  var snippet,
     configArray = [],
     dataSnippet = '',
     body,
-    headers;
+    headers,
+    indentType = options.indentType === 'Tab' ? '\t' : ' ',
+    indent = indentType.repeat(options.indentCount),
+    varDeclare = options.ES6_enabled ? 'const' : 'var';
 
-  snippet += ' axios = require(\'axios\');\n';
+  snippet = varDeclare + ' axios = require(\'axios\');\n';
   if (request.body && !request.headers.has('Content-Type')) {
     if (request.body.mode === 'file') {
       request.addHeader({
@@ -83,7 +86,7 @@ function makeSnippet (request, indentString, options) {
 
   dataSnippet = !_.isEmpty(body) ? parseRequest.parseBody(body,
     options.trimRequestBody,
-    indentString,
+    indent,
     request.headers.get('Content-Type'),
     options.ES6_enabled) : '';
   snippet += dataSnippet + '\n';
@@ -121,32 +124,14 @@ function makeSnippet (request, indentString, options) {
     // although just data is enough, whatever :shrug:
     configArray.push(indentString + 'data : data');
   }
-
-  if (options.ES6_enabled) {
-    snippet += 'let';
-  }
-  else {
-    snippet += 'var';
-  }
-
-  snippet += ' config = {\n';
+  snippet += varDeclare + ' config = {\n';
   snippet += configArray.join(',\n') + '\n';
   snippet += '};\n\n';
   snippet += 'axios(config)\n';
-  if (options.ES6_enabled) {
-    snippet += '.then((response) => {\n';
-  }
-  else {
-    snippet += '.then(function (response) {\n';
-  }
+  snippet += '.then(function (response) {\n';
   snippet += indentString + 'console.log(JSON.stringify(response.data));\n';
   snippet += '})\n';
-  if (options.ES6_enabled) {
-    snippet += '.catch((error) => {\n';
-  }
-  else {
-    snippet += '.catch(function (error) {\n';
-  }
+  snippet += '.catch(function (error) {\n';
   snippet += indentString + 'console.log(error);\n';
   snippet += '});\n';
 
