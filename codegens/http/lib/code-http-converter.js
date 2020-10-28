@@ -1,4 +1,5 @@
-let utils = require('./util');
+let utils = require('./util'),
+  urlParser = require('url').parse;
 
 /**
  * Used in order to get additional options for generation of C# code snippet (i.e. Include Boilerplate code)
@@ -28,11 +29,16 @@ function getOptions () {
  */
 function convert (request, options, callback) {
   let snippet = '',
+    url = request.url.toString(),
     body;
   options = utils.sanitizeOptions(options, getOptions());
-  utils.parseURLVariable(request);
-  snippet = `${request.method} ${utils.getEndPoint(request)} HTTP/1.1\n`;
-  snippet += `Host: ${utils.getHost(request)}\n`;
+  if (!url.match(/^([a-z][a-z0-9.+-]*:)?(\/\/)/)) {
+    url = `http://${url}`;
+  }
+  url = urlParser(url);
+  snippet = `${request.method} ${url.pathname ? url.pathname : '/'}` +
+    `${url.search ? decodeURI(url.search) : ''} HTTP/1.1\n`;
+  snippet += `Host: ${url.host}\n`;
   if (request.body && !request.headers.has('Content-Type')) {
     if (request.body.mode === 'file') {
       request.addHeader({
