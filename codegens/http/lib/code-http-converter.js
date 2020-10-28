@@ -32,6 +32,8 @@ function convert (request, options, callback) {
     url = request.url.toString(),
     body;
   options = utils.sanitizeOptions(options, getOptions());
+  // urlParser expects a protocal in the url
+  // If it is not present we have to add it manually
   if (!url.match(/^([a-z][a-z0-9.+-]*:)?(\/\/)/)) {
     url = `http://${url}`;
   }
