@@ -44,5 +44,18 @@ popd &>/dev/null;
 echo "Installing dependencies required for tests in codegens/csharp-restsharp"
 sudo apt-get install -y mono-complete
 
+echo "Installing curl v7.68"
+  sudo apt-get install -y libssl-dev autoconf libtool make
+  wget https://curl.haxx.se/download/curl-7.68.0.zip
+  unzip curl-7.68.0.zip
+  pushd ./curl-7.68.0 &>/dev/null
+  ./buildconf
+  ./configure --with-ssl
+  make
+  sudo make install
+  sudo cp /usr/local/bin/curl /usr/bin/curl
+  sudo ldconfig
+  popd &>/dev/null
+
 echo "Installing dependencies required for tests in codegens/shell-httpie"
 sudo apt-get install httpie
