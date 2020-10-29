@@ -20,6 +20,7 @@ List of supported code generators:
 | C | libcurl |
 | C# | RestSharp | 
 | cURL | cURL | 
+| Dart | http | 
 | Go | Native | 
 | HTTP | HTTP | 
 | Java | OkHttp |

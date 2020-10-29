@@ -17,5 +17,6 @@
   "csharp": "C#",
   "nodejs": "NodeJs",
   "ocaml": "OCaml",
-  "shell": "Shell"
+  "shell": "Shell",
+  "dart": "Dart"
 }
