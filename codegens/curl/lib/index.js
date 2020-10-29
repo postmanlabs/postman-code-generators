@@ -142,11 +142,11 @@ self = module.exports = {
               if (!(data.disabled)) {
                 if (data.type === 'file') {
                   snippet += indent + `${form('-F', format)}`;
-                  snippet += ` '${sanitize(data.key, trim)}=@${sanitize(data.src, trim)}'`;
+                  snippet += ` '${sanitize(data.key, trim)}=@"${sanitize(data.src, trim, true, true)}"'`;
                 }
                 else {
                   snippet += indent + `${form('-F', format)}`;
-                  snippet += ` '${sanitize(data.key, trim)}=${sanitize(data.value, trim)}'`;
+                  snippet += ` '${sanitize(data.key, trim)}="${sanitize(data.value, trim, true, true)}"'`;
                 }
               }
             });
@@ -160,6 +160,7 @@ self = module.exports = {
         }
       }
     }
+
     callback(null, snippet);
   },
   getOptions: function () {
