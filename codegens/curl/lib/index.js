@@ -193,7 +193,8 @@ self = module.exports = {
         availableOptions: ['single', 'double'],
         type: 'string',
         default: 'single',
-        description: 'String denoting the quote type to use (single or double) for URL'
+        description: 'String denoting the quote type to use (single or double) for URL ' +
+          '(Use double quotes when running curl in cmd.exe and single quotes for the rest)'
       },
       {
         name: 'Set request timeout',
