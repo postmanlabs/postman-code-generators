@@ -45,7 +45,7 @@ describe('curl convert function', function () {
         }
       });
       options = {
-        multiLine: true,
+        multiLine: true
       };
       convert(request, options, function (error, snippet) {
         if (error) {
