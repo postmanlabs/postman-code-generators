@@ -34,6 +34,59 @@ describe('curl convert function', function () {
       });
     });
 
+    it('should return snippet with backslash(\\) as line continuation ' +
+            'character for multiline code generation by default', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        }
+      });
+      options = {
+        multiLine: true,
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        snippetArray = snippet.split('\n');
+        // Ignoring the last line as there is no line continuation character at last line
+        for (var i = 0; i < snippetArray.length - 1; i++) {
+          line = snippetArray[i];
+          expect(line.charAt(line.length - 1)).to.equal('\\');
+        }
+      });
+    });
+
+    it('should return snippet with backtick(`) as line continuation ' +
+            'character for multiline code generation', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        }
+      });
+      options = {
+        multiLine: true,
+        lineContinuationCharacter: '`'
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        snippetArray = snippet.split('\n');
+        // Ignoring the last line as there is no line continuation character at last line
+        for (var i = 0; i < snippetArray.length - 1; i++) {
+          line = snippetArray[i];
+          expect(line.charAt(line.length - 1)).to.equal('`');
+        }
+      });
+    });
+
     it('should parse header with string value properly', function () {
       request = new sdk.Request({
         'method': 'POST',
