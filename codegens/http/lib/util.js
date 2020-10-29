@@ -117,68 +117,6 @@ function convertPropertyListToString (propertyList, joinUsing, includeDisabled =
   }), joinUsing);
 }
 
-/**
- * parses variable of request url object and sets hostname, path and query in request object
- *
- * @param {Object} request - Postman SDK request object
- */
-function parseURLVariable (request) {
-  const variableArray = _.get(request.toJSON(), 'url.variable', []);
-
-  if (!variableArray.length) {
-    return;
-  }
-
-  variableArray.forEach(function (variableArrayElement) {
-    request.url.path.forEach(function (pathArrayElement, pathArrayElementIndex) {
-      if (pathArrayElement === ':' + variableArrayElement.key) {
-        if (variableArrayElement.value) {
-          request.url.path[pathArrayElementIndex] = variableArrayElement.value;
-        }
-      }
-    });
-  });
-}
-
-/**
- * Returns the request end-point as a string.
- *
- * @param {Object} request - Postman SDK request
- * @returns {string} returns endpoint from the url path
- */
-function getEndPoint (request) {
-  let endPoint = '/',
-    params = '';
-
-  if (request.url.query.members && _.size(request.url.query.members)) {
-    params += `?${convertPropertyListToString(request.url.query, '&')}`;
-  }
-
-  if (request.url.path && _.size(request.url.path)) {
-    endPoint = `/${_.join(request.url.path, '/')}${params}`;
-  }
-
-  return endPoint;
-}
-
-/**
- * Returns the request host as a string.
- *
- * @param {Object} request - Postman SDK request
- * @returns {String} host
- */
-function getHost (request) {
-  if (!request.url.host) {
-    return '';
-  }
-
-  let host = _.join(request.url.host, '.');
-  if (request.url.port) {
-    host += `:${request.url.port}`;
-  }
-
-  return host;
-}
 
 /**
  * Returns the request headers as a string
@@ -203,7 +141,7 @@ function getHeaders (request) {
   });
   headers = convertPropertyListToString(request.headers, '\n', false);
   if (request.body && request.body.mode === 'formdata' && contentTypeIndex < 0) {
-    headers += `Content-Type: ${formDataHeader}`;
+    headers += `\nContent-Type: ${formDataHeader}`;
   }
   return headers;
 }
@@ -225,8 +163,8 @@ function getBody (request, trimRequestBody) {
           requestBody += request.body[request.body.mode].toString();
         }
         return trimRequestBody ? requestBody.trim() : requestBody;
-      // eslint-disable-next-line no-case-declarations
       case GRAPHQL:
+        // eslint-disable-next-line no-case-declarations
         let query = request.body[request.body.mode].query,
           graphqlVariables;
         try {
@@ -389,9 +327,6 @@ function addFormParam (array, key, type, val, disabled, contentType) {
 }
 
 module.exports = {
-  parseURLVariable: parseURLVariable,
-  getEndPoint: getEndPoint,
-  getHost: getHost,
   getHeaders: getHeaders,
   getBody: getBody,
   sanitizeOptions: sanitizeOptions,

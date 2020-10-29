@@ -15,7 +15,7 @@ self = module.exports = {
     options = sanitizeOptions(options, self.getOptions());
 
     var indent, trim, headersData, body, redirect, timeout, multiLine,
-      format, snippet, silent, url;
+      format, snippet, silent, url, quoteType;
 
     redirect = options.followRedirect;
     timeout = options.requestTimeout;
@@ -24,8 +24,10 @@ self = module.exports = {
     trim = options.trimRequestBody;
     silent = options.silent;
     url = getUrlStringfromUrlObject(request.url);
+    quoteType = options.quoteType === 'single' ? '\'' : '"';
 
     snippet = silent ? `curl ${form('-s', format)}` : 'curl';
+
     if (redirect) {
       snippet += ` ${form('-L', format)}`;
     }
@@ -43,10 +45,10 @@ self = module.exports = {
       indent = ' ';
     }
     if (request.method === 'HEAD') {
-      snippet += ` ${form('-I', format)} '${url}'`;
+      snippet += ` ${form('-I', format)} ${quoteType + url + quoteType}`;
     }
     else {
-      snippet += ` ${form('-X', format)} ${request.method} '${url}'`;
+      snippet += ` ${form('-X', format)} ${request.method} ${quoteType + url + quoteType}`;
     }
 
     if (request.body && !request.headers.has('Content-Type')) {
@@ -124,8 +126,8 @@ self = module.exports = {
           case 'raw':
             snippet += indent + `--data-raw '${sanitize(body.raw.toString(), trim)}'`;
             break;
-          // eslint-disable-next-line no-case-declarations
           case 'graphql':
+            // eslint-disable-next-line no-case-declarations
             let query = body.graphql.query,
               graphqlVariables;
             try {
@@ -188,6 +190,15 @@ self = module.exports = {
         default: '\\',
         description: 'Set a character used to mark the continuation of a statement on the next line ' +
           '(generally, \\ for OSX/Linux, ^ for Windows)'
+      },
+      {
+        name: 'Quote Type',
+        id: 'quoteType',
+        availableOptions: ['single', 'double'],
+        type: 'string',
+        default: 'single',
+        description: 'String denoting the quote type to use (single or double) for URL ' +
+          '(Use double quotes when running curl in cmd.exe and single quotes for the rest)'
       },
       {
         name: 'Set request timeout',

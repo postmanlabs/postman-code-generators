@@ -11,7 +11,29 @@ module.exports = {
     if (typeof inputString !== 'string') {
       return '';
     }
-    inputString = inputString.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
+    inputString = inputString.replace(/\\/g, '\\\\')
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, '\\n')
+      .replace(/\r/g, '\\r');
+    return trim ? inputString.trim() : inputString;
+
+  },
+
+  /**
+     * sanitizes input string by handling escape characters eg: converts '''' to '\'\''
+     * and trim input if required
+     *
+     * @param {String} inputString
+     * @param {Boolean} [trim] - indicates whether to trim string or not
+     * @returns {String}
+     */
+  sanitizeMultiline: function (inputString, trim) {
+    if (typeof inputString !== 'string') {
+      return '';
+    }
+    inputString = inputString
+      .replace(/`/g, '`+"`"+`')
+      .replace(/\r/g, '`+"\r"+`'); // Go discards \r from raw strings, so manually keep them
     return trim ? inputString.trim() : inputString;
 
   },

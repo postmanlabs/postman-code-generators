@@ -33,6 +33,48 @@ describe('curl convert function', function () {
         }
       });
     });
+    it('should return snippet with url in single quote(\')', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        }
+      });
+      options = {
+        quoteType: 'single'
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        snippetArray = snippet.split(' ');
+        expect(snippetArray[4][0]).to.equal('\'');
+      });
+    });
+    it('should return snippet with url in double quote(")', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        }
+      });
+      options = {
+        quoteType: 'double'
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        snippetArray = snippet.split(' ');
+        expect(snippetArray[4][0]).to.equal('"');
+      });
+    });
 
     it('should parse header with string value properly', function () {
       request = new sdk.Request({
@@ -287,6 +329,19 @@ describe('curl convert function', function () {
         expect(snippet).to.include('no file=@/path/to/file');
         expect(snippet).to.include('no src=@/path/to/file');
         expect(snippet).to.include('invalid src=@/path/to/file');
+      });
+    });
+
+    it('should generate valid snippets for single/double quotes in URL', function () {
+      // url = https://a"b'c.com/'d/"e
+      var request = new sdk.Request("https://a\"b'c.com/'d/\"e"); // eslint-disable-line quotes
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        // for curl escaping of single quotes inside single quotes involves changing of ' to '\''
+        // expect => 'https://a"b'\''c.com/'\''d/"e'
+        expect(snippet).to.include("'https://a\"b'\\''c.com/'\\''d/\"e'"); // eslint-disable-line quotes
       });
     });
 

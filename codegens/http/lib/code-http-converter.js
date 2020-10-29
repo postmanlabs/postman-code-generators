@@ -1,4 +1,5 @@
-let utils = require('./util');
+let utils = require('./util'),
+  urlParser = require('url').parse;
 
 /**
  * Used in order to get additional options for generation of C# code snippet (i.e. Include Boilerplate code)
@@ -27,11 +28,19 @@ function getOptions () {
  * @returns {Function} returns the snippet with the callback function.
  */
 function convert (request, options, callback) {
-  let snippet = '';
+  let snippet = '',
+    url = request.url.toString(),
+    body;
   options = utils.sanitizeOptions(options, getOptions());
-  utils.parseURLVariable(request);
-  snippet = `${request.method} ${utils.getEndPoint(request)} HTTP/1.1\n`;
-  snippet += `Host: ${utils.getHost(request)}\n`;
+  // urlParser expects a protocal in the url
+  // If it is not present we have to add it manually
+  if (!url.match(/^([a-z][a-z0-9.+-]*:)?(\/\/)/)) {
+    url = `http://${url}`;
+  }
+  url = urlParser(url);
+  snippet = `${request.method} ${url.pathname ? url.pathname : '/'}` +
+    `${url.search ? decodeURI(url.search) : ''} HTTP/1.1\n`;
+  snippet += `Host: ${url.host}\n`;
   if (request.body && !request.headers.has('Content-Type')) {
     if (request.body.mode === 'file') {
       request.addHeader({
@@ -46,6 +55,7 @@ function convert (request, options, callback) {
       });
     }
   }
+
   // The following code handles multiple files in the same formdata param.
   // It removes the form data params where the src property is an array of filepath strings
   // Splits that array into different form data params with src set as a single filepath string
@@ -87,9 +97,15 @@ function convert (request, options, callback) {
       formdata: formdataArray
     });
   }
+  body = utils.getBody(request, options.trimRequestBody);
+  if (body && body.length !== 0 && !request.headers.has('Content-Length')) {
+    request.addHeader({
+      key: 'Content-Length',
+      value: body.length
+    });
+  }
   snippet += `${utils.getHeaders(request)}\n`;
-  snippet += `\n${utils.getBody(request, options.trimRequestBody)}`;
-
+  snippet += `\n${body}`;
   return callback(null, snippet);
 }
 

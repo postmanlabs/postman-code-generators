@@ -216,7 +216,21 @@ describe('Python-http.client converter', function () {
         expect(snippet).to.include('name=no file');
         expect(snippet).to.include('name=no src');
         expect(snippet).to.include('name=invalid src');
-        expect(snippet).to.include('with open(\'/path/to/file\')');
+        expect(snippet).to.include('with open(\'/path/to/file\', \'rb\')');
+      });
+    });
+
+    it('should generate valid snippets for single/double quotes in URL', function () {
+      // url = https://a"b'c.com/'d/"e
+      var request = new sdk.Request("https://a\"b'c.com/'d/\"e"); // eslint-disable-line quotes
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        // expect => http.client.HTTPSConnection("a\"b'c.com"")
+        expect(snippet).to.include('http.client.HTTPSConnection("a\\"b\'c.com")');
+        // expect conn.request("GET", "/'d/\"e", payload, headers)
+        expect(snippet).to.include('conn.request("GET", "/\'d/\\"e", payload, headers)');
       });
     });
 

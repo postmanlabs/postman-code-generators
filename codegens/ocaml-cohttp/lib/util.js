@@ -18,7 +18,7 @@ module.exports = {
         case 'raw':
           return JSON.stringify(inputString);
         case 'urlencoded':
-          return escape(inputString);
+          return encodeURIComponent(inputString);
         case 'formdata-key':
           // eslint-disable-next-line quotes
           return inputString.replace(/"/g, "'");

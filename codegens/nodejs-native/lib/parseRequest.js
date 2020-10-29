@@ -90,8 +90,8 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
           }
         }
         return ` ${JSON.stringify(requestbody[requestbody.mode])}`;
-      // eslint-disable-next-line no-case-declarations
       case 'graphql':
+        // eslint-disable-next-line no-case-declarations
         let query = requestbody[requestbody.mode].query,
           graphqlVariables;
         try {
@@ -101,7 +101,7 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
           graphqlVariables = {};
         }
         return 'JSON.stringify({\n' +
-        `${indentString}query: "${sanitize(query, trimBody)}",\n` +
+        `${indentString}query: \`${query.trim()}\`,\n` +
         `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n})`;
       case 'formdata':
         return generateMultipartFormData(requestbody);
@@ -209,7 +209,7 @@ function parsePath (request, indentString) {
     querySnippet = '';
 
   if (pathArray && pathArray.length) {
-    pathSnippet += sanitize(_.reduce(pathArray, function (accumalator, key) {
+    pathSnippet += (_.reduce(pathArray, function (accumalator, key) {
       if (key.length) {
         accumalator.push(`${sanitize(key)}`);
       }
