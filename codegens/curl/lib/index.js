@@ -23,14 +23,19 @@ self = module.exports = {
     format = options.longFormat;
     trim = options.trimRequestBody;
     silent = options.silent;
+    url = getUrlStringfromUrlObject(request.url);
     quoteType = options.quoteType === 'single' ? '\'' : '"';
 
     snippet = silent ? `curl ${form('-s', format)}` : 'curl';
+
     if (redirect) {
       snippet += ` ${form('-L', format)}`;
     }
     if (timeout > 0) {
       snippet += ` ${form('-m', format)} ${timeout}`;
+    }
+    if ((url.match(/[{[}\]]/g) || []).length > 0) {
+      snippet += ' -g';
     }
     if (multiLine) {
       indent = options.indentType === 'Tab' ? '\t' : ' ';
@@ -39,7 +44,6 @@ self = module.exports = {
     else {
       indent = ' ';
     }
-    url = getUrlStringfromUrlObject(request.url);
     if (request.method === 'HEAD') {
       snippet += ` ${form('-I', format)} ${quoteType + url + quoteType}`;
     }

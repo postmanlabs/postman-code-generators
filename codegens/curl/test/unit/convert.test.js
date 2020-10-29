@@ -154,6 +154,40 @@ describe('curl convert function', function () {
       });
     });
 
+    it('should generate snippet with -g parameter when either of {,[,},] are present in url parameter', function () {
+      [
+        '{world}',
+        '{{world',
+        '[world]',
+        ']world',
+        'world}'
+      ].forEach(function (value) {
+        request = new sdk.Request({
+          'method': 'GET',
+          'url': {
+            'raw': `http://example.com?hello=${value}`,
+            'protocol': 'http',
+            'host': [
+              'example',
+              'com'
+            ],
+            'query': [
+              {
+                'key': 'hello',
+                'value': value
+              }
+            ]
+          }
+        });
+        convert(request, {}, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.include('-g');
+        });
+      });
+    });
+
     it('should return snippet without errors when request object has no body property', function () {
       request = new sdk.Request({
         'method': 'GET',
