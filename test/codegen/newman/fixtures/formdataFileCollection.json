@@ -39,6 +39,35 @@
 					]
 				}
 			}
+    },
+    {
+      "name": "Binary file upload via form-data",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "binary file",
+              "value": "",
+              "type": "file",
+              "src": "<file path>"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://postman-echo.com/post",
+          "protocol": "https",
+          "host": [
+            "postman-echo",
+            "com"
+          ],
+          "path": [
+            "post"
+          ]
+        }
+      }
     }
 	]
 }
