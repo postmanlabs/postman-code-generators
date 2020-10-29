@@ -72,7 +72,8 @@ const expectedOptions = {
       name: 'Quote Type',
       type: 'string',
       default: 'single',
-      description: 'String denoting the quote type to use (single or double) for URL'
+      description: 'String denoting the quote type to use (single or double) for URL ' +
+          '(Use double quotes when running curl in cmd.exe and single quotes for the rest)'
     }
   },
   // Standard array of ids that should be used for options ids. Any new option should be updated here.
