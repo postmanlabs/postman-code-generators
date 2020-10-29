@@ -21,6 +21,36 @@ describe('Converter test', function () {
     });
   });
 
+  it('should parse the url correctly even if the host and path are wrong in the url object',
+    function () {
+      var request = new Request({
+        'method': 'GET',
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        },
+        'url': {
+          'path': [
+            'hello'
+          ],
+          'host': [
+            'https://example.com/path'
+          ],
+          'query': [],
+          'variable': []
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('GET /path/hello');
+        expect(snippet).to.include('Host: example.com');
+      });
+    });
+
+
   it('should trim header keys and not trim header values', function () {
     var request = new Request({
       'method': 'GET',
