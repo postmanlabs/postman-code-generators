@@ -181,11 +181,11 @@ self = module.exports = {
       {
         name: 'Line continuation character',
         id: 'lineContinuationCharacter',
-        availableOptions: ['\\', '^'],
+        availableOptions: ['\\', '^', '`'],
         type: 'enum',
         default: '\\',
         description: 'Set a character used to mark the continuation of a statement on the next line ' +
-          '(generally, \\ for OSX/Linux, ^ for Windows)'
+          '(generally, \\ for OSX/Linux, ^ for Windows cmd and ` for Powershell)'
       },
       {
         name: 'Quote Type',
