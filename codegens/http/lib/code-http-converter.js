@@ -38,7 +38,7 @@ function convert (request, options, callback) {
     url = `http://${url}`;
   }
   url = urlParser(url);
-  snippet = `${request.method} ${url.pathname ? url.pathname : '/'}` +
+  snippet = `${request.method} ${url.pathname ? decodeURI(url.pathname) : '/'}` +
     `${url.search ? decodeURI(url.search) : ''} HTTP/1.1\n`;
   snippet += `Host: ${url.host}\n`;
   if (request.body && !request.headers.has('Content-Type')) {
