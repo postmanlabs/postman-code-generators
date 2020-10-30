@@ -33,13 +33,7 @@ function convert (request, options, callback) {
     url, host, path, query, body;
   options = utils.sanitizeOptions(options, getOptions());
 
-  try {
-    url = sdk.Url.parse(request.url);
-  }
-  catch (e) {
-    url = request.url;
-  }
-
+  url = sdk.Url.parse(request.url);
   host = url.host ? url.host.join('.') : '';
   host += url.port ? ':' + url.port : '';
   path = url.path ? '/' + url.path.join('/') : '/';

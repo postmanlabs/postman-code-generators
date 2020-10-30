@@ -131,13 +131,8 @@ function makeSnippet (request, indentString, options) {
     }
   }
 
-  try {
-    url = sdk.Url.parse(request.url);
-  }
-  catch (e) {
-    url = request.url;
-  }
 
+  url = sdk.Url.parse(request.url);
   host = url.host ? url.host.join('.') : '';
   path = url.path ? '/' + url.path.join('/') : '/';
   query = url.query ? _.reduce(url.query, (accum, q) => {
