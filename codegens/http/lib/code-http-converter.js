@@ -1,5 +1,5 @@
 let utils = require('./util'),
-  _ = require('lodash'),
+  _ = require('./lodash'),
   sdk = require('postman-collection');
 
 /**
