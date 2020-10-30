@@ -101,7 +101,19 @@ self = module.exports = {
       identity = '',
       url, host, path, query;
 
-    url = sdk.Url.parse(request.url);
+    if (_.isFunction(options)) {
+      callback = options;
+      options = {};
+    }
+    else if (!_.isFunction(callback)) {
+      throw new Error('Python-Http.Client~convert: Callback is not a function');
+    }
+    options = sanitizeOptions(options, self.getOptions());
+
+    identity = options.indentType === 'Tab' ? '\t' : ' ';
+    indentation = identity.repeat(options.indentCount);
+
+    url = sdk.Url.parse(request.url.toString());
     host = url.host ? url.host.join('.') : '';
     path = url.path ? '/' + url.path.join('/') : '/';
     query = url.query ? _.reduce(url.query, (accum, q) => {
@@ -115,18 +127,6 @@ self = module.exports = {
     else {
       query = '';
     }
-
-    if (_.isFunction(options)) {
-      callback = options;
-      options = {};
-    }
-    else if (!_.isFunction(callback)) {
-      throw new Error('Python-Http.Client~convert: Callback is not a function');
-    }
-    options = sanitizeOptions(options, self.getOptions());
-
-    identity = options.indentType === 'Tab' ? '\t' : ' ';
-    indentation = identity.repeat(options.indentCount);
 
     snippet += 'import http.client\n';
     if (request.body && request.body.mode === 'formdata') {
