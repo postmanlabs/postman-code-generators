@@ -42,6 +42,35 @@ describe('nodejs-native convert function', function () {
     });
   });
 
+  it('should parse the url correctly even if the host and path are wrong in the url object',
+    function () {
+      var request = new sdk.Request({
+        'method': 'GET',
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        },
+        'url': {
+          'path': [
+            'hello'
+          ],
+          'host': [
+            'https://example.com/path'
+          ],
+          'query': [],
+          'variable': []
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('\'hostname\': \'example.com\',');
+        expect(snippet).to.include('\'path\': \'/path/hello\',');
+      });
+    });
+
   it('should add port in the options when host has port specified', function () {
     var request = new sdk.Request({
         'method': 'GET',

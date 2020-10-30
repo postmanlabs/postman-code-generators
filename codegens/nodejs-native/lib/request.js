@@ -1,6 +1,7 @@
 const _ = require('./lodash'),
   sdk = require('postman-collection'),
   sanitizeOptions = require('./util').sanitizeOptions,
+  sanitize = require('./util').sanitize,
   addFormParam = require('./util').addFormParam,
 
   parseRequest = require('./parseRequest');
@@ -152,11 +153,11 @@ function makeSnippet (request, indentString, options) {
   }
 
   optionsArray.push(indentString + `'method': '${request.method}'`);
-  optionsArray.push(`${indentString}'host': '${host}'`);
+  optionsArray.push(`${indentString}'hostname': '${sanitize(host)}'`);
   if (url.port) {
-    optionsArray.push(`${indentString}'port': '${url.port}'`);
+    optionsArray.push(`${indentString}'port': ${url.port}`);
   }
-  optionsArray.push(`${indentString}'path': '${path}${query}'`);
+  optionsArray.push(`${indentString}'path': '${sanitize(path)}${sanitize(encodeURI(query))}'`);
   optionsArray.push(parseRequest.parseHeader(request, indentString));
   if (options.followRedirect) {
     optionsArray.push(indentString + '\'maxRedirects\': 20');
