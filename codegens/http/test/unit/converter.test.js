@@ -273,7 +273,8 @@ describe('Converter test', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('GET {{variable}}/{{path}}');
+      expect(snippet).to.include('GET /{{path}}');
+      expect(snippet).to.include('Host: {{variable}}');
     });
   });
 });
