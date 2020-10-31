@@ -1,7 +1,7 @@
 {
   "name": "@postman/codegen-dart-http",
   "version": "0.0.1",
-  "description": "Converts Postman SDK Requests to Dart code snippet",
+  "description": "Converts Postman SDK Requests to Dart http code snippet",
   "main": "index.js",
   "com_postman_plugin": {
     "type": "code_generator",
@@ -25,7 +25,7 @@
   },
   "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/dart",
+  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/dart-http",
   "dependencies": {},
   "devDependencies": {},
   "engines": {
