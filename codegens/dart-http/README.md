@@ -5,7 +5,7 @@
 To run Code-Gen, ensure that you have NodeJS >= v8. A copy of the NodeJS installable can be downloaded from https://nodejs.org/en/download/package-manager.
 
 ## Using the Module
-The module will expose an object which will have property `convert` which is the function for converting the Postman-SDK request to Dart code snippet.
+The module will expose an object which will have property `convert` which is the function for converting the Postman-SDK request to Dart http code snippet.
 
 ### convert function
 Convert function takes three parameters
