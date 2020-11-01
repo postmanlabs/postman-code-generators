@@ -253,6 +253,30 @@ describe('Converter test', function () {
       expect(snippet).to.include('Content-Length: 5');
     });
   });
+
+  it('should generate a valid path even if the url contains unresolved variables', function () {
+    var request = new Request({
+      'method': 'GET',
+      'url': {
+
+        'host': [
+          '{{variable}}'
+        ],
+        'path': [
+          '{{path}}'
+        ]
+      }
+    });
+
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('GET /{{path}}');
+      expect(snippet).to.include('Host: {{variable}}');
+    });
+  });
 });
 
 describe('Converter test using options.trimRequestBody', function () {

@@ -1,5 +1,6 @@
 let utils = require('./util'),
-  urlParser = require('url').parse;
+  _ = require('./lodash'),
+  sdk = require('postman-collection');
 
 /**
  * Used in order to get additional options for generation of C# code snippet (i.e. Include Boilerplate code)
@@ -29,18 +30,27 @@ function getOptions () {
  */
 function convert (request, options, callback) {
   let snippet = '',
-    url = request.url.toString(),
-    body;
+    url, host, path, query, body;
   options = utils.sanitizeOptions(options, getOptions());
-  // urlParser expects a protocal in the url
-  // If it is not present we have to add it manually
-  if (!url.match(/^([a-z][a-z0-9.+-]*:)?(\/\/)/)) {
-    url = `http://${url}`;
+
+  url = sdk.Url.parse(request.url.toString());
+  host = url.host ? url.host.join('.') : '';
+  host += url.port ? ':' + url.port : '';
+  path = url.path ? '/' + url.path.join('/') : '/';
+  query = url.query ? _.reduce(url.query, (accum, q) => {
+    accum.push(`${q.key}=${q.value}`);
+    return accum;
+  }, []) : [];
+
+  if (query.length > 0) {
+    query = '?' + query.join('&');
   }
-  url = urlParser(url);
-  snippet = `${request.method} ${url.pathname ? url.pathname : '/'}` +
-    `${url.search ? decodeURI(url.search) : ''} HTTP/1.1\n`;
-  snippet += `Host: ${url.host}\n`;
+  else {
+    query = '';
+  }
+
+  snippet = `${request.method} ${path}${query} HTTP/1.1\n`;
+  snippet += `Host: ${host}\n`;
   if (request.body && !request.headers.has('Content-Type')) {
     if (request.body.mode === 'file') {
       request.addHeader({

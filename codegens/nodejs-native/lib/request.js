@@ -1,5 +1,7 @@
 const _ = require('./lodash'),
+  sdk = require('postman-collection'),
   sanitizeOptions = require('./util').sanitizeOptions,
+  sanitize = require('./util').sanitize,
   addFormParam = require('./util').addFormParam,
 
   parseRequest = require('./parseRequest');
@@ -17,7 +19,9 @@ function makeSnippet (request, indentString, options) {
   var nativeModule = (request.url.protocol === 'http' ? 'http' : 'https'),
     snippet,
     optionsArray = [],
-    postData = '';
+    postData = '',
+    url, host, path, query;
+
   if (options.ES6_enabled) {
     snippet = 'const ';
   }
@@ -127,14 +131,28 @@ function makeSnippet (request, indentString, options) {
     }
   }
 
-  parseRequest.parseURLVariable(request);
+
+  url = sdk.Url.parse(request.url.toString());
+  host = url.host ? url.host.join('.') : '';
+  path = url.path ? '/' + url.path.join('/') : '/';
+  query = url.query ? _.reduce(url.query, (accum, q) => {
+    accum.push(`${q.key}=${q.value}`);
+    return accum;
+  }, []) : [];
+
+  if (query.length > 0) {
+    query = '?' + query.join('&');
+  }
+  else {
+    query = '';
+  }
 
   optionsArray.push(indentString + `'method': '${request.method}'`);
-  optionsArray.push(parseRequest.parseHost(request, indentString));
-  if (request.url.port) {
-    optionsArray.push(parseRequest.parsePort(request, indentString));
+  optionsArray.push(`${indentString}'hostname': '${sanitize(host)}'`);
+  if (url.port) {
+    optionsArray.push(`${indentString}'port': ${url.port}`);
   }
-  optionsArray.push(parseRequest.parsePath(request, indentString));
+  optionsArray.push(`${indentString}'path': '${sanitize(path)}${sanitize(encodeURI(query))}'`);
   optionsArray.push(parseRequest.parseHeader(request, indentString));
   if (options.followRedirect) {
     optionsArray.push(indentString + '\'maxRedirects\': 20');
