@@ -277,6 +277,25 @@ describe('Converter test', function () {
       expect(snippet).to.include('Host: {{variable}}');
     });
   });
+
+  it('should not add extra newlines if there is no body or header present', function () {
+    var request = new Request({
+      'method': 'GET',
+      'url': {
+        'host': [
+          'example',
+          'com'
+        ]
+      }
+    });
+
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.equal('GET / HTTP/1.1\nHost: example.com');
+    });
+  });
 });
 
 describe('Converter test using options.trimRequestBody', function () {

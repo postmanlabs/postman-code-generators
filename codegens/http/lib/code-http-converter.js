@@ -30,7 +30,7 @@ function getOptions () {
  */
 function convert (request, options, callback) {
   let snippet = '',
-    url, host, path, query, body;
+    url, host, path, query, body, headers;
   options = utils.sanitizeOptions(options, getOptions());
 
   url = sdk.Url.parse(request.url.toString());
@@ -50,7 +50,7 @@ function convert (request, options, callback) {
   }
 
   snippet = `${request.method} ${path}${query} HTTP/1.1\n`;
-  snippet += `Host: ${host}\n`;
+  snippet += `Host: ${host}`;
   if (request.body && !request.headers.has('Content-Type')) {
     if (request.body.mode === 'file') {
       request.addHeader({
@@ -114,8 +114,9 @@ function convert (request, options, callback) {
       value: body.length
     });
   }
-  snippet += `${utils.getHeaders(request)}\n`;
-  snippet += `\n${body}`;
+  headers = utils.getHeaders(request);
+  snippet += headers ? `\n${headers}` : '';
+  snippet += body ? `\n\n${body}` : '';
   return callback(null, snippet);
 }
 
