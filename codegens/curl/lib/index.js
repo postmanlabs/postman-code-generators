@@ -77,7 +77,8 @@ self = module.exports = {
         // otherwise, they header would be ignored by curl
         if (header.value) {
           snippet += `: ${sanitize(header.value)}'`;
-        } else {
+        }
+        else {
           snippet += ';\'';
         }
       });

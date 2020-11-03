@@ -33,6 +33,7 @@ describe('curl convert function', function () {
         }
       });
     });
+
     it('should return snippet with url in single quote(\')', function () {
       request = new sdk.Request({
         'method': 'POST',
@@ -54,6 +55,7 @@ describe('curl convert function', function () {
         expect(snippetArray[4][0]).to.equal('\'');
       });
     });
+
     it('should return snippet with url in double quote(")', function () {
       request = new sdk.Request({
         'method': 'POST',
@@ -73,6 +75,36 @@ describe('curl convert function', function () {
 
         snippetArray = snippet.split(' ');
         expect(snippetArray[4][0]).to.equal('"');
+      });
+    });
+
+    it('should add semicolon after header key, if the value is empty string', function () {
+      request = new sdk.Request({
+        'method': 'GET',
+        'header': [
+          {
+            'key': 'hello',
+            'value': ''
+          }
+        ],
+        'url': {
+          'raw': 'https://postman-echo.com/get',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'get'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('--header \'hello;\'');
       });
     });
 
