@@ -80,7 +80,10 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
   if (requestbody) {
     switch (requestbody.mode) {
       case 'raw':
-        if (contentType === 'application/json') {
+        // Match any application type whose underlying structure is json
+        // For example application/vnd.api+json
+        // All of them have +json as suffix
+        if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
           try {
             let jsonBody = JSON.parse(requestbody[requestbody.mode]);
             return `JSON.stringify(${JSON.stringify(jsonBody)})`;

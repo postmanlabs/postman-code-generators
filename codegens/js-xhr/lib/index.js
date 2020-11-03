@@ -30,7 +30,10 @@ function parseURLEncodedBody (body) {
  */
 function parseRawBody (body, trim, contentType) {
   var bodySnippet = 'var data = ';
-  if (contentType === 'application/json') {
+  // Match any application type whose underlying structure is json
+  // For example application/vnd.api+json
+  // All of them have +json as suffix
+  if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
     try {
       let jsonBody = JSON.parse(body);
       bodySnippet += `JSON.stringify(${JSON.stringify(jsonBody)});\n`;

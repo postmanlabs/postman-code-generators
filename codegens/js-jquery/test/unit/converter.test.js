@@ -73,6 +73,40 @@ describe('jQuery converter', function () {
     });
   });
 
+  it('should use JSON.parse if the content-type is application/vnd.api+json', function () {
+    let request = new sdk.Request({
+      'method': 'POST',
+      'header': [
+        {
+          'key': 'Content-Type',
+          'value': 'application/vnd.api+json'
+        }
+      ],
+      'body': {
+        'mode': 'raw',
+        'raw': '{"data": {"hello": "world"} }'
+      },
+      'url': {
+        'raw': 'https://postman-echo.com/get',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'get'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.contain('"data": JSON.stringify({"data":{"hello":"world"}})');
+    });
+  });
+
   it('should trim header keys and not trim header values', function () {
     var request = new sdk.Request({
       'method': 'GET',
