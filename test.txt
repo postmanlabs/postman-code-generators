@@ -1,9 +1,0 @@
-POST /post HTTP/1.1
-Host: postman-echo.com
-Content-Type: application/javascript
-Content-Length: 54
-
-var val = 6;
-console.log(val);console.log('$text
-');
-

@@ -115,7 +115,7 @@ function convert (request, options, callback) {
     });
   }
   headers = utils.getHeaders(request);
-  snippet += headers ? `\n${utils.getHeaders(request)}` : '';
+  snippet += headers ? `\n${headers}` : '';
   snippet += body ? `\n\n${body}` : '';
   return callback(null, snippet);
 }

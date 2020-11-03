@@ -68,8 +68,3 @@ out/
 
 newmanResponses.json
 dummyFile*.txt
-swift-5.0.1-RELEASE-ubuntu16.04.tar.gz
-swift-5.0.1-RELEASE-ubuntu16.04/
-NuGetScratch/
-pear/
-codegens/csharp-restsharp/packages-microsoft-prod.deb
