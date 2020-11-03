@@ -30,7 +30,7 @@ function getOptions () {
  */
 function convert (request, options, callback) {
   let snippet = '',
-    url, host, path, query, body;
+    url, host, path, query, body, headers;
   options = utils.sanitizeOptions(options, getOptions());
 
   url = sdk.Url.parse(request.url.toString());
@@ -114,8 +114,9 @@ function convert (request, options, callback) {
       value: body.length
     });
   }
-  snippet += `${utils.getHeaders(request)}\n`;
-  snippet += `\n${body}`;
+  headers = utils.getHeaders(request);
+  snippet += headers ? `${utils.getHeaders(request)}\n` : '';
+  snippet += body ? `\n${body}`: '';
   return callback(null, snippet);
 }
 
