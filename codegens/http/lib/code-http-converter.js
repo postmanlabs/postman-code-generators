@@ -50,7 +50,7 @@ function convert (request, options, callback) {
   }
 
   snippet = `${request.method} ${path}${query} HTTP/1.1\n`;
-  snippet += `Host: ${host}\n`;
+  snippet += `Host: ${host}`;
   if (request.body && !request.headers.has('Content-Type')) {
     if (request.body.mode === 'file') {
       request.addHeader({
@@ -115,8 +115,8 @@ function convert (request, options, callback) {
     });
   }
   headers = utils.getHeaders(request);
-  snippet += headers ? `${utils.getHeaders(request)}\n` : '';
-  snippet += body ? `\n${body}` : '';
+  snippet += headers ? `\n${utils.getHeaders(request)}` : '';
+  snippet += body ? `\n\n${body}` : '';
   return callback(null, snippet);
 }
 

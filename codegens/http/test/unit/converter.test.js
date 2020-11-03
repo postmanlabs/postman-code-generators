@@ -293,7 +293,7 @@ describe('Converter test', function () {
       if (error) {
         expect.fail(null, null, error);
       }
-      expect(snippet).to.equal('GET / HTTP/1.1\nHost: example.com\n');
+      expect(snippet).to.equal('GET / HTTP/1.1\nHost: example.com');
     });
   });
 });
