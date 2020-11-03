@@ -116,7 +116,7 @@ function convert (request, options, callback) {
   }
   headers = utils.getHeaders(request);
   snippet += headers ? `${utils.getHeaders(request)}\n` : '';
-  snippet += body ? `\n${body}`: '';
+  snippet += body ? `\n${body}` : '';
   return callback(null, snippet);
 }
 
