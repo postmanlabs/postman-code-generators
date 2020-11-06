@@ -279,7 +279,7 @@ describe('Converter test', function () {
   });
 
   it('should add content type if formdata field contains a content-type', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'body': {
         'mode': 'formdata',
