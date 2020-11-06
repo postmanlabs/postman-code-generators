@@ -422,6 +422,42 @@ describe('Powershell-restmethod converter', function () {
       });
     });
 
+    it('should add content type if formdata field contains a content-type', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'json',
+              'value': '{"hello": "world"}',
+              'contentType': 'application/json',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('$contentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::new("application/json")'); // eslint-disable-line max-len
+        expect(snippet).to.contain('$stringContent.Headers.ContentType = $contentType');
+      });
+    });
+
     it('should generate valid snippet for single/double quotes in url', function () {
       var request = new sdk.Request({
         'method': 'GET',
@@ -490,7 +526,7 @@ describe('Powershell-restmethod converter', function () {
         expect(snippet).to.include('$stringHeader = [System.Net.Http.Headers.ContentDispositionHeaderValue]' +
         '::new("form-data")');
         expect(snippet).to.include('$stringHeader.Name = "sample_key"');
-        expect(snippet).to.include('$StringContent = [System.Net.Http.StringContent]::new("sample_value")');
+        expect(snippet).to.include('$stringContent = [System.Net.Http.StringContent]::new("sample_value")');
       });
     });
   });
