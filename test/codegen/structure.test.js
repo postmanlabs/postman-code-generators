@@ -70,7 +70,7 @@ const expectedOptions = {
     },
     quoteType: {
       name: 'Quote Type',
-      type: 'string',
+      type: 'enum',
       default: 'single',
       description: 'String denoting the quote type to use (single or double) for URL ' +
           '(Use double quotes when running curl in cmd.exe and single quotes for the rest)'

@@ -196,7 +196,7 @@ self = module.exports = {
         name: 'Quote Type',
         id: 'quoteType',
         availableOptions: ['single', 'double'],
-        type: 'string',
+        type: 'enum',
         default: 'single',
         description: 'String denoting the quote type to use (single or double) for URL ' +
           '(Use double quotes when running curl in cmd.exe and single quotes for the rest)'
