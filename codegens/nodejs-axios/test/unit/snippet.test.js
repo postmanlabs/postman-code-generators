@@ -125,6 +125,41 @@ describe('nodejs-axios convert function', function () {
       });
     });
 
+    it('should add content type if formdata field contains a content-type', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'json',
+              'value': '{"hello": "world"}',
+              'contentType': 'application/json',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('data.append(\'json\', \'{"hello": "world"}\', {contentType: \'application/json\'});'); // eslint-disable-line max-len
+      });
+    });
+
     it('should return snippet with proper semicolon placed where required', function () {
       // testing for the below snippet
       /*

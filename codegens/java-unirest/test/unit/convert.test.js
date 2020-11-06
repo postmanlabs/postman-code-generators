@@ -89,6 +89,41 @@ describe('java unirest convert function for test collection', function () {
       });
     });
 
+    it('should add content type if formdata field contains a content-type', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'json',
+              'value': '{"hello": "world"}',
+              'contentType': 'application/json',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('.field("json", "{\\"hello\\": \\"world\\"}", "application/json")');
+      });
+    });
+
     it('should include import statements, main class and print statements ' +
             'when includeBoilerplate is set to true', function () {
       request = new sdk.Request(mainCollection.item[0].request);

@@ -58,7 +58,11 @@ function parseFormData (body, trim, ES6_enabled) {
         bodySnippet += `data.append('${sanitize(data.key, trim)}', ${fileContent});\n`;
       }
       else {
-        bodySnippet += `data.append('${sanitize(data.key, trim)}', '${sanitize(data.value, trim)}');\n`;
+        bodySnippet += `data.append('${sanitize(data.key, trim)}', '${sanitize(data.value, trim)}'`;
+        if (data.contentType) {
+          bodySnippet += `, {contentType: '${sanitize(data.contentType, trim)}'}`;
+        }
+        bodySnippet += ');\n';
       }
     }
   });

@@ -124,6 +124,41 @@ describe('nodejs-native convert function', function () {
     });
   });
 
+  it('should add content type if formdata field contains a content-type', function () {
+    var request = new sdk.Request({
+      'method': 'POST',
+      'body': {
+        'mode': 'formdata',
+        'formdata': [
+          {
+            'key': 'json',
+            'value': '{"hello": "world"}',
+            'contentType': 'application/json',
+            'type': 'text'
+          }
+        ]
+      },
+      'url': {
+        'raw': 'http://postman-echo.com/post',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'post'
+        ]
+      }
+    });
+
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.contain('Content-Type: application/json');
+    });
+  });
+
   it('should return snippet with ES6 features when ES6_enabled is set to true', function () {
     var request = new sdk.Request({
         'method': 'POST',
