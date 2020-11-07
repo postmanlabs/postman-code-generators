@@ -292,17 +292,17 @@ self = module.exports = {
     options = sanitizeOptions(options, self.getOptions());
     if (options.includeBoilerplate) {
       headerSnippet = 'import retrofit2.Call\n';
-      headerSnippet = 'import retrofit2.Callback\n';
-      headerSnippet = 'import retrofit2.Response\n';
-      headerSnippet = 'import retrofit2.Retrofit\n';
-      headerSnippet = 'import retrofit2.http.GET\n';
-      headerSnippet = 'import retrofit2.http.Path\n';
-      headerSnippet = 'import retrofit2.converter.gson.GsonConverterFactory\n\n';
-
-      // TODO: add interface implementation in here
-
+      headerSnippet += 'import retrofit2.Callback\n';
+      headerSnippet += 'import retrofit2.Response\n';
+      headerSnippet += 'import retrofit2.Retrofit\n';
+      headerSnippet += 'import retrofit2.http.Path\n';
+      headerSnippet += `${getRetrofitImportByMethod(request.method)}\n`;
+      headerSnippet += 'import retrofit2.http.HeaderMap\n';
+      headerSnippet += 'import retrofit2.converter.gson.GsonConverterFactory\n\n';
       headerSnippet += 'fun main() {\n';
-      footerSnippet = '}\n';
+
+      footerSnippet = '}\n\n';
+      // TODO: add interface implementation in footerSnippet
     }
     trim = options.trimRequestBody;
     indent = options.indentType === 'Tab' ? '\t' : ' ';
