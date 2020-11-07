@@ -383,32 +383,58 @@ self = module.exports = {
         ` Uri.parse('${request.url.toString()}'));\n`;
     }
     else {
-      codeSnippet += `var request = http.Request('${request.method.toUpperCase()}',` +
-      ` Uri.parse('${request.url.toString()}'));\n`;
+      codeSnippet += `\n${generateRetrofitClientFactory(timeout, followRedirect, indent)}`;
+
+      codeSnippet += 'val retrofit = Retrofit.Builder()\n';
+      codeSnippet += `${indent}.baseUrl("${new URL(request.url.toString()).origin}")\n`;
+      codeSnippet += `${indent}.addConverterFactory(GsonConverterFactory.create())\n`;
+
+      if (timeout > 0) {
+        codeSnippet += `${indent}.client(okHttpClient)\n`;
+      }
+
+      codeSnippet += `${indent}.build()\n\n`;
     }
 
-    if (body !== '') {
-      codeSnippet += body;
-    }
+    let serviceName = request.url.host.slice(-2)[0];
+    footerSnippet += generateInterface(
+      serviceName,
+      request.method,
+      request.url.path,
+      request.url.variables,
+      headers !== '',
+      body !== '',
+      indent
+    );
+
+    codeSnippet += `val service = retrofit.create(${getServiceInterfaceName(serviceName)}::class.java)\n`;
+    codeSnippet += `val serviceCall = service.${getInterfaceFunctionName(request.method, request.url.path)}(`;
+
     if (headers !== '') {
-      codeSnippet += 'request.headers.addAll(headers);\n';
-    }
-    if (!followRedirect) {
-      codeSnippet += 'request.followRedirects = false;\n';
-    }
+      codeSnippet += 'headers';
 
-    codeSnippet += '\n';
-
-    codeSnippet += 'http.StreamedResponse response = await request.send()';
-    if (timeout > 0) {
-      codeSnippet += `.timeout(Duration(milliseconds: ${timeout}))`;
+      if (body !== '') {
+        codeSnippet += ', ';
+      }
+      else {
+        codeSnippet += ')\n';
+      }
     }
-    codeSnippet += ';\n';
-    codeSnippet += 'if (response.statusCode == 200) {\n';
-    codeSnippet += `${indent}print(await response.stream.bytesToString());\n`;
-    codeSnippet += '} else {\n';
-    codeSnippet += `${indent}print(response.reasonPhrase);\n`;
-    codeSnippet += '}\n';
+    if (body !== '') {
+      codeSnippet += 'body)';
+    }
+    codeSnippet += '\n\n';
+
+    codeSnippet += 'serviceCall.enqueue(object : Callback<Any> {\n';
+    codeSnippet += `${indent}override fun onResponse(call: Call<Any>, response: Response<Any>) {\n`;
+    codeSnippet += `${indent}${indent}println("Request success with response: \${response.body()}")\n`;
+    codeSnippet += `${indent}}\n\n`;
+
+    codeSnippet += `${indent}override fun onFailure(call: Call<Any>, t: Throwable) {\n`;
+    codeSnippet += `${indent}${indent}println("Request has been failed for \${t.message} reason. $t")\n`;
+    codeSnippet += `${indent}}\n`;
+
+    codeSnippet += '})\n';
 
     //  if boilerplate is included then two more indent needs to be added in snippet
     (options.includeBoilerplate) &&
