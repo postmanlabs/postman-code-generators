@@ -301,11 +301,12 @@ self = module.exports = {
       trim,
       timeout,
       followRedirect,
-      isFormData = false;
+      isFormData = false,
+      serviceCallParamsArray = [];
     options = sanitizeOptions(options, self.getOptions());
     if (options.includeBoilerplate) {
       headerSnippet = 'import retrofit2.Call\n';
-      headerSnippet += `import retrofit2.http.*\n`;
+      headerSnippet += 'import retrofit2.http.*\n';
       headerSnippet += 'import retrofit2.Callback\n';
       headerSnippet += 'import retrofit2.Response\n';
       headerSnippet += 'import retrofit2.Retrofit\n';
@@ -395,15 +396,15 @@ self = module.exports = {
       isFormData = true;
     }
 
-    codeSnippet += `\n${generateRetrofitClientFactory(timeout, followRedirect, indent)}`;
+      codeSnippet += `\n${generateRetrofitClientFactory(timeout, followRedirect, indent)}`;
 
-    codeSnippet += 'val retrofit = Retrofit.Builder()\n';
-    codeSnippet += `${indent}.baseUrl("${new URL(request.url.toString()).origin}")\n`;
-    codeSnippet += `${indent}.addConverterFactory(GsonConverterFactory.create())\n`;
+      codeSnippet += 'val retrofit = Retrofit.Builder()\n';
+      codeSnippet += `${indent}.baseUrl("${new URL(request.url.toString()).origin}")\n`;
+      codeSnippet += `${indent}.addConverterFactory(GsonConverterFactory.create())\n`;
 
-    if (timeout > 0) {
-      codeSnippet += `${indent}.client(okHttpClient)\n`;
-    }
+      if (timeout > 0) {
+        codeSnippet += `${indent}.client(okHttpClient)\n`;
+      }
 
     codeSnippet += `${indent}.build()\n\n`;
 
@@ -423,7 +424,6 @@ self = module.exports = {
     codeSnippet += `val service = retrofit.create(${getServiceInterfaceName(serviceName)}::class.java)\n`;
     codeSnippet += `val serviceCall = service.${getInterfaceFunctionName(request.method, request.url.path)}(`;
 
-    const serviceCallParamsArray = [];
     if (headers !== '') {
       serviceCallParamsArray.push('headers');
     }
