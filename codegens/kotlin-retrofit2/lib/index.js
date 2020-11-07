@@ -197,6 +197,9 @@ function getInterfaceMethodParams (variables) {
  * @param {String} path of web service request
  */
 function getInterfaceFunctionName (httpMethod, path) {
+  if (!Array.isArray(path)) {
+    return `${httpMethod.toLowerCase()}`;
+  }
   const route = path.slice(-1).toString().replace(':', '');
 
   return `${httpMethod.toLowerCase()}${_.capitalize(route)}`;
