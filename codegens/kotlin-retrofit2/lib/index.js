@@ -176,6 +176,18 @@ function getInterfaceMethodParams (variables) {
 
   return variablesArray.join(', ');
 }
+
+/**
+ * Parse interface method based on http method and web service path
+ *
+ * @param {String} httpMethod of web service request
+ * @param {String} path of web service request
+ */
+function getInterfaceFunctionName (httpMethod, path) {
+  const route = path.slice(-1).toString().replace(':', '');
+
+  return `${httpMethod.toLowerCase()}${_.capitalize(route)}`;
+}
 self = module.exports = {
   convert: function (request, options, callback) {
     var indent,
