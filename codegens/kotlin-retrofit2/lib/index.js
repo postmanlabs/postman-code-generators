@@ -32,7 +32,7 @@ function parseUrlEncoded (body, indent, trim) {
  * @param {Boolean} trim indicates whether to trim string or not
  */
 function parseRawBody (body, trim) {
-  return `val body = '''${sanitize(body, trim)}'''`;
+  return `val body = """${sanitize(body, trim)}"""`;
 }
 
 /**
@@ -246,6 +246,29 @@ function generateRetrofitClientFactory (timeout, followRedirect, indent) {
 }
 
 /**
+ * Change url parameter from :something to {something} based on retrofit2 documentation
+ *
+ * @param {Array} paths in web service url
+ */
+function changeUrlParamToTemplate (paths) {
+  const pathArray = [];
+  if (!paths) {
+    return pathArray;
+  }
+
+  paths.forEach((p) => {
+    if (p.startsWith(':')) {
+      pathArray.push(`{${p.replace(':', '')}}`);
+    }
+    else {
+      pathArray.push(p);
+    }
+  });
+
+  return pathArray;
+}
+
+/**
  * Parses headers from the request.
  *
  * @param {String} name of web service request
@@ -254,32 +277,37 @@ function generateRetrofitClientFactory (timeout, followRedirect, indent) {
  * @param {String} variables in path
  * @param {boolean} hasHeader in web service request
  * @param {boolean} hasBody in web service request
- * @param {boolean} isFormData web service request
+ * @param {String} bodyType of web service request
  * @param {String} indent indentation required for code snippet
  */
 function generateInterface (name, method, path, variables,
-  hasHeader, hasBody, isFormData, indent) {
+  hasHeader, hasBody, bodyType, indent) {
   var interfaceString = '@JvmSuppressWildcards\n';
+  const pathTemplate = changeUrlParamToTemplate(path),
+    functionArguments = [];
+
 
   interfaceString += `interface ${getServiceInterfaceName(name)} {\n`;
-  if (isFormData) {
+  if (bodyType === 'formdata') {
     interfaceString += `${indent}@Multipart\n`;
   }
-  interfaceString += `${indent}@${method.toUpperCase()}("${path}")\n`;
+  interfaceString += `${indent}@${method.toUpperCase()}("${pathTemplate}")\n`;
   interfaceString += `${indent}fun `;
   interfaceString += `${getInterfaceFunctionName(method, path)}(`;
 
-  const functionArguments = [];
   let paramString = getInterfaceMethodParams(variables);
   if (hasHeader) {
     functionArguments.push('@HeaderMap headers: Map<String, String>');
   }
 
-  if (hasBody && !isFormData) {
-    functionArguments.push('@Body body: Map<String, Any>');
-  }
-  else if (isFormData) {
+  if (bodyType === 'formdata') {
     functionArguments.push('@PartMap body: Map<String, RequestBody>');
+  }
+  else if (bodyType === 'raw') {
+    functionArguments.push('@Body body: String');
+  }
+  else if (hasBody) {
+    functionArguments.push('@Body body: Map<String, Any>');
   }
 
   if (paramString !== '') {
@@ -301,7 +329,7 @@ self = module.exports = {
       trim,
       timeout,
       followRedirect,
-      isFormData = false,
+      bodyType,
       serviceCallParamsArray = [];
     options = sanitizeOptions(options, self.getOptions());
     if (options.includeBoilerplate) {
@@ -390,21 +418,19 @@ self = module.exports = {
     codeSnippet += headers;
     codeSnippet += body;
 
-    if (requestBody && requestBody.mode === 'formdata') {
-      // codeSnippet += `var request = http.MultipartRequest('${request.method.toUpperCase()}',` +
-      //   ` Uri.parse('${request.url.toString()}'));\n`;
-      isFormData = true;
+    if (requestBody) {
+      bodyType = requestBody.mode;
     }
 
-      codeSnippet += `\n${generateRetrofitClientFactory(timeout, followRedirect, indent)}`;
+    codeSnippet += `\n${generateRetrofitClientFactory(timeout, followRedirect, indent)}`;
 
-      codeSnippet += 'val retrofit = Retrofit.Builder()\n';
-      codeSnippet += `${indent}.baseUrl("${new URL(request.url.toString()).origin}")\n`;
-      codeSnippet += `${indent}.addConverterFactory(GsonConverterFactory.create())\n`;
+    codeSnippet += 'val retrofit = Retrofit.Builder()\n';
+    codeSnippet += `${indent}.baseUrl("${new URL(request.url.toString()).origin}")\n`;
+    codeSnippet += `${indent}.addConverterFactory(GsonConverterFactory.create())\n`;
 
-      if (timeout > 0) {
-        codeSnippet += `${indent}.client(okHttpClient)\n`;
-      }
+    if (timeout > 0) {
+      codeSnippet += `${indent}.client(okHttpClient)\n`;
+    }
 
     codeSnippet += `${indent}.build()\n\n`;
 
@@ -417,7 +443,7 @@ self = module.exports = {
       request.url.variables,
       headers !== '',
       body !== '',
-      isFormData,
+      bodyType,
       indent
     );
 
@@ -429,6 +455,17 @@ self = module.exports = {
     }
     if (body !== '') {
       serviceCallParamsArray.push('body');
+    }
+
+    if (request.url.variables && request.url.variables.members.length > 0) {
+      request.url.variables.members.forEach((variable) => {
+        if (['any', 'text', 'string'].includes(variable.type.toLowerCase())) {
+          serviceCallParamsArray.push(`"${sanitize(variable.value)}"`);
+        }
+        else {
+          serviceCallParamsArray.push(`${variable.value}`);
+        }
+      });
     }
 
     codeSnippet += serviceCallParamsArray.join(', ');
