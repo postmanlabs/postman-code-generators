@@ -395,15 +395,15 @@ self = module.exports = {
       isFormData = true;
     }
 
-      codeSnippet += `\n${generateRetrofitClientFactory(timeout, followRedirect, indent)}`;
+    codeSnippet += `\n${generateRetrofitClientFactory(timeout, followRedirect, indent)}`;
 
-      codeSnippet += 'val retrofit = Retrofit.Builder()\n';
-      codeSnippet += `${indent}.baseUrl("${new URL(request.url.toString()).origin}")\n`;
-      codeSnippet += `${indent}.addConverterFactory(GsonConverterFactory.create())\n`;
+    codeSnippet += 'val retrofit = Retrofit.Builder()\n';
+    codeSnippet += `${indent}.baseUrl("${new URL(request.url.toString()).origin}")\n`;
+    codeSnippet += `${indent}.addConverterFactory(GsonConverterFactory.create())\n`;
 
-      if (timeout > 0) {
-        codeSnippet += `${indent}.client(okHttpClient)\n`;
-      }
+    if (timeout > 0) {
+      codeSnippet += `${indent}.client(okHttpClient)\n`;
+    }
 
     codeSnippet += `${indent}.build()\n\n`;
 
