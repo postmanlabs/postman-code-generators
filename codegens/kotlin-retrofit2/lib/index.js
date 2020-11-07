@@ -39,10 +39,10 @@ function parseRawBody (body, trim) {
  * Parses GraphQL body
  *
  * @param {Object} body GraphQL body
- * @param {Boolean} trim indicates whether to trim string or not
+ * @param {String} indent indentation required for code snippet
  */
-function parseGraphQLBody (body, trim) {
-  var bodySnippet = '',
+function parseGraphQLBody (body, indent) {
+  var snippet = '',
     query = body.query,
     graphqlVariables;
   try {
@@ -52,12 +52,13 @@ function parseGraphQLBody (body, trim) {
     graphqlVariables = {};
   }
 
-  bodySnippet += `request.body = '''${sanitize(JSON.stringify({
-    query: query,
-    variables: graphqlVariables
-  }), trim)}''';\n`;
+  snippet += 'class GraphqlQuery() {\n';
+  snippet += `${indent}val query = "${sanitize(query)}"\n`;
+  snippet += `${indent}val variables = "${sanitize(JSON.stringify(graphqlVariables))}"\n`;
 
-  return bodySnippet;
+  snippet += '}\n\n';
+
+  return snippet;
 }
 
 /**
@@ -133,8 +134,6 @@ function parseBody (body, indent, trim) {
         return parseRawBody(body.raw, trim);
       case 'formdata':
         return parseFormData(body.formdata, indent, trim);
-      case 'graphql':
-        return parseGraphQLBody(body.graphql, trim);
       case 'file':
         return 'request.body = r\'<file contents here>\';\n';
       default:
@@ -306,6 +305,9 @@ function generateInterface (name, method, path, variables,
   else if (bodyType === 'raw') {
     functionArguments.push('@Body body: String');
   }
+  else if (bodyType === 'graphql') {
+    functionArguments.push('@Body body: GraphqlQuery');
+  }
   else if (hasBody) {
     functionArguments.push('@Body body: Map<String, Any>');
   }
@@ -342,7 +344,6 @@ self = module.exports = {
       headerSnippet += 'fun main() {\n';
 
       footerSnippet = '}\n\n';
-      // TODO: add interface implementation in footerSnippet
     }
     trim = options.trimRequestBody;
     indent = options.indentType === 'Tab' ? '\t' : ' ';
@@ -428,6 +429,10 @@ self = module.exports = {
     codeSnippet += `${indent}.baseUrl("${new URL(request.url.toString()).origin}")\n`;
     codeSnippet += `${indent}.addConverterFactory(GsonConverterFactory.create())\n`;
 
+    if (requestBody.mode === 'graphql') {
+      footerSnippet += parseGraphQLBody(requestBody.graphql, indent);
+    }
+
     if (timeout > 0) {
       codeSnippet += `${indent}.client(okHttpClient)\n`;
     }
@@ -455,6 +460,10 @@ self = module.exports = {
     }
     if (body !== '') {
       serviceCallParamsArray.push('body');
+    }
+
+    if (requestBody && requestBody.mode === 'graphql') {
+      serviceCallParamsArray.push('GraphqlQuery()');
     }
 
     if (request.url.variables && request.url.variables.members.length > 0) {
