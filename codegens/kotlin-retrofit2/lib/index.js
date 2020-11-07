@@ -230,13 +230,15 @@ function getServiceInterfaceName (domainName) {
 function generateRetrofitClientFactory (timeout, followRedirect, indent) {
   var timeoutFactoryString = 'val okHttpClient = OkHttpClient().newBuilder()\n';
 
-  if (timeout === 0 || followRedirect) {
+  if (timeout === 0 && followRedirect) {
     return '';
   }
 
-  timeoutFactoryString += `${indent}.connectTimeout(${timeout}, TimeUnit.MILLISECONDS)\n`;
-  timeoutFactoryString += `${indent}.readTimeout(${timeout}, TimeUnit.MILLISECONDS)\n`;
-  timeoutFactoryString += `${indent}.writeTimeout(${timeout}, TimeUnit.MILLISECONDS)\n`;
+  if (timeout > 0) {
+    timeoutFactoryString += `${indent}.connectTimeout(${timeout}, TimeUnit.MILLISECONDS)\n`;
+    timeoutFactoryString += `${indent}.readTimeout(${timeout}, TimeUnit.MILLISECONDS)\n`;
+    timeoutFactoryString += `${indent}.writeTimeout(${timeout}, TimeUnit.MILLISECONDS)\n`;
+  }
 
   if (!followRedirect) {
     timeoutFactoryString += `${indent}.followRedirects(false)\n`;
@@ -442,7 +444,7 @@ self = module.exports = {
       footerSnippet += parseGraphQLBody(requestBody.graphql, indent);
     }
 
-    if (timeout > 0) {
+    if (timeout > 0 || !followRedirect) {
       codeSnippet += `${indent}.client(okHttpClient)\n`;
     }
 
