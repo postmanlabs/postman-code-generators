@@ -4,8 +4,8 @@ var runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').ru
 describe('Convert for different types of request', function () {
   var options = {indentCount: 2, indentType: 'Space', includeBoilerplate: true },
     testConfig = {
-      runScript: 'dart snippet.dart',
-      fileName: 'snippet.dart',
+      runScript: 'kotlin snippet.kt',
+      fileName: 'snippet.kt',
       headerSnippet: '',
       // http uses Map<String, String> to store headers, so there is no way to
       // keep multiple headers with the same key
