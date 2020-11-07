@@ -232,6 +232,45 @@ function generateRetrofitClientFactory (timeout, followRedirect, indent) {
   return timeoutFactoryString;
 }
 
+/**
+ * Parses headers from the request.
+ *
+ * @param {String} name of web service request
+ * @param {String} method of web service request
+ * @param {String} path of web service request
+ * @param {String} variables in path
+ * @param {boolean} hasHeader in web service request
+ * @param {boolean} hasBody in web service request
+ * @param {String} indent indentation required for code snippet
+ */
+function generateInterface (name, method, path, variables, hasHeader, hasBody, indent) {
+  var interfaceString = '@JvmSuppressWildcards\n';
+
+  interfaceString += `interface ${getServiceInterfaceName(name)} {\n`;
+  interfaceString += `${indent}@${method.toUpperCase()}("${path}")\n`;
+  interfaceString += `${indent}fun `;
+  interfaceString += `${getInterfaceFunctionName(method, path)}(`;
+
+  const functionArguments = [];
+  let paramString = getInterfaceMethodParams(variables);
+  if (hasHeader) {
+    functionArguments.push('@HeaderMap headers: Map<String, String>');
+  }
+
+  if (hasBody) {
+    functionArguments.push('@Body body: Map<String, Any>');
+  }
+
+  if (paramString !== '') {
+    functionArguments.push(paramString);
+  }
+
+  interfaceString += `${functionArguments.join(', ')}): Call<Any>`;
+  interfaceString += '\n}\n';
+
+  return interfaceString;
+}
+
 self = module.exports = {
   convert: function (request, options, callback) {
     var indent,
