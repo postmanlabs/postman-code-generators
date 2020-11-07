@@ -1,21 +1,61 @@
 var convert = require('../../index').convert,
   expect = require('chai').expect,
-  sdk = require('postman-collection');
+  collection = require('./fixtures/collection.json'),
+  sdk = require('postman-collection'),
+  expectedSnippets = require('./fixtures/snippets.json');
 
-// Disable check with expected snippets as we now have proper newman tests
-describe('Dart Converter', function () {
-  it('should add timeout if requestTimeout options is used', function () {
+describe('Kotlin-Retrofit2 Converter', function () {
+  describe('convert for different request types', function () {
+    collection.item.forEach((item) => {
+      it(item.name, function (done) {
+        const request = new sdk.Request(item.request);
+        convert(request, {
+          includeBoilerplate: true
+        }, (err, snippet) => {
+          if (err) {
+            expect.fail(null, null, err);
+            return done();
+          }
+
+          expect(snippet).to.equal(expectedSnippets[item.name]);
+          return done();
+        });
+      });
+    });
+  });
+});
+
+describe('Options Tests', function () {
+  it('should indent snippet with type and count specified', function () {
+    var request = new sdk.Request(collection.item[0].request);
+    convert(request, {
+      indentType: 'Tab',
+      indentCount: 2,
+      includeBoilerplate: true
+    }, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      var snippetArray = snippet.split('\n'),
+        i;
+      for (i = 0; i < snippetArray.length; i++) {
+        if (snippetArray[i].startsWith('cachePolicy:NSURLRequestUseProtocolCachePolicy')) {
+          expect(snippetArray[i + 1].charAt(0)).to.equal('\t');
+          expect(snippetArray[i + 1].charAt(1)).to.equal('\t');
+          expect(snippetArray[i + 1].charAt(2)).to.not.equal(' ');
+        }
+      }
+    });
+  });
+
+  it('should use all the default options', function () {
     var request = new sdk.Request({
       'method': 'POST',
-      'header': [
-        {
-          'key': 'Content-Type',
-          'value': 'application/json'
-        }
-      ],
+      'header': [],
       'body': {
         'mode': 'raw',
-        'raw': '{\n  "json": "Test-Test"\n}'
+        'raw': '  trim this body  '
       },
       'url': {
         'raw': 'https://postman-echo.com/post',
@@ -29,23 +69,44 @@ describe('Dart Converter', function () {
         ]
       }
     });
-
-    convert(request, {requestTimeout: 5000}, function (err, snippet) {
-      if (err) {
-        expect.fail(err);
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.contain('.timeout(Duration(milliseconds: 5000))');
+      var snippetArray = snippet.split('\n'),
+        i;
+      for (i = 0; i < snippetArray.length; i++) {
+        if (snippetArray[i].startsWith('cachePolicy:NSURLRequestUseProtocolCachePolicy')) {
+          expect(snippetArray[i + 1].charAt(0)).to.equal(' ');
+          expect(snippetArray[i + 1].charAt(1)).to.equal(' ');
+          expect(snippet).to.include('timeoutInterval:10');
+          expect(snippet).to.include('  trim this body  ');
+        }
+      }
     });
   });
 
-  it('should use http.MultipartRequest for formdata requests', function () {
+  it('should add code for requestTimeout option', function () {
+    var request = new sdk.Request(collection.item[0].request);
+    convert(request, {
+      requestTimeout: 5000
+    }, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('timeoutInterval:5');
+    });
+  });
+
+  it('should trim request body when trimRequestBody is set to true', function () {
     var request = new sdk.Request({
       'method': 'POST',
       'header': [],
       'body': {
-        'mode': 'formdata',
-        'formdata': []
+        'mode': 'raw',
+        'raw': '  trim this body  '
       },
       'url': {
         'raw': 'https://postman-echo.com/post',
@@ -59,73 +120,25 @@ describe('Dart Converter', function () {
         ]
       }
     });
-    convert(request, {}, function (err, snippet) {
-      if (err) {
-        expect.fail(err);
+    convert(request, {
+      trimRequestBody: true
+    }, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.contain('http.MultipartRequest');
+      expect(snippet).to.not.include('  trim this body  ');
+      expect(snippet).to.include('trim this body');
     });
   });
 
-  it('should add code for followRedirects if given in the option', function () {
-    var request = new sdk.Request({
-      'method': 'GET',
-      'header': [],
-      'url': {
-        'raw': 'https://postman-echo.com/',
-        'protocol': 'https',
-        'host': [
-          'postman-echo',
-          'com'
-        ]
-      }
-    });
-    convert(request, { followRedirect: false }, function (err, snippet) {
-      if (err) {
-        expect.fail(err);
-      }
-      expect(snippet).to.be.a('string');
-      expect(snippet).to.contain('request.followRedirects = false;');
-    });
-  });
-
-  it('should add boilerplate if given in the option', function () {
-    var request = new sdk.Request({
-      'method': 'GET',
-      'header': [],
-      'url': {
-        'raw': 'https://postman-echo.com/',
-        'protocol': 'https',
-        'host': [
-          'postman-echo',
-          'com'
-        ]
-      }
-    });
-    convert(request, { includeBoilerplate: true }, function (err, snippet) {
-      if (err) {
-        expect.fail(err);
-      }
-      expect(snippet).to.be.a('string');
-      expect(snippet).to.contain('import \'package:http/http.dart\' as http;');
-      expect(snippet).to.contain('void main() async {');
-    });
-  });
-
-  it('should add correct indentation', function () {
+  it('should include boiler plate if includeBoilerplate is set to true', function () {
     var request = new sdk.Request({
       'method': 'POST',
       'header': [],
       'body': {
-        'mode': 'formdata',
-        'formdata': [
-          {
-            'key': 'hello',
-            'value': 'world',
-            'type': 'text'
-          }
-        ]
+        'mode': 'raw',
+        'raw': '  trim this body  '
       },
       'url': {
         'raw': 'https://postman-echo.com/post',
@@ -139,12 +152,14 @@ describe('Dart Converter', function () {
         ]
       }
     });
-    convert(request, { includeBoilerplate: true, indentType: 'Tab' }, function (err, snippet) {
-      if (err) {
-        expect.fail(err);
+    convert(request, {
+      includeBoilerplate: true
+    }, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.contain('\t\t\'hello\': \'world\'');
+      expect(snippet).to.include('int main(int argc, const char * argv[])');
     });
   });
 });
