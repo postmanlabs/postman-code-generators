@@ -292,15 +292,6 @@ function generateInterface (name, method, path, variables,
   return interfaceString;
 }
 
-/**
- * Parse retrofit import module based on request method
- *
- * @param {String} method of web service request
- */
-function getRetrofitImportByMethod (method) {
-  return `import retrofit2.http.${method.toUpperCase()}`;
-}
-
 self = module.exports = {
   convert: function (request, options, callback) {
     var indent,
