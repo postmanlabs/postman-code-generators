@@ -17,7 +17,7 @@ function parseUrlEncoded (body, indent, trim) {
     bodyDataMap;
   if (!_.isEmpty(enabledBodyList)) {
     bodyDataMap = _.map(enabledBodyList, function (value) {
-      return `${indent}"${sanitize(value.key, trim)} to "${sanitize(value.value, trim)}`;
+      return `${indent}"${sanitize(value.key, trim)}" to "${sanitize(value.value, trim)}"`;
     });
     bodySnippet += '\n' + bodyDataMap.join(',\n') + '\n';
   }
