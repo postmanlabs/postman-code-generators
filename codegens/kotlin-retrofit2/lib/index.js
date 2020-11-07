@@ -188,6 +188,22 @@ function getInterfaceFunctionName (httpMethod, path) {
 
   return `${httpMethod.toLowerCase()}${_.capitalize(route)}`;
 }
+
+/**
+ * Get service name for interface name based one domain name.
+ *
+ * @param {String} domainName of web service request
+ */
+function getServiceInterfaceName (domainName) {
+  const serviceArray = [];
+
+  domainName.split('-').forEach((service) => {
+    serviceArray.push(_.capitalize(service));
+  });
+
+  return `${serviceArray.join('')}Service`;
+}
+
 self = module.exports = {
   convert: function (request, options, callback) {
     var indent,
