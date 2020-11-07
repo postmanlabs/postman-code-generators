@@ -70,6 +70,7 @@ function parseGraphQLBody (body, trim) {
 function parseFormData (body, indent, trim) {
   let bodySnippet = '',
     formDataArray = [],
+    bodyDataArray = [],
     formDataFileArray = [],
     key,
     value;
@@ -78,27 +79,39 @@ function parseFormData (body, indent, trim) {
     return bodySnippet;
   }
 
-  _.forEach(body, function (data) {
+  formDataArray.push('val body = HashMap<String, RequestBody>()');
+
+  _.forEach(body, function (data, index) {
     key = trim ? data.key.trim() : data.key;
     value = trim ? data.value.trim() : data.value;
     if (!data.disabled) {
+      let trimKey = `${key.replace(/\s+/g, '')}${index}`;
       if (data.type === 'file') {
-        formDataFileArray.push(`request.files.add(await http.MultipartFile.fromPath('${key}', '${data.src}'));`);
+        formDataFileArray.push(`val ${sanitize(trimKey)} = ` +
+          `RequestBody.create(MediaType.parse("multipart/form-data"), "${data.src}");`);
       }
       else {
-        formDataArray.push(`${indent}'${sanitize(key)}': '${sanitize(value, trim)}'`);
+        formDataArray.push(`val ${sanitize(trimKey)} =` +
+          ` RequestBody.create(MediaType.parse("text/plain"), "${sanitize(value, trim)}")`);
       }
+
+      bodyDataArray.push(`body.put("${sanitize(key.trim())}", ${sanitize(trimKey)})`);
     }
   });
 
   if (formDataArray.length > 0) {
-    bodySnippet += 'request.fields.addAll({\n';
-    bodySnippet += formDataArray.join(',\n');
-    bodySnippet += '\n});\n';
+    bodySnippet += formDataArray.join('\n');
+    bodySnippet += '\n\n';
   }
 
   if (formDataFileArray.length > 0) {
     bodySnippet += formDataFileArray.join('\n');
+    bodySnippet += '\n\n';
+  }
+
+  if (bodyDataArray.length > 0) {
+    bodySnippet += bodyDataArray.join('\n');
+    bodySnippet += '\n';
   }
 
   return bodySnippet;
@@ -241,12 +254,17 @@ function generateRetrofitClientFactory (timeout, followRedirect, indent) {
  * @param {String} variables in path
  * @param {boolean} hasHeader in web service request
  * @param {boolean} hasBody in web service request
+ * @param {boolean} isFormData web service request
  * @param {String} indent indentation required for code snippet
  */
-function generateInterface (name, method, path, variables, hasHeader, hasBody, indent) {
+function generateInterface (name, method, path, variables,
+  hasHeader, hasBody, isFormData, indent) {
   var interfaceString = '@JvmSuppressWildcards\n';
 
   interfaceString += `interface ${getServiceInterfaceName(name)} {\n`;
+  if (isFormData) {
+    interfaceString += `${indent}@Multipart\n`;
+  }
   interfaceString += `${indent}@${method.toUpperCase()}("${path}")\n`;
   interfaceString += `${indent}fun `;
   interfaceString += `${getInterfaceFunctionName(method, path)}(`;
@@ -257,8 +275,11 @@ function generateInterface (name, method, path, variables, hasHeader, hasBody, i
     functionArguments.push('@HeaderMap headers: Map<String, String>');
   }
 
-  if (hasBody) {
+  if (hasBody && !isFormData) {
     functionArguments.push('@Body body: Map<String, Any>');
+  }
+  else if (isFormData) {
+    functionArguments.push('@PartMap body: Map<String, RequestBody>');
   }
 
   if (paramString !== '') {
@@ -288,16 +309,15 @@ self = module.exports = {
       footerSnippet = '',
       trim,
       timeout,
-      followRedirect;
+      followRedirect,
+      isFormData = false;
     options = sanitizeOptions(options, self.getOptions());
     if (options.includeBoilerplate) {
       headerSnippet = 'import retrofit2.Call\n';
+      headerSnippet += `import retrofit2.http.*\n`;
       headerSnippet += 'import retrofit2.Callback\n';
       headerSnippet += 'import retrofit2.Response\n';
       headerSnippet += 'import retrofit2.Retrofit\n';
-      headerSnippet += 'import retrofit2.http.Path\n';
-      headerSnippet += `${getRetrofitImportByMethod(request.method)}\n`;
-      headerSnippet += 'import retrofit2.http.HeaderMap\n';
       headerSnippet += 'import retrofit2.converter.gson.GsonConverterFactory\n\n';
       headerSnippet += 'fun main() {\n';
 
@@ -373,16 +393,17 @@ self = module.exports = {
 
     const headers = parseHeaders(request.headers.toJSON(), indent, trim),
       requestBody = request.body ? request.body.toJSON() : {},
-      body = parseBody(requestBody, indent, trim) + '\n';
+      body = parseBody(requestBody, indent, trim);
 
     codeSnippet += headers;
     codeSnippet += body;
 
     if (requestBody && requestBody.mode === 'formdata') {
-      codeSnippet += `var request = http.MultipartRequest('${request.method.toUpperCase()}',` +
-        ` Uri.parse('${request.url.toString()}'));\n`;
+      // codeSnippet += `var request = http.MultipartRequest('${request.method.toUpperCase()}',` +
+      //   ` Uri.parse('${request.url.toString()}'));\n`;
+      isFormData = true;
     }
-    else {
+
       codeSnippet += `\n${generateRetrofitClientFactory(timeout, followRedirect, indent)}`;
 
       codeSnippet += 'val retrofit = Retrofit.Builder()\n';
@@ -393,8 +414,8 @@ self = module.exports = {
         codeSnippet += `${indent}.client(okHttpClient)\n`;
       }
 
-      codeSnippet += `${indent}.build()\n\n`;
-    }
+    codeSnippet += `${indent}.build()\n\n`;
+
 
     let serviceName = request.url.host.slice(-2)[0];
     footerSnippet += generateInterface(
@@ -404,26 +425,23 @@ self = module.exports = {
       request.url.variables,
       headers !== '',
       body !== '',
+      isFormData,
       indent
     );
 
     codeSnippet += `val service = retrofit.create(${getServiceInterfaceName(serviceName)}::class.java)\n`;
     codeSnippet += `val serviceCall = service.${getInterfaceFunctionName(request.method, request.url.path)}(`;
 
+    const serviceCallParamsArray = [];
     if (headers !== '') {
-      codeSnippet += 'headers';
-
-      if (body !== '') {
-        codeSnippet += ', ';
-      }
-      else {
-        codeSnippet += ')\n';
-      }
+      serviceCallParamsArray.push('headers');
     }
     if (body !== '') {
-      codeSnippet += 'body)';
+      serviceCallParamsArray.push('body');
     }
-    codeSnippet += '\n\n';
+
+    codeSnippet += serviceCallParamsArray.join(', ');
+    codeSnippet += ')\n\n';
 
     codeSnippet += 'serviceCall.enqueue(object : Callback<Any> {\n';
     codeSnippet += `${indent}override fun onResponse(call: Call<Any>, response: Response<Any>) {\n`;
