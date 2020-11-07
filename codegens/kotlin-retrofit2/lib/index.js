@@ -376,6 +376,7 @@ self = module.exports = {
       body = parseBody(requestBody, indent, trim) + '\n';
 
     codeSnippet += headers;
+    codeSnippet += body;
 
     if (requestBody && requestBody.mode === 'formdata') {
       codeSnippet += `var request = http.MultipartRequest('${request.method.toUpperCase()}',` +
