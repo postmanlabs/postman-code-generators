@@ -145,16 +145,16 @@ function parseHeaders (headersArray, indent, trim) {
     return headerString;
   }
 
-  headerString += 'var headers = {\n';
+  headerString += 'val headers = mapOf(\n';
 
   _.forEach(headersArray, function (header) {
     if (!header.disabled) {
-      headerDictionary.push(indent + '\'' + header.key + '\': \'' + sanitize(header.value, trim) + '\'');
+      headerDictionary.push(indent + '"' + sanitize(header.key) + '" to "' + sanitize(header.value, trim) + '"');
     }
   });
 
   headerString += headerDictionary.join(',\n');
-  headerString += '\n};\n';
+  headerString += '\n)\n';
 
   return headerString;
 }
