@@ -16,6 +16,7 @@ module.exports = {
       .replace(/\r/g, '\\r')
       .replace(/\t/g, '\\t')
       .replace(/'/g, '\\\'')
+      .replace(/"/g, '\\"')
       .replace(/\$/g, '\\$');
     return trim ? inputString.trim() : inputString;
 
