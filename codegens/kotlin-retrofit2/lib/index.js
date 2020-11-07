@@ -434,7 +434,8 @@ self = module.exports = {
     codeSnippet += 'val retrofit = Retrofit.Builder()\n';
 
     let url = sdk.Url.parse(request.url.toString()),
-      baseUrl = url.host ? url.host.join('.') : '';
+      baseUrl = url.host ? url.host.join('.') : '',
+      serviceName = request.url.host.slice(-2)[0];
     baseUrl += url.port ? ':' + url.port : '';
 
     codeSnippet += `${indent}.baseUrl("${baseUrl}")\n`;
@@ -450,8 +451,6 @@ self = module.exports = {
 
     codeSnippet += `${indent}.build()\n\n`;
 
-
-    let serviceName = request.url.host.slice(-2)[0];
     footerSnippet += generateInterface(
       serviceName,
       request.method,
