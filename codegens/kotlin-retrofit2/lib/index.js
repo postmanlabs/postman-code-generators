@@ -2,6 +2,7 @@ var _ = require('./lodash'),
   sanitizeOptions = require('./util').sanitizeOptions,
   sanitize = require('./util').sanitize,
   addFormParam = require('./util').addFormParam,
+  sdk = require('postman-collection'),
   self;
 
 /**
@@ -426,7 +427,12 @@ self = module.exports = {
     codeSnippet += `\n${generateRetrofitClientFactory(timeout, followRedirect, indent)}`;
 
     codeSnippet += 'val retrofit = Retrofit.Builder()\n';
-    codeSnippet += `${indent}.baseUrl("${new URL(request.url.toString()).origin}")\n`;
+
+    let url = sdk.Url.parse(request.url.toString()),
+      baseUrl = url.host ? url.host.join('.') : '';
+    baseUrl += url.port ? ':' + url.port : '';
+
+    codeSnippet += `${indent}.baseUrl("${baseUrl}")\n`;
     codeSnippet += `${indent}.addConverterFactory(GsonConverterFactory.create())\n`;
 
     if (requestBody.mode === 'graphql') {
