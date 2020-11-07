@@ -12,16 +12,16 @@ var _ = require('./lodash'),
  * @param {Boolean} trim indicates whether to trim string or not
  */
 function parseUrlEncoded (body, indent, trim) {
-  var bodySnippet = 'request.bodyFields = {',
+  var bodySnippet = 'val body = mapOf(',
     enabledBodyList = _.reject(body, 'disabled'),
     bodyDataMap;
   if (!_.isEmpty(enabledBodyList)) {
     bodyDataMap = _.map(enabledBodyList, function (value) {
-      return `${indent}'${sanitize(value.key, trim)}': '${sanitize(value.value, trim)}'`;
+      return `${indent}"${sanitize(value.key, trim)} to "${sanitize(value.value, trim)}`;
     });
     bodySnippet += '\n' + bodyDataMap.join(',\n') + '\n';
   }
-  bodySnippet += '};';
+  bodySnippet += ')';
   return bodySnippet;
 }
 
@@ -32,7 +32,7 @@ function parseUrlEncoded (body, indent, trim) {
  * @param {Boolean} trim indicates whether to trim string or not
  */
 function parseRawBody (body, trim) {
-  return `request.body = '''${sanitize(body, trim)}''';`;
+  return `val body = '''${sanitize(body, trim)}'''`;
 }
 
 /**
