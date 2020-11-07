@@ -159,6 +159,23 @@ function parseHeaders (headersArray, indent, trim) {
   return headerString;
 }
 
+/**
+ * Generate arguments for interface method
+ *
+ * @param {Array} variables in route path
+ */
+function getInterfaceMethodParams (variables) {
+  var variablesArray = [];
+  if (!variables || variables.members.length === 0) {
+    return '';
+  }
+
+  variables.members.forEach((variable) => {
+    variablesArray.push(`@Path("${variable.key}") ${variable.key}: ${_.capitalize(variable.type)}`);
+  });
+
+  return variablesArray.join(', ');
+}
 self = module.exports = {
   convert: function (request, options, callback) {
     var indent,
