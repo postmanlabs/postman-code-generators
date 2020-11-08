@@ -438,7 +438,8 @@ self = module.exports = {
       serviceName = request.url.host.slice(-2)[0];
     baseUrl += url.port ? ':' + url.port : '';
 
-    codeSnippet += `${indent}.baseUrl("${baseUrl}")\n`;
+
+    codeSnippet += `${indent}.baseUrl("${url.protocol}://${baseUrl}")\n`;
     codeSnippet += `${indent}.addConverterFactory(GsonConverterFactory.create())\n`;
 
     if (requestBody.mode === 'graphql') {
