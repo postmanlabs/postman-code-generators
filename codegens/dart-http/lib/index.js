@@ -272,10 +272,10 @@ self = module.exports = {
     if (timeout > 0) {
       codeSnippet += `.timeout(Duration(milliseconds: ${timeout}))`;
     }
-    codeSnippet += ';\n';
+    codeSnippet += ';\n\n';
     codeSnippet += 'if (response.statusCode == 200) {\n';
     codeSnippet += `${indent}print(await response.stream.bytesToString());\n`;
-    codeSnippet += '} else {\n';
+    codeSnippet += '}\nelse {\n';
     codeSnippet += `${indent}print(response.reasonPhrase);\n`;
     codeSnippet += '}\n';
 
