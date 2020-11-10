@@ -1,4 +1,4 @@
-v1.1.0 (Nov 10, 2020)
+v1.1.1 (Nov 10, 2020)
 * Change string to enum in cURL quoteType option.
 * Fix new line issue in dart-http and HTTP codegen
 * Fix an issue where deepinstall was failing when folder name had spaces.
