@@ -1,4 +1,9 @@
 v1.1.0 (Nov 2, 2020)
+* Change string to enum in cURL quoteType option.
+* Fix new line issue in dart-http and HTTP codegen
+* Fix an issue where deepinstall was failing when folder name had spaces.
+
+v1.1.0 (Nov 2, 2020)
 * Added support for Dart http
 * Fix for - [315](https://github.com/postmanlabs/postman-code-generators/issues/315): Manually parse url provided in the request.
 * Fix for - [253](https://github.com/postmanlabs/postman-code-generators/issues/253): Add -g flag to curl if braces ({}) or brackets ([]) are present in the url.
