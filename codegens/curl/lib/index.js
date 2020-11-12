@@ -15,7 +15,7 @@ self = module.exports = {
     options = sanitizeOptions(options, self.getOptions());
 
     var indent, trim, headersData, body, redirect, timeout, multiLine,
-      format, snippet, silent, url;
+      format, snippet, silent, url, quoteType;
 
     redirect = options.followRedirect;
     timeout = options.requestTimeout;
@@ -23,13 +23,19 @@ self = module.exports = {
     format = options.longFormat;
     trim = options.trimRequestBody;
     silent = options.silent;
+    url = getUrlStringfromUrlObject(request.url);
+    quoteType = options.quoteType === 'single' ? '\'' : '"';
 
     snippet = silent ? `curl ${form('-s', format)}` : 'curl';
+
     if (redirect) {
       snippet += ` ${form('-L', format)}`;
     }
     if (timeout > 0) {
       snippet += ` ${form('-m', format)} ${timeout}`;
+    }
+    if ((url.match(/[{[}\]]/g) || []).length > 0) {
+      snippet += ' -g';
     }
     if (multiLine) {
       indent = options.indentType === 'Tab' ? '\t' : ' ';
@@ -38,12 +44,11 @@ self = module.exports = {
     else {
       indent = ' ';
     }
-    url = getUrlStringfromUrlObject(request.url);
     if (request.method === 'HEAD') {
-      snippet += ` ${form('-I', format)} '${url}'`;
+      snippet += ` ${form('-I', format)} ${quoteType + url + quoteType}`;
     }
     else {
-      snippet += ` ${form('-X', format)} ${request.method} '${url}'`;
+      snippet += ` ${form('-X', format)} ${request.method} ${quoteType + url + quoteType}`;
     }
 
     if (request.body && !request.headers.has('Content-Type')) {
@@ -141,11 +146,11 @@ self = module.exports = {
               if (!(data.disabled)) {
                 if (data.type === 'file') {
                   snippet += indent + `${form('-F', format)}`;
-                  snippet += ` '${sanitize(data.key, trim)}=@${sanitize(data.src, trim)}'`;
+                  snippet += ` '${sanitize(data.key, trim)}=@"${sanitize(data.src, trim, true, true)}"'`;
                 }
                 else {
                   snippet += indent + `${form('-F', format)}`;
-                  snippet += ` '${sanitize(data.key, trim)}=${sanitize(data.value, trim)}'`;
+                  snippet += ` '${sanitize(data.key, trim)}="${sanitize(data.value, trim, true, true)}"'`;
                 }
               }
             });
@@ -159,6 +164,7 @@ self = module.exports = {
         }
       }
     }
+
     callback(null, snippet);
   },
   getOptions: function () {
@@ -180,11 +186,20 @@ self = module.exports = {
       {
         name: 'Line continuation character',
         id: 'lineContinuationCharacter',
-        availableOptions: ['\\', '^'],
+        availableOptions: ['\\', '^', '`'],
         type: 'enum',
         default: '\\',
         description: 'Set a character used to mark the continuation of a statement on the next line ' +
-          '(generally, \\ for OSX/Linux, ^ for Windows)'
+          '(generally, \\ for OSX/Linux, ^ for Windows cmd and ` for Powershell)'
+      },
+      {
+        name: 'Quote Type',
+        id: 'quoteType',
+        availableOptions: ['single', 'double'],
+        type: 'enum',
+        default: 'single',
+        description: 'String denoting the quote type to use (single or double) for URL ' +
+          '(Use double quotes when running curl in cmd.exe and single quotes for the rest)'
       },
       {
         name: 'Set request timeout',

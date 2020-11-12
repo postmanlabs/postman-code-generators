@@ -33,6 +33,101 @@ describe('curl convert function', function () {
         }
       });
     });
+    it('should return snippet with url in single quote(\')', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        }
+      });
+      options = {
+        quoteType: 'single'
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        snippetArray = snippet.split(' ');
+        expect(snippetArray[4][0]).to.equal('\'');
+      });
+    });
+    it('should return snippet with url in double quote(")', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        }
+      });
+      options = {
+        quoteType: 'double'
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        snippetArray = snippet.split(' ');
+        expect(snippetArray[4][0]).to.equal('"');
+      });
+    });
+
+    it('should return snippet with backslash(\\) as line continuation ' +
+            'character for multiline code generation by default', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        }
+      });
+      options = {
+        multiLine: true
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        snippetArray = snippet.split('\n');
+        // Ignoring the last line as there is no line continuation character at last line
+        for (var i = 0; i < snippetArray.length - 1; i++) {
+          line = snippetArray[i];
+          expect(line.charAt(line.length - 1)).to.equal('\\');
+        }
+      });
+    });
+
+    it('should return snippet with backtick(`) as line continuation ' +
+            'character for multiline code generation', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        }
+      });
+      options = {
+        multiLine: true,
+        lineContinuationCharacter: '`'
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        snippetArray = snippet.split('\n');
+        // Ignoring the last line as there is no line continuation character at last line
+        for (var i = 0; i < snippetArray.length - 1; i++) {
+          line = snippetArray[i];
+          expect(line.charAt(line.length - 1)).to.equal('`');
+        }
+      });
+    });
 
     it('should parse header with string value properly', function () {
       request = new sdk.Request({
@@ -56,6 +151,40 @@ describe('curl convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.include("-H 'foo: \"bar\"'"); // eslint-disable-line quotes
+      });
+    });
+
+    it('should generate snippet with -g parameter when either of {,[,},] are present in url parameter', function () {
+      [
+        '{world}',
+        '{{world',
+        '[world]',
+        ']world',
+        'world}'
+      ].forEach(function (value) {
+        request = new sdk.Request({
+          'method': 'GET',
+          'url': {
+            'raw': `http://example.com?hello=${value}`,
+            'protocol': 'http',
+            'host': [
+              'example',
+              'com'
+            ],
+            'query': [
+              {
+                'key': 'hello',
+                'value': value
+              }
+            ]
+          }
+        });
+        convert(request, {}, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.include('-g');
+        });
       });
     });
 
@@ -250,9 +379,9 @@ describe('curl convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('no file=@/path/to/file');
-        expect(snippet).to.include('no src=@/path/to/file');
-        expect(snippet).to.include('invalid src=@/path/to/file');
+        expect(snippet).to.include('no file=@"/path/to/file"');
+        expect(snippet).to.include('no src=@"/path/to/file"');
+        expect(snippet).to.include('invalid src=@"/path/to/file"');
       });
     });
 

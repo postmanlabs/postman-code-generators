@@ -123,7 +123,7 @@ self = module.exports = {
           text = [];
           _.forEach(body.urlencoded, function (data) {
             if (!data.disabled) {
-              text.push(`${escape(data.key)}=${escape(data.value)}`);
+              text.push(`${encodeURIComponent(data.key)}=${encodeURIComponent(data.value)}`);
             }
           });
           snippet += indentString + `const char *data = "${text.join('&')}";\n`;

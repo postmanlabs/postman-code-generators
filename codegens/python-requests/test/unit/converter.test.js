@@ -106,9 +106,12 @@ describe('Python- Requests converter', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('(\'no file\', open(\'/path/to/file\',\'rb\'))');
-      expect(snippet).to.include('(\'no src\', open(\'/path/to/file\',\'rb\'))');
-      expect(snippet).to.include('(\'invalid src\', open(\'/path/to/file\',\'rb\'))');
+      // eslint-disable-next-line max-len
+      expect(snippet).to.include('(\'no file\',(\'file\',open(\'/path/to/file\',\'rb\'),\'application/octet-stream\'))');
+      // eslint-disable-next-line max-len
+      expect(snippet).to.include('(\'no src\',(\'file\',open(\'/path/to/file\',\'rb\'),\'application/octet-stream\'))');
+      // eslint-disable-next-line max-len
+      expect(snippet).to.include('(\'invalid src\',(\'file\',open(\'/path/to/file\',\'rb\'),\'application/octet-stream\'))');
     });
   });
 

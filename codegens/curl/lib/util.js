@@ -1,20 +1,32 @@
 var self = module.exports = {
   /**
-     * sanitizes input string by handling escape characters eg: converts '''' to '\'\''
+     * sanitizes input string by handling escape characters eg: converts '''' to '\'\'', (" to \"  and \ to \\ )
      * and trim input if required
      *
      * @param {String} inputString
      * @param {Boolean} [trim] - indicates whether to trim string or not
+     * @param {Boolean} [doubleQuotes] - indicates whether to escape double quotes(") and backslash(\\)
+     * @param {Boolean} [backSlash] - indicates whether to escape backslash(\\)
      * @returns {String}
      */
-  sanitize: function (inputString, trim) {
+  sanitize: function (inputString, trim, doubleQuotes, backSlash) {
     if (typeof inputString !== 'string') {
       return '';
     }
+
+    if (backSlash) {
+      inputString = inputString.replace(/\\/g, '\\\\');
+    }
+
+    if (doubleQuotes) {
+      inputString = inputString.replace(/"/g, '\\"');
+    }
+
     // for curl escaping of single quotes inside single quotes involves changing of ' to '\''
     inputString = inputString.replace(/'/g, "'\\''"); // eslint-disable-line quotes
     return trim ? inputString.trim() : inputString;
   },
+
   form: function (option, format) {
     if (format) {
       switch (option) {

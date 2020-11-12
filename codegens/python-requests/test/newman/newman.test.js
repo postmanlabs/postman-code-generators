@@ -9,7 +9,7 @@ describe('Convert for different types of request', function () {
       },
       testConfig = {
         fileName: 'codesnippet.py',
-        runScript: 'python codesnippet.py',
+        runScript: 'PYTHONIOENCODING=utf-8 python codesnippet.py',
         compileScript: null,
         // Requests does not support multipart/form-data unless we are also
         // uploading a file. Headers are stored in a dict so we cannot have
@@ -26,7 +26,7 @@ describe('Convert for different types of request', function () {
       },
       testConfig = {
         fileName: 'codesnippet.py',
-        runScript: 'python3 codesnippet.py',
+        runScript: 'PYTHONIOENCODING=utf-8 python3 codesnippet.py',
         compileScript: null,
         // Requests does not support multipart/form-data unless we are also
         // uploading a file. Headers are stored in a dict so we cannot have

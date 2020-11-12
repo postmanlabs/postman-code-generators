@@ -11,7 +11,8 @@ describe('Convert for different types of request', function () {
       followRedirect: true,
       longFormat: true,
       silent: true,
-      lineContinuationCharacter: '\\'
+      lineContinuationCharacter: '\\',
+      quoteType: 'single'
     };
 
   runNewmanTest(convert, options, testConfig);

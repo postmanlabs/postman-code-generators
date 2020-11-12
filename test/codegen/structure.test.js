@@ -67,6 +67,13 @@ const expectedOptions = {
       type: 'boolean',
       default: false,
       description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
+    },
+    quoteType: {
+      name: 'Quote Type',
+      type: 'enum',
+      default: 'single',
+      description: 'String denoting the quote type to use (single or double) for URL ' +
+          '(Use double quotes when running curl in cmd.exe and single quotes for the rest)'
     }
   },
   // Standard array of ids that should be used for options ids. Any new option should be updated here.
@@ -83,7 +90,8 @@ const expectedOptions = {
     'lineContinuationCharacter',
     'protocol',
     'useMimeType',
-    'ES6_enabled'
+    'ES6_enabled',
+    'quoteType'
   ],
   CODEGEN_ABS_PATH = `./codegens/${codegen}`;
 describe('Code-gen repository ' + codegen, function () {

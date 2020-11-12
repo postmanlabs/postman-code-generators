@@ -1,4 +1,6 @@
-let utils = require('./util');
+let utils = require('./util'),
+  _ = require('./lodash'),
+  sdk = require('postman-collection');
 
 /**
  * Used in order to get additional options for generation of C# code snippet (i.e. Include Boilerplate code)
@@ -28,11 +30,27 @@ function getOptions () {
  */
 function convert (request, options, callback) {
   let snippet = '',
-    body;
+    url, host, path, query, body, headers;
   options = utils.sanitizeOptions(options, getOptions());
-  utils.parseURLVariable(request);
-  snippet = `${request.method} ${utils.getEndPoint(request)} HTTP/1.1\n`;
-  snippet += `Host: ${utils.getHost(request)}\n`;
+
+  url = sdk.Url.parse(request.url.toString());
+  host = url.host ? url.host.join('.') : '';
+  host += url.port ? ':' + url.port : '';
+  path = url.path ? '/' + url.path.join('/') : '/';
+  query = url.query ? _.reduce(url.query, (accum, q) => {
+    accum.push(`${q.key}=${q.value}`);
+    return accum;
+  }, []) : [];
+
+  if (query.length > 0) {
+    query = '?' + query.join('&');
+  }
+  else {
+    query = '';
+  }
+
+  snippet = `${request.method} ${path}${query} HTTP/1.1\n`;
+  snippet += `Host: ${host}`;
   if (request.body && !request.headers.has('Content-Type')) {
     if (request.body.mode === 'file') {
       request.addHeader({
@@ -96,8 +114,9 @@ function convert (request, options, callback) {
       value: body.length
     });
   }
-  snippet += `${utils.getHeaders(request)}\n`;
-  snippet += `\n${body}`;
+  headers = utils.getHeaders(request);
+  snippet += headers ? `\n${headers}` : '';
+  snippet += body ? `\n\n${body}` : '';
   return callback(null, snippet);
 }
 

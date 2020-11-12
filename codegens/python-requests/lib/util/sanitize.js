@@ -18,7 +18,7 @@ module.exports = {
         case 'raw':
           return JSON.stringify(inputString);
         case 'urlencoded':
-          return escape(inputString);
+          return encodeURIComponent(inputString).replace(/'/g, '\\\'');
         case 'formdata':
           return inputString.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
         case 'file':
