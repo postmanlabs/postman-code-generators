@@ -1,6 +1,7 @@
 {
   "name": "@postman/codegen-js-xhr",
   "version": "0.1.1",
+  "lockfileVersion": 1,
   "requires": true,
   "dependencies": {
     "asynckit": {
