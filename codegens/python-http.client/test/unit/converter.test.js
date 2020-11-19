@@ -64,6 +64,42 @@ describe('Python-http.client converter', function () {
         });
       });
 
+    it('should add content type if formdata field contains a content-type', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'json',
+              'value': '{"hello": "world"}',
+              'contentType': 'application/json',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('dataList.append(encode(\'Content-Type: {}\'.format(\'application/json\')))'); // eslint-disable-line max-len
+      });
+    });
+
+
     it('should generate snippet with Tab as an indent type', function () {
       convert(request, { indentType: 'Tab', indentCount: 1 }, function (error, snippet) {
         if (error) {

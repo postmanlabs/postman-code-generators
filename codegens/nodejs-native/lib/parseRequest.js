@@ -57,7 +57,12 @@ function generateMultipartFormData (requestbody) {
         else {
           // eslint-disable-next-line no-useless-escape
           const value = dataArrayElement.value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-          accumalator.push(`name=\\"${key}\\"\\r\\n\\r\\n${value}\\r\\n`);
+          let field = `name=\\"${key}\\"\\r\\n`;
+          if (dataArrayElement.contentType) {
+            field += `Content-Type: ${dataArrayElement.contentType}\\r\\n`;
+          }
+          field += `\\r\\n${value}\\r\\n`;
+          accumalator.push(field);
         }
       }
       return accumalator;

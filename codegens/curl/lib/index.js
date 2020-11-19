@@ -150,7 +150,11 @@ self = module.exports = {
                 }
                 else {
                   snippet += indent + `${form('-F', format)}`;
-                  snippet += ` '${sanitize(data.key, trim)}="${sanitize(data.value, trim, true, true)}"'`;
+                  snippet += ` '${sanitize(data.key, trim)}="${sanitize(data.value, trim, true, true)}"`;
+                  if (data.contentType) {
+                    snippet += `;type=${data.contentType}`;
+                  }
+                  snippet += '\'';
                 }
               }
             });

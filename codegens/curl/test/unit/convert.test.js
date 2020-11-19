@@ -129,6 +129,42 @@ describe('curl convert function', function () {
       });
     });
 
+    it('should add content type if formdata field contains a content-type', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'json',
+              'value': '{"hello": "world"}',
+              'contentType': 'application/json',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('--form \'json="{\\"hello\\": \\"world\\"}";type=application/json\'');
+
+      });
+    });
+
     it('should parse header with string value properly', function () {
       request = new sdk.Request({
         'method': 'POST',

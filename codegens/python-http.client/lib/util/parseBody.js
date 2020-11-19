@@ -65,7 +65,8 @@ module.exports = function (request, indentation, bodyTrim) {
             requestBody += 'dataList.append(encode(\'--\' + boundary))\n';
             if (data.type !== 'file') {
               requestBody += `dataList.append(encode('Content-Disposition: form-data; name=${sanitize(data.key, 'form-data', true)};'))\n\n`; // eslint-disable-line max-len
-              requestBody += 'dataList.append(encode(\'Content-Type: {}\'.format(\'multipart/form-data\')))\n';
+              requestBody += 'dataList.append(encode(\'Content-Type: {}\'.format(\'' +
+                (data.contentType ? data.contentType : 'text/plain') + '\')))\n';
               requestBody += 'dataList.append(encode(\'\'))\n\n';
               requestBody += `dataList.append(encode("${sanitize(data.value, 'form-data', true)}"))\n`;
             }
