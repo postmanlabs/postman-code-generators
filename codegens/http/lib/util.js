@@ -195,6 +195,9 @@ function getBody (request, trimRequestBody) {
             if (property.type === 'text') {
               requestBody += 'Content-Disposition: form-data; name="';
               requestBody += `${(trimRequestBody ? property.key.trim() : property.key)}"\n`;
+              if (property.contentType) {
+                requestBody += `Content-Type: ${property.contentType}\n`;
+              }
               requestBody += `\n${(trimRequestBody ? property.value.trim() : property.value)}\n`;
             }
             else if (property.type === 'file') {

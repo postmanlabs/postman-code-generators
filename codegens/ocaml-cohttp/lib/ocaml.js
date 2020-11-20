@@ -83,7 +83,9 @@ function parseFormData (body, trim, indent) {
         }
         else {
           const value = sanitize(data.value, 'formdata-value', trim);
-          accumalator.push(`${indent}[| ("name", "${key}"); ("value", "${value}") |]`);
+          accumalator.push(`${indent}[| ("name", "${key}"); ("value", "${value}")` +
+            (data.contentType ? `; ("contentType", "${data.contentType}")` : '') +
+            ' |]');
         }
       }
       return accumalator;
@@ -100,7 +102,13 @@ function parseFormData (body, trim, indent) {
   bodySnippet += 'name=\\"" ^ paramName ^ "\\"" in\n';
   bodySnippet += `${indent}if paramType = "value" then (\n`;
   bodySnippet += `${indent.repeat(2)}let (_, paramValue) = parameters.(x).(1) in\n`;
-  bodySnippet += `${indent.repeat(2)}postData := !postData ^ accum ^ "\\r\\n\\r\\n" ^ paramValue ^ "\\r\\n";\n`;
+  bodySnippet += `${indent.repeat(2)}postData := if Array.length parameters.(x) == 3 then (\n`;
+  bodySnippet += `${indent.repeat(3)}let (_, contentType) = parameters.(x).(2) in\n`;
+  bodySnippet += `${indent.repeat(3)}!postData ^ accum ^ "\\r\\n" ^ "Content-Type: " ^ contentType ^`;
+  bodySnippet += ' "\\r\\n\\r\\n" ^ paramValue ^ "\\r\\n"\n';
+  bodySnippet += `${indent.repeat(2)}) else (\n`;
+  bodySnippet += `${indent.repeat(3)}!postData ^ accum ^ "\\r\\n\\r\\n" ^ paramValue ^ "\\r\\n"\n`;
+  bodySnippet += `${indent.repeat(2)});\n`;
   bodySnippet += `${indent})\n`;
   bodySnippet += `${indent}else if paramType = "fileName" then (\n`;
   bodySnippet += `${indent.repeat(2)}let (_, filepath) = parameters.(x).(1) in\n`;

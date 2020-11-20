@@ -77,11 +77,21 @@ function parseFormData (body, trim, indent) {
         bodySnippet += `${indent}defer file.Close()\n`;
         bodySnippet += `${indent}part${index + 1},
          errFile${index + 1} := writer.CreateFormFile("${sanitize(data.key, trim)}",` +
-                        `filepath.Base("${data.src}"))\n`;
+          `filepath.Base("${data.src}"))\n`;
         bodySnippet += `${indent}_, errFile${index + 1} = io.Copy(part${index + 1}, file)\n`;
         bodySnippet += `${indent}if errFile${index + 1} != nil {` +
           `\n${indent.repeat(2)}fmt.Println(errFile${index + 1})\n` +
           `${indent.repeat(2)}return\n${indent}}\n`;
+      }
+      else if (data.contentType) {
+        bodySnippet += `\n${indent}mimeHeader${index + 1} := make(map[string][]string)\n`;
+        bodySnippet += `${indent}mimeHeader${index + 1}["Content-Disposition"] = `;
+        bodySnippet += `append(mimeHeader${index + 1}["Content-Disposition"], "form-data; `;
+        bodySnippet += `name=\\"${sanitize(data.key, trim)}\\"")\n`;
+        bodySnippet += `${indent}mimeHeader${index + 1}["Content-Type"] = append(`;
+        bodySnippet += `mimeHeader${index + 1}["Content-Type"], "${data.contentType}")\n`;
+        bodySnippet += `${indent}fieldWriter${index + 1}, _ := writer.CreatePart(mimeHeader${index + 1})\n`;
+        bodySnippet += `${indent}fieldWriter${index + 1}.Write([]byte("${sanitize(data.value, trim)}"))\n\n`;
       }
       else {
         bodySnippet += `${indent}_ = writer.WriteField("${sanitize(data.key, trim)}",`;

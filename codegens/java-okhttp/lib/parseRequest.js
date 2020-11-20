@@ -44,8 +44,14 @@ function parseFormData (requestBody, indentString, trimFields) {
     }
     else {
       !data.value && (data.value = '');
-      body += indentString + '.addFormDataPart' +
-                    `("${sanitize(data.key, trimFields)}", "${sanitize(data.value, trimFields)}")\n`;
+      body += `${indentString}.addFormDataPart("${sanitize(data.key, trimFields)}",`;
+      if (data.contentType) {
+        body += ` null,\n${indentString.repeat(2)} RequestBody.create(MediaType.parse("${data.contentType}"),`;
+        body += ` "${sanitize(data.value, trimFields)}".getBytes()))\n`;
+      }
+      else {
+        body += `"${sanitize(data.value, trimFields)}")\n`;
+      }
     }
 
     return body;

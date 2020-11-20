@@ -171,6 +171,9 @@ self = module.exports = {
                 }
                 else {
                   snippet += indentString + `curl_mime_name(part, "${sanitize(data.key, trim)}");\n`;
+                  if (data.contentType) {
+                    snippet += indentString + `curl_mime_type(part, "${sanitize(data.contentType, trim)}");\n`;
+                  }
                   snippet += indentString +
                   `curl_mime_data(part, "${sanitize(data.value, trim)}", CURL_ZERO_TERMINATED);\n`;
                 }

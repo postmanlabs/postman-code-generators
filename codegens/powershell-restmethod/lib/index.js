@@ -61,8 +61,10 @@ function parseFormData (body, trim) {
         bodySnippet += '$stringHeader = ' +
           '[System.Net.Http.Headers.ContentDispositionHeaderValue]::new("form-data")\n' +
           `$stringHeader.Name = "${sanitize(data.key, trim)}"\n` +
-          `$StringContent = [System.Net.Http.StringContent]::new("${sanitize(data.value, trim)}")\n` +
-          '$StringContent.Headers.ContentDisposition = $stringHeader\n' +
+          `$stringContent = [System.Net.Http.StringContent]::new("${sanitize(data.value, trim)}")\n` +
+          '$stringContent.Headers.ContentDisposition = $stringHeader\n' +
+          (data.contentType ? '$contentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::new("' +
+            data.contentType + '")\n$stringContent.Headers.ContentType = $contentType\n' : '') +
           '$multipartContent.Add($stringContent)\n\n';
       }
     }

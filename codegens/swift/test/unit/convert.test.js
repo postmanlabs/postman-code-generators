@@ -30,6 +30,42 @@ describe('Swift Converter', function () {
       });
     });
 
+    it('should add content type if formdata field contains a content-type', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'json',
+              'value': '{"hello": "world"}',
+              'contentType': 'application/json',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('if param["contentType"] != nil {');
+        expect(snippet).to.contain('body += "\\r\\nContent-Type: \\(param["contentType"] as! String)"');
+      });
+    });
+
     it('should generate snippet with Space as an indent type with default indent count', function () {
       convert(request, { indentType: 'Space' }, function (error, snippet) {
         if (error) {
