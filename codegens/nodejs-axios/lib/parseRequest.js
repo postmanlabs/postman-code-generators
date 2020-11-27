@@ -80,7 +80,10 @@ function parseFormData (body, trim, ES6_enabled) {
 function parseRawBody (body, trim, contentType, ES6_enabled) {
   var varDeclare = ES6_enabled ? 'let' : 'var',
     bodySnippet = varDeclare + ' data = ';
-  if (contentType === 'application/json') {
+  // Match any application type whose underlying structure is json
+  // For example application/vnd.api+json
+  // All of them have +json as suffix
+  if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
     try {
       let jsonBody = JSON.parse(body);
       bodySnippet += `JSON.stringify(${JSON.stringify(jsonBody)});\n`;
