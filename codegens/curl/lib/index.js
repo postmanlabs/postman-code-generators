@@ -69,7 +69,18 @@ self = module.exports = {
     if (headersData) {
       headersData = _.reject(headersData, 'disabled');
       _.forEach(headersData, (header) => {
-        snippet += indent + `${form('-H', format)} '${sanitize(header.key, true)}: ${sanitize(header.value)}'`;
+        if (!header.key) {
+          return;
+        }
+        snippet += indent + `${form('-H', format)} '${sanitize(header.key, true)}`;
+        // If the header value is an empty string then add a semicolon after key
+        // otherwise the header would be ignored by curl
+        if (header.value) {
+          snippet += `: ${sanitize(header.value)}'`;
+        }
+        else {
+          snippet += ';\'';
+        }
       });
     }
 
