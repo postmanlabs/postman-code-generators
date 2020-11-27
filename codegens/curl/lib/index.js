@@ -74,7 +74,7 @@ self = module.exports = {
         }
         snippet += indent + `${form('-H', format)} '${sanitize(header.key, true)}`;
         // If the header value is an empty string then add a semicolon after key
-        // otherwise, they header would be ignored by curl
+        // otherwise the header would be ignored by curl
         if (header.value) {
           snippet += `: ${sanitize(header.value)}'`;
         }
