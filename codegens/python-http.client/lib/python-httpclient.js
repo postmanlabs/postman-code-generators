@@ -187,7 +187,7 @@ self = module.exports = {
     }
 
     snippet += parseBody(request.toJSON(), indentation, options.requestBodyTrim, contentType);
-    if (request.body && !request.headers.has('Content-Type')) {
+    if (request.body && !contentType) {
       if (request.body.mode === 'file') {
         request.addHeader({
           key: 'Content-Type',
