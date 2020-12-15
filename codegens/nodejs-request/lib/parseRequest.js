@@ -102,7 +102,8 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
         if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
           try {
             let jsonBody = JSON.parse(requestbody[requestbody.mode]);
-            return `body: JSON.stringify(${JSON.stringify(jsonBody)})\n`;
+            return `body: JSON.stringify(${JSON.stringify(jsonBody, null,
+              indentString.length).replace(/\n/g, '\n' + indentString)})\n`;
           }
           catch (error) {
             return `body: '${sanitize(requestbody[requestbody.mode])}'\n`;
