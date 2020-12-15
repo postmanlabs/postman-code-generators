@@ -1,6 +1,39 @@
 var _ = require('../lodash'),
   sanitize = require('./sanitize').sanitize,
-  path = require('path');
+  path = require('path'),
+  trueToken = '__PYTHON#%~True__',
+  falseToken = '__PYTHON#%~False__',
+  nullToken = '__PYTHON#%~NULL__';
+
+/**
+ * Convert true, false and null to Python equivalent True, False and None
+ *
+ * @param {String} key
+ * @param {Object} value
+ */
+function replacer (key, value) {
+  if (typeof value === 'boolean') {
+    return value ? trueToken : falseToken;
+  }
+  else if (value === null) {
+    return nullToken;
+  }
+  return value;
+}
+
+/**
+ * Convert JSON into a valid Python dict
+ * The "true", "false" and "null" tokens are not valid in Python
+ * so we need to convert them to "True", "False" and "None"
+ *
+ * @param {Object} jsonBody - JSON object to be converted
+ */
+function pythonify (jsonBody) {
+  return JSON.stringify(jsonBody, replacer, 2)
+    .replace(`"${trueToken}"`, 'True')
+    .replace(`"${falseToken}"`, 'False')
+    .replace(`"${nullToken}"`, 'None');
+}
 
 /**
  * Used to parse the body of the postman SDK-request and return in the desired format
@@ -8,9 +41,10 @@ var _ = require('../lodash'),
  * @param  {Object} request - postman SDK-request object
  * @param  {String} indentation - used for indenting snippet's structure
  * @param  {Boolean} bodyTrim - whether to trim request body fields
+ * @param  {String} contentType - content type of body
  * @returns {String} - request body
  */
-module.exports = function (request, indentation, bodyTrim) {
+module.exports = function (request, indentation, bodyTrim, contentType) {
   // used to check whether body is present in the request or not
   if (!_.isEmpty(request.body)) {
     var requestBody = '',
@@ -19,14 +53,25 @@ module.exports = function (request, indentation, bodyTrim) {
 
     switch (request.body.mode) {
       case 'raw':
-        if (!_.isEmpty(request.body[request.body.mode])) {
-          requestBody += `payload = ${sanitize(request.body[request.body.mode],
-            request.body.mode, bodyTrim)}\n`;
+        if (_.isEmpty(request.body[request.body.mode])) {
+          return 'payload = \'\'\n';
         }
-        else {
-          requestBody = 'payload = \'\'\n';
+        // Match any application type whose underlying structure is json
+        // For example application/vnd.api+json
+        // All of them have +json as suffix
+        if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
+          try {
+            let jsonBody = JSON.parse(request.body[request.body.mode]);
+            return `payload = json.dumps(${pythonify(jsonBody)})\n`;
+
+          }
+          catch (error) {
+            // Do nothing
+          }
         }
-        return requestBody;
+        return `payload = ${sanitize(request.body[request.body.mode],
+          request.body.mode, bodyTrim)}\n`;
+
       case 'graphql':
         // eslint-disable-next-line no-case-declarations
         let query = request.body[request.body.mode].query,

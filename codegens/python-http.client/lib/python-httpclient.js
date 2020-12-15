@@ -99,7 +99,7 @@ self = module.exports = {
     var snippet = '',
       indentation = '',
       identity = '',
-      url, host, path, query;
+      url, host, path, query, contentType;
 
     if (_.isFunction(options)) {
       callback = options;
@@ -128,7 +128,13 @@ self = module.exports = {
       query = '';
     }
 
+    contentType = request.headers.get('Content-Type');
     snippet += 'import http.client\n';
+
+    // If contentType is json then include the json module for later use
+    if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
+      snippet += 'import json\n';
+    }
     if (request.body && request.body.mode === 'formdata') {
       snippet += 'import mimetypes\n';
       snippet += 'from codecs import encode\n';
@@ -179,7 +185,8 @@ self = module.exports = {
         formdata: formdataArray
       });
     }
-    snippet += parseBody(request.toJSON(), indentation, options.requestBodyTrim);
+
+    snippet += parseBody(request.toJSON(), indentation, options.requestBodyTrim, contentType);
     if (request.body && !request.headers.has('Content-Type')) {
       if (request.body.mode === 'file') {
         request.addHeader({
