@@ -1,3 +1,9 @@
+v1.1.2 (Dec 15, 2020)
+* Fix for - [8736](https://github.com/postmanlabs/postman-app-support/issues/8736) Add content type support for individual form-data fields
+* Fix for - [8635](https://github.com/postmanlabs/postman-app-support/issues/8635) Use Json.parse for all json like application types
+* Fix for - [9212](https://github.com/postmanlabs/postman-app-support/issues/9212) Add semicolon after header key in curl codegen if the value is empty string. 
+* Add Newman test for powershell
+
 v1.1.1 (Nov 10, 2020)
 * Change string to enum in cURL quoteType option.
 * Fix new line issue in dart-http and HTTP codegen
