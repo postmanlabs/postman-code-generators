@@ -1,9 +1,9 @@
 var _ = require('../lodash'),
   sanitize = require('./sanitize').sanitize,
   path = require('path'),
-  trueToken = '__PYTHON#%~True__',
-  falseToken = '__PYTHON#%~False__',
-  nullToken = '__PYTHON#%~NULL__';
+  trueToken = '__PYTHON#%0True__',
+  falseToken = '__PYTHON#%0False__',
+  nullToken = '__PYTHON#%0NULL__';
 
 /**
  * Convert true, false and null to Python equivalent True, False and None
@@ -31,9 +31,9 @@ function replacer (key, value) {
  */
 function pythonify (jsonBody, indentCount) {
   return JSON.stringify(jsonBody, replacer, indentCount)
-    .replace(`"${trueToken}"`, 'True')
-    .replace(`"${falseToken}"`, 'False')
-    .replace(`"${nullToken}"`, 'None');
+    .replace(new RegExp(`"${trueToken}"`, 'g'), 'True')
+    .replace(new RegExp(`"${falseToken}"`, 'g'), 'False')
+    .replace(new RegExp(`"${nullToken}"`, 'g'), 'None');
 }
 
 /**
