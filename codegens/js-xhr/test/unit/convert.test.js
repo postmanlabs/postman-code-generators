@@ -65,7 +65,7 @@ describe('js-xhr convert function', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('var data = JSON.stringify({"json":"Test-Test"})');
+      expect(snippet).to.include('JSON.stringify({\n  "json": "Test-Test"\n})');
     });
   });
 
@@ -99,7 +99,7 @@ describe('js-xhr convert function', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.contain('var data = JSON.stringify({"data":{"hello":"world"}});');
+      expect(snippet).to.contain('JSON.stringify({\n  "data": {\n    "hello": "world"\n  }\n})');
     });
   });
 

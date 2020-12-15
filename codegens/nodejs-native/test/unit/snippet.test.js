@@ -127,7 +127,7 @@ describe('nodejs-native convert function', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.contain('var postData = JSON.stringify({"data":{"hello":"world"}});');
+      expect(snippet).to.contain('JSON.stringify({\n  "data": {\n    "hello": "world"\n  }\n})');
     });
   });
 
@@ -267,7 +267,7 @@ describe('nodejs-native convert function', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('var postData = JSON.stringify({"json":"Test-Test"})');
+      expect(snippet).to.include('var postData = JSON.stringify({\n  "json": "Test-Test"\n})');
     });
   });
   it('should generate snippets for no files in form data', function () {

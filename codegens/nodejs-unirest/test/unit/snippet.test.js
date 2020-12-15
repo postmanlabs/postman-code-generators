@@ -78,7 +78,7 @@ describe('nodejs unirest convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.contain('send(JSON.stringify({"data":{"hello":"world"}}))');
+        expect(snippet).to.contain('JSON.stringify({\n    "data": {\n      "hello": "world"\n    }\n  })');
       });
     });
 
@@ -193,7 +193,7 @@ describe('nodejs unirest convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('.send(JSON.stringify({"json":"Test-Test"}))');
+        expect(snippet).to.include('.send(JSON.stringify({\n    "json": "Test-Test"\n  }))');
       });
     });
 
