@@ -98,10 +98,11 @@ function replacer (key, value) {
  * The "true", "false" and "null" tokens are not valid in Python
  * so we need to convert them to "True", "False" and "None"
  *
- * @param {Object} jsonBody - JSON object to be converted
+ * @param  {Object} jsonBody - JSON object to be converted
+ * @param  {Number} indentCount - Number of spaces to insert at each indentation level
  */
-function pythonify (jsonBody) {
-  return JSON.stringify(jsonBody, replacer, 2)
+function pythonify (jsonBody, indentCount) {
+  return JSON.stringify(jsonBody, replacer, indentCount)
     .replace(`"${trueToken}"`, 'True')
     .replace(`"${falseToken}"`, 'False')
     .replace(`"${nullToken}"`, 'None');
@@ -135,7 +136,7 @@ module.exports = function (request, indentation, bodyTrim, contentType) {
         if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
           try {
             let jsonBody = JSON.parse(request.body[request.body.mode]);
-            return `payload = json.dumps(${pythonify(jsonBody)})\n`;
+            return `payload = json.dumps(${pythonify(jsonBody, indentation.length)})\n`;
 
           }
           catch (error) {
