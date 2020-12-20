@@ -18,5 +18,6 @@
   "nodejs": "NodeJs",
   "qcobjects":"QCObjects",
   "ocaml": "OCaml",
-  "shell": "Shell"
+  "shell": "Shell",
+  "dart": "Dart"
 }

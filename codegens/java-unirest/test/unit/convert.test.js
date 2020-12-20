@@ -89,6 +89,41 @@ describe('java unirest convert function for test collection', function () {
       });
     });
 
+    it('should add content type if formdata field contains a content-type', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'json',
+              'value': '{"hello": "world"}',
+              'contentType': 'application/json',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('.field("json", "{\\"hello\\": \\"world\\"}", "application/json")');
+      });
+    });
+
     it('should include import statements, main class and print statements ' +
             'when includeBoilerplate is set to true', function () {
       request = new sdk.Request(mainCollection.item[0].request);
@@ -369,6 +404,19 @@ describe('java unirest convert function for test collection', function () {
         expect(snippet).to.include('.field("file", new File("/path/to/file"))');
       });
     });
+
+    it('should generate valid snippets for single/double quotes in URL', function () {
+      // url = https://a"b'c.com/'d/"e
+      var request = new sdk.Request("https://a\"b'c.com/'d/\"e"); // eslint-disable-line quotes
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        // expect => Unirest.get("https://a\"b'c.com/'d/\"e")
+        expect(snippet).to.include('Unirest.get("https://a\\"b\'c.com/\'d/\\"e")');
+      });
+    });
+
   });
   describe('getUrlStringfromUrlObject function', function () {
     var rawUrl, urlObject, outputUrlString;

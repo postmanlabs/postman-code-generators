@@ -293,8 +293,8 @@
 					}
 				},
 				"url": {
-					"raw": "http://postman-echo.com/post",
-					"protocol": "http",
+					"raw": "https://postman-echo.com/post",
+					"protocol": "https",
 					"host": [
 						"postman-echo",
 						"com"
@@ -330,7 +330,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "var val = 6;\nconsole.log(val);"
+					"raw": "var val = 6;\nconsole.log(val);console.log('$text\r\n');\n"
 				},
 				"url": {
 					"raw": "https://postman-echo.com/post",
@@ -482,6 +482,11 @@
 						{
 							"key": "more",
 							"value": ",./';[]}{\":?><|\\\\    ",
+							"type": "text"
+						},
+						{
+							"key": "non-ascii",
+							"value": "테스트",
 							"type": "text"
 						}
 					]
@@ -643,14 +648,14 @@
 				],
 				"body": {},
 				"url": {
-					"raw": "https://postman-echo.com/delete",
+					"raw": "https://mockbin.org/request",
 					"protocol": "https",
 					"host": [
-						"postman-echo",
-						"com"
+						"mockbin",
+						"org"
 					],
 					"path": [
-						"delete"
+						"request"
 					]
 				},
 				"description": "The HTTP `DELETE` method is used to delete resources on a server. The exact\nuse of `DELETE` requests depends on the server implementation. In general, \n`DELETE` requests support both, Query String parameters as well as a Request \nBody.\n\nThis endpoint accepts an HTTP `DELETE` request and provides debug information\nsuch as the HTTP headers, Query String arguments, and the Request Body."

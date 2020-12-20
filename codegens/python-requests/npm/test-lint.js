@@ -1,7 +1,6 @@
 #!/usr/bin/env node
-require('shelljs/global');
-
-var chalk = require('chalk'),
+var shell = require('shelljs'),
+  chalk = require('chalk'),
   async = require('async'),
   ESLintCLIEngine = require('eslint').CLIEngine,
 
@@ -12,9 +11,7 @@ var chalk = require('chalk'),
      */
   LINT_SOURCE_DIRS = [
     './lib',
-    './bin',
     './test',
-    './examples/*.js',
     './npm/*.js',
     './index.js'
   ];
@@ -56,4 +53,4 @@ module.exports = function (exit) {
 };
 
 // ensure we run this script exports if this is a direct stdin.tty run
-!module.parent && module.exports(exit);
+!module.parent && module.exports(shell.exit);

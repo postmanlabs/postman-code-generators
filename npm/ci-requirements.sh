@@ -1,12 +1,5 @@
 #!/bin/bash
 set -ev; # stop on error
-echo "Creating test files and adding paths to collection for testing form data file uploads"
-pushd /home/travis/build/postmanlabs/postman-code-generators/ &>/dev/null;
-  echo "Sample file 1" >> test1.txt;
-  echo "Sample file 2" >> test2.txt;
-  echo "Sample file 3" >> test3.txt;
-  node ./npm/addPathToFormdataFile.js
-popd &>/dev/null;
 
 echo "Installing dependencies required for tests in codegens/java-okhttp"
 pushd ./codegens/java-okhttp &>/dev/null;
@@ -14,21 +7,12 @@ pushd ./codegens/java-okhttp &>/dev/null;
   sudo rm -rf /var/lib/apt/lists/*
   sudo apt-get update
   sudo apt-get install -y openjdk-8-jdk
-  sudo wget http://central.maven.org/maven2/com/squareup/okhttp3/okhttp/3.9.1/okhttp-3.9.1.jar
-  sudo wget http://central.maven.org/maven2/com/squareup/okio/okio/1.14.0/okio-1.14.0.jar
+  unzip test/unit/fixtures/dependencies.zip
 popd &>/dev/null;
 
 echo "Installing dependencies required for tests in codegens/java-unirest"
 pushd ./codegens/java-unirest &>/dev/null;
-  sudo wget http://central.maven.org/maven2/com/mashape/unirest/unirest-java/1.4.9/unirest-java-1.4.9.jar
-  sudo wget http://central.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.2/httpclient-4.5.2.jar
-  sudo wget http://central.maven.org/maven2/commons-codec/commons-codec/1.9/commons-codec-1.9.jar
-  sudo wget http://central.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar
-  sudo wget http://central.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.4/httpcore-4.4.4.jar
-  sudo wget http://central.maven.org/maven2/org/apache/httpcomponents/httpasyncclient/4.1.1/httpasyncclient-4.1.1.jar
-  sudo wget http://central.maven.org/maven2/org/apache/httpcomponents/httpcore-nio/4.4.4/httpcore-nio-4.4.4.jar
-  sudo wget http://central.maven.org/maven2/org/json/json/20160212/json-20160212.jar
-  sudo wget http://central.maven.org/maven2/org/apache/httpcomponents/httpmime/4.3.6/httpmime-4.3.6.jar
+  unzip test/unit/fixtures/dependencies.zip
 popd &>/dev/null;
 
 echo "Installing dependencies required for tests in codegens/csharp-restsharp"
@@ -44,6 +28,10 @@ pushd ./codegens/csharp-restsharp &>/dev/null;
   popd &>/dev/null;
 popd &>/dev/null;
 
+
+echo "Installing Powershell"
+  sudo apt-get install powershell -y
+
 echo "Installing dependencies required for tests in codegens/php-httprequest2"
   pear install HTTP_Request2-2.3.0
 
@@ -52,13 +40,38 @@ pushd ./codegens/swift &>/dev/null;
   sudo apt-get update
   sudo apt-get install clang-3.6 libicu-dev libpython2.7 -y
   sudo apt-get install libcurl3 libpython2.7-dev -y
-  sudo wget https://swift.org/builds/swift-5.0.1-release/ubuntu1604/swift-5.0.1-RELEASE/swift-5.0.1-RELEASE-ubuntu16.04.tar.gz
-  sudo tar xzf swift-5.0.1-RELEASE-ubuntu16.04.tar.gz
-  sudo chmod 777 swift-5.0.1-RELEASE-ubuntu16.04/usr/lib/swift/CoreFoundation/module.map
+  sudo wget https://swift.org/builds/swift-5.3-release/ubuntu1604/swift-5.3-RELEASE/swift-5.3-RELEASE-ubuntu16.04.tar.gz
+  sudo tar xzf swift-5.3-RELEASE-ubuntu16.04.tar.gz
+  sudo chmod 777 swift-5.3-RELEASE-ubuntu16.04/usr/lib/swift/CoreFoundation/module.map
 popd &>/dev/null;
 
 echo "Installing dependencies required for tests in codegens/csharp-restsharp"
 sudo apt-get install -y mono-complete
 
+echo "Installing curl v7.68"
+  sudo apt-get install -y libssl-dev autoconf libtool make
+  wget https://curl.haxx.se/download/curl-7.68.0.zip
+  unzip curl-7.68.0.zip
+  pushd ./curl-7.68.0 &>/dev/null
+  ./buildconf
+  ./configure --with-ssl
+  make
+  sudo make install
+  sudo cp /usr/local/bin/curl /usr/bin/curl
+  sudo ldconfig
+  popd &>/dev/null
+
 echo "Installing dependencies required for tests in codegens/shell-httpie"
 sudo apt-get install httpie
+
+echo "Installing dependencies required for tests in codegens/dart"
+pushd ./codegens/dart-http &>/dev/null;
+  wget https://storage.googleapis.com/dart-archive/channels/stable/release/2.10.2/linux_packages/dart_2.10.2-1_amd64.deb
+  sudo dpkg -i dart_2.10.2-1_amd64.deb
+  echo '''name: test
+dependencies:
+  http: ^0.12.2
+''' > pubspec.yaml
+  dart pub get
+popd &>/dev/null;
+

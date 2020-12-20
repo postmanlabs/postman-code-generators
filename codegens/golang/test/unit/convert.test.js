@@ -65,6 +65,45 @@ describe('Golang convert function', function () {
       });
     });
 
+    it('should add content type if formdata field contains a content-type', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'json',
+              'value': '{"hello": "world"}',
+              'contentType': 'application/json',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('mimeHeader1 := make(map[string][]string)');
+        expect(snippet).to.contain('mimeHeader1["Content-Disposition"] = append(mimeHeader1["Content-Disposition"], "form-data; name=\\"json\\"")'); // eslint-disable-line max-len
+        expect(snippet).to.contain('mimeHeader1["Content-Type"] = append(mimeHeader1["Content-Type"], "application/json")'); // eslint-disable-line max-len
+        expect(snippet).to.contain('fieldWriter1, _ := writer.CreatePart(mimeHeader1)');
+        expect(snippet).to.contain('fieldWriter1.Write([]byte("{\\"hello\\": \\"world\\"}"))');
+      });
+    });
+
     it('should add time converted to seconds when input is taken in milliseconds ', function () {
       request = new sdk.Request({
         'method': 'GET',
@@ -163,6 +202,55 @@ describe('Golang convert function', function () {
         expect(snippet).to.include('writer.CreateFormFile("no file",filepath.Base("/path/to/file"))');
         expect(snippet).to.include('writer.CreateFormFile("no src",filepath.Base("/path/to/file"))');
         expect(snippet).to.include('writer.CreateFormFile("invalid src",filepath.Base("/path/to/file"))');
+      });
+    });
+
+    it('should add error handling code everytime an error is possible', function () {
+      var requests = [];
+      requests.push(new sdk.Request({
+        'method': 'GET',
+        'header': [
+          {
+            'key': 'foo',
+            'value': 'bar'
+          }
+        ],
+        'url': {
+          'raw': 'https://example.com',
+          'protocol': 'http',
+          'host': [
+            'example',
+            'com'
+          ]
+        }
+      }));
+      requests.push(new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': 'hello world'
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      }));
+      requests.forEach(function (request) {
+        convert(request, {}, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet.match('err := ').length).to.be.equal(snippet.match('if err != nil {').length);
+        });
       });
     });
   });

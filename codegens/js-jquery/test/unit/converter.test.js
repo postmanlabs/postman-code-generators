@@ -73,6 +73,40 @@ describe('jQuery converter', function () {
     });
   });
 
+  it('should use JSON.parse if the content-type is application/vnd.api+json', function () {
+    let request = new sdk.Request({
+      'method': 'POST',
+      'header': [
+        {
+          'key': 'Content-Type',
+          'value': 'application/vnd.api+json'
+        }
+      ],
+      'body': {
+        'mode': 'raw',
+        'raw': '{"data": {"hello": "world"} }'
+      },
+      'url': {
+        'raw': 'https://postman-echo.com/get',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'get'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.contain('"data": JSON.stringify({"data":{"hello":"world"}})');
+    });
+  });
+
   it('should trim header keys and not trim header values', function () {
     var request = new sdk.Request({
       'method': 'GET',
@@ -266,6 +300,38 @@ describe('jQuery converter', function () {
       expect(snippet).to.include('"sample_key": ["value1", "value2"]');
       expect(snippet).to.not.include('"sample_key": "value1"');
       expect(snippet).to.not.include('"sample_key": "value2"');
+    });
+  });
+
+  it('should generate snippet for form data params with no type key present', function () {
+    var request = new sdk.Request({
+      method: 'POST',
+      header: [],
+      url: {
+        raw: 'https://postman-echo.com/post',
+        protocol: 'https',
+        host: [
+          'postman-echo',
+          'com'
+        ],
+        path: [
+          'post'
+        ]
+      },
+      body: {
+        mode: 'formdata',
+        formdata: [
+          {
+            key: 'sample_key',
+            value: 'sample_value'
+          }
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      expect(error).to.be.null;
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('form.append("sample_key", "sample_value")');
     });
   });
 });

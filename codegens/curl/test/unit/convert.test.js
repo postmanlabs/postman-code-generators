@@ -34,6 +34,169 @@ describe('curl convert function', function () {
       });
     });
 
+    it('should return snippet with url in single quote(\')', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        }
+      });
+      options = {
+        quoteType: 'single'
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        snippetArray = snippet.split(' ');
+        expect(snippetArray[4][0]).to.equal('\'');
+      });
+    });
+
+    it('should return snippet with url in double quote(")', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        }
+      });
+      options = {
+        quoteType: 'double'
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        snippetArray = snippet.split(' ');
+        expect(snippetArray[4][0]).to.equal('"');
+      });
+    });
+
+    it('should add semicolon after header key, if the value is empty string', function () {
+      request = new sdk.Request({
+        'method': 'GET',
+        'header': [
+          {
+            'key': 'hello',
+            'value': ''
+          }
+        ],
+        'url': {
+          'raw': 'https://postman-echo.com/get',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'get'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('--header \'hello;\'');
+      });
+    });
+
+    it('should return snippet with backslash(\\) as line continuation ' +
+            'character for multiline code generation by default', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        }
+      });
+      options = {
+        multiLine: true
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        snippetArray = snippet.split('\n');
+        // Ignoring the last line as there is no line continuation character at last line
+        for (var i = 0; i < snippetArray.length - 1; i++) {
+          line = snippetArray[i];
+          expect(line.charAt(line.length - 1)).to.equal('\\');
+        }
+      });
+    });
+
+    it('should return snippet with backtick(`) as line continuation ' +
+            'character for multiline code generation', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        }
+      });
+      options = {
+        multiLine: true,
+        lineContinuationCharacter: '`'
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        snippetArray = snippet.split('\n');
+        // Ignoring the last line as there is no line continuation character at last line
+        for (var i = 0; i < snippetArray.length - 1; i++) {
+          line = snippetArray[i];
+          expect(line.charAt(line.length - 1)).to.equal('`');
+        }
+      });
+    });
+
+    it('should add content type if formdata field contains a content-type', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'json',
+              'value': '{"hello": "world"}',
+              'contentType': 'application/json',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('--form \'json="{\\"hello\\": \\"world\\"}";type=application/json\'');
+
+      });
+    });
+
     it('should parse header with string value properly', function () {
       request = new sdk.Request({
         'method': 'POST',
@@ -56,6 +219,40 @@ describe('curl convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.include("-H 'foo: \"bar\"'"); // eslint-disable-line quotes
+      });
+    });
+
+    it('should generate snippet with -g parameter when either of {,[,},] are present in url parameter', function () {
+      [
+        '{world}',
+        '{{world',
+        '[world]',
+        ']world',
+        'world}'
+      ].forEach(function (value) {
+        request = new sdk.Request({
+          'method': 'GET',
+          'url': {
+            'raw': `http://example.com?hello=${value}`,
+            'protocol': 'http',
+            'host': [
+              'example',
+              'com'
+            ],
+            'query': [
+              {
+                'key': 'hello',
+                'value': value
+              }
+            ]
+          }
+        });
+        convert(request, {}, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.include('-g');
+        });
       });
     });
 
@@ -250,9 +447,22 @@ describe('curl convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('no file=@/path/to/file');
-        expect(snippet).to.include('no src=@/path/to/file');
-        expect(snippet).to.include('invalid src=@/path/to/file');
+        expect(snippet).to.include('no file=@"/path/to/file"');
+        expect(snippet).to.include('no src=@"/path/to/file"');
+        expect(snippet).to.include('invalid src=@"/path/to/file"');
+      });
+    });
+
+    it('should generate valid snippets for single/double quotes in URL', function () {
+      // url = https://a"b'c.com/'d/"e
+      var request = new sdk.Request("https://a\"b'c.com/'d/\"e"); // eslint-disable-line quotes
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        // for curl escaping of single quotes inside single quotes involves changing of ' to '\''
+        // expect => 'https://a"b'\''c.com/'\''d/"e'
+        expect(snippet).to.include("'https://a\"b'\\''c.com/'\\''d/\"e'"); // eslint-disable-line quotes
       });
     });
 

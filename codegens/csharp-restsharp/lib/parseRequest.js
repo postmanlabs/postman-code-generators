@@ -96,7 +96,7 @@ function parseBody (request, trimFields) {
 /**
  * Parses header in Postman-SDK request and returns code snippet of csharp-restsharp for adding headers
  *
- * @param {Object} requestJson - Postman SDK reqeust object
+ * @param {Object} requestJson - Postman SDK request object
  * @returns {String} code snippet for adding headers in csharp-restsharp
  */
 function parseHeader (requestJson) {
@@ -106,7 +106,12 @@ function parseHeader (requestJson) {
 
   return requestJson.header.reduce((headerSnippet, header) => {
     if (!header.disabled) {
-      headerSnippet += `request.AddHeader("${sanitize(header.key, true)}", "${sanitize(header.value)}");\n`;
+      if (sanitize(header.key, true).toLowerCase() === 'user-agent') {
+        headerSnippet += `client.UserAgent = "${sanitize(header.value)}";\n`;
+      }
+      else {
+        headerSnippet += `request.AddHeader("${sanitize(header.key, true)}", "${sanitize(header.value)}");\n`;
+      }
     }
     return headerSnippet;
   }, '');

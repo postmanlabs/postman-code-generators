@@ -96,18 +96,21 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
   if (requestbody) {
     switch (requestbody.mode) {
       case 'raw':
-        if (contentType === 'application/json') {
+        // Match any application type whose underlying structure is json
+        // For example application/vnd.api+json
+        // All of them have +json as suffix
+        if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
           try {
             let jsonBody = JSON.parse(requestbody[requestbody.mode]);
             return `body: JSON.stringify(${JSON.stringify(jsonBody)})\n`;
           }
           catch (error) {
-            return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
+            return `body: '${sanitize(requestbody[requestbody.mode])}'\n`;
           }
         }
-        return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
-      // eslint-disable-next-line no-case-declarations
+        return `body: '${sanitize(requestbody[requestbody.mode])}'\n`;
       case 'graphql':
+        // eslint-disable-next-line no-case-declarations
         let query = requestbody[requestbody.mode].query,
           graphqlVariables;
         try {
@@ -117,7 +120,7 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
           graphqlVariables = {};
         }
         return 'body: JSON.stringify({\n' +
-          `${indentString.repeat(2)}query: '${sanitize(query, trimBody)}',\n` +
+          `${indentString.repeat(2)}query: \`${query.trim()}\`,\n` +
           `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
           `${indentString}})`;
       case 'formdata':

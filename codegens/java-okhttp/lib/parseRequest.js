@@ -44,8 +44,14 @@ function parseFormData (requestBody, indentString, trimFields) {
     }
     else {
       !data.value && (data.value = '');
-      body += indentString + '.addFormDataPart' +
-                    `("${sanitize(data.key, trimFields)}", "${sanitize(data.value, trimFields)}")\n`;
+      body += `${indentString}.addFormDataPart("${sanitize(data.key, trimFields)}",`;
+      if (data.contentType) {
+        body += ` null,\n${indentString.repeat(2)} RequestBody.create(MediaType.parse("${data.contentType}"),`;
+        body += ` "${sanitize(data.value, trimFields)}".getBytes()))\n`;
+      }
+      else {
+        body += `"${sanitize(data.value, trimFields)}")\n`;
+      }
     }
 
     return body;
@@ -69,8 +75,8 @@ function parseBody (requestBody, indentString, trimFields) {
       case 'raw':
         return 'RequestBody body = RequestBody.create(mediaType, ' +
                         `${JSON.stringify(requestBody[requestBody.mode])});\n`;
-      // eslint-disable-next-line no-case-declarations
       case 'graphql':
+        // eslint-disable-next-line no-case-declarations
         let query = requestBody[requestBody.mode].query,
           graphqlVariables;
         try {
@@ -107,7 +113,7 @@ function parseBody (requestBody, indentString, trimFields) {
 /**
  * Parses header in Postman-SDK request and returns code snippet of java okhttp for adding headers
  *
- * @param {Object} request - Postman SDK reqeust object
+ * @param {Object} request - Postman SDK request object
  * @param {String} indentString - indentation for code snippet
  * @returns {String} - code snippet for adding headers in java-okhttp
  */

@@ -121,12 +121,26 @@ self = module.exports = {
     }
     snippet += `url = URI("${sanitize(request.url.toString(), 'url')}")\n\n`;
     if (sanitize(request.url.toString(), 'url').startsWith('https')) {
-      snippet += 'https = Net::HTTP.new(url.host, url.port);\n';
+      snippet += 'https = Net::HTTP.new(url.host, url.port)\n';
       snippet += 'https.use_ssl = true\n\n';
       if (options.requestTimeout) {
         snippet += `https.read_timeout = ${Math.ceil(options.requestTimeout / 1000)}\n`;
       }
       snippet += `request = Net::HTTP::${_.capitalize(request.method)}.new(url)\n`;
+      if (request.body && !request.headers.has('Content-Type')) {
+        if (request.body.mode === 'file') {
+          request.addHeader({
+            key: 'Content-Type',
+            value: 'text/plain'
+          });
+        }
+        else if (request.body.mode === 'graphql') {
+          request.addHeader({
+            key: 'Content-Type',
+            value: 'application/json'
+          });
+        }
+      }
       headerSnippet = parseHeaders(request.getHeaders({enabled: true}));
       if (headerSnippet !== '') {
         snippet += headerSnippet;

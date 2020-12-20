@@ -40,7 +40,7 @@ function getUrlStringfromUrlObject (urlObject) {
     url += '#' + urlObject.hash;
   }
 
-  return url;
+  return sanitize(url);
 }
 
 /**
@@ -62,7 +62,11 @@ function parseFormData (requestbody, indentString, trimField) {
     else {
       (!data.value) && (data.value = '');
       body += indentString + `.field("${sanitize(data.key, trimField)}", ` +
-                                    `"${sanitize(data.value, trimField)}")\n`;
+                                    `"${sanitize(data.value, trimField)}"`;
+      if (data.contentType) {
+        body += `, "${sanitize(data.contentType, trimField)}"`;
+      }
+      body += ')\n';
     }
     return body;
   }, '');
@@ -84,8 +88,8 @@ function parseBody (request, indentString, trimField) {
         return parseFormData(request.body.toJSON(), indentString, trimField);
       case 'raw':
         return indentString + `.body(${JSON.stringify(request.body.toString())})\n`;
-      // eslint-disable-next-line no-case-declarations
       case 'graphql':
+        // eslint-disable-next-line no-case-declarations
         let query = request.body.graphql.query,
           graphqlVariables;
         try {
@@ -101,7 +105,7 @@ function parseBody (request, indentString, trimField) {
       case 'formdata':
         var formDataContent = parseFormData(request.body.toJSON(), indentString, trimField);
         if (!formDataContent.includes('.field("file", new File')) {
-          formDataContent = indentString + '.multiPartContent()' + formDataContent;
+          formDataContent = indentString + '.multiPartContent()\n' + formDataContent;
         }
         return formDataContent;
       case 'file':

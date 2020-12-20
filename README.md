@@ -17,15 +17,18 @@ List of supported code generators:
 
 | Language | Variant        |
 |-----------|---------------|
+| C | libcurl |
 | C# | RestSharp | 
 | cURL | cURL | 
+| Dart | http | 
 | Go | Native | 
 | HTTP | HTTP | 
 | Java | OkHttp |
 | Java | Unirest |
 | JavaScript | Fetch | 
 | JavaScript | jQuery | 
-| JavaScript | XHR | 
+| JavaScript | XHR |
+| NodeJs | Axios | 
 | NodeJs | Native |
 | NodeJs | Request |
 | NodeJs | Unirest |
@@ -35,6 +38,8 @@ List of supported code generators:
 |PHP | pecl_http |
 |PHP | HTTP_Request2 |
 | PowerShell | RestMethod | 
+| Python | http.client |
+| Python | Requests |
 | Ruby | Net:HTTP |
 | Shell | Httpie |
 | Shell | wget |
@@ -104,7 +109,7 @@ var codegen = require('postman-code-generators'), // require postman-code-genera
 
 This function takes in three parameters and returns a callback  with error and supported options of that code generator.
 
-* `language` - langugage key from the language list returned from getLanguageList function
+* `language` - language key from the language list returned from getLanguageList function
 * `variant` - variant key provided by getLanguageList function
 * `callback` - callback function with first parameter as error and second parameter as array of options supported by the codegen.
 
@@ -153,15 +158,16 @@ This function takes in five parameters and returns a callback with error and gen
 * `language` - lang key from the language list returned from getLanguageList function
 * `variant` - variant key provided by getLanguageList function
 * `request` - [Postman-SDK](https://github.com/postmanlabs/postman-collection) Request Object
-* `options` - Options that can be used to configure generated code snippet. Defaults will be used for the  
+* `options` - Options that can be used to configure generated code snippet. Defaults will be used for the unspecified attributes  
 * `callback` - callback function with first parameter as error and second parameter as string for code snippet
 
 ##### Example:
 ```js
 var codegen = require('postman-code-generators'), // require postman-code-generators in your project
-    request = new sdk.Request('www.google.com'),  //using postman sdk to create request 
+    sdk = require('postman-collection'), // require postman-collection in your project
+    request = new sdk.Request('https://www.google.com'),  //using postman sdk to create request 
     language = 'nodejs',
-    variant = 'requests',
+    variant = 'request',
     options = {
         indentCount: 3,
         indentType: 'Space',

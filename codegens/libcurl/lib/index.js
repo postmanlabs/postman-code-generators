@@ -123,7 +123,7 @@ self = module.exports = {
           text = [];
           _.forEach(body.urlencoded, function (data) {
             if (!data.disabled) {
-              text.push(`${escape(data.key)}=${escape(data.value)}`);
+              text.push(`${encodeURIComponent(data.key)}=${encodeURIComponent(data.value)}`);
             }
           });
           snippet += indentString + `const char *data = "${text.join('&')}";\n`;
@@ -133,8 +133,8 @@ self = module.exports = {
           snippet += indentString + `const char *data = "${sanitize(body.raw.toString(), trim)}";\n`;
           snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);\n';
           break;
-        // eslint-disable-next-line no-case-declarations
         case 'graphql':
+          // eslint-disable-next-line no-case-declarations
           let query = body.graphql.query,
             graphqlVariables;
           try {
@@ -171,6 +171,9 @@ self = module.exports = {
                 }
                 else {
                   snippet += indentString + `curl_mime_name(part, "${sanitize(data.key, trim)}");\n`;
+                  if (data.contentType) {
+                    snippet += indentString + `curl_mime_type(part, "${sanitize(data.contentType, trim)}");\n`;
+                  }
                   snippet += indentString +
                   `curl_mime_data(part, "${sanitize(data.value, trim)}", CURL_ZERO_TERMINATED);\n`;
                 }

@@ -25,7 +25,7 @@ async.series([
   function (next) {
     console.log('Running pre-package script');
     var prepackagePath = path.resolve(__dirname, 'pre-package.js'),
-      commandOutput = shell.exec('node ' + prepackagePath);
+      commandOutput = shell.exec(`node "${prepackagePath}"`);
 
     if (commandOutput.code !== 0) {
       console.error('Failed while running pre-package.js, here is the error:');

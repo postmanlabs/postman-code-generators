@@ -1,4 +1,5 @@
 var _ = require('./lodash'),
+  sdk = require('postman-collection'),
   sanitize = require('./util/sanitize').sanitize,
   sanitizeOptions = require('./util/sanitize').sanitizeOptions,
   addFormParam = require('./util/sanitize').addFormParam,
@@ -33,24 +34,6 @@ function getheaders (request, indentation) {
              '\'multipart/form-data; boundary={}\'.format(boundary) \n}\n';
   }
   return 'headers = {}\n';
-}
-
-/**
- * Generates URL's path with query string
- *
- * @param {Object} requestUrl - Postman Sdk Request's Url object
- * @returns {String} - Url path with query (no host)
- */
-function getUrlPathWithQuery (requestUrl) {
-  var path = requestUrl.getPath(),
-    query = requestUrl.getQueryString({ ignoreDisabled: true }),
-    urlPathWithQuery = '';
-
-  urlPathWithQuery += (path === '/' ? '' : path);
-  if (query !== '') {
-    urlPathWithQuery += '?' + sanitize(query);
-  }
-  return urlPathWithQuery;
 }
 
 self = module.exports = {
@@ -115,7 +98,8 @@ self = module.exports = {
   convert: function (request, options, callback) {
     var snippet = '',
       indentation = '',
-      identity = '';
+      identity = '',
+      url, host, path, query;
 
     if (_.isFunction(options)) {
       callback = options;
@@ -129,10 +113,29 @@ self = module.exports = {
     identity = options.indentType === 'Tab' ? '\t' : ' ';
     indentation = identity.repeat(options.indentCount);
 
+    url = sdk.Url.parse(request.url.toString());
+    host = url.host ? url.host.join('.') : '';
+    path = url.path ? '/' + url.path.join('/') : '/';
+    query = url.query ? _.reduce(url.query, (accum, q) => {
+      accum.push(`${q.key}=${q.value}`);
+      return accum;
+    }, []) : [];
+
+    if (query.length > 0) {
+      query = '?' + query.join('&');
+    }
+    else {
+      query = '';
+    }
+
     snippet += 'import http.client\n';
-    snippet += 'import mimetypes\n';
-    snippet += `conn = http.client.HTTPSConnection("${request.url.host ? request.url.host.join('.') : ''}"`;
-    snippet += request.url.port ? `, ${request.url.port}` : '';
+    if (request.body && request.body.mode === 'formdata') {
+      snippet += 'import mimetypes\n';
+      snippet += 'from codecs import encode\n';
+    }
+    snippet += '\n';
+    snippet += `conn = http.client.HTTPSConnection("${sanitize(host)}"`;
+    snippet += url.port ? `, ${request.url.port}` : '';
     snippet += options.requestTimeout !== 0 ? `, timeout = ${options.requestTimeout})\n` : ')\n';
 
     // The following code handles multiple files in the same formdata param.
@@ -192,7 +195,8 @@ self = module.exports = {
       }
     }
     snippet += getheaders(request, indentation);
-    snippet += `conn.request("${request.method}", "${getUrlPathWithQuery(request.url)}", payload, headers)\n`;
+    snippet += `conn.request("${request.method}",` +
+      ` "${sanitize(path)}${sanitize(encodeURI(query))}", payload, headers)\n`;
     snippet += 'res = conn.getresponse()\n';
     snippet += 'data = res.read()\n';
     snippet += 'print(data.decode("utf-8"))';

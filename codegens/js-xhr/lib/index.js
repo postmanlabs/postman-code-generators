@@ -14,7 +14,7 @@ function parseURLEncodedBody (body) {
     bodySnippet;
   _.forEach(body, function (data) {
     if (!data.disabled) {
-      payload.push(`${escape(data.key)}=${escape(data.value)}`);
+      payload.push(`${encodeURIComponent(data.key)}=${encodeURIComponent(data.value)}`);
     }
   });
   bodySnippet = `var data = "${payload.join('&')}";\n`;
@@ -30,7 +30,10 @@ function parseURLEncodedBody (body) {
  */
 function parseRawBody (body, trim, contentType) {
   var bodySnippet = 'var data = ';
-  if (contentType === 'application/json') {
+  // Match any application type whose underlying structure is json
+  // For example application/vnd.api+json
+  // All of them have +json as suffix
+  if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
     try {
       let jsonBody = JSON.parse(body);
       bodySnippet += `JSON.stringify(${JSON.stringify(jsonBody)});\n`;

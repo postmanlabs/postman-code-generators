@@ -99,7 +99,11 @@ function parseFormData (body, mode, trim, indent) {
       }
       else {
         parameter += `${indent.repeat(2)}"value": "${sanitize(data.value, mode, trim)}",\n`;
-        parameter += `${indent.repeat(2)}"type": "text"\n${indent}]`;
+        parameter += `${indent.repeat(2)}"type": "text"`;
+        if (data.contentType) {
+          parameter += `,\n${indent.repeat(2)}"contentType": "${sanitize(data.contentType, mode, trim)}"`;
+        }
+        parameter += `\n${indent}]`;
       }
       parameters.push(parameter);
     }
@@ -114,6 +118,9 @@ function parseFormData (body, mode, trim, indent) {
   bodySnippet += `${indent.repeat(2)}body += "--\\(boundary)\\r\\n"\n`;
   // eslint-disable-next-line no-useless-escape
   bodySnippet += `${indent.repeat(2)}body += "Content-Disposition:form-data; name=\\"\\(paramName)\\"\"\n`;
+  bodySnippet += `${indent.repeat(2)}if param["contentType"] != nil {\n`;
+  bodySnippet += `${indent.repeat(3)}body += "\\r\\nContent-Type: \\(param["contentType"] as! String)"\n`;
+  bodySnippet += `${indent.repeat(2)}}\n`;
   bodySnippet += `${indent.repeat(2)}let paramType = param["type"] as! String\n`;
   bodySnippet += `${indent.repeat(2)}if paramType == "text" {\n`;
   bodySnippet += `${indent.repeat(3)}let paramValue = param["value"] as! String\n`;
@@ -335,7 +342,8 @@ self = module.exports = {
     requestBody = (request.body ? request.body.toJSON() : {});
     bodySnippet = parseBody(requestBody, trim, indent);
 
-    codeSnippet = 'import Foundation\n\n';
+    codeSnippet = 'import Foundation\n';
+    codeSnippet += '#if canImport(FoundationNetworking)\nimport FoundationNetworking\n#endif\n\n';
     codeSnippet += 'var semaphore = DispatchSemaphore (value: 0)\n\n';
     if (bodySnippet !== '') {
       codeSnippet += `${bodySnippet}\n\n`;
@@ -367,6 +375,7 @@ self = module.exports = {
     codeSnippet += '\nlet task = URLSession.shared.dataTask(with: request) { data, response, error in \n';
     codeSnippet += `${indent}guard let data = data else {\n`;
     codeSnippet += `${indent.repeat(2)}print(String(describing: error))\n`;
+    codeSnippet += `${indent.repeat(2)}semaphore.signal()\n`;
     codeSnippet += `${indent.repeat(2)}return\n`;
     codeSnippet += `${indent}}\n`;
     codeSnippet += `${indent}print(String(data: data, encoding: .utf8)!)\n`;

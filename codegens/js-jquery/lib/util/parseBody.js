@@ -20,7 +20,10 @@ module.exports = function (request, trimRequestBody, indentation, contentType) {
     switch (request.body.mode) {
       case 'raw':
         if (!_.isEmpty(request.body[request.body.mode])) {
-          if (contentType === 'application/json') {
+          // Match any application type whose underlying structure is json
+          // For example application/vnd.api+json
+          // All of them have +json as suffix
+          if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
             // eslint-disable-next-line max-depth
             try {
               let jsonBody = JSON.parse(request.body[request.body.mode]);
@@ -37,8 +40,8 @@ module.exports = function (request, trimRequestBody, indentation, contentType) {
           }
         }
         return requestBody;
-      // eslint-disable-next-line no-case-declarations
       case 'graphql':
+        // eslint-disable-next-line no-case-declarations
         let query = request.body[request.body.mode].query,
           graphqlVariables;
         try {
