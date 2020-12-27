@@ -16,22 +16,7 @@ require('qcobjects');logger.infoEnabled=false;
             }
         });
     var service = serviceLoader(New(MyTestService,{
-          data:"
-    [
-        "key": "single file",
-        "src": "<file path>",
-        "type": "file"
-    ],
-    [
-        "key": "multiple files",
-        "src": "<file path 1>",
-        "type": "file"
-    ],
-    [
-        "key": "multiple files",
-        "src": "<file path 2>",
-        "type": "file"
-    ]"
+          data:""
     })).then(
       (successfulResponse)=>{
             // This will show the service response as a plain text

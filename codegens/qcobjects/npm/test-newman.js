@@ -48,7 +48,12 @@ module.exports = function (exit) {
       runError && console.error(runError.stack || runError);
 
       nyc.reset();
-      nyc.writeCoverageFile();
+      try {
+        nyc.writeCoverageFile();
+      }
+      catch (e) {
+        console.log('It was not possible to write the coverage file ' + e.toString());
+      }
       nyc.report();
       exit(runError ? 1 : 0);
     });

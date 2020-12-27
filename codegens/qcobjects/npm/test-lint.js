@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-env node, es6 */
 require('shelljs/global');
 
 var chalk = require('chalk'),
@@ -12,9 +13,7 @@ var chalk = require('chalk'),
      */
   LINT_SOURCE_DIRS = [
     './lib',
-    './bin',
     './test',
-    './examples/*.js',
     './npm/*.js',
     './index.js'
   ];

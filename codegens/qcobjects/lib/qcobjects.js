@@ -102,6 +102,7 @@ function parseFormData (body, mode, trim, indent) {
     }
   });
   parameters = String('\n' + _.join(parameters, ',\n'));
+  parameters = parameters.replace(/^\s*$(?:\r\n?|\n)/gm, '');
   bodySnippet = `data:"${parameters}"`;
   return bodySnippet;
 }
@@ -308,6 +309,8 @@ self = module.exports = {
     if (bodySnippet !== '') {
       dataSnippet = `${indent}${bodySnippet}`;
     }
+
+    dataSnippet = dataSnippet.replace(/^\s*$(?:\r\n?|\n)/gm, '');
 
     codeSnippet = '';
     codeSnippet += `require('qcobjects');logger.infoEnabled=false;

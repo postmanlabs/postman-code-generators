@@ -1,3 +1,4 @@
+/* eslint-env node, es6 */
 var _ = require('./lodash'),
 
   sanitize = require('./util').sanitize,
@@ -85,6 +86,95 @@ function extractFormData (dataArray, indentString, trimBody) {
 }
 
 /**
+ * Parses body object when requestbody.mode is raw
+ *
+ * @param {Object} requestbody - json object for body of request
+ * @param {String} indentString - string for indentation
+ * @param {Boolean} trimBody - indicates whether to trim body fields or not
+ * @param {String} contentType Content type of the body being sent
+ */
+function parseBodyRaw (requestbody, indentString, trimBody, contentType) {
+  if (contentType === 'application/json') {
+    try {
+      let jsonBody = JSON.parse(requestbody[requestbody.mode]);
+      return `body: JSON.stringify(${JSON.stringify(jsonBody)})\n`;
+    }
+    catch (error) {
+      return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
+    }
+  }
+  return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
+}
+
+/* eslint-disable no-unused-vars */
+/**
+ * Parses body object when requestbody.mode is graphql
+ *
+ * @param {Object} requestbody - json object for body of request
+ * @param {String} indentString - string for indentation
+ * @param {Boolean} trimBody - indicates whether to trim body fields or not
+ * @param {String} contentType Content type of the body being sent
+ */
+function parseBodyGraphQL (requestbody, indentString, trimBody, contentType) {
+  let query = requestbody[requestbody.mode].query,
+    graphqlVariables;
+  try {
+    graphqlVariables = JSON.parse(requestbody[requestbody.mode].variables);
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  return 'body: JSON.stringify({\n' +
+    `${indentString.repeat(2)}query: '${sanitize(query, trimBody)}',\n` +
+    `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
+    `${indentString}})`;
+
+}
+
+/* eslint-disable no-unused-vars */
+/**
+ * Parses body object when requestbody.mode is formdata
+ *
+ * @param {Object} requestbody - json object for body of request
+ * @param {String} indentString - string for indentation
+ * @param {Boolean} trimBody - indicates whether to trim body fields or not
+ * @param {String} contentType Content type of the body being sent
+ */
+function parseBodyFormdata (requestbody, indentString, trimBody, contentType) {
+  return `formData: {\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
+                  indentString + '}';
+}
+
+
+/* eslint-disable no-unused-vars */
+/**
+ * Parses body object when requestbody.mode is urlencoded
+ *
+ * @param {Object} requestbody - json object for body of request
+ * @param {String} indentString - string for indentation
+ * @param {Boolean} trimBody - indicates whether to trim body fields or not
+ * @param {String} contentType Content type of the body being sent
+ */
+function parseBodyUrlEncoded (requestbody, indentString, trimBody, contentType) {
+  return `form: {\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
+                  indentString + '}';
+
+}
+
+/* eslint-disable no-unused-vars */
+/**
+ * Parses body object when requestbody.mode is file
+ *
+ * @param {Object} requestbody - json object for body of request
+ * @param {String} indentString - string for indentation
+ * @param {Boolean} trimBody - indicates whether to trim body fields or not
+ * @param {String} contentType Content type of the body being sent
+ */
+function parseBodyFile (requestbody, indentString, trimBody, contentType) {
+  return 'body: "<file contents here>"\n';
+}
+
+/**
  * Parses body object based on mode of body and returns code snippet
  *
  * @param {Object} requestbody - json object for body of request
@@ -94,47 +184,22 @@ function extractFormData (dataArray, indentString, trimBody) {
  */
 function parseBody (requestbody, indentString, trimBody, contentType) {
   if (requestbody) {
-    switch (requestbody.mode) {
-      case 'raw':
-        if (contentType === 'application/json') {
-          try {
-            let jsonBody = JSON.parse(requestbody[requestbody.mode]);
-            return `body: JSON.stringify(${JSON.stringify(jsonBody)})\n`;
-          }
-          catch (error) {
-            return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
-          }
-        }
-        return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
-      // eslint-disable-next-line no-case-declarations
-      case 'graphql':
-        let query = requestbody[requestbody.mode].query,
-          graphqlVariables;
-        try {
-          graphqlVariables = JSON.parse(requestbody[requestbody.mode].variables);
-        }
-        catch (e) {
-          graphqlVariables = {};
-        }
-        return 'body: JSON.stringify({\n' +
-          `${indentString.repeat(2)}query: '${sanitize(query, trimBody)}',\n` +
-          `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
-          `${indentString}})`;
-      case 'formdata':
-        return `formData: {\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
-                        indentString + '}';
-      case 'urlencoded':
-        return `form: {\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
-                        indentString + '}';
-        /* istanbul ignore next */
-      case 'file':
-        // return 'formData: {\n' +
-        //                 extractFormData(requestbody[requestbody.mode], indentString, trimBody) +
-        //                 indentString + '}';
-        return 'body: "<file contents here>"\n';
-      default:
-        return '';
+    let parseBodyFunc = {
+      'raw': parseBodyRaw,
+      'graphql': parseBodyGraphQL,
+      'formdata': parseBodyFormdata,
+      'Formdata': parseBodyFormdata,
+      'urlencoded': parseBodyUrlEncoded
+    };
+    if (parseBodyFunc.hasOwnProperty(requestbody.mode)) {
+      return parseBodyFunc[requestbody.mode].call(null, requestbody, indentString, trimBody, contentType);
     }
+    if (requestbody.mode === 'file') {
+      /* istanbul ignore next */
+      parseFile(requestbody, indentString, trimBody, contentType);
+    }
+
+    return '';
   }
   return '';
 }
