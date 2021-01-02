@@ -99,7 +99,7 @@ self = module.exports = {
     var snippet = '',
       indentation = '',
       identity = '',
-      url, host, path, query;
+      url, host, query;
 
     if (_.isFunction(options)) {
       callback = options;
@@ -115,7 +115,6 @@ self = module.exports = {
 
     url = new sdk.Url(request.url.toString());
     host = url.host ? url.host.join('.') : '';
-    path = url.path ? '/' + url.path.join('/') : '/';
     query = url.query ? _.reduce(url.query, (accum, q) => {
       accum.push(`${q.key}=${q.value}`);
       return accum;
