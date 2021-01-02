@@ -266,7 +266,7 @@ self = module.exports = {
 
     finalUrl = new sdk.Url(request.url.toString());
     // URL encoding each part of Url individually
-    finalUrl = `${finalUrl.protocol}://${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`
+    finalUrl = `${finalUrl.protocol}://${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`;
 
     codeSnippet += 'NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"' +
       finalUrl + '"]\n';
