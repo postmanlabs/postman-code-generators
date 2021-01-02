@@ -175,7 +175,7 @@ self = module.exports = {
     }
     options = sanitizeOptions(options, self.getOptions());
 
-    var codeSnippet, indent, trim, timeout, followRedirect,
+    var codeSnippet, indent, trim, timeout, followRedirect, finalUrl,
       bodySnippet = '',
       responseSnippet = '',
       headerSnippet = '';
@@ -244,7 +244,7 @@ self = module.exports = {
     }
     codeSnippet += `${indent}"net/http"\n${indent}"io/ioutil"\n)\n\n`;
 
-    var finalUrl = new sdk.Url(request.url.toString());
+    finalUrl = new sdk.Url(request.url.toString());
     // URL encoding each part of Url individually
     finalUrl = `${finalUrl.protocol}://${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`;
 
