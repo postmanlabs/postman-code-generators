@@ -212,7 +212,7 @@ function convert (request, options, callback) {
     throw new Error('JS-XHR-Converter: callback is not valid function');
   }
   options = sanitizeOptions(options, getOptions());
-  var indent, trim, headerSnippet,
+  var indent, trim, headerSnippet, finalUrl,
     codeSnippet = '',
     bodySnippet = '';
   indent = options.indentType === 'Tab' ? '\t' : ' ';
@@ -274,7 +274,7 @@ function convert (request, options, callback) {
 
   finalUrl = new sdk.Url(request.url.toString());
   // URL encoding each part of Url individually
-  finalUrl = `${finalUrl.protocol}://${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`
+  finalUrl = `${finalUrl.protocol}://${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`;
 
   codeSnippet += `xhr.open("${request.method}", "${finalUrl}");\n`;
   if (options.requestTimeout) {

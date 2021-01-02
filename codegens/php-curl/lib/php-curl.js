@@ -108,7 +108,7 @@ self = module.exports = {
     // concatenation and making up the final string
     finalUrl = new sdk.Url(request.url.toString());
     // URL encoding each part of Url individually
-    finalUrl = `${finalUrl.protocol}://${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`
+    finalUrl = `${finalUrl.protocol}://${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`;
 
     snippet = '<?php\n\n$curl = curl_init();\n\n';
     snippet += 'curl_setopt_array($curl, array(\n';

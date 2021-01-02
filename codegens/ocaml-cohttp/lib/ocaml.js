@@ -314,9 +314,11 @@ self = module.exports = {
     // timeout = options.requestTimeout;
     // followRedirect = options.followRedirect;
     trim = options.trimRequestBody;
+
     finalUrl = new sdk.Url(request.url.toString());
     // URL encoding each part of Url individually
-    finalUrl = `${finalUrl.protocol}://${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`
+    finalUrl = `${finalUrl.protocol}://${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`;
+
     methodArg = getMethodArg(request.method);
     if (request.body && !request.headers.has('Content-Type')) {
       if (request.body.mode === 'file') {

@@ -191,7 +191,7 @@ function parseHeaders (headersArray, indent, trim) {
 
 self = module.exports = {
   convert: function (request, options, callback) {
-    var indent,
+    var indent, finalUrl,
       codeSnippet = '',
       requestTimeout,
       headerSnippet = '#import <Foundation/Foundation.h>\n\n',
