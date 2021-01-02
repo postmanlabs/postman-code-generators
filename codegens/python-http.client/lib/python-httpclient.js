@@ -113,7 +113,7 @@ self = module.exports = {
     identity = options.indentType === 'Tab' ? '\t' : ' ';
     indentation = identity.repeat(options.indentCount);
 
-    url = sdk.Url.parse(request.url.toString());
+    url = new sdk.Url(request.url.toString());
     host = url.host ? url.host.join('.') : '';
     path = url.path ? '/' + url.path.join('/') : '/';
     query = url.query ? _.reduce(url.query, (accum, q) => {
@@ -196,7 +196,7 @@ self = module.exports = {
     }
     snippet += getheaders(request, indentation);
     snippet += `conn.request("${request.method}",` +
-      ` "${sanitize(path)}${sanitize(encodeURI(query))}", payload, headers)\n`;
+      ` "${sanitize(url.getPathWithQuery(true))}", payload, headers)\n`;
     snippet += 'res = conn.getresponse()\n';
     snippet += 'data = res.read()\n';
     snippet += 'print(data.decode("utf-8"))';

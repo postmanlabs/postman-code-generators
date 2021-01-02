@@ -1,4 +1,5 @@
 var _ = require('./lodash'),
+  sdk = require('postman-collection'),
   sanitizeOptions = require('./util').sanitizeOptions,
   sanitize = require('./util').sanitize,
   addFormParam = require('./util').addFormParam,
@@ -262,8 +263,13 @@ self = module.exports = {
       footerSnippet += '}';
     }
     codeSnippet += 'dispatch_semaphore_t sema = dispatch_semaphore_create(0);\n\n';
+
+    finalUrl = new sdk.Url(request.url.toString());
+    // URL encoding each part of Url individually
+    finalUrl = `${finalUrl.protocol}://${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`
+
     codeSnippet += 'NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"' +
-      encodeURI(request.url.toString()) + '"]\n';
+      finalUrl + '"]\n';
     codeSnippet += `${indent}cachePolicy:NSURLRequestUseProtocolCachePolicy\n`;
     codeSnippet += `${indent}timeoutInterval:${requestTimeout}.0];\n`;
 

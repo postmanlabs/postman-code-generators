@@ -22,7 +22,9 @@
   "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/js-xhr",
-  "dependencies": {},
+  "dependencies": {
+    "postman-collection": "3.6.8"
+  },
   "engines": {
     "node": ">=8"
   },

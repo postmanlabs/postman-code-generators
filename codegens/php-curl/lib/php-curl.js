@@ -1,4 +1,5 @@
 var _ = require('./lodash'),
+  sdk = require('postman-collection'),
   parseBody = require('./util/parseBody'),
   sanitize = require('./util/sanitize').sanitize,
   sanitizeOptions = require('./util/sanitize').sanitizeOptions,
@@ -105,11 +106,10 @@ self = module.exports = {
     identity = options.indentType === 'Tab' ? '\t' : ' ';
     indentation = identity.repeat(options.indentCount);
     // concatenation and making up the final string
-    finalUrl = request.url.toString();
-    if (finalUrl !== encodeURI(finalUrl)) {
-      // needs to be encoded
-      finalUrl = encodeURI(finalUrl);
-    }
+    finalUrl = new sdk.Url(request.url.toString());
+    // URL encoding each part of Url individually
+    finalUrl = `${finalUrl.protocol}://${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`
+
     snippet = '<?php\n\n$curl = curl_init();\n\n';
     snippet += 'curl_setopt_array($curl, array(\n';
     snippet += `${indentation}CURLOPT_URL => '${sanitize(finalUrl, 'url')}',\n`;

@@ -132,7 +132,7 @@ function makeSnippet (request, indentString, options) {
   }
 
 
-  url = sdk.Url.parse(request.url.toString());
+  url = new sdk.Url(request.url.toString());
   host = url.host ? url.host.join('.') : '';
   path = url.path ? '/' + url.path.join('/') : '/';
   query = url.query ? _.reduce(url.query, (accum, q) => {
@@ -152,7 +152,7 @@ function makeSnippet (request, indentString, options) {
   if (url.port) {
     optionsArray.push(`${indentString}'port': ${url.port}`);
   }
-  optionsArray.push(`${indentString}'path': '${sanitize(path)}${sanitize(encodeURI(query))}'`);
+  optionsArray.push(`${indentString}'path': '${sanitize(url.getPathWithQuery(true))}'`);
   optionsArray.push(parseRequest.parseHeader(request, indentString));
   if (options.followRedirect) {
     optionsArray.push(indentString + '\'maxRedirects\': 20');

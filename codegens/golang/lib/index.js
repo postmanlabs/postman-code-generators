@@ -1,4 +1,5 @@
 var _ = require('./lodash'),
+  sdk = require('postman-collection'),
   sanitize = require('./util').sanitize,
   sanitizeMultiline = require('./util').sanitizeMultiline,
   sanitizeOptions = require('./util').sanitizeOptions,
@@ -243,7 +244,11 @@ self = module.exports = {
     }
     codeSnippet += `${indent}"net/http"\n${indent}"io/ioutil"\n)\n\n`;
 
-    codeSnippet += `func main() {\n\n${indent}url := "${encodeURI(request.url.toString())}"\n`;
+    finalUrl = new sdk.Url(request.url.toString());
+    // URL encoding each part of Url individually
+    finalUrl = `${finalUrl.protocol}://${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`
+
+    codeSnippet += `func main() {\n\n${indent}url := "${finalUrl}"\n`;
     codeSnippet += `${indent}method := "${request.method}"\n\n`;
 
     if (bodySnippet !== '') {
