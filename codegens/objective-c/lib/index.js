@@ -12,10 +12,10 @@ var _ = require('./lodash'),
  * @param {String} indent indentation required for code snippet
  * @param {Boolean} trim indicates whether to trim string or not
  */
-function parseRawBody(body, indent, trim) {
+function parseRawBody (body, indent, trim) {
   var bodySnippet = '';
   bodySnippet += 'NSData *postData = [[NSData alloc] initWithData:[@"' + sanitize(body.toString(), trim) + '" ' +
-    'dataUsingEncoding:NSUTF8StringEncoding]];\n';
+  'dataUsingEncoding:NSUTF8StringEncoding]];\n';
   bodySnippet += '[request setHTTPBody:postData];\n';
   return bodySnippet;
 }
@@ -27,11 +27,11 @@ function parseRawBody(body, indent, trim) {
  * @param {String} indent indentation required for code snippet
  * @param {Boolean} trim indicates whether to trim string or not
  */
-function parseGraphQLBody(body, indent, trim) {
+function parseGraphQLBody (body, indent, trim) {
   var bodySnippet = '',
     rawBody = JSON.stringify(body);
   bodySnippet += 'NSData *postData = [[NSData alloc] initWithData:[@"' + sanitize(rawBody, trim) + '" ' +
-    'dataUsingEncoding:NSUTF8StringEncoding]];\n';
+  'dataUsingEncoding:NSUTF8StringEncoding]];\n';
   bodySnippet += '[request setHTTPBody:postData];\n';
   return bodySnippet;
 }
@@ -43,7 +43,7 @@ function parseGraphQLBody(body, indent, trim) {
  * @param {String} indent indentation required for code snippet
  * @param {Boolean} trim indicates whether to trim string or not
  */
-function parseURLEncodedBody(body, indent, trim) {
+function parseURLEncodedBody (body, indent, trim) {
   let bodySnippet = '',
     key,
     value,
@@ -54,11 +54,11 @@ function parseURLEncodedBody(body, indent, trim) {
       value = trim ? data.value.trim() : data.value;
       if (first) {
         bodySnippet += 'NSMutableData *postData = [[NSMutableData alloc] initWithData:[@"' +
-          sanitize(key, true) + '=' + sanitize(value, trim) + '" dataUsingEncoding:NSUTF8StringEncoding]];\n';
+        sanitize(key, true) + '=' + sanitize(value, trim) + '" dataUsingEncoding:NSUTF8StringEncoding]];\n';
       }
       else {
         bodySnippet += '[postData appendData:[@"&' + sanitize(key, true) + '=' + sanitize(value, trim) +
-          '" dataUsingEncoding:NSUTF8StringEncoding]];\n';
+        '" dataUsingEncoding:NSUTF8StringEncoding]];\n';
       }
       first = false;
     }
@@ -74,7 +74,7 @@ function parseURLEncodedBody(body, indent, trim) {
  * @param {String} indent indentation required for code snippet
  * @param {Boolean} trim indicates whether to trim string or not
  */
-function parseFormData(body, indent, trim) {
+function parseFormData (body, indent, trim) {
   let bodySnippet = '',
     formDataArray = [],
     key,
@@ -143,7 +143,7 @@ function parseFormData(body, indent, trim) {
  * @param {String} indent indentation required for code snippet
  * @param {trim} trim indicates whether to trim string or not
  */
-function parseBody(body, indent, trim) {
+function parseBody (body, indent, trim) {
   if (!_.isEmpty(body)) {
     switch (body.mode) {
       case 'urlencoded':
@@ -170,7 +170,7 @@ function parseBody(body, indent, trim) {
  * @param {String} indent indentation required for code snippet
  * @param {Boolean} trim indicates whether to trim string or not
  */
-function parseHeaders(headersArray, indent, trim) {
+function parseHeaders (headersArray, indent, trim) {
   var headerString = '',
     headerDictionary = [];
   if (_.isEmpty(headersArray)) {
@@ -298,7 +298,7 @@ self = module.exports = {
 
     //  if boilerplate is included then two more indent needs to be added in snippet
     (options.includeBoilerplate) &&
-      (codeSnippet = indent + codeSnippet.split('\n').join('\n' + indent) + '\n');
+    (codeSnippet = indent + codeSnippet.split('\n').join('\n' + indent) + '\n');
 
     callback(null, headerSnippet + codeSnippet + footerSnippet);
   },
@@ -327,7 +327,7 @@ self = module.exports = {
         // TODO: Find out a way to set infinite timeout.
         default: 10000,
         description: 'Set number of milliseconds the request should wait for a response' +
-          ' before timing out (use 0 for infinity)'
+    ' before timing out (use 0 for infinity)'
       },
       {
         name: 'Trim request body fields',

@@ -10,7 +10,7 @@ var _ = require('./lodash'),
  *
  * @param {*} body URLEncoded Body
  */
-function parseURLEncodedBody(body) {
+function parseURLEncodedBody (body) {
   var payload = [],
     bodySnippet;
   _.forEach(body, function (data) {
@@ -29,7 +29,7 @@ function parseURLEncodedBody(body) {
  * @param {*} trim trim body option
  * @param {String} contentType Content type of the body being sent
  */
-function parseRawBody(body, trim, contentType) {
+function parseRawBody (body, trim, contentType) {
   var bodySnippet = 'var data = ';
   // Match any application type whose underlying structure is json
   // For example application/vnd.api+json
@@ -56,7 +56,7 @@ function parseRawBody(body, trim, contentType) {
  * @param {boolean} trim trim body option
  * @param {String} indentString indentation to be added to the snippet
  */
-function parseGraphQL(body, trim, indentString) {
+function parseGraphQL (body, trim, indentString) {
   let query = body.query,
     graphqlVariables,
     bodySnippet;
@@ -79,7 +79,7 @@ function parseGraphQL(body, trim, indentString) {
  * @param {*} body formData Body
  * @param {*} trim trim body option
  */
-function parseFormData(body, trim) {
+function parseFormData (body, trim) {
   var bodySnippet = 'var data = new FormData();\n';
   _.forEach(body, (data) => {
     if (!(data.disabled)) {
@@ -104,7 +104,7 @@ function parseFormData(body, trim) {
  * Parses file body from the Request
  *
  */
-function parseFile() {
+function parseFile () {
   // var bodySnippet = 'var data = new FormData();\n';
   // bodySnippet += `data.append("${sanitize(body.key, trim)}", "${sanitize(body.src, trim)}", `;
   // bodySnippet += `"${sanitize(body.key, trim)}");\n`;
@@ -120,7 +120,7 @@ function parseFile() {
  * @param {String} indentString indentation to be added to the snippet
  * @param {String} contentType Content type of the body being sent
  */
-function parseBody(body, trim, indentString, contentType) {
+function parseBody (body, trim, indentString, contentType) {
   if (!_.isEmpty(body)) {
     switch (body.mode) {
       case 'urlencoded':
@@ -145,7 +145,7 @@ function parseBody(body, trim, indentString, contentType) {
  *
  * @param {Object} headers headers from the request.
  */
-function parseHeaders(headers) {
+function parseHeaders (headers) {
   var headerSnippet = '';
   if (!_.isEmpty(headers)) {
     headers = _.reject(headers, 'disabled');
@@ -161,7 +161,7 @@ function parseHeaders(headers) {
  *
  * @returns {Array} - Returns an array of option objects
  */
-function getOptions() {
+function getOptions () {
   return [
     {
       name: 'Set indentation count',
@@ -184,7 +184,7 @@ function getOptions() {
       type: 'positiveInteger',
       default: 0,
       description: 'Set number of milliseconds the request should wait for a response' +
-        ' before timing out (use 0 for infinity)'
+    ' before timing out (use 0 for infinity)'
     },
     {
       name: 'Trim request body fields',
@@ -206,7 +206,7 @@ function getOptions() {
  * @param {Number} options.requestTimeout : time in milli-seconds after which request will bail out
  * @param {Function} callback - callback function with parameters (error, snippet)
  */
-function convert(request, options, callback) {
+function convert (request, options, callback) {
 
   if (!_.isFunction(callback)) {
     throw new Error('JS-XHR-Converter: callback is not valid function');
