@@ -13,7 +13,7 @@ var _ = require('./lodash'),
  * @param  {String} indentation - used for indenting snippet's structure
  * @returns {String} - request headers in the desired format
  */
-function getHeaders (request, indentation) {
+function getHeaders(request, indentation) {
   var headerArray = request.toJSON().header,
     headerMap;
 
@@ -21,7 +21,7 @@ function getHeaders (request, indentation) {
     headerArray = _.reject(headerArray, 'disabled');
     headerMap = _.map(headerArray, function (header) {
       return `${indentation.repeat(2)}'${sanitize(header.key, 'header', true)}: ` +
-            `${sanitize(header.value, 'header')}'`;
+        `${sanitize(header.value, 'header')}'`;
     });
     return `${indentation}CURLOPT_HTTPHEADER => array(\n${headerMap.join(',\n')}\n${indentation}),\n`;
   }
@@ -56,7 +56,7 @@ self = module.exports = {
       type: 'positiveInteger',
       default: 0,
       description: 'Set number of milliseconds the request should wait for a response' +
-    ' before timing out (use 0 for infinity)'
+        ' before timing out (use 0 for infinity)'
     },
     {
       name: 'Follow redirects',
@@ -107,8 +107,7 @@ self = module.exports = {
     indentation = identity.repeat(options.indentCount);
     // concatenation and making up the final string
     finalUrl = new sdk.Url(request.url.toString());
-    // URL encoding each part of Url individually
-    finalUrl = `${finalUrl.protocol}://${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`;
+    finalUrl = finalUrl.toString();
 
     snippet = '<?php\n\n$curl = curl_init();\n\n';
     snippet += 'curl_setopt_array($curl, array(\n';

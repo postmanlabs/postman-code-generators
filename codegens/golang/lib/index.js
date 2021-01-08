@@ -13,7 +13,7 @@ var _ = require('./lodash'),
  * @param {Object} body Raw body data
  * @param {boolean} trim trim body option
  */
-function parseRawBody (body, trim) {
+function parseRawBody(body, trim) {
   var bodySnippet;
   bodySnippet = `payload := strings.NewReader(\`${sanitizeMultiline(body.toString(), trim)}\`)`;
   return bodySnippet;
@@ -25,7 +25,7 @@ function parseRawBody (body, trim) {
  * @param {Object} body Raw body data
  * @param {boolean} trim trim body option
  */
-function parseGraphQL (body, trim) {
+function parseGraphQL(body, trim) {
   let query = body.query,
     graphqlVariables,
     bodySnippet;
@@ -48,7 +48,7 @@ function parseGraphQL (body, trim) {
  * @param {Object} body URLEncoded Body
  * @param {boolean} trim trim body option
  */
-function parseURLEncodedBody (body, trim) {
+function parseURLEncodedBody(body, trim) {
   var payload, bodySnippet;
   payload = _.reduce(body, function (accumulator, data) {
     if (!data.disabled) {
@@ -68,7 +68,7 @@ function parseURLEncodedBody (body, trim) {
  * @param {boolean} trim trim body option
  * @param {string} indent indent string
  */
-function parseFormData (body, trim, indent) {
+function parseFormData(body, trim, indent) {
   var bodySnippet = `payload := &bytes.Buffer{}\n${indent}writer := multipart.NewWriter(payload)\n`;
   _.forEach(body, function (data, index) {
     if (!data.disabled) {
@@ -101,8 +101,8 @@ function parseFormData (body, trim, indent) {
     }
   });
   bodySnippet += `${indent}err := writer.Close()\n${indent}if err != nil ` +
-  `{\n${indent.repeat(2)}fmt.Println(err)\n` +
-  `${indent.repeat(2)}return\n${indent}}\n`;
+    `{\n${indent.repeat(2)}fmt.Println(err)\n` +
+    `${indent.repeat(2)}return\n${indent}}\n`;
   return bodySnippet;
 }
 
@@ -110,7 +110,7 @@ function parseFormData (body, trim, indent) {
  * Parses file body from the Request
  *
  */
-function parseFile () {
+function parseFile() {
   // var bodySnippet = `payload := &bytes.Buffer{}\n${indent}writer := multipart.NewWriter(payload)\n`;
   // isFile = true;
   // bodySnippet += `${indent}// add your file name in the next statement in place of path\n`;
@@ -130,7 +130,7 @@ function parseFile () {
  * @param {boolean} trim trim body option
  * @param {string} indent indent string
  */
-function parseBody (body, trim, indent) {
+function parseBody(body, trim, indent) {
   if (!_.isEmpty(body)) {
     switch (body.mode) {
       case 'urlencoded':
@@ -156,7 +156,7 @@ function parseBody (body, trim, indent) {
  * @param {Object} headers headers from the request.
  * @param {string} indent indent string
  */
-function parseHeaders (headers, indent) {
+function parseHeaders(headers, indent) {
   var headerSnippet = '';
   if (!_.isEmpty(headers)) {
     headers = _.reject(headers, 'disabled');
@@ -245,8 +245,7 @@ self = module.exports = {
     codeSnippet += `${indent}"net/http"\n${indent}"io/ioutil"\n)\n\n`;
 
     finalUrl = new sdk.Url(request.url.toString());
-    // URL encoding each part of Url individually
-    finalUrl = `${finalUrl.protocol}://${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`;
+    finalUrl = finalUrl.toString();
 
     codeSnippet += `func main() {\n\n${indent}url := "${finalUrl}"\n`;
     codeSnippet += `${indent}method := "${request.method}"\n\n`;

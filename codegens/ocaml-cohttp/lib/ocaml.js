@@ -13,7 +13,7 @@ var _ = require('./lodash'),
  * @param {boolean} trim - trim body option
  * @returns {String} request body in the desired format
  */
-function parseRawBody (body, mode, trim) {
+function parseRawBody(body, mode, trim) {
   var bodySnippet;
   bodySnippet = `let postData = ref ${sanitize(body, mode, trim)};;\n\n`;
   return bodySnippet;
@@ -27,7 +27,7 @@ function parseRawBody (body, mode, trim) {
  * @param {boolean} trim - trim body option
  * @returns {String} request body in the desired format
  */
-function parseGraphQL (body, mode, trim) {
+function parseGraphQL(body, mode, trim) {
   let query = body.query,
     graphqlVariables,
     bodySnippet;
@@ -52,7 +52,7 @@ function parseGraphQL (body, mode, trim) {
  * @param {boolean} trim - trim body option
  * @returns {String} request body in the desired format
  */
-function parseURLEncodedBody (body, mode, trim) {
+function parseURLEncodedBody(body, mode, trim) {
   var payload, bodySnippet;
   payload = _.reduce(body, function (accumulator, data) {
     if (!data.disabled) {
@@ -73,24 +73,24 @@ function parseURLEncodedBody (body, mode, trim) {
  * @param {String} indent - indentation string
  * @returns {String} request body in the desired format
  */
-function parseFormData (body, trim, indent) {
+function parseFormData(body, trim, indent) {
   var parameters = '[|\n' + _.reduce(body, (accumalator, data) => {
-      if (!data.disabled || data.disabled === false) {
-        const key = sanitize(data.key, 'formdata-key', trim);
+    if (!data.disabled || data.disabled === false) {
+      const key = sanitize(data.key, 'formdata-key', trim);
 
-        if (data.type === 'file') {
-          const filename = data.src;
-          accumalator.push(`${indent}[| ("name", "${key}"); ("fileName", "${filename}") |]`);
-        }
-        else {
-          const value = sanitize(data.value, 'formdata-value', trim);
-          accumalator.push(`${indent}[| ("name", "${key}"); ("value", "${value}")` +
-            (data.contentType ? `; ("contentType", "${data.contentType}")` : '') +
-            ' |]');
-        }
+      if (data.type === 'file') {
+        const filename = data.src;
+        accumalator.push(`${indent}[| ("name", "${key}"); ("fileName", "${filename}") |]`);
       }
-      return accumalator;
-    }, []).join(';\n') + '\n|];;',
+      else {
+        const value = sanitize(data.value, 'formdata-value', trim);
+        accumalator.push(`${indent}[| ("name", "${key}"); ("value", "${value}")` +
+          (data.contentType ? `; ("contentType", "${data.contentType}")` : '') +
+          ' |]');
+      }
+    }
+    return accumalator;
+  }, []).join(';\n') + '\n|];;',
     bodySnippet = '';
 
   bodySnippet = `let parameters = ${parameters}\n`;
@@ -129,7 +129,7 @@ function parseFormData (body, trim, indent) {
  *
  * @returns {String} request body in the desired format
  */
-function parseFile () {
+function parseFile() {
   // var bodySnippet = 'let load_file f =\n';
   // bodySnippet += `${indent}let ic = open_in f in\n`;
   // bodySnippet += `${indent}let n = in_channel_length ic in\n`;
@@ -150,7 +150,7 @@ function parseFile () {
  * @param {String} indent - indentation string
  * @returns {String} utility function for getting request body in the desired format
  */
-function parseBody (body, trim, indent) {
+function parseBody(body, trim, indent) {
   if (!_.isEmpty(body) && (!_.isEmpty(body[body.mode]))) {
     switch (body.mode) {
       case 'urlencoded':
@@ -161,7 +161,7 @@ function parseBody (body, trim, indent) {
         return parseGraphQL(body.graphql, 'raw', trim);
       case 'formdata':
         return parseFormData(body.formdata, trim, indent);
-        /* istanbul ignore next */
+      /* istanbul ignore next */
       case 'file':
         return parseFile(indent);
       default:
@@ -179,7 +179,7 @@ function parseBody (body, trim, indent) {
  * @param {String} indent - indent indent string
  * @returns {String} request headers in the desired format
  */
-function parseHeaders (bodyMode, headers, indent) {
+function parseHeaders(bodyMode, headers, indent) {
   var headerSnippet = '';
   if (!_.isEmpty(headers)) {
     headers = _.reject(headers, 'disabled');
@@ -205,7 +205,7 @@ function parseHeaders (bodyMode, headers, indent) {
  * @param {String} method - method type of request
  * @returns {String} Method argument for ocaml call function
  */
-function getMethodArg (method) {
+function getMethodArg(method) {
   var methodArg = '',
     supportedMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD'],
     flag = false;
@@ -263,7 +263,7 @@ self = module.exports = {
         type: 'positiveInteger',
         default: 0,
         description: 'Set number of milliseconds the request should wait for a response' +
-    ' before timing out (use 0 for infinity)'
+          ' before timing out (use 0 for infinity)'
       },
       {
         name: 'Follow redirects',
@@ -316,8 +316,7 @@ self = module.exports = {
     trim = options.trimRequestBody;
 
     finalUrl = new sdk.Url(request.url.toString());
-    // URL encoding each part of Url individually
-    finalUrl = `${finalUrl.protocol}://${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`;
+    finalUrl = finalUrl.toString();
 
     methodArg = getMethodArg(request.method);
     if (request.body && !request.headers.has('Content-Type')) {

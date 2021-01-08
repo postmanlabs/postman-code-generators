@@ -27,7 +27,7 @@ describe('Golang convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('url := "https://google.com/"');
+        expect(snippet).to.include('url := "https://google.com"');
         expect(snippet).to.include('method := "GET"');
       });
     });
