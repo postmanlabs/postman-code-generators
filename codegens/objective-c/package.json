@@ -26,9 +26,7 @@
   "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/objective-c",
-  "dependencies": {
-    "postman-collection": "3.6.8"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "engines": {
     "node": ">=8"

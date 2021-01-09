@@ -1,5 +1,4 @@
 var _ = require('./lodash'),
-  sdk = require('postman-collection'),
   sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
   addFormParam = require('./util').addFormParam,
@@ -212,7 +211,7 @@ function convert (request, options, callback) {
     throw new Error('JS-XHR-Converter: callback is not valid function');
   }
   options = sanitizeOptions(options, getOptions());
-  var indent, trim, headerSnippet, finalUrl,
+  var indent, trim, headerSnippet,
     codeSnippet = '',
     bodySnippet = '';
   indent = options.indentType === 'Tab' ? '\t' : ' ';
@@ -272,10 +271,7 @@ function convert (request, options, callback) {
   codeSnippet += `${indent.repeat(2)}console.log(this.responseText);\n`;
   codeSnippet += `${indent}}\n});\n\n`;
 
-  finalUrl = new sdk.Url(request.url.toString());
-  finalUrl = finalUrl.toString();
-
-  codeSnippet += `xhr.open("${request.method}", "${finalUrl}");\n`;
+  codeSnippet += `xhr.open("${request.method}", "${sanitize(request.url.toString())}");\n`;
   if (options.requestTimeout) {
     codeSnippet += `xhr.timeout = ${options.requestTimeout};\n`;
     codeSnippet += 'xhr.addEventListener("ontimeout", function(e) {\n';

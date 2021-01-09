@@ -1,5 +1,4 @@
 var _ = require('./lodash'),
-  sdk = require('postman-collection'),
   parseBody = require('./util/parseBody'),
   sanitize = require('./util/sanitize').sanitize,
   sanitizeOptions = require('./util/sanitize').sanitizeOptions,
@@ -106,8 +105,7 @@ self = module.exports = {
     identity = options.indentType === 'Tab' ? '\t' : ' ';
     indentation = identity.repeat(options.indentCount);
     // concatenation and making up the final string
-    finalUrl = new sdk.Url(request.url.toString());
-    finalUrl = finalUrl.toString();
+    finalUrl = request.url.toString();
 
     snippet = '<?php\n\n$curl = curl_init();\n\n';
     snippet += 'curl_setopt_array($curl, array(\n';

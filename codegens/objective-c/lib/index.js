@@ -1,5 +1,4 @@
 var _ = require('./lodash'),
-  sdk = require('postman-collection'),
   sanitizeOptions = require('./util').sanitizeOptions,
   sanitize = require('./util').sanitize,
   addFormParam = require('./util').addFormParam,
@@ -191,7 +190,7 @@ function parseHeaders (headersArray, indent, trim) {
 
 self = module.exports = {
   convert: function (request, options, callback) {
-    var indent, finalUrl,
+    var indent,
       codeSnippet = '',
       requestTimeout,
       headerSnippet = '#import <Foundation/Foundation.h>\n\n',
@@ -263,12 +262,8 @@ self = module.exports = {
       footerSnippet += '}';
     }
     codeSnippet += 'dispatch_semaphore_t sema = dispatch_semaphore_create(0);\n\n';
-
-    finalUrl = new sdk.Url(request.url.toString());
-    finalUrl = finalUrl.toString();
-
     codeSnippet += 'NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"' +
-      finalUrl + '"]\n';
+      sanitize(request.url.toString()) + '"]\n';
     codeSnippet += `${indent}cachePolicy:NSURLRequestUseProtocolCachePolicy\n`;
     codeSnippet += `${indent}timeoutInterval:${requestTimeout}.0];\n`;
 

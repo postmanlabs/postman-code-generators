@@ -1,5 +1,4 @@
 var _ = require('./lodash'),
-  sdk = require('postman-collection'),
   sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
   addFormParam = require('./util').addFormParam,
@@ -314,10 +313,7 @@ self = module.exports = {
     // timeout = options.requestTimeout;
     // followRedirect = options.followRedirect;
     trim = options.trimRequestBody;
-
-    finalUrl = new sdk.Url(request.url.toString());
-    finalUrl = finalUrl.toString();
-
+    finalUrl = sanitize(request.url.toString());
     methodArg = getMethodArg(request.method);
     if (request.body && !request.headers.has('Content-Type')) {
       if (request.body.mode === 'file') {

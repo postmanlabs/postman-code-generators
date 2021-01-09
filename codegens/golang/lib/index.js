@@ -1,5 +1,4 @@
 var _ = require('./lodash'),
-  sdk = require('postman-collection'),
   sanitize = require('./util').sanitize,
   sanitizeMultiline = require('./util').sanitizeMultiline,
   sanitizeOptions = require('./util').sanitizeOptions,
@@ -175,7 +174,7 @@ self = module.exports = {
     }
     options = sanitizeOptions(options, self.getOptions());
 
-    var codeSnippet, indent, trim, timeout, followRedirect, finalUrl,
+    var codeSnippet, indent, trim, timeout, followRedirect,
       bodySnippet = '',
       responseSnippet = '',
       headerSnippet = '';
@@ -244,10 +243,7 @@ self = module.exports = {
     }
     codeSnippet += `${indent}"net/http"\n${indent}"io/ioutil"\n)\n\n`;
 
-    finalUrl = new sdk.Url(request.url.toString());
-    finalUrl = finalUrl.toString();
-
-    codeSnippet += `func main() {\n\n${indent}url := "${finalUrl}"\n`;
+    codeSnippet += `func main() {\n\n${indent}url := "${sanitize(request.url.toString())}"\n`;
     codeSnippet += `${indent}method := "${request.method}"\n\n`;
 
     if (bodySnippet !== '') {
