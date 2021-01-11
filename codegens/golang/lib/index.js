@@ -175,7 +175,7 @@ self = module.exports = {
     }
     options = sanitizeOptions(options, self.getOptions());
 
-    var codeSnippet, indent, trim, timeout, followRedirect, finalUrl,
+    var codeSnippet, indent, trim, timeout, followRedirect,
       bodySnippet = '',
       responseSnippet = '',
       headerSnippet = '';

@@ -212,7 +212,7 @@ function convert (request, options, callback) {
     throw new Error('JS-XHR-Converter: callback is not valid function');
   }
   options = sanitizeOptions(options, getOptions());
-  var indent, trim, headerSnippet, finalUrl,
+  var indent, trim, headerSnippet,
     codeSnippet = '',
     bodySnippet = '';
   indent = options.indentType === 'Tab' ? '\t' : ' ';

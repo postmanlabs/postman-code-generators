@@ -191,7 +191,7 @@ function parseHeaders (headersArray, indent, trim) {
 
 self = module.exports = {
   convert: function (request, options, callback) {
-    var indent, finalUrl,
+    var indent,
       codeSnippet = '',
       requestTimeout,
       headerSnippet = '#import <Foundation/Foundation.h>\n\n',
@@ -268,7 +268,7 @@ self = module.exports = {
     finalUrl = `${finalUrl.protocol ? `${finalUrl.protocol}://` : ''}${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`;
 
     codeSnippet += 'NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"' +
-      finalUrl + '"]\n';
+      sanitize(request.url.toString()) + '"]\n';
     codeSnippet += `${indent}cachePolicy:NSURLRequestUseProtocolCachePolicy\n`;
     codeSnippet += `${indent}timeoutInterval:${requestTimeout}.0];\n`;
 
