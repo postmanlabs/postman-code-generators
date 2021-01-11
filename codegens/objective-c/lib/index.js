@@ -265,7 +265,7 @@ self = module.exports = {
     codeSnippet += 'dispatch_semaphore_t sema = dispatch_semaphore_create(0);\n\n';
 
     finalUrl = new sdk.Url(request.url.toString());
-    finalUrl = finalUrl.toString();
+    finalUrl = `${finalUrl.protocol ? `${finalUrl.protocol}://` : ''}${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`;
 
     codeSnippet += 'NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"' +
       finalUrl + '"]\n';

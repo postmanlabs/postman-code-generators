@@ -273,7 +273,7 @@ function convert (request, options, callback) {
   codeSnippet += `${indent}}\n});\n\n`;
 
   finalUrl = new sdk.Url(request.url.toString());
-  finalUrl = finalUrl.toString();
+  finalUrl = `${finalUrl.protocol ? `${finalUrl.protocol}://` : ''}${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`;
 
   codeSnippet += `xhr.open("${request.method}", "${finalUrl}");\n`;
   if (options.requestTimeout) {

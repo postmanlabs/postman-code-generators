@@ -107,7 +107,7 @@ self = module.exports = {
     indentation = identity.repeat(options.indentCount);
     // concatenation and making up the final string
     finalUrl = new sdk.Url(request.url.toString());
-    finalUrl = finalUrl.toString();
+    finalUrl = `${finalUrl.protocol ? `${finalUrl.protocol}://` : ''}${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`;
 
     snippet = '<?php\n\n$curl = curl_init();\n\n';
     snippet += 'curl_setopt_array($curl, array(\n';

@@ -245,7 +245,7 @@ self = module.exports = {
     codeSnippet += `${indent}"net/http"\n${indent}"io/ioutil"\n)\n\n`;
 
     finalUrl = new sdk.Url(request.url.toString());
-    finalUrl = finalUrl.toString();
+    finalUrl = `${finalUrl.protocol ? `${finalUrl.protocol}://` : ''}${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`;
 
     codeSnippet += `func main() {\n\n${indent}url := "${finalUrl}"\n`;
     codeSnippet += `${indent}method := "${request.method}"\n\n`;

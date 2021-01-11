@@ -316,7 +316,7 @@ self = module.exports = {
     trim = options.trimRequestBody;
 
     finalUrl = new sdk.Url(request.url.toString());
-    finalUrl = finalUrl.toString();
+    finalUrl = `${finalUrl.protocol ? `${finalUrl.protocol}://` : ''}${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`;
 
     methodArg = getMethodArg(request.method);
     if (request.body && !request.headers.has('Content-Type')) {
