@@ -14,10 +14,10 @@ function parseURLEncodedBody (body) {
     bodySnippet;
   _.forEach(body, function (data) {
     if (!data.disabled) {
-      payload.push(`${encodeURIComponent(data.key)}=${encodeURIComponent(data.value)}`);
+      payload.push(`${encodeURIComponent(data.key)} = ${encodeURIComponent(data.value)}`);
     }
   });
-  bodySnippet = `var data = "${payload.join('&')}";\n`;
+  bodySnippet = `var formData = "${payload.join('&')}";\n`;
   return bodySnippet;
 }
 
@@ -29,7 +29,7 @@ function parseURLEncodedBody (body) {
  * @param {String} contentType Content type of the body being sent
  */
 function parseRawBody (body, trim, contentType) {
-  var bodySnippet = 'var data = ';
+  var bodySnippet = 'var formData = ';
   // Match any application type whose underlying structure is json
   // For example application/vnd.api+json
   // All of them have +json as suffix
@@ -108,7 +108,7 @@ function parseFile () {
   // var bodySnippet = 'var data = new FormData();\n';
   // bodySnippet += `data.append("${sanitize(body.key, trim)}", "${sanitize(body.src, trim)}", `;
   // bodySnippet += `"${sanitize(body.key, trim)}");\n`;
-  var bodySnippet = 'var data = "<file contents here>";\n';
+  var bodySnippet = 'var formData = "<file contents here>";\n';
   return bodySnippet;
 }
 
@@ -134,10 +134,10 @@ function parseBody (body, trim, indentString, contentType) {
       case 'file':
         return parseFile(body.file, trim);
       default:
-        return 'var data = null;\n';
+        return 'var formData = {};\n';
     }
   }
-  return 'var data = null;\n';
+  return 'var formData = {};\n';
 }
 
 /**
@@ -210,7 +210,7 @@ function getOptions () {
 function convert (request, options, callback) {
 
   if (!_.isFunction(callback)) {
-    throw new Error('JS-XHR-Converter: callback is not valid function');
+    throw new Error('JS-URLFETCHAPP-Converter: callback is not valid function');
   }
   options = sanitizeOptions(options, getOptions());
   var indent, trim, headerSnippet,
@@ -262,7 +262,7 @@ function convert (request, options, callback) {
     });
   }
   bodySnippet = request.body && !_.isEmpty(request.body.toJSON()) ? parseBody(request.body.toJSON(), trim,
-    indent, request.headers.get('Content-Type')) : '';
+    indent, request.headers.get('Content-Type')) : 'var formData = {};\n';
 
   codeSnippet += bodySnippet + '\n';
 
@@ -288,14 +288,14 @@ function convert (request, options, callback) {
   codeSnippet += headerSnippet + '\n';
 
   codeSnippet += 'var options = {\n';
-  codeSnippet += `${indent}'method' : ${request.method},\n`;
+  codeSnippet += `${indent}'method' : '${request.method}',\n`;
   codeSnippet += `${indent}'payload' : formData,\n`;
   codeSnippet += `${indent}'header' : header,\n`;
   codeSnippet += '};\n';
   codeSnippet += '\n';
 
   if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
-    codeSnippet += `UrlFetchApp.fetch(encodeURI(${encodeURI(request.url.toString())}), options);\n`;
+    codeSnippet += `UrlFetchApp.fetch(encodeURI('${encodeURI(request.url.toString())}'), options);\n`;
   }
   else {
     codeSnippet += `UrlFetchApp.fetch('${encodeURI(request.url.toString())}', options);\n`;

@@ -133,10 +133,10 @@ function parseBody (body, trim, indentString, contentType) {
       case 'file':
         return parseFile(body.file, trim);
       default:
-        return 'var data = null;\n';
+        return 'var formData = {};\n';
     }
   }
-  return 'var data = null;\n';
+  return 'var formData = {};\n';
 }
 
 /**
