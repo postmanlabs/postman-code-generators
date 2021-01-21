@@ -4,12 +4,6 @@ var _ = require('./lodash'),
   addFormParam = require('./util').addFormParam,
   path = require('path');
 
-// var _ = require(['./lodash']),
-  // sanitize = require(['./util']).sanitize,
-  // sanitizeOptions = require(['./util']).sanitizeOptions,
-  // addFormParam = require(['./util']).addFormParam,
-  // path = require(['path']);
-
 /**
  * Parses URLEncoded body from request
  *
@@ -93,14 +87,14 @@ function parseFormData (body, trim) {
       if (data.type === 'file') {
         var pathArray = data.src.split(path.sep),
           fileName = pathArray[pathArray.length - 1];
-        bodySnippet += `${indent}"${sanitize(data.key, trim)}": DriveApp.getFileById(${fileName}).getBlob(),\n `;
+        bodySnippet += `  "${sanitize(data.key, trim)}": DriveApp.getFileById(${fileName}).getBlob(),\n `;
       }
       else {
-        bodySnippet += `${indent}"${sanitize(data.key, trim)}": "${sanitize(data.value, trim)}",\n`;
+        bodySnippet += `  "${sanitize(data.key, trim)}": "${sanitize(data.value, trim)}",\n`;
       }
     }
   });
-  bodySnippet += '};'
+  bodySnippet += '};';
   return bodySnippet;
 }
 
@@ -156,10 +150,10 @@ function parseHeaders (headers) {
   if (!_.isEmpty(headers)) {
     headers = _.reject(headers, 'disabled');
     _.forEach(headers, function (header) {
-      headerSnippet += `${indent}"${sanitize(header.key, true)}": "${sanitize(header.value)}",\n`;
+      headerSnippet += `  "${sanitize(header.key, true)}": "${sanitize(header.value)}",\n`;
     });
   }
-  headerSnippet += `};\n`;
+  headerSnippet += '};\n';
   return headerSnippet;
 }
 
@@ -278,35 +272,33 @@ function convert (request, options, callback) {
   // codeSnippet += `${indent}if(this.readyState === 4) {\n`;
   // codeSnippet += `${indent.repeat(2)}console.log(this.responseText);\n`;
   // codeSnippet += `${indent}}\n});\n\n`;
-  
+
   // codeSnippet += 'var xhr = new XMLHttpRequest();\nxhr.withCredentials = true;\n\n';
 
-  
-  
-  
+
   if (options.requestTimeout) {
     // requestTimeout not supported
-	// See https://issuetracker.google.com/issues/36761852 for more information
-	codeSnippet += `//requestTimeout not supported\n\n`;
-	codeSnippet += `// See https://issuetracker.google.com/issues/36761852 for more information \n\n`;
+    // See https://issuetracker.google.com/issues/36761852 for more information
+    codeSnippet += '//requestTimeout not supported\n\n';
+    codeSnippet += '// See https://issuetracker.google.com/issues/36761852 for more information \n\n';
   }
-  
+
   headerSnippet = parseHeaders(request.toJSON().header);
 
   codeSnippet += headerSnippet + '\n';
-  
-  codeSnippet += `var options = {\n`;
+
+  codeSnippet += 'var options = {\n';
   codeSnippet += `${indent}'method' : ${request.method},\n`;
   codeSnippet += `${indent}'payload' : formData,\n`;
   codeSnippet += `${indent}'header' : header,\n`;
-  codeSnippet += `};\n`;
-  codeSnippet += `\n`;
-  
+  codeSnippet += '};\n';
+  codeSnippet += '\n';
+
   if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
     codeSnippet += `UrlFetchApp.fetch(encodeURI(${encodeURI(request.url.toString())}), options);\n`;
-  } 
+  }
   else {
-	codeSnippet += `UrlFetchApp.fetch('${encodeURI(request.url.toString())}', options);\n`;
+    codeSnippet += `UrlFetchApp.fetch('${encodeURI(request.url.toString())}', options);\n`;
   }
   callback(null, codeSnippet);
 }

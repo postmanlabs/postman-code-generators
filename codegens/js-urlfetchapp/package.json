@@ -22,7 +22,7 @@
     "type": "git",
     "url": ""
   },
-  "author": "Ray Liu <ray@rayliu.ca>",
+  "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/js-urlfetchapp",
   "dependencies": {},
