@@ -7,9 +7,9 @@ var chalk = require('chalk'),
 
 require('async').series([
   require('./test-lint'),
-  require('./test-newman')
+  // require('./test-newman'),
   // Add a separate folder for every new suite of tests
-  // require('./test-unit')
+  require('./test-unit')
   // require('./test-browser')
   // require('./test-integration')
 ], function (code) {

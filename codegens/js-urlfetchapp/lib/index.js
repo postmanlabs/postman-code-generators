@@ -36,7 +36,7 @@ function parseRawBody (body, trim, contentType) {
   if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
     try {
       let jsonBody = JSON.parse(body);
-      bodySnippet += `JSON.stringify(${JSON.stringify(jsonBody)});\n`;
+      bodySnippet += `${JSON.stringify(jsonBody)};\n`;
     }
     catch (error) {
       bodySnippet += `"${sanitize(body.toString(), trim)}";\n`;
@@ -65,10 +65,10 @@ function parseGraphQL (body, trim, indentString) {
   catch (e) {
     graphqlVariables = {};
   }
-  bodySnippet = 'var formData = JSON.stringify({\n';
+  bodySnippet = 'var formData = {\n';
   bodySnippet += `${indentString}query: "${sanitize(query, trim)}",\n`;
   bodySnippet += `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n`;
-  bodySnippet += '});\n';
+  bodySnippet += '};\n';
   return bodySnippet;
 }
 
@@ -87,14 +87,14 @@ function parseFormData (body, trim) {
       if (data.type === 'file') {
         var pathArray = data.src.split(path.sep),
           fileName = pathArray[pathArray.length - 1];
-        bodySnippet += `  "${sanitize(data.key, trim)}": DriveApp.getFileById(${fileName}).getBlob(),\n `;
+        bodySnippet += `  "${sanitize(data.key, trim)}": DriveApp.getFileById(${fileName}).getBlob(),\n`;
       }
       else {
         bodySnippet += `  "${sanitize(data.key, trim)}": "${sanitize(data.value, trim)}",\n`;
       }
     }
   });
-  bodySnippet += '};';
+  bodySnippet += '};\n';
   return bodySnippet;
 }
 
@@ -279,7 +279,7 @@ function convert (request, options, callback) {
   if (options.requestTimeout) {
     // requestTimeout not supported
     // See https://issuetracker.google.com/issues/36761852 for more information
-    codeSnippet += '//requestTimeout not supported\n\n';
+    codeSnippet += '\n//requestTimeout not supported\n';
     codeSnippet += '// See https://issuetracker.google.com/issues/36761852 for more information \n\n';
   }
 
@@ -295,11 +295,12 @@ function convert (request, options, callback) {
   codeSnippet += '\n';
 
   if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
-    codeSnippet += `UrlFetchApp.fetch(encodeURI('${encodeURI(request.url.toString())}'), options);\n`;
+    codeSnippet += `var response = UrlFetchApp.fetch(encodeURI('${encodeURI(request.url.toString())}'), options);\n`;
   }
   else {
-    codeSnippet += `UrlFetchApp.fetch('${encodeURI(request.url.toString())}', options);\n`;
+    codeSnippet += `var response = UrlFetchApp.fetch('${encodeURI(request.url.toString())}', options);\n\n`;
   }
+  codeSnippet += 'Logger.log(response.getContentText());\n';
   callback(null, codeSnippet);
 }
 
