@@ -279,7 +279,7 @@ function convert (request, options, callback) {
   if (options.requestTimeout) {
     // requestTimeout not supported
     // See https://issuetracker.google.com/issues/36761852 for more information
-    codeSnippet += '\n//requestTimeout not supported\n';
+    codeSnippet += '\n// requestTimeout not supported\n';
     codeSnippet += '// See https://issuetracker.google.com/issues/36761852 for more information \n\n';
   }
 

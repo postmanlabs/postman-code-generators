@@ -1,5 +1,5 @@
 
-> Converts Postman-SDK Request into code snippet for .
+> Converts Postman-SDK Request into code snippet for Google Apps Script (UrlFetchApp).
 
 #### Prerequisites
 To run Code-Gen, ensure that you have NodeJS >= v8. A copy of the NodeJS installable can be downloaded from https://nodejs.org/en/download/package-manager.
@@ -40,3 +40,5 @@ convert(request, options, function(error, snippet) {
 * Since Postman-SDK Request object doesn't provide complete path of the file, it needs to be manually inserted in case of uploading a file.
 
 * This module doesn't support cookies.
+
+* This module doesn't support requestTimeout option.
