@@ -466,6 +466,39 @@ describe('curl convert function', function () {
       });
     });
 
+    it('should generate valid snippets when quoteType is "double"', function () {
+      // url = https://a"b'c.com/'d/"e
+      var request = new sdk.Request({
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'json',
+              'value': '{"hello": "world"}',
+              'contentType': 'application/json',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': "https://a\"b'c.com/'d/\"e", // eslint-disable-line quotes
+          'host': [
+            'a"b\'c',
+            'com'
+          ]
+        }
+      });
+      convert(request, {quoteType: 'double'}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        expect(snippet).to.include('"a\\"b\'c.com"');
+        expect(snippet).to.include('"json=\\"{\\\\\\"hello\\\\\\": \\\\\\"world\\\\\\"}\\";type=application/json"');
+      });
+    });
+
     describe('getUrlStringfromUrlObject function', function () {
       var rawUrl, urlObject, outputUrlString;
 
