@@ -5,7 +5,7 @@ var formData  = {
 };
 
 
-//requestTimeout not supported
+// requestTimeout not supported
 // See https://issuetracker.google.com/issues/36761852 for more information 
 
 var header = {
