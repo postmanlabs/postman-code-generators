@@ -1,5 +1,7 @@
 var _ = require('./lodash'),
-    sanitze = require('./util').sanitze
+
+    sanitze = require('./util').sanitze,
+    csharpify = require('./util').csharpify
     self;
 
 /**
@@ -9,15 +11,25 @@ var _ = require('./lodash'),
  * @returns {String} csharp-httpclient code snippet for given request object
  */
 function makeSnippet (request, options) {
-    const HAS_DIRECT_CLIENT_METHOD = [ 'DELETE', 'GET', 'POST', 'PUT' ];
+    const HAS_DIRECT_CLIENT_METHOD = [ 'DELETE', 'GET', 'POST', 'PUT' ],
+        IS_PROPERTY_METHOD = [ 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE' ];
 
     var snippet = 'var client = new HttpClient();\n',
         usesSend = !HAS_DIRECT_CLIENT_METHOD.includes(request.method);
 
     if (usesSend) {
-        snippet += 'var request = new HttpRequest();\n';
-    } else {
+        // Check if HttpClient has a built in helper method for this method
+        if (IS_PROPERTY_METHOD.includes(request.method)) {
+            // Use the built in property since it's got one
+            snippet += `var request = new HttpRequestMessage(HttpMethod.${csharpify(request.method)});\n`
+        } else {
+            // Create an instance of HttpMethod with the given method
+            snippet += `var request = new HttpRequestMessage(new HttpMethod("${request.method}"), "${sanitze(request.url.toString())}");\n`;
+        }
 
+        snippet += "var response = await client.SendAsync(request);\n";
+    } else {
+        
     }
 
 
@@ -109,7 +121,7 @@ self = module.exports = {
                 '}\n';
         }
 
-        snippet = 'stuff';
+        snippet = makeSnippet(request, options);
 
         return callback(null, headerSnippet + snippet + footerSnippet);
     }
