@@ -117,6 +117,34 @@ function convertPropertyListToString (propertyList, joinUsing, includeDisabled =
   }), joinUsing);
 }
 
+/**
+ * Url encodes the members of the property list.
+ *
+ * @param {Object} propertyList propertyList
+ * @param {String} joinUsing specify string that should be used to join the list of properties
+ * @param {Boolean} includeDisabled indicated whether or not to include disabled properties
+ * @param {Boolean} trimRequestBody indicates whether or not to trim request body
+ * @returns {String} Stringified and Url encoded property List
+ */
+function convertPropListToStringUrlEncoded (propertyList, joinUsing, includeDisabled = false, trimRequestBody = false) {
+  let properties = getMembersOfPropertyList(propertyList, includeDisabled);
+  const keyvalues = [];
+
+  properties.forEach((property) => {
+    let keyvalue;
+    if (trimRequestBody) {
+      keyvalue = `${encodeURIComponent(property.key.trim())}=${encodeURIComponent(property.value.trim())}`;
+    }
+    else {
+      keyvalue = `${encodeURIComponent(property.key)}=${encodeURIComponent(property.value)}`;
+    }
+
+    keyvalues.push(keyvalue);
+  });
+
+  return keyvalues.join(joinUsing);
+}
+
 
 /**
  * Returns the request headers as a string
@@ -181,7 +209,8 @@ function getBody (request, trimRequestBody) {
       case URL_ENCODED:
         /* istanbul ignore else */
         if (!_.isEmpty(request.body[request.body.mode])) {
-          requestBody += convertPropertyListToString(request.body[request.body.mode], '&', false, trimRequestBody);
+          const propertyList = request.body[request.body.mode];
+          requestBody += convertPropListToStringUrlEncoded(propertyList, '&', false, trimRequestBody);
         }
         return trimRequestBody ? requestBody.trim() : requestBody;
 
