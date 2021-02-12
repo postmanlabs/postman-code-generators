@@ -23,9 +23,9 @@
     "type": "git",
     "url": ""
   },
-  "author": "$AUTHOR_NAME",
+  "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/<<CODEGEN_NAME>>",
+  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/csharp-httpclient",
   "dependencies": {},
   "devDependencies": {},
   "engines": {
