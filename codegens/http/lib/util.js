@@ -127,17 +127,13 @@ function convertPropertyListToString (propertyList, joinUsing, includeDisabled =
  * @returns {String} Stringified and Url encoded property List
  */
 function convertPropListToStringUrlEncoded (propertyList, joinUsing, includeDisabled = false, trimRequestBody = false) {
-  let properties = getMembersOfPropertyList(propertyList, includeDisabled);
-  const keyvalues = [];
+  const properties = getMembersOfPropertyList(propertyList, includeDisabled),
+    keyvalues = [];
 
   properties.forEach((property) => {
-    let keyvalue;
-    if (trimRequestBody) {
-      keyvalue = `${encodeURIComponent(property.key.trim())}=${encodeURIComponent(property.value.trim())}`;
-    }
-    else {
-      keyvalue = `${encodeURIComponent(property.key)}=${encodeURIComponent(property.value)}`;
-    }
+    const key = trimRequestBody ? property.key.trim() : property.key,
+      value = trimRequestBody ? property.value.trim() : property.value,
+      keyvalue = `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
 
     keyvalues.push(keyvalue);
   });
