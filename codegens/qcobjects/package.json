@@ -14,7 +14,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "node npm/test.js",
+    "test": "npm i && node npm/test.js",
     "test-lint": "node npm/test-lint.js",
     "test-newman": "node npm/test-newman.js"
   },
