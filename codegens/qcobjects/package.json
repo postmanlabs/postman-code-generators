@@ -26,19 +26,10 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/qcobjects",
   "dependencies": {
-    "async": "3.2.0",
-    "chalk": "4.1.0",
-    "eslint": "7.20.0",
-    "nyc": "15.1.0",
-    "pretty-ms": "7.0.1",
-    "qcobjects": "2.2.607",
-    "qcobjects-sdk": "0.1.255",
-    "recursive-readdir": "2.2.2",
-    "request": "2.88.0",
-    "shelljs": "0.8.4"
+    "postman-collection": "3.6.9"
   },
   "devDependencies": {
-    "eslint-plugin-jsdoc": "30.7.9"
+    "follow-redirects": "1.13.1"
   },
   "engines": {
     "node": ">=8"
