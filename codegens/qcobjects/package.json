@@ -27,6 +27,7 @@
   "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/qcobjects",
   "dependencies": {
     "postman-collection": "3.6.9",
+    "core-js":"3.8.3",
     "qcobjects":"2.3.7",
     "qcobjects-sdk":"2.3.10"
   },
