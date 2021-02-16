@@ -38,7 +38,7 @@ describe('csharp httpclient function', function () {
       };
 
     it('should return snippet with boilerplate code given option', function () {
-      convert(options, { includeBoilerplate: true}, function (error, snippet) {
+      convert(request, { includeBoilerplate: true}, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
           return;
@@ -55,7 +55,7 @@ describe('csharp httpclient function', function () {
         }
         snippetArray = snippet.split('\n');
         for (var i = 0; i < snippetArray.length; i++) {
-          if (snippetArray[i].startWith('namespace HelloWorldApplication')) {
+          if (snippetArray[i].startsWith('namespace HelloWorldApplication')) {
             expect(snippetArray[i + 1].charAt(0)).to.equal('{');
             // TODO: Do more expects
             expect(snippetArray[i + 2].charAt(0)).to.equal(' ');

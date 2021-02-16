@@ -27,7 +27,7 @@ module.exports = function (exit) {
     nyc = new NYC({
       reportDir: COV_REPORT_PATH,
       tempDirectory: COV_REPORT_PATH,
-      reporter: ['text', 'lcov', 'test-summary'],
+      reporter: ['text', 'lcov', 'text-summary'],
       exclude: ['config', 'test'],
       hookRunInContext: true,
       hookRunInThisContext: true

@@ -1,7 +1,9 @@
 var _ = require('./lodash'),
-
-  sanitze = require('./util').sanitze,
-  csharpify = require('./util').csharpify;
+  parseRequest = require('./parseRequest'),
+  sanitize = require('./util').sanitize,
+  csharpify = require('./util').csharpify,
+  sanitizeOptions = require('./util').sanitizeOptions,
+  self;
 
 /**
  *
@@ -9,31 +11,39 @@ var _ = require('./lodash'),
  * @returns {String} csharp-httpclient code snippet for given request object
  */
 function makeSnippet (request) {
-  const HAS_DIRECT_CLIENT_METHOD = [ 'DELETE', 'GET', 'POST', 'PUT' ],
-    IS_PROPERTY_METHOD = [ 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE' ];
+  const IS_PROPERTY_METHOD = [ 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE' ];
 
-  var snippet = 'var client = new HttpClient();\n',
-    usesSend = !HAS_DIRECT_CLIENT_METHOD.includes(request.method);
+  var snippet = 'var client = new HttpClient();\n';
 
-  if (usesSend) {
-    // Check if HttpClient has a built in helper method for this method
-    if (IS_PROPERTY_METHOD.includes(request.method)) {
-      // Use the built in property since it's got one
-      snippet += `var request = new HttpRequestMessage(HttpMethod.${csharpify(request.method)});\n`;
-    }
-    else {
-      // Create an instance of HttpMethod with the given method
-      snippet += 'var request = new HttpRequestMessage(' +
-        `new HttpMethod("${request.method}"), "${sanitze(request.url.toString())}");\n`;
-    }
+  // Add in request timeout e.g client.Timeout = TimeSpan.FromSeconds();
 
-    snippet += 'var response = await client.SendAsync(request);\n';
+  // Create the request
+  snippet += 'var request = new HttpRequestMessage(';
+
+  if (IS_PROPERTY_METHOD.includes(request.method)) {
+    snippet += `HttpMethod.${csharpify(request.method)}`;
   }
+  else {
+    snippet += `new HttpMethod("${request.method}")`;
+  }
+
+  snippet += `, "${sanitize(request.url.toString())}");\n`;
+  // Finish the initial creation of the request
+
+  // Parse headers
+  snippet += parseRequest.parseHeader(request.toJSON());
+
+  // Configure the body
+  snippet += parseRequest.parseBody(request);
+
+  snippet += 'var response = await client.SendAsync(request);\n';
+  snippet += 'response.EnsureSuccessStatusCode();\n';
+  snippet += 'Console.WriteLine(await response.Content.ReadAsStringAsync());\n';
 
   return snippet;
 }
 
-module.exports = {
+self = module.exports = {
 
   /**
    * Used in order to get additional options for generation of C# code snippet (i.e. Include Boilerplate code)
@@ -100,13 +110,15 @@ module.exports = {
       snippet = '';
 
     // TODO: Sanitize options here
+    options = sanitizeOptions(options, self.getOptions());
 
     // TODO: Get this stuff from options
     indentString = options.indentType === 'Tab' ? '\t' : ' ';
     indentString = indentString.repeat(options.indentCount);
 
     if (options.includeBoilerplate) {
-      headerSnippet = 'using System.Net.Http;\n' +
+      headerSnippet = 'using System.Collection.Generic;\n' +
+        'using System.Net.Http;\n' +
         'namespace HelloWorldApplication\n' +
         '{\n' +
         indentString + 'class HelloWorld\n' +
