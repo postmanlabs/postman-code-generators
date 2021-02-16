@@ -1,3 +1,4 @@
+require ('core-js');
 var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
