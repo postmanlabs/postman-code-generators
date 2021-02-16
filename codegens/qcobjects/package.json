@@ -26,7 +26,9 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/qcobjects",
   "dependencies": {
-    "postman-collection": "3.6.9"
+    "postman-collection": "3.6.9",
+    "qcobjects":"2.3.7",
+    "qcobjects-sdk":"2.3.10"
   },
   "devDependencies": {
     "follow-redirects": "1.13.1"
