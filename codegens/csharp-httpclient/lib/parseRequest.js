@@ -15,7 +15,7 @@ function parseHeader (requestJson) {
   }
 
   return requestJson.header.reduce((headerSnippet, header) => {
-    if (!header.disabled) {
+    if (!header.disabled && sanitize(header.key) !== 'Content-Type') {
       headerSnippet += `request.Headers.Add("${sanitize(header.key, true)}", "${sanitize(header.value)}");\n`;
     }
     return headerSnippet;
@@ -25,29 +25,47 @@ function parseHeader (requestJson) {
 /**
  * Parses request object and returns csharp-httpclient code snippet for adding request body
  *
- * @param {Object} request - JSON object representing body of request
+ * @param {Object} requestBody - JSON object representing body of request
  * @returns {String} code snippet of csharp-httpclient parsed from request object
  */
-
 function parseFormData (requestBody) {
   if (!Array.isArray(requestBody[requestBody.mode])) {
     return '';
   }
 
-  return requestBody[requestBody.mode].reduce((body, data) => {
+  let mainContent = requestBody[requestBody.mode].reduce((body, data) => {
     if (data.disabled) {
       return body;
     }
     if (data.type === 'file') {
-      body += `// File Key: ${sanitize(data.key)} Source: ${sanitize(data.src)}`;
+      body += `content.Add(new StreamContent(File.Create("${sanitize(data.src)}")), "${data.key}");\n`;
     }
     else {
       (!data.value) && (data.value = '');
-      body += `// Parameter Key: ${sanitize(data.key)} Value: ${sanitize(data.value)}`;
+      body += `content.Add(new StringContent("${sanitize(data.value)}"), "${sanitize(data.key)}");\n`;
     }
 
     return body;
   }, '');
+
+  if (!mainContent) {
+    return '';
+  }
+
+  return 'var content = new MultipartFormDataContent();\n' + mainContent;
+}
+
+function parseGraphQL (requestBody) {
+  let query = requestBody.graphql.query,
+    graphqlVariables;
+  try {
+    graphqlVariables = JSON.parse(requestBody.graphql.variables);
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  return 'var content = new StringContent(' +
+    `"${sanitize(JSON.stringify({query: query, variables: graphqlVariables}))}");\n`;
 }
 
 function parseBody (request) {
@@ -55,23 +73,29 @@ function parseBody (request) {
   if (!_.isEmpty(requestBody)) {
     switch (requestBody.mode) {
       case 'urlencoded':
-        return parseFormData(request);
+        return parseFormData(requestBody);
       case 'formdata':
-        return parseFormData(request);
+        return parseFormData(requestBody);
       case 'raw':
-        return '// raw\n';
+        return `var content = new StringContent("${JSON.stringify(requestBody[requestBody.mode])}");\n`;
       case 'graphql':
-        return '// graphql\n';
+        return parseGraphQL(requestBody);
       case 'file':
-        return '// file\n';
+        return 'var content = new StreamContent(File.Create("<file path>"));\n';
       default:
-        return '// default\n';
+        return '';
     }
   }
-  return '// empty\n';
+  return '';
+}
+
+
+function parseContentType (request) {
+  return request.getHeaders({enabled: true, ignoreCase: true})['content-type'] || 'text/plain';
 }
 
 module.exports = {
   parseHeader: parseHeader,
-  parseBody: parseBody
+  parseBody: parseBody,
+  parseContentType: parseContentType
 };

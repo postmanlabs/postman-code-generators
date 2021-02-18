@@ -34,7 +34,14 @@ function makeSnippet (request) {
   snippet += parseRequest.parseHeader(request.toJSON());
 
   // Configure the body
-  snippet += parseRequest.parseBody(request);
+  let bodyContent = parseRequest.parseBody(request);
+  if (bodyContent) {
+    snippet += bodyContent;
+    // Add in content type header
+    snippet += 'content.Headers.ContentType = ' +
+      `new MediaTypeHeaderValue("${parseRequest.parseContentType(request)}");\n`;
+    snippet += 'request.Content = content;\n';
+  }
 
   snippet += 'var response = await client.SendAsync(request);\n';
   snippet += 'response.EnsureSuccessStatusCode();\n';
@@ -118,7 +125,9 @@ self = module.exports = {
 
     if (options.includeBoilerplate) {
       headerSnippet = 'using System.Collection.Generic;\n' +
+        'using System.IO;\n' +
         'using System.Net.Http;\n' +
+        'using System.Net.Http.Headers;\n' +
         'namespace HelloWorldApplication\n' +
         '{\n' +
         indentString + 'class HelloWorld\n' +
@@ -130,7 +139,6 @@ self = module.exports = {
         indentString + '}\n' +
         '}\n';
     }
-
     snippet = makeSnippet(request);
 
     return callback(null, headerSnippet + snippet + footerSnippet);
