@@ -30,7 +30,7 @@
     "postman-collection": "3.6.9"
   },
   "devDependencies": {
-    "follow-redirects": "1.13.1"
+    "follow-redirects": "1.13.2"
   },
   "engines": {
     "node": ">=8"
