@@ -350,7 +350,7 @@ describe('nodejs-native convert function', function () {
       }
       expect(snippet).to.be.a('string');
       // eslint-disable-next-line quotes
-      expect(snippet).to.include("'path': '/get?query1=b\\'b&query2=c%22c'");
+      expect(snippet).to.include("'path': '/get?query1=b%27b&query2=c%22c'");
     });
   });
 

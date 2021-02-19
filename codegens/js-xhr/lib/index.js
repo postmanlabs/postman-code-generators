@@ -1,4 +1,5 @@
 var _ = require('./lodash'),
+  sdk = require('postman-collection'),
   sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
   addFormParam = require('./util').addFormParam,
@@ -271,7 +272,10 @@ function convert (request, options, callback) {
   codeSnippet += `${indent.repeat(2)}console.log(this.responseText);\n`;
   codeSnippet += `${indent}}\n});\n\n`;
 
-  codeSnippet += `xhr.open("${request.method}", "${encodeURI(request.url.toString())}");\n`;
+  finalUrl = new sdk.Url(request.url.toString());
+  finalUrl = `${finalUrl.protocol ? `${finalUrl.protocol}://` : ''}${finalUrl.getRemote()}${finalUrl.getPathWithQuery(true)}`;
+
+  codeSnippet += `xhr.open("${request.method}", "${finalUrl}");\n`;
   if (options.requestTimeout) {
     codeSnippet += `xhr.timeout = ${options.requestTimeout};\n`;
     codeSnippet += 'xhr.addEventListener("ontimeout", function(e) {\n';

@@ -153,7 +153,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://postman-echo.com/get?test=123&anotherone=232",
+					"raw": "https://postman-echo.com/get?test=123%3A%27&anotherone=232",
 					"protocol": "https",
 					"host": [
 						"postman-echo",
@@ -165,7 +165,7 @@
 					"query": [
 						{
 							"key": "test",
-							"value": "123"
+							"value": "123%3A'"
 						},
 						{
 							"key": "anotherone",
