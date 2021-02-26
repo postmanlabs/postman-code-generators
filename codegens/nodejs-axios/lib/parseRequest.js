@@ -7,8 +7,9 @@ var _ = require('./lodash'),
  * @param {Object} body URLEncoded Body
  * @param {boolean} trim trim body option
  * @param {boolean} ES6_enabled ES6 syntax option
+ * @param {string} indentString The indentation string
  */
-function parseURLEncodedBody (body, trim, ES6_enabled) {
+function parseURLEncodedBody (body, trim, ES6_enabled, indentString) {
   var varDeclare = ES6_enabled ? 'const' : 'var',
     bodySnippet = varDeclare + ' qs = require(\'qs\');\n',
     dataArray = [];
@@ -24,7 +25,7 @@ function parseURLEncodedBody (body, trim, ES6_enabled) {
   else {
     bodySnippet += 'var';
   }
-  bodySnippet += ` data = qs.stringify({\n ${dataArray.join(',\n')} \n});`;
+  bodySnippet += ` data = qs.stringify({\n${indentString}${dataArray.join(',\n'+indentString)} \n});`;
   return bodySnippet;
 }
 
@@ -149,7 +150,7 @@ function parseBody (body, trim, indentString, contentType, ES6_enabled) {
   if (!_.isEmpty(body)) {
     switch (body.mode) {
       case 'urlencoded':
-        return parseURLEncodedBody(body.urlencoded, trim, ES6_enabled);
+        return parseURLEncodedBody(body.urlencoded, trim, ES6_enabled, indentString);
       case 'raw':
         return parseRawBody(body.raw, trim, contentType, ES6_enabled);
       case 'graphql':
