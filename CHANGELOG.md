@@ -1,3 +1,10 @@
+v1.1.3 (Feb 26, 2020)
+* Use proper indentation for JSON bodies in Javascript and Nodejs codegens
+* Fix for - [445](https://github.com/postmanlabs/postman-code-generators/issues/445) Add proper indentation in nodejs-axios when bodytype is urlencoded
+* Fix for - [248](https://github.com/postmanlabs/postman-code-generators/issues/248) Use quoteType everywhere in curl, not just in the url
+* Fix for - [454](https://github.com/postmanlabs/postman-code-generators/issues/454) Fix encoding when generating HTTP code snippets
+* Fix for - [426](https://github.com/postmanlabs/postman-code-generators/issues/426) Use json.dumps in Python codegens if Content-Type is JSON
+
 v1.1.2 (Dec 15, 2020)
 * Fix for - [8736](https://github.com/postmanlabs/postman-app-support/issues/8736) Add content type support for individual form-data fields
 * Fix for - [8635](https://github.com/postmanlabs/postman-app-support/issues/8635) Use Json.parse for all json like application types
