@@ -38,8 +38,6 @@ function makeSnippet (request) {
   if (bodyContent) {
     snippet += bodyContent;
     // Add in content type header
-    snippet += 'content.Headers.ContentType = ' +
-      `new MediaTypeHeaderValue("${parseRequest.parseContentType(request)}");\n`;
     snippet += 'request.Content = content;\n';
   }
 
@@ -124,10 +122,12 @@ self = module.exports = {
     indentString = indentString.repeat(options.indentCount);
 
     if (options.includeBoilerplate) {
-      headerSnippet = 'using System.Collection.Generic;\n' +
+      headerSnippet = 'using System;\n' +
+        'using System.Collections.Generic;\n' +
         'using System.IO;\n' +
         'using System.Net.Http;\n' +
         'using System.Net.Http.Headers;\n' +
+        'using System.Threading.Tasks;\n' +
         'namespace HelloWorldApplication\n' +
         '{\n' +
         indentString + 'class HelloWorld\n' +

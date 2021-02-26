@@ -2,6 +2,10 @@
 var _ = require('./lodash'),
   sanitize = require('./util').sanitize;
 
+function parseContentType (request) {
+  return request.getHeaders({enabled: true, ignoreCase: true})['content-type'] || 'text/plain';
+}
+
 /**
  * Parses header in Postman-SDK request and returns code snippet of csharp-httpclient for adding headers
  *
@@ -22,37 +26,110 @@ function parseHeader (requestJson) {
   }, '');
 }
 
-/**
- * Parses request object and returns csharp-httpclient code snippet for adding request body
- *
- * @param {Object} requestBody - JSON object representing body of request
- * @returns {String} code snippet of csharp-httpclient parsed from request object
- */
-function parseFormData (requestBody) {
+function parseContentTypeOnContent (request) {
+  return 'content.Headers.ContentType = new MediaTypeHeaderValue("' +
+    `${sanitize(parseContentType(request))}");\n`;
+}
+
+function safeAddRealContentType (snippet, request) {
+  if (!snippet) {
+    return '';
+  }
+
+  var contentType = request.getHeaders({ ignoreCase: true, enabled: true })['content-type'];
+
+  if (contentType &&
+    snippet.includes('var content = ') &&
+    !snippet.includes('content.Headers.ContentType = ')) {
+    return snippet +
+      'content.Headers.ContentType = new MediaTypeHeaderValue("' +
+      `${sanitize(contentType)}");\n`;
+  }
+
+  return snippet;
+}
+
+function parseFormUrlEncoded (requestBody, contentName) {
   if (!Array.isArray(requestBody[requestBody.mode])) {
     return '';
   }
 
-  let mainContent = requestBody[requestBody.mode].reduce((body, data) => {
-    if (data.disabled) {
-      return body;
-    }
-    if (data.type === 'file') {
-      body += `content.Add(new StreamContent(File.Create("${sanitize(data.src)}")), "${data.key}");\n`;
-    }
-    else {
-      (!data.value) && (data.value = '');
-      body += `content.Add(new StringContent("${sanitize(data.value)}"), "${sanitize(data.key)}");\n`;
+  if (!contentName) {
+    contentName = 'content';
+  }
+
+  let list = requestBody[requestBody.mode].reduce((collection, data) => {
+    if (data.disabled || data.type === 'file') {
+      return collection;
     }
 
-    return body;
+    (!data.value) && (data.value = '');
+    collection += 'collection.Add(new KeyValuePair<string, string>' +
+      `("${sanitize(data.key)}", "${sanitize(data.value)}"));\n`;
+
+    return collection;
   }, '');
 
-  if (!mainContent) {
+  if (list) {
+    return 'var collection = new List<KeyValuePair<string, string>>();\n' +
+    list +
+    `var ${contentName} = new FormUrlEncodedContent(collection);\n`;
+  }
+  return '';
+}
+
+
+function parseFormData2 (requestBody) {
+  if (!Array.isArray(requestBody[requestBody.mode])) {
     return '';
   }
 
-  return 'var content = new MultipartFormDataContent();\n' + mainContent;
+  // Determine mode
+  var hasFile = requestBody[requestBody.mode].some((i) => {
+      return i.type === 'file';
+    }),
+    hasText = requestBody[requestBody.mode].some((i) => {
+      return i.type === 'text';
+    }),
+    formContent = '';
+
+  if (hasFile && hasText) {
+    // Mixed mode, I will find both form and file items in here
+    formContent = parseFormUrlEncoded(requestBody, 'formContent');
+
+    return 'var content = new MultipartFormDataContent();\n' +
+      formContent +
+      'content.Add(formContent);\n';
+  }
+  else if (hasFile) {
+    // This is file only mode
+    return 'var content = new MultipartFormDataContent();\n' +
+      requestBody[requestBody.mode].reduce((body, data) => {
+        if (Array.isArray(data.src)) {
+          // Many files
+          body += data.src.reduce((filesBody, fileSrc) => {
+            filesBody += 'content.Add(new StreamContent(new MemoryStream(' +
+              `File.ReadAllBytes("${sanitize(fileSrc)}"))), "${sanitize(data.key)}", ` +
+              `Path.GetFileName("${sanitize(fileSrc)}"));\n`;
+            return filesBody;
+          }, '');
+        }
+        else {
+          // Single files
+          body += 'content.Add(new StreamContent(new MemoryStream(' +
+            `File.ReadAllBytes("${sanitize(data.src)}"))), "${sanitize(data.key)}", ` +
+            `Path.GetFileName("${sanitize(data.src)}"));\n`;
+        }
+        return body;
+      }, '');
+  }
+  // This is a form only
+  formContent = parseFormUrlEncoded(requestBody);
+
+  if (formContent && formContent.includes('var content = ')) {
+    return formContent +
+      'content.Headers.ContentType = new MediaTypeHeaderValue("");\n';
+  }
 }
 
 function parseGraphQL (requestBody) {
@@ -65,7 +142,8 @@ function parseGraphQL (requestBody) {
     graphqlVariables = {};
   }
   return 'var content = new StringContent(' +
-    `"${sanitize(JSON.stringify({query: query, variables: graphqlVariables}))}");\n`;
+    `"${sanitize(JSON.stringify({query: query, variables: graphqlVariables}))}"` +
+    ', null, "application/json");\n';
 }
 
 function parseBody (request) {
@@ -73,11 +151,12 @@ function parseBody (request) {
   if (!_.isEmpty(requestBody)) {
     switch (requestBody.mode) {
       case 'urlencoded':
-        return parseFormData(requestBody);
+        return safeAddRealContentType(parseFormUrlEncoded(requestBody), request);
       case 'formdata':
-        return parseFormData(requestBody);
+        return safeAddRealContentType(parseFormData2(requestBody), request);
       case 'raw':
-        return `var content = new StringContent("${JSON.stringify(requestBody[requestBody.mode])}");\n`;
+        return `var content = new StringContent(${JSON.stringify(requestBody[requestBody.mode])});\n` +
+          parseContentTypeOnContent(request);
       case 'graphql':
         return parseGraphQL(requestBody);
       case 'file':
@@ -87,11 +166,6 @@ function parseBody (request) {
     }
   }
   return '';
-}
-
-
-function parseContentType (request) {
-  return request.getHeaders({enabled: true, ignoreCase: true})['content-type'] || 'text/plain';
 }
 
 module.exports = {

@@ -12,7 +12,7 @@ describe('csharp httpclient function', function () {
 
   describe('csharp-httpclient convert function', function () {
     it('should return expected snippet', function () {
-      var request = new sdk.Request(mainCollection.item[4].request),
+      var request = new sdk.Request(mainCollection.item[10].request),
         options = {
           indentCount: 1,
           indentType: 'Tab'
@@ -64,5 +64,4 @@ describe('csharp httpclient function', function () {
       });
     });
   });
-
 });
