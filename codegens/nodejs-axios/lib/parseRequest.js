@@ -77,8 +77,9 @@ function parseFormData (body, trim, ES6_enabled) {
  * @param {boolean} trim trim body option
  * @param {String} contentType Content type of the body being sent
  * @param {boolean} ES6_enabled ES6 syntax option
+ * @param {String} indentString Indentation string
  */
-function parseRawBody (body, trim, contentType, ES6_enabled) {
+function parseRawBody (body, trim, contentType, ES6_enabled, indentString) {
   var varDeclare = ES6_enabled ? 'let' : 'var',
     bodySnippet = varDeclare + ' data = ';
   // Match any application type whose underlying structure is json
@@ -87,7 +88,7 @@ function parseRawBody (body, trim, contentType, ES6_enabled) {
   if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
     try {
       let jsonBody = JSON.parse(body);
-      bodySnippet += `JSON.stringify(${JSON.stringify(jsonBody)});\n`;
+      bodySnippet += `JSON.stringify(${JSON.stringify(jsonBody, null, indentString.length)});\n`;
     }
     catch (error) {
       bodySnippet += `'${sanitize(body.toString(), trim)}';\n`;
@@ -152,7 +153,7 @@ function parseBody (body, trim, indentString, contentType, ES6_enabled) {
       case 'urlencoded':
         return parseURLEncodedBody(body.urlencoded, trim, ES6_enabled, indentString);
       case 'raw':
-        return parseRawBody(body.raw, trim, contentType, ES6_enabled);
+        return parseRawBody(body.raw, trim, contentType, ES6_enabled, indentString);
       case 'graphql':
         return parseGraphQL(body.graphql, trim, indentString, ES6_enabled);
       case 'formdata':

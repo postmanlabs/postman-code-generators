@@ -91,7 +91,7 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
         if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
           try {
             let jsonBody = JSON.parse(requestbody[requestbody.mode]);
-            return `JSON.stringify(${JSON.stringify(jsonBody)})`;
+            return `JSON.stringify(${JSON.stringify(jsonBody, null, indentString.length)})`;
           }
           catch (error) {
             return ` ${JSON.stringify(requestbody[requestbody.mode])}`;
