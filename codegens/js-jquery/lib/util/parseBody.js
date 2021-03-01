@@ -27,7 +27,8 @@ module.exports = function (request, trimRequestBody, indentation, contentType) {
             // eslint-disable-next-line max-depth
             try {
               let jsonBody = JSON.parse(request.body[request.body.mode]);
-              requestBody += `${indentation}"data": JSON.stringify(${JSON.stringify(jsonBody)}),\n`;
+              requestBody += `${indentation}"data": JSON.stringify(${JSON.stringify(jsonBody,
+                null, indentation.length).replace(/\n/g, `\n${indentation}`)}),\n`;
             }
             catch (error) {
               requestBody += `${indentation}"data": ` +

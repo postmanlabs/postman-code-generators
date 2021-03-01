@@ -5,11 +5,11 @@ var self = module.exports = {
      *
      * @param {String} inputString
      * @param {Boolean} [trim] - indicates whether to trim string or not
-     * @param {Boolean} [doubleQuotes] - indicates whether to escape double quotes(") and backslash(\\)
+     * @param {Boolean} [quoteType] - indicates which quoteType has to be escaped
      * @param {Boolean} [backSlash] - indicates whether to escape backslash(\\)
      * @returns {String}
      */
-  sanitize: function (inputString, trim, doubleQuotes, backSlash) {
+  sanitize: function (inputString, trim, quoteType, backSlash) {
     if (typeof inputString !== 'string') {
       return '';
     }
@@ -18,12 +18,14 @@ var self = module.exports = {
       inputString = inputString.replace(/\\/g, '\\\\');
     }
 
-    if (doubleQuotes) {
+    if (quoteType === '"') {
       inputString = inputString.replace(/"/g, '\\"');
     }
+    else if (quoteType === '\'') {
+      // for curl escaping of single quotes inside single quotes involves changing of ' to '\''
+      inputString = inputString.replace(/'/g, "'\\''"); // eslint-disable-line quotes
+    }
 
-    // for curl escaping of single quotes inside single quotes involves changing of ' to '\''
-    inputString = inputString.replace(/'/g, "'\\''"); // eslint-disable-line quotes
     return trim ? inputString.trim() : inputString;
   },
 
@@ -126,12 +128,13 @@ var self = module.exports = {
   /**
  *
  * @param {*} urlObject The request sdk request.url object
+ * @param {boolean} quoteType The user given quoteType
  * @returns {String} The final string after parsing all the parameters of the url including
  * protocol, auth, host, port, path, query, hash
  * This will be used because the url.toString() method returned the URL with non encoded query string
  * and hence a manual call is made to getQueryString() method with encode option set as true.
  */
-  getUrlStringfromUrlObject: function (urlObject) {
+  getUrlStringfromUrlObject: function (urlObject, quoteType) {
     var url = '';
     if (!urlObject) {
       return url;
@@ -161,7 +164,7 @@ var self = module.exports = {
       url += '#' + urlObject.hash;
     }
 
-    return self.sanitize(url);
+    return self.sanitize(url, false, quoteType);
   },
 
   /**
