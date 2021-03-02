@@ -1,4 +1,4 @@
-v1.1.3 (Mar 1, 2020)
+v1.1.3 (Mar 2, 2021)
 * Use proper indentation for JSON bodies in Javascript and Nodejs codegens
 * Fix for - [445](https://github.com/postmanlabs/postman-code-generators/issues/445) Add proper indentation in nodejs-axios when bodytype is urlencoded
 * Fix for - [248](https://github.com/postmanlabs/postman-code-generators/issues/248) Use quoteType everywhere in curl, not just in the url
