@@ -65,5 +65,3 @@ console.log(options);
 * Since Postman-SDK Request object doesn't provide complete path of the file, it needs to be manually inserted in case of uploading a file.
 
 * This module doesn't support cookies.
-
-* testfile1, testfile2, testfile3 are random files generated for testing
