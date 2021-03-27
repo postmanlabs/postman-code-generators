@@ -6,7 +6,7 @@ describe('Convert for different types of request', function () {
     testConfig = {
       compileScript: null,
       runScript: 'node -r esm run.js',
-      fileName: 'run.mjs',
+      fileName: 'run.js',
       headerSnippet: '/* eslint-disable */\n'
     };
 
@@ -17,7 +17,7 @@ describe('Convert for different types of request', function () {
       testConfig = {
         compileScript: null,
         runScript: 'node -r esm run.js',
-        fileName: 'run.mjs',
+        fileName: 'run.js',
         headerSnippet: '/* eslint-disable */\n'
       };
 
