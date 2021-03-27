@@ -1,7 +1,7 @@
 dist: 'xenial'
 language: node_js
 node_js:
-  - '12'
+  - '8'
 before_install:
   - echo "Installing additional dependencies required for running tests on travis"
   - npm run cirequirements
