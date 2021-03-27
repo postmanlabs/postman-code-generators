@@ -1,9 +1,9 @@
-# codegen-nodejs-axios
+# codegen-Reactjs-axios
 
-> Converts Postman-SDK Request into code snippet for NodeJS-axios.
+> Converts Postman-SDK Request into code snippet for ReactJS-axios.
 
 #### Prerequisites
-To run the module, ensure that you have NodeJS >= v8. A copy of the NodeJS installable can be downloaded from https://nodejs.org/en/download/package-manager.
+To run the module, ensure that you have NodeJS >= v12. A copy of the NodeJS installable can be downloaded from https://nodejs.org/en/download/package-manager.
 
 ## Using the Module
 The module will expose an object which will have property `convert` which is the function for converting the Postman-SDK request to nodejs-axios code snippet and `getOptions` function which returns an array of supported options.
@@ -65,3 +65,5 @@ console.log(options);
 * Since Postman-SDK Request object doesn't provide complete path of the file, it needs to be manually inserted in case of uploading a file.
 
 * This module doesn't support cookies.
+
+* testfile1, testfile2, testfile3 are random files generated for testing
