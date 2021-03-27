@@ -54,6 +54,6 @@
     "watchify": "3.11.1"
   },
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   }
 }
