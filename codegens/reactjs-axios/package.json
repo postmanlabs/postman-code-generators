@@ -26,10 +26,10 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/reactjs-axios",
   "dependencies": {
-    "esm": "^3.2.25"
+    "esm": "3.2.25"
   },
   "devDependencies": {
-    "axios": "^0.21.1",
+    "axios": "0.21.1",
     "form-data": "3.0.0",
     "qs": "6.9.2"
   },
