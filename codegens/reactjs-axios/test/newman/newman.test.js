@@ -5,7 +5,7 @@ describe('Convert for different types of request', function () {
   var options = {indentCount: 2, indentType: 'Space'},
     testConfig = {
       compileScript: null,
-      runScript: 'node run.mjs',
+      runScript: 'node -r esm run.js',
       fileName: 'run.mjs',
       headerSnippet: '/* eslint-disable */\n'
     };
@@ -16,7 +16,7 @@ describe('Convert for different types of request', function () {
     var options = {indentCount: 2, indentType: 'Space', ES6_enabled: true},
       testConfig = {
         compileScript: null,
-        runScript: 'node run.mjs',
+        runScript: 'node -r esm run.js',
         fileName: 'run.mjs',
         headerSnippet: '/* eslint-disable */\n'
       };
