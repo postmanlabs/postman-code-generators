@@ -78,8 +78,12 @@ function parseBody (request, trimFields) {
       case 'formdata':
         return parseFormData(requestBody, trimFields);
       case 'raw':
-        return `request.AddParameter("${parseContentType(request)}", ` +
-                    `${JSON.stringify(requestBody[requestBody.mode])},  ParameterType.RequestBody);\n`;
+        return `var body = ${requestBody[requestBody.mode]
+          .split('\n')
+          .map((line) => { return '@"' + line.replace(/"/g, '""') + '"'; })
+          .join(' + "\\n" +\n')};\n` +
+          `request.AddParameter("${parseContentType(request)}", ` +
+          'body,  ParameterType.RequestBody);\n';
       case 'graphql':
         return parseGraphQL(requestBody, trimFields);
         /* istanbul ignore next */
