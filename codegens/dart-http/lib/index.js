@@ -30,8 +30,19 @@ function parseUrlEncoded (body, indent, trim) {
  *
  * @param {Object} body Raw body data
  * @param {Boolean} trim indicates whether to trim string or not
+ * @param {String} contentType the content-type of request body
  */
-function parseRawBody (body, trim) {
+function parseRawBody (body, trim, contentType) {
+  if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
+    try {
+      let jsonBody = JSON.parse(body);
+      return `request.body = json.encode(${JSON.stringify(jsonBody, null, 4)});`;
+
+    }
+    catch (error) {
+      // Do nothing
+    }
+  }
   return `request.body = '''${sanitize(body, trim)}''';`;
 }
 
@@ -109,15 +120,16 @@ function parseFormData (body, indent, trim) {
  *
  * @param {Object} body body object from request.
  * @param {String} indent indentation required for code snippet
- * @param {trim} trim indicates whether to trim string or not
+ * @param {Boolean} trim indicates whether to trim string or not
+ * @param {String} contentType the content-type of the request body
  */
-function parseBody (body, indent, trim) {
+function parseBody (body, indent, trim, contentType) {
   if (!_.isEmpty(body)) {
     switch (body.mode) {
       case 'urlencoded':
         return parseUrlEncoded(body.urlencoded, indent, trim);
       case 'raw':
-        return parseRawBody(body.raw, trim);
+        return parseRawBody(body.raw, trim, contentType);
       case 'formdata':
         return parseFormData(body.formdata, indent, trim);
       case 'graphql':
@@ -167,13 +179,10 @@ self = module.exports = {
       footerSnippet = '',
       trim,
       timeout,
-      followRedirect;
+      followRedirect,
+      contentType;
     options = sanitizeOptions(options, self.getOptions());
-    if (options.includeBoilerplate) {
-      headerSnippet = 'import \'package:http/http.dart\' as http;\n\n';
-      headerSnippet += 'void main() async {\n';
-      footerSnippet = '}\n';
-    }
+
     trim = options.trimRequestBody;
     indent = options.indentType === 'Tab' ? '\t' : ' ';
     indent = indent.repeat(options.indentCount);
@@ -197,6 +206,16 @@ self = module.exports = {
           value: 'application/json'
         });
       }
+    }
+
+    contentType = request.headers.get('Content-Type');
+    if (options.includeBoilerplate) {
+      if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
+        headerSnippet = 'import \'dart:convert\';\n';
+      }
+      headerSnippet += 'import \'package:http/http.dart\' as http;\n\n';
+      headerSnippet += 'void main() async {\n';
+      footerSnippet = '}\n';
     }
 
     // The following code handles multiple files in the same formdata param.
@@ -243,7 +262,7 @@ self = module.exports = {
 
     const headers = parseHeaders(request.headers.toJSON(), indent, trim),
       requestBody = request.body ? request.body.toJSON() : {},
-      body = parseBody(requestBody, indent, trim) + '\n';
+      body = parseBody(requestBody, indent, trim, contentType) + '\n';
 
     codeSnippet += headers;
 
