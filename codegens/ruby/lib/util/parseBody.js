@@ -1,5 +1,19 @@
 var _ = require('../lodash'),
-  sanitize = require('./sanitize').sanitize;
+  sanitize = require('./sanitize').sanitize,
+  nullToken = '__RUBY#%0NULL__';
+
+/**
+ * Convert null to Ruby equivalent nil
+ *
+ * @param {String} key
+ * @param {Object} value
+ */
+function replacer (key, value) {
+  if (value === null) {
+    return nullToken;
+  }
+  return value;
+}
 
 /**
  * Used to parse the body of the postman SDK-request and return in the desired format
@@ -28,7 +42,9 @@ module.exports = function (request, trimRequestBody, contentType) {
         if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
           try {
             let jsonBody = JSON.parse(request.body[request.body.mode]);
-            return `request.body = JSON.dump(${JSON.stringify(jsonBody, null, 4)})\n`;
+            jsonBody = JSON.stringify(jsonBody, replacer, 4)
+              .replace(new RegExp(`"${nullToken}"`, 'g'), 'nil');
+            return `request.body = JSON.dump(${jsonBody})\n`;
           }
           catch (error) {
             // Do nothing
