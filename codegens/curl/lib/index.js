@@ -76,7 +76,7 @@ self = module.exports = {
         // If the header value is an empty string then add a semicolon after key
         // otherwise the header would be ignored by curl
         if (header.value) {
-          snippet += `: ${sanitize(header.value, false, quoteType)}${quoteType}`;
+          snippet += `: ${sanitize(header.value, false, quoteType, true)}${quoteType}`;
         }
         else {
           snippet += ';' + quoteType;
