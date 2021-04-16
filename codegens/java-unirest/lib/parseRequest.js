@@ -88,18 +88,19 @@ function parseBody (request, indentString, trimField) {
         return parseFormData(request.body.toJSON(), indentString, trimField);
       case 'raw':
         return indentString + `.body(${JSON.stringify(request.body.toString())})\n`;
+
+      // eslint-disable-next-line no-case-declarations
       case 'graphql':
-        // eslint-disable-next-line no-case-declarations
-        let query = request.body.graphql.query,
+        let query = request.body.graphql ? request.body.graphql.query : '',
           graphqlVariables;
         try {
-          graphqlVariables = JSON.parse(request.body.graphql.variables);
+          graphqlVariables = JSON.parse(request.body.graphql ? request.body.graphql.variables : '{}');
         }
         catch (e) {
           graphqlVariables = {};
         }
         return indentString + `.body("${sanitize(JSON.stringify({
-          query: query,
+          query: query || '',
           variables: graphqlVariables
         }), trimField)}")\n`;
       case 'formdata':

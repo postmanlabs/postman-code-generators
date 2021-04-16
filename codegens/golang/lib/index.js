@@ -25,7 +25,7 @@ function parseRawBody (body, trim) {
  * @param {boolean} trim trim body option
  */
 function parseGraphQL (body, trim) {
-  let query = body.query,
+  let query = body ? body.query : '',
     graphqlVariables,
     bodySnippet;
   try {
@@ -35,7 +35,7 @@ function parseGraphQL (body, trim) {
     graphqlVariables = {};
   }
   bodySnippet = `payload := strings.NewReader("${sanitize(JSON.stringify({
-    query: query,
+    query: query || '',
     variables: graphqlVariables
   }), trim)}")`;
   return bodySnippet;

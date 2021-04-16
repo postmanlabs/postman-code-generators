@@ -84,6 +84,26 @@ function extractFormData (dataArray, indentString, trimBody) {
   return snippetString.join(',\n') + '\n';
 }
 
+/** generate graphql code snippet
+ *
+ * @param body GraphQL body
+ * @param indentString string defining indentation
+ */
+function parseGraphql (body, indentString) {
+  let query = body ? body.query : '',
+    graphqlVariables = body ? body.variables : '{}';
+  try {
+    graphqlVariables = JSON.parse(graphqlVariables || '{}');
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  return 'body: JSON.stringify({\n' +
+    `${indentString.repeat(2)}query: \`${query ? query.trim() : ''}\`,\n` +
+    `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
+    `${indentString}})`;
+}
+
 /**
  * Parses body object based on mode of body and returns code snippet
  *
@@ -111,19 +131,7 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
         }
         return `body: '${sanitize(requestbody[requestbody.mode])}'\n`;
       case 'graphql':
-        // eslint-disable-next-line no-case-declarations
-        let query = requestbody[requestbody.mode].query,
-          graphqlVariables;
-        try {
-          graphqlVariables = JSON.parse(requestbody[requestbody.mode].variables);
-        }
-        catch (e) {
-          graphqlVariables = {};
-        }
-        return 'body: JSON.stringify({\n' +
-          `${indentString.repeat(2)}query: \`${query.trim()}\`,\n` +
-          `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
-          `${indentString}})`;
+        return parseGraphql(requestbody[requestbody.mode], indentString);
       case 'formdata':
         return `formData: {\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
                         indentString + '}';

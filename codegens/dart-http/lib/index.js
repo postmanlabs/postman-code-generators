@@ -43,7 +43,7 @@ function parseRawBody (body, trim) {
  */
 function parseGraphQLBody (body, trim) {
   var bodySnippet = '',
-    query = body.query,
+    query = body ? body.query : '',
     graphqlVariables;
   try {
     graphqlVariables = JSON.parse(body.variables);

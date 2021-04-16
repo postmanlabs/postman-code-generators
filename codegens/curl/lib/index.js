@@ -138,18 +138,18 @@ self = module.exports = {
           case 'raw':
             snippet += indent + `--data-raw ${quoteType}${sanitize(body.raw.toString(), trim, quoteType)}${quoteType}`;
             break;
+          // eslint-disable-next-line no-case-declarations
           case 'graphql':
-            // eslint-disable-next-line no-case-declarations
-            let query = body.graphql.query,
-              graphqlVariables;
+            let query = body.graphql ? body.graphql.query : '',
+              graphqlVariables = body.graphql ? body.graphql.variables : '{}';
             try {
-              graphqlVariables = JSON.parse(body.graphql.variables);
+              graphqlVariables = JSON.parse(graphqlVariables || '{}');
             }
             catch (e) {
               graphqlVariables = {};
             }
             snippet += indent + `--data-raw ${quoteType}${sanitize(JSON.stringify({
-              query: query,
+              query: query || '',
               variables: graphqlVariables
             }), trim, quoteType)}${quoteType}`;
             break;

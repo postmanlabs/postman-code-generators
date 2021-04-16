@@ -25,7 +25,7 @@ function parseURLEncodedBody (body, trim, ES6_enabled, indentString) {
   else {
     bodySnippet += 'var';
   }
-  bodySnippet += ` data = qs.stringify({\n${indentString}${dataArray.join(',\n'+indentString)} \n});`;
+  bodySnippet += ` data = qs.stringify({\n${indentString}${dataArray.join(',\n' + indentString)} \n});`;
   return bodySnippet;
 }
 
@@ -110,17 +110,17 @@ function parseRawBody (body, trim, contentType, ES6_enabled, indentString) {
  */
 function parseGraphQL (body, trim, indentString, ES6_enabled) {
   var varDeclare = ES6_enabled ? 'let' : 'var';
-  let query = body.query,
-    graphqlVariables,
+  let query = body ? body.query : '',
+    graphqlVariables = body ? body.variables : '{}',
     bodySnippet;
   try {
-    graphqlVariables = JSON.parse(body.variables);
+    graphqlVariables = JSON.parse(graphqlVariables || '{}');
   }
   catch (e) {
     graphqlVariables = {};
   }
   bodySnippet = varDeclare + ' data = JSON.stringify({\n';
-  bodySnippet += `${indentString}query: \`${query.trim()}\`,\n`;
+  bodySnippet += `${indentString}query: \`${query ? query.trim() : ''}\`,\n`;
   bodySnippet += `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n});\n`;
   return bodySnippet;
 }
@@ -148,7 +148,7 @@ function parseFileData (ES6_enabled) {
  * @param {boolean} ES6_enabled ES6 syntax option
  */
 function parseBody (body, trim, indentString, contentType, ES6_enabled) {
-  if (!_.isEmpty(body)) {
+  if (body && !_.isEmpty(body)) {
     switch (body.mode) {
       case 'urlencoded':
         return parseURLEncodedBody(body.urlencoded, trim, ES6_enabled, indentString);
