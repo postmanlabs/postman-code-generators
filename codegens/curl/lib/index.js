@@ -138,7 +138,8 @@ self = module.exports = {
           case 'raw':
             snippet += indent + `--data-raw ${quoteType}${sanitize(body.raw.toString(), trim, quoteType)}${quoteType}`;
             break;
-            case 'graphql':
+
+          case 'graphql':
             // eslint-disable-next-line no-case-declarations
             let query = body.graphql ? body.graphql.query : '',
               graphqlVariables;
