@@ -140,6 +140,7 @@ self = module.exports = {
             break;
           // eslint-disable-next-line no-case-declarations
           case 'graphql':
+            // eslint-disable-next-line no-case-declarations
             let query = body.graphql ? body.graphql.query : '',
               graphqlVariables = body.graphql ? body.graphql.variables : '{}';
             try {
