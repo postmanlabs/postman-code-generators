@@ -5,6 +5,7 @@ var _ = require('./lodash'),
   addFormParam = require('./util').addFormParam,
   self;
 global.URL = require('url').URL;
+
 /**
  * Parses Raw data from request to fetch syntax
  *
