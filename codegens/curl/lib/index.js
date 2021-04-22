@@ -15,7 +15,7 @@ self = module.exports = {
     options = sanitizeOptions(options, self.getOptions());
 
     var indent, trim, headersData, body, redirect, timeout, multiLine,
-      format, snippet, silent, url;
+      format, snippet, silent, url, shellType, lineContinuationCharacter, quoteType;
 
     redirect = options.followRedirect;
     timeout = options.requestTimeout;
@@ -23,6 +23,22 @@ self = module.exports = {
     format = options.longFormat;
     trim = options.trimRequestBody;
     silent = options.silent;
+    shellType = options.shellType;
+
+    switch (shellType) {
+      case 'cmd.exe':
+        lineContinuationCharacter = '^';
+        quoteType = '"';
+        break;
+      case 'powershell':
+        lineContinuationCharacter = '`';
+        quoteType = '\'';
+        break;
+      default:
+        lineContinuationCharacter = '\\';
+        quoteType = '\'';
+        break;
+    }
 
     snippet = silent ? `curl ${form('-s', format)}` : 'curl';
     if (redirect) {
@@ -33,17 +49,17 @@ self = module.exports = {
     }
     if (multiLine) {
       indent = options.indentType === 'Tab' ? '\t' : ' ';
-      indent = ' ' + options.lineContinuationCharacter + '\n' + indent.repeat(options.indentCount); // eslint-disable-line max-len
+      indent = ' ' + lineContinuationCharacter + '\n' + indent.repeat(options.indentCount); // eslint-disable-line max-len
     }
     else {
       indent = ' ';
     }
     url = getUrlStringfromUrlObject(request.url);
     if (request.method === 'HEAD') {
-      snippet += ` ${form('-I', format)} '${url}'`;
+      snippet += ` ${form('-I', format)} ${quoteType + url + quoteType}`;
     }
     else {
-      snippet += ` ${form('-X', format)} ${request.method} '${url}'`;
+      snippet += ` ${form('-X', format)} ${request.method} ${quoteType + url + quoteType}`;
     }
 
     if (request.body && !request.headers.has('Content-Type')) {
@@ -64,7 +80,8 @@ self = module.exports = {
     if (headersData) {
       headersData = _.reject(headersData, 'disabled');
       _.forEach(headersData, (header) => {
-        snippet += indent + `${form('-H', format)} '${sanitize(header.key, true)}: ${sanitize(header.value)}'`;
+        snippet += indent + `${form('-H', format)} ${quoteType + sanitize(header.key, true)}:`;
+        snippet += ` ${sanitize(header.value) + quoteType}`;
       });
     }
 
@@ -114,15 +131,15 @@ self = module.exports = {
                 // Using the long form below without considering the longFormat option,
                 // to generate more accurate and correct snippet
                 snippet += indent + '--data-urlencode';
-                snippet += ` '${sanitize(data.key, trim)}=${sanitize(data.value, trim)}'`;
+                snippet += ` ${quoteType + sanitize(data.key, trim)}=${sanitize(data.value, trim) + quoteType}`;
               }
             });
             break;
           case 'raw':
-            snippet += indent + `--data-raw '${sanitize(body.raw.toString(), trim)}'`;
+            snippet += indent + `--data-raw ${quoteType + sanitize(body.raw.toString(), trim) + quoteType}`;
             break;
-          // eslint-disable-next-line no-case-declarations
           case 'graphql':
+            // eslint-disable-next-line no-case-declarations
             let query = body.graphql.query,
               graphqlVariables;
             try {
@@ -131,31 +148,31 @@ self = module.exports = {
             catch (e) {
               graphqlVariables = {};
             }
-            snippet += indent + `--data-raw '${sanitize(JSON.stringify({
+            snippet += indent + `--data-raw ${quoteType + sanitize(JSON.stringify({
               query: query,
               variables: graphqlVariables
-            }), trim)}'`;
+            }), trim) + quoteType}`;
             break;
           case 'formdata':
             _.forEach(body.formdata, function (data) {
               if (!(data.disabled)) {
                 if (data.type === 'file') {
                   snippet += indent + `${form('-F', format)}`;
-                  snippet += ` '${sanitize(data.key, trim)}=@${sanitize(data.src, trim)}'`;
+                  snippet += ` ${quoteType + sanitize(data.key, trim)}=@${sanitize(data.src, trim) + quoteType}`;
                 }
                 else {
                   snippet += indent + `${form('-F', format)}`;
-                  snippet += ` '${sanitize(data.key, trim)}=${sanitize(data.value, trim)}'`;
+                  snippet += ` ${quoteType + sanitize(data.key, trim)}=${sanitize(data.value, trim) + quoteType}`;
                 }
               }
             });
             break;
           case 'file':
             snippet += indent + '--data-binary';
-            snippet += ` '@${sanitize(body[body.mode].src, trim)}'`;
+            snippet += ` ${quoteType}@${sanitize(body[body.mode].src, trim) + quoteType}`;
             break;
           default:
-            snippet += `${form('-d', format)} ''`;
+            break;
         }
       }
     }
@@ -178,13 +195,13 @@ self = module.exports = {
         description: 'Use the long form for cURL options (--header instead of -H)'
       },
       {
-        name: 'Line continuation character',
-        id: 'lineContinuationCharacter',
-        availableOptions: ['\\', '^'],
+        name: 'Shell type',
+        id: 'shellType',
+        availableOptions: ['sh', 'cmd.exe', 'powershell'],
         type: 'enum',
-        default: '\\',
-        description: 'Set a character used to mark the continuation of a statement on the next line ' +
-          '(generally, \\ for OSX/Linux, ^ for Windows)'
+        default: 'sh',
+        description: 'Set the shell where curl will be run. This will set the appropriate type for ' +
+          'quotes (\' or ") and line continuation character (\\, ^ or `)'
       },
       {
         name: 'Set request timeout',

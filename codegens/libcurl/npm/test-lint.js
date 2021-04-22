@@ -11,9 +11,7 @@ var shell = require('shelljs'),
      */
   LINT_SOURCE_DIRS = [
     './lib',
-    './bin',
     './test',
-    './examples/*.js',
     './npm/*.js',
     './index.js'
   ];

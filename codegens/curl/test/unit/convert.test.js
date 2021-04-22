@@ -8,7 +8,7 @@ describe('curl convert function', function () {
     var request, options, snippetArray, line;
 
     it('should return snippet with carat(^) as line continuation ' +
-            'character for multiline code generation', function () {
+      'character for multiline code generation and double quotes for quoting', function () {
       request = new sdk.Request({
         'method': 'POST',
         'header': [],
@@ -19,7 +19,7 @@ describe('curl convert function', function () {
       });
       options = {
         multiLine: true,
-        lineContinuationCharacter: '^'
+        shellType: 'cmd.exe'
       };
       convert(request, options, function (error, snippet) {
         if (error) {
@@ -31,6 +31,34 @@ describe('curl convert function', function () {
           line = snippetArray[i];
           expect(line.charAt(line.length - 1)).to.equal('^');
         }
+        expect(snippet).to.contain('"');
+      });
+    });
+    it('should return snippet with backtick(`) as line continuation ' +
+    'character for multiline code generation and single quotes for quoting', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        }
+      });
+      options = {
+        multiLine: true,
+        shellType: 'powershell'
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        snippetArray = snippet.split('\n');
+        // Ignoring the last line as there is no line continuation character at last line
+        for (var i = 0; i < snippetArray.length - 1; i++) {
+          line = snippetArray[i];
+          expect(line.charAt(line.length - 1)).to.equal('`');
+        }
+        expect(snippet).to.contain('\'');
       });
     });
 
@@ -96,7 +124,7 @@ describe('curl convert function', function () {
       });
       options = {
         multiLine: true,
-        lineContinuationCharacter: '\\'
+        shellType: 'sh'
       };
       convert(request, options, function (error, snippet) {
         if (error) {

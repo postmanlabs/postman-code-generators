@@ -216,7 +216,7 @@ describe('Python-http.client converter', function () {
         expect(snippet).to.include('name=no file');
         expect(snippet).to.include('name=no src');
         expect(snippet).to.include('name=invalid src');
-        expect(snippet).to.include('with open(\'/path/to/file\')');
+        expect(snippet).to.include('with open(\'/path/to/file\', \'rb\')');
       });
     });
 

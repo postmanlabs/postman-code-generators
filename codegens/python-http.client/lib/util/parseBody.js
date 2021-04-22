@@ -27,8 +27,8 @@ module.exports = function (request, indentation, bodyTrim) {
           requestBody = 'payload = \'\'\n';
         }
         return requestBody;
-      // eslint-disable-next-line no-case-declarations
       case 'graphql':
+        // eslint-disable-next-line no-case-declarations
         let query = request.body[request.body.mode].query,
           graphqlVariables;
         try {
@@ -62,28 +62,28 @@ module.exports = function (request, indentation, bodyTrim) {
           requestBody += 'dataList = []\n';
           requestBody += 'boundary = \'wL36Yn8afVp8Ag7AmP8qZ0SA4n1v9T\'\n';
           enabledBodyList.forEach((data) => {
-            requestBody += 'dataList.append(\'--\' + boundary)\n';
+            requestBody += 'dataList.append(encode(\'--\' + boundary))\n';
             if (data.type !== 'file') {
-              requestBody += `dataList.append('Content-Disposition: form-data; name=${sanitize(data.key, 'form-data', true)};')\n\n`; // eslint-disable-line max-len
-              requestBody += 'dataList.append(\'Content-Type: {}\'.format(\'multipart/form-data\'))\n';
-              requestBody += 'dataList.append(\'\')\n\n';
-              requestBody += `dataList.append("${sanitize(data.value, 'form-data', true)}")\n`;
+              requestBody += `dataList.append(encode('Content-Disposition: form-data; name=${sanitize(data.key, 'form-data', true)};'))\n\n`; // eslint-disable-line max-len
+              requestBody += 'dataList.append(encode(\'Content-Type: {}\'.format(\'multipart/form-data\')))\n';
+              requestBody += 'dataList.append(encode(\'\'))\n\n';
+              requestBody += `dataList.append(encode("${sanitize(data.value, 'form-data', true)}"))\n`;
             }
             else {
               var pathArray = data.src.split(path.sep),
                 fileName = pathArray[pathArray.length - 1];
-              requestBody += `dataList.append('Content-Disposition: form-data; name=${sanitize(data.key, 'form-data', true)}; filename={0}'.format('${sanitize(fileName, 'formdata', true)}'))\n\n`; // eslint-disable-line max-len
+              requestBody += `dataList.append(encode('Content-Disposition: form-data; name=${sanitize(data.key, 'form-data', true)}; filename={0}'.format('${sanitize(fileName, 'formdata', true)}')))\n\n`; // eslint-disable-line max-len
               requestBody += `fileType = mimetypes.guess_type('${sanitize(data.src, 'formdata', true)}')[0] or 'application/octet-stream'\n`; // eslint-disable-line max-len
-              requestBody += 'dataList.append(\'Content-Type: {}\'.format(fileType))\n';
-              requestBody += 'dataList.append(\'\')\n\n';
+              requestBody += 'dataList.append(encode(\'Content-Type: {}\'.format(fileType)))\n';
+              requestBody += 'dataList.append(encode(\'\'))\n\n';
 
-              requestBody += `with open('${data.src}') as f:\n`;
+              requestBody += `with open('${data.src}', 'rb') as f:\n`;
               requestBody += `${indentation}dataList.append(f.read())\n`;
             }
           });
-          requestBody += 'dataList.append(\'--\'+boundary+\'--\')\n';
-          requestBody += 'dataList.append(\'\')\n';
-          requestBody += 'body = \'\\r\\n\'.join(dataList)\n';
+          requestBody += 'dataList.append(encode(\'--\'+boundary+\'--\'))\n';
+          requestBody += 'dataList.append(encode(\'\'))\n';
+          requestBody += 'body = b\'\\r\\n\'.join(dataList)\n';
           requestBody += 'payload = body\n';
         }
         else {
