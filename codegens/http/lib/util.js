@@ -187,8 +187,9 @@ function getBody (request, trimRequestBody) {
           requestBody += request.body[request.body.mode].toString();
         }
         return trimRequestBody ? requestBody.trim() : requestBody;
-      // eslint-disable-next-line no-case-declarations
+
       case GRAPHQL:
+        // eslint-disable-next-line no-case-declarations
         let graphql = request.body[request.body.mode],
           query = graphql ? graphql.query : '',
           graphqlVariables;
