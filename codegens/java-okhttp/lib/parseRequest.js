@@ -76,8 +76,8 @@ function parseBody (requestBody, indentString, trimFields) {
         return 'RequestBody body = RequestBody.create(mediaType, ' +
           `${JSON.stringify(requestBody[requestBody.mode])});\n`;
 
-      // eslint-disable-next-line no-case-declarations
       case 'graphql':
+        // eslint-disable-next-line no-case-declarations
         let query = requestBody[requestBody.mode].query,
           graphqlVariables;
         try {
