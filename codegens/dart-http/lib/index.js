@@ -31,12 +31,13 @@ function parseUrlEncoded (body, indent, trim) {
  * @param {Object} body Raw body data
  * @param {Boolean} trim indicates whether to trim string or not
  * @param {String} contentType the content-type of request body
+ * @param {Integer} indentCount the number of space to use
  */
-function parseRawBody (body, trim, contentType) {
+function parseRawBody (body, trim, contentType, indentCount) {
   if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
     try {
       let jsonBody = JSON.parse(body);
-      return `request.body = json.encode(${JSON.stringify(jsonBody, null, 4)});`;
+      return `request.body = json.encode(${JSON.stringify(jsonBody, null, indentCount)});`;
 
     }
     catch (error) {
@@ -129,7 +130,7 @@ function parseBody (body, indent, trim, contentType) {
       case 'urlencoded':
         return parseUrlEncoded(body.urlencoded, indent, trim);
       case 'raw':
-        return parseRawBody(body.raw, trim, contentType);
+        return parseRawBody(body.raw, trim, contentType, indent.length);
       case 'formdata':
         return parseFormData(body.formdata, indent, trim);
       case 'graphql':
