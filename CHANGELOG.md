@@ -1,3 +1,6 @@
+v1.1.4 (May 6, 2021)
+* Fix an issue with empty GraphQL body
+
 v1.1.3 (Mar 2, 2021)
 * Use proper indentation for JSON bodies in Javascript and Nodejs codegens
 * Fix for - [445](https://github.com/postmanlabs/postman-code-generators/issues/445) Add proper indentation in nodejs-axios when bodytype is urlencoded
