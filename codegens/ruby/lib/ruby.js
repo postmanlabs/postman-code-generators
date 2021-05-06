@@ -195,7 +195,7 @@ self = module.exports = {
           formdata: formdataArray
         });
       }
-      snippet += `${parseBody(request.toJSON(), options.trimRequestBody, contentType)}\n`;
+      snippet += `${parseBody(request.toJSON(), options.trimRequestBody, contentType, options.indentCount)}\n`;
       snippet += 'response = https.request(request)\n';
       snippet += 'puts response.read_body\n';
     }
@@ -224,7 +224,7 @@ self = module.exports = {
       if (headerSnippet !== '') {
         snippet += headerSnippet;
       }
-      snippet += `${parseBody(request.toJSON(), options.trimRequestBody, contentType)}\n`;
+      snippet += `${parseBody(request.toJSON(), options.trimRequestBody, contentType, options.indentCount)}\n`;
       snippet += 'response = http.request(request)\n';
       snippet += 'puts response.read_body\n';
     }

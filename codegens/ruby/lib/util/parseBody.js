@@ -21,9 +21,10 @@ function replacer (key, value) {
  * @param  {Object} request - postman SDK-request object
  * @param  {Boolean} trimRequestBody - whether to trim request body fields
  * @param  {string} contentType - the content type of request body
+ * @param  {Integer} indentCount - the count of indentation characters to use
  * @returns {String} - request body
  */
-module.exports = function (request, trimRequestBody, contentType) {
+module.exports = function (request, trimRequestBody, contentType, indentCount) {
   // used to check whether body is present in the request and return accordingly
   if (request.body) {
     var requestBody = '',
@@ -42,7 +43,7 @@ module.exports = function (request, trimRequestBody, contentType) {
         if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
           try {
             let jsonBody = JSON.parse(request.body[request.body.mode]);
-            jsonBody = JSON.stringify(jsonBody, replacer, 4)
+            jsonBody = JSON.stringify(jsonBody, replacer, indentCount)
               .replace(new RegExp(`"${nullToken}"`, 'g'), 'nil');
             return `request.body = JSON.dump(${jsonBody})\n`;
           }
