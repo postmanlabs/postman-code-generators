@@ -226,7 +226,7 @@ self = module.exports = {
         id: 'requestTimeout',
         type: 'positiveInteger',
         default: 0,
-        description: 'Set number of milliseconds the request should wait for a response before ' +
+        description: 'Set number of seconds the request should wait for a response before ' +
           'timing out (use 0 for infinity)'
       },
       {
