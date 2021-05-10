@@ -1,3 +1,6 @@
+v1.1.5 (May 10, 2021)
+* Fixed an issue with how JSON bodies are shown in code snippets for Ruby, C#, and Dart.
+
 v1.1.4 (May 6, 2021)
 * Fix an issue with empty GraphQL body
 
