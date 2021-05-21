@@ -70,7 +70,7 @@ function makeSnippet (request, indentString, options) {
     }
     requestBody = (request.body ? request.body.toJSON() : {});
     //  snippet for creating mediatype object in java based on content-type of request
-    snippet += `MediaType mediaType = MediaType.parse("${parseRequest.parseContentType(request)}");\n`;
+    snippet += `val mediaType = MediaType.parse("${parseRequest.parseContentType(request)}")\n`;
     snippet += parseRequest.parseBody(requestBody, indentString, options.trimRequestBody);
   }
 
@@ -93,11 +93,11 @@ function makeSnippet (request, indentString, options) {
 }
 
 /**
- * Used in order to get options for generation of Java okhattp code snippet (i.e. Include Boilerplate code)
+ * Used in order to get options for generation of Java okhttp code snippet (i.e. Include Boilerplate code)
  *
  * @module getOptions
  *
- * @returns {Array} Options specific to generation of Java okhattp code snippet
+ * @returns {Array} Options specific to generation of Java okhttp code snippet
  */
 function getOptions () {
   return [
@@ -188,11 +188,10 @@ function convert (request, options, callback) {
 
   if (options.includeBoilerplate) {
     headerSnippet = 'import java.io.*;\n' +
-                        'import okhttp3.*;\n' +
-                        'public class main {\n' +
-                        indentString + 'public static void main(String []args) throws IOException{\n';
-    footerSnippet = indentString.repeat(2) + 'System.out.println(response.body().string());\n' +
-                        indentString + '}\n}\n';
+                        'import okhttp3.*;\n\n' +
+                        'fun main(args: Array<String>) {\n';
+    footerSnippet = indentString.repeat(1) + 'println(response.body!!.string())\n' +
+                        '}\n';
   }
 
   snippet = makeSnippet(request, indentString, options);

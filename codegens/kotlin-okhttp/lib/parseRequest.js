@@ -40,7 +40,7 @@ function parseFormData (requestBody, indentString, trimFields) {
       body += indentString + '.addFormDataPart' +
                     `("${sanitize(data.key, trimFields)}","${sanitize(fileName, trimFields)}",\n` +
                     indentString.repeat(2) + 'RequestBody.create(MediaType.parse("application/octet-stream"),\n' +
-                    indentString.repeat(2) + `new File("${sanitize(data.src)}")))\n`;
+                    indentString.repeat(2) + `File("${sanitize(data.src)}")))\n`;
     }
     else {
       !data.value && (data.value = '');
@@ -70,11 +70,11 @@ function parseBody (requestBody, indentString, trimFields) {
   if (!_.isEmpty(requestBody)) {
     switch (requestBody.mode) {
       case 'urlencoded':
-        return 'RequestBody body = RequestBody.create(mediaType, ' +
-                        `"${parseUrlencode(requestBody, trimFields)}");\n`;
+        return 'val body = RequestBody.create(mediaType, ' +
+                        `"${parseUrlencode(requestBody, trimFields)}")\n`;
       case 'raw':
-        return 'RequestBody body = RequestBody.create(mediaType, ' +
-                        `${JSON.stringify(requestBody[requestBody.mode])});\n`;
+        return 'val body = RequestBody.create(mediaType, ' +
+                        `${JSON.stringify(requestBody[requestBody.mode])})\n`;
       case 'graphql':
         // eslint-disable-next-line no-case-declarations
         let query = requestBody[requestBody.mode].query,
@@ -85,29 +85,29 @@ function parseBody (requestBody, indentString, trimFields) {
         catch (e) {
           graphqlVariables = {};
         }
-        return 'RequestBody body = RequestBody.create(mediaType, ' +
+        return 'val body = RequestBody.create(mediaType, ' +
         `"${sanitize(JSON.stringify({
           query: query,
           variables: graphqlVariables
-        }), trimFields)}");\n`;
+        }), trimFields)}")\n`;
       case 'formdata':
         return requestBody.formdata.length ?
-          'RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
-            `${parseFormData(requestBody, indentString, trimFields)};\n` :
-          'MediaType JSON = MediaType.parse("application/json; charset=utf-8");\n' +
-          'RequestBody body = RequestBody.create(JSON, "{}");\n';
+          'val body = new MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
+            `${parseFormData(requestBody, indentString, trimFields)}\n` :
+          'val JSON = MediaType.parse("application/json; charset=utf-8")\n' +
+          'val body = RequestBody.create(JSON, "{}")\n';
         /* istanbul ignore next */
       case 'file':
         // return 'RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
         //                 indentString + `.addFormDataPart("file", "${requestBody[requestBody.mode].src}",\n` +
         //                 indentString + 'RequestBody.create(MediaType.parse("application/octet-stream"),\n' +
         //                 indentString + `new File("${requestBody[requestBody.mode].src}"))).build();\n`;
-        return 'RequestBody body = RequestBody.create(mediaType, "<file contents here>");\n';
+        return 'val body = RequestBody.create(mediaType, "<file contents here>")\n';
       default:
-        return 'RequestBody body = RequestBody.create(mediaType, "");\n';
+        return 'val body = RequestBody.create(mediaType, "")\n';
     }
   }
-  return 'RequestBody body = RequestBody.create(mediaType, "");\n';
+  return 'val body = RequestBody.create(mediaType, "")\n';
 }
 
 /**

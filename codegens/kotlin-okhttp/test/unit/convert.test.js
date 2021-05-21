@@ -39,7 +39,7 @@ describe('okhttp convert function', function () {
           expect.fail(null, null, error);
           return;
         }
-        expect(snippet).to.include('import java.io.*;\nimport okhttp3.*;\npublic class main {\n');
+        expect(snippet).to.include('import java.io.*;\nimport okhttp3.*;\n\nfun main(args: Array<String>) {\n');
       });
     });
 
@@ -49,7 +49,7 @@ describe('okhttp convert function', function () {
           expect.fail(null, null, error);
           return;
         }
-        expect(snippet).to.include('.setConnectTimeout(1000, TimeUnit.MILLISECONDS)');
+        expect(snippet).to.include('.connectTimeout(1000, TimeUnit.SECONDS)');
       });
     });
 
@@ -188,7 +188,7 @@ describe('okhttp convert function', function () {
         expect(snippet).to.include('"no file","file"');
         expect(snippet).to.include('"no src","file"');
         expect(snippet).to.include('"invalid src","file"');
-        expect(snippet).to.include('new File("/path/to/file")');
+        expect(snippet).to.include('File("/path/to/file")');
       });
     });
   });
