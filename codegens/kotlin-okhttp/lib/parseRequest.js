@@ -33,6 +33,7 @@ function parseFormData (requestBody, indentString, trimFields) {
     if (data.disabled) {
       return body;
     }
+    /* istanbul ignore next */
     if (data.type === 'file') {
       var pathArray = data.src.split(path.sep),
         fileName = pathArray[pathArray.length - 1];
@@ -86,12 +87,13 @@ function parseBody (requestBody, indentString, trimFields) {
         `"${sanitize(JSON.stringify({
           query: query,
           variables: graphqlVariables
-        }), trimFields)}".toRequestBody(mediaType))\n`;
+        }), trimFields)}".toRequestBody(mediaType)\n`;
       case 'formdata':
         return requestBody.formdata.length ?
           'val body = MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
             `${parseFormData(requestBody, indentString, trimFields)}\n` :
           'val body = "{}".toRequestBody("application/json; charset=utf-8".toMediaType())\n';
+      /* istanbul ignore next */
       case 'file':
         return `val body = File("${requestBody[requestBody.mode].src}")` +
           '.asRequestBody("application/octet-stream".toMediaType())\n';

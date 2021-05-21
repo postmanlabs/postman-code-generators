@@ -207,11 +207,16 @@ function convert (request, options, callback) {
   indentString = indentString.repeat(options.indentCount);
 
   if (options.includeBoilerplate) {
-    headerSnippet = 'import java.io.*;\n' +
-                        'import okhttp3.*;\n\n' +
-                        'fun main(args: Array<String>) {\n';
-    footerSnippet = indentString.repeat(1) + 'println(response.body!!.string())\n' +
-                        '}\n';
+    headerSnippet = 'import okhttp3.MediaType.Companion.toMediaType\n' +
+                        'import okhttp3.MultipartBody\n' +
+                        'import okhttp3.OkHttpClient\n' +
+                        'import okhttp3.Request\n' +
+                        'import okhttp3.RequestBody.Companion.toRequestBody\n' +
+                        'import okhttp3.RequestBody.Companion.asRequestBody\n' +
+                        'import java.io.File\n' +
+                        'import java.util.concurrent.TimeUnit\n\n';
+
+    footerSnippet = indentString.repeat(1) + 'println(response.body!!.string())\n';
   }
 
   snippet = makeSnippet(request, indentString, options);
