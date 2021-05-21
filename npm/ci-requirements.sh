@@ -16,6 +16,7 @@ pushd ./codegens/kotlin-okhttp &>/dev/null;
   sudo rm -rf /var/lib/apt/lists/*
   sudo apt-get update
   sudo apt-get install -y openjdk-8-jdk
+  sudo snap install --classic kotlin
   unzip test/unit/fixtures/dependencies.zip
 popd &>/dev/null;
 
