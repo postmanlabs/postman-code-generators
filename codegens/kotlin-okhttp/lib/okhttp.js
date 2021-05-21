@@ -17,20 +17,26 @@ const METHODS_WITHOUT_BODY = ['GET', 'HEAD', 'COPY', 'UNLOCK', 'UNLINK', 'PURGE'
  * @returns {String} - kotlin okhttp code snippet for given request object
  */
 function makeSnippet (request, indentString, options) {
-
-  var isBodyRequired = !(_.includes(METHODS_WITHOUT_BODY, request.method)),
-    snippet = 'private val client = OkHttpClient.Builder()\n',
+  let isBodyRequired = !(_.includes(METHODS_WITHOUT_BODY, request.method)),
+    snippet = 'val client = OkHttpClient',
+    hasNoOptions = !(options.requestTimeout || options.followRedirects),
     requestBody;
 
-  if (options.requestTimeout > 0) {
-    snippet += indentString + `.connectTimeout(${options.requestTimeout}, TimeUnit.SECONDS)\n`;
+  if (hasNoOptions) {
+    snippet += '()\n';
   }
+  else {
+    snippet += '.Builder()\n';
+    if (options.requestTimeout > 0) {
+      snippet += indentString + `.connectTimeout(${options.requestTimeout}, TimeUnit.SECONDS)\n`;
+    }
 
-  if (!options.followRedirect) {
-    snippet += indentString + '.followRedirects(false)\n';
+    if (!options.followRedirect) {
+      snippet += indentString + '.followRedirects(false)\n';
+    }
+
+    snippet += indentString + '.build()\n';
   }
-
-  snippet += indentString + '.build()\n';
 
   if (isBodyRequired) {
     // The following code handles multiple files in the same formdata param.
@@ -70,13 +76,27 @@ function makeSnippet (request, indentString, options) {
     }
     requestBody = (request.body ? request.body.toJSON() : {});
     //  snippet for creating mediatype object in java based on content-type of request
-    snippet += `val mediaType = MediaType.parse("${parseRequest.parseContentType(request)}")\n`;
+    snippet += `val mediaType = "${parseRequest.parseContentType(request)}".toMediaType()\n`;
     snippet += parseRequest.parseBody(requestBody, indentString, options.trimRequestBody);
   }
 
   snippet += 'val request = Request.Builder()\n';
   snippet += indentString + `.url("${sanitize(request.url.toString())}")\n`;
-  snippet += indentString + `.method("${request.method}", ${isBodyRequired ? 'body' : 'null'})\n`;
+  if (isBodyRequired) {
+    switch (request.method) {
+      case 'POST':
+        snippet += indentString + '.post(body)\n';
+        break;
+      case 'PUT':
+        snippet += indentString + '.put(body)\n';
+        break;
+      case 'PATCH':
+        snippet += indentString + '.patch(body)\n';
+        break;
+      default:
+        snippet += indentString + `.method("${request.method}", body)\n`;
+    }
+  }
   if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
     request.addHeader({
       key: 'Content-Type',
@@ -198,7 +218,7 @@ function convert (request, options, callback) {
 
   //  if boilerplate is included then two more indentString needs to be added in snippet
   (options.includeBoilerplate) &&
-    (snippet = indentString.repeat(2) + snippet.split('\n').join('\n' + indentString.repeat(2)) + '\n');
+    (snippet = indentString.repeat(1) + snippet.split('\n').join('\n' + indentString.repeat(1)) + '\n');
 
   return callback(null, headerSnippet + snippet + footerSnippet);
 }

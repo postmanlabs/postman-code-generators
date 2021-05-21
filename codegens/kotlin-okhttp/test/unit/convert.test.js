@@ -138,7 +138,7 @@ describe('okhttp convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.contain('RequestBody.create(MediaType.parse("application/json"), "{\\"hello\\": \\"world\\"}".getBytes()))'); // eslint-disable-line max-len
+        expect(snippet).to.contain('"{\\"hello\\": \\"world\\"}".toRequestBody("application/json".toMediaType())');
       });
     });
 
@@ -194,7 +194,7 @@ describe('okhttp convert function', function () {
   });
 
   describe('getOptions function', function () {
-    it('should return array of options for csharp-restsharp converter', function () {
+    it('should return array of options for kotlin-okhttp converter', function () {
       expect(getOptions()).to.be.an('array');
     });
 

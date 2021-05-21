@@ -33,21 +33,20 @@ function parseFormData (requestBody, indentString, trimFields) {
     if (data.disabled) {
       return body;
     }
-    /* istanbul ignore next */
     if (data.type === 'file') {
       var pathArray = data.src.split(path.sep),
         fileName = pathArray[pathArray.length - 1];
       body += indentString + '.addFormDataPart' +
                     `("${sanitize(data.key, trimFields)}","${sanitize(fileName, trimFields)}",\n` +
-                    indentString.repeat(2) + 'RequestBody.create(MediaType.parse("application/octet-stream"),\n' +
-                    indentString.repeat(2) + `File("${sanitize(data.src)}")))\n`;
+                    indentString.repeat(2) + `File("${sanitize(data.src)}")` +
+                    '.asRequestBody("application/octet-stream".toMediaType()))\n';
     }
     else {
       !data.value && (data.value = '');
       body += `${indentString}.addFormDataPart("${sanitize(data.key, trimFields)}",`;
       if (data.contentType) {
-        body += ` null,\n${indentString.repeat(2)} RequestBody.create(MediaType.parse("${data.contentType}"),`;
-        body += ` "${sanitize(data.value, trimFields)}".getBytes()))\n`;
+        body += ` null,\n${indentString.repeat(2)}`;
+        body += ` "${sanitize(data.value, trimFields)}".toRequestBody("${data.contentType}".toMediaType()))\n`;
       }
       else {
         body += `"${sanitize(data.value, trimFields)}")\n`;
@@ -70,11 +69,9 @@ function parseBody (requestBody, indentString, trimFields) {
   if (!_.isEmpty(requestBody)) {
     switch (requestBody.mode) {
       case 'urlencoded':
-        return 'val body = RequestBody.create(mediaType, ' +
-                        `"${parseUrlencode(requestBody, trimFields)}")\n`;
+        return `val body = "${parseUrlencode(requestBody, trimFields)}".toRequestBody(mediaType)\n`;
       case 'raw':
-        return 'val body = RequestBody.create(mediaType, ' +
-                        `${JSON.stringify(requestBody[requestBody.mode])})\n`;
+        return `val body = ${JSON.stringify(requestBody[requestBody.mode])}.toRequestBody(mediaType)\n`;
       case 'graphql':
         // eslint-disable-next-line no-case-declarations
         let query = requestBody[requestBody.mode].query,
@@ -85,29 +82,24 @@ function parseBody (requestBody, indentString, trimFields) {
         catch (e) {
           graphqlVariables = {};
         }
-        return 'val body = RequestBody.create(mediaType, ' +
+        return 'val body = ' +
         `"${sanitize(JSON.stringify({
           query: query,
           variables: graphqlVariables
-        }), trimFields)}")\n`;
+        }), trimFields)}".toRequestBody(mediaType))\n`;
       case 'formdata':
         return requestBody.formdata.length ?
-          'val body = new MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
+          'val body = MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
             `${parseFormData(requestBody, indentString, trimFields)}\n` :
-          'val JSON = MediaType.parse("application/json; charset=utf-8")\n' +
-          'val body = RequestBody.create(JSON, "{}")\n';
-        /* istanbul ignore next */
+          'val body = "{}".toRequestBody("application/json; charset=utf-8".toMediaType())\n';
       case 'file':
-        // return 'RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)\n' +
-        //                 indentString + `.addFormDataPart("file", "${requestBody[requestBody.mode].src}",\n` +
-        //                 indentString + 'RequestBody.create(MediaType.parse("application/octet-stream"),\n' +
-        //                 indentString + `new File("${requestBody[requestBody.mode].src}"))).build();\n`;
-        return 'val body = RequestBody.create(mediaType, "<file contents here>")\n';
+        return `val body = File("${requestBody[requestBody.mode].src}")` +
+          '.asRequestBody("application/octet-stream".toMediaType())\n';
       default:
-        return 'val body = RequestBody.create(mediaType, "")\n';
+        return 'val body = "".toRequestBody(mediaType)\n';
     }
   }
-  return 'val body = RequestBody.create(mediaType, "")\n';
+  return 'val body = "".toRequestBody(mediaType)\n';
 }
 
 /**
