@@ -9,8 +9,6 @@ require('async').series([
   require('./test-lint'),
   require('./test-unit'),
   require('./test-newman')
-  // require('./test-browser')
-  // require('./test-integration')
 ], function (code) {
   // eslint-disable-next-line max-len
   console.info(chalk[code ? 'red' : 'green'](`\n${name}: duration ${prettyms(Date.now() - startedAt)}\n${name}: ${code ? 'not ok' : 'ok'}!`));

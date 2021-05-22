@@ -1,5 +1,4 @@
 var _ = require('./lodash'),
-
   parseRequest = require('./parseRequest'),
   sanitize = require('./util').sanitize,
   addFormParam = require('./util').addFormParam,
@@ -120,51 +119,50 @@ function makeSnippet (request, indentString, options) {
  * @returns {Array} Options specific to generation of Java okhttp code snippet
  */
 function getOptions () {
-  return [
-    {
-      name: 'Include boilerplate',
-      id: 'includeBoilerplate',
-      type: 'boolean',
-      default: false,
-      description: 'Include class definition and import statements in snippet'
-    },
-    {
-      name: 'Set indentation count',
-      id: 'indentCount',
-      type: 'positiveInteger',
-      default: 2,
-      description: 'Set the number of indentation characters to add per code level'
-    },
-    {
-      name: 'Set indentation type',
-      id: 'indentType',
-      type: 'enum',
-      availableOptions: ['Tab', 'Space'],
-      default: 'Space',
-      description: 'Select the character used to indent lines of code'
-    },
-    {
-      name: 'Set request timeout',
-      id: 'requestTimeout',
-      type: 'positiveInteger',
-      default: 0,
-      description: 'Set number of milliseconds the request should wait for a response ' +
+  return [{
+    name: 'Include boilerplate',
+    id: 'includeBoilerplate',
+    type: 'boolean',
+    default: false,
+    description: 'Include class definition and import statements in snippet'
+  },
+  {
+    name: 'Set indentation count',
+    id: 'indentCount',
+    type: 'positiveInteger',
+    default: 2,
+    description: 'Set the number of indentation characters to add per code level'
+  },
+  {
+    name: 'Set indentation type',
+    id: 'indentType',
+    type: 'enum',
+    availableOptions: ['Tab', 'Space'],
+    default: 'Space',
+    description: 'Select the character used to indent lines of code'
+  },
+  {
+    name: 'Set request timeout',
+    id: 'requestTimeout',
+    type: 'positiveInteger',
+    default: 0,
+    description: 'Set number of milliseconds the request should wait for a response ' +
         'before timing out (use 0 for infinity)'
-    },
-    {
-      name: 'Follow redirects',
-      id: 'followRedirect',
-      type: 'boolean',
-      default: true,
-      description: 'Automatically follow HTTP redirects'
-    },
-    {
-      name: 'Trim request body fields',
-      id: 'trimRequestBody',
-      type: 'boolean',
-      default: false,
-      description: 'Remove white space and additional lines that may affect the server\'s response'
-    }
+  },
+  {
+    name: 'Follow redirects',
+    id: 'followRedirect',
+    type: 'boolean',
+    default: true,
+    description: 'Automatically follow HTTP redirects'
+  },
+  {
+    name: 'Trim request body fields',
+    id: 'trimRequestBody',
+    type: 'boolean',
+    default: false,
+    description: 'Remove white space and additional lines that may affect the server\'s response'
+  }
   ];
 }
 
@@ -207,23 +205,24 @@ function convert (request, options, callback) {
   indentString = indentString.repeat(options.indentCount);
 
   if (options.includeBoilerplate) {
+    // TODO: optimize imports
     headerSnippet = 'import okhttp3.MediaType.Companion.toMediaType\n' +
-                        'import okhttp3.MultipartBody\n' +
-                        'import okhttp3.OkHttpClient\n' +
-                        'import okhttp3.Request\n' +
-                        'import okhttp3.RequestBody.Companion.toRequestBody\n' +
-                        'import okhttp3.RequestBody.Companion.asRequestBody\n' +
-                        'import java.io.File\n' +
-                        'import java.util.concurrent.TimeUnit\n\n';
+      'import okhttp3.MultipartBody\n' +
+      'import okhttp3.OkHttpClient\n' +
+      'import okhttp3.Request\n' +
+      'import okhttp3.RequestBody.Companion.toRequestBody\n' +
+      'import okhttp3.RequestBody.Companion.asRequestBody\n' +
+      'import java.io.File\n' +
+      'import java.util.concurrent.TimeUnit\n\n';
 
-    footerSnippet = indentString.repeat(1) + 'println(response.body!!.string())\n';
+    footerSnippet = '\n\nprintln(response.body!!.string())\n';
   }
 
   snippet = makeSnippet(request, indentString, options);
 
   //  if boilerplate is included then two more indentString needs to be added in snippet
-  (options.includeBoilerplate) &&
-    (snippet = indentString.repeat(1) + snippet.split('\n').join('\n' + indentString.repeat(1)) + '\n');
+  // (options.includeBoilerplate) &&
+  // (snippet = indentString.repeat(1) + snippet.split('\n').join('\n' + indentString.repeat(1)) + '\n');
 
   return callback(null, headerSnippet + snippet + footerSnippet);
 }

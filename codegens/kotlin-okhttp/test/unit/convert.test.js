@@ -7,15 +7,7 @@ var expect = require('chai').expect,
 
 describe('okhttp convert function', function () {
   describe('convert function', function () {
-    var request = new sdk.Request(mainCollection.item[0].request),
-      snippetArray,
-      options = {
-        includeBoilerplate: true,
-        indentType: 'Tab',
-        indentCount: 2
-      };
-
-    const SINGLE_SPACE = ' ';
+    var request = new sdk.Request(mainCollection.item[0].request);
 
     it('should generate snippet with default options given no options', function () {
       convert(request, function (error, snippet) {
@@ -23,13 +15,7 @@ describe('okhttp convert function', function () {
           expect.fail(null, null, error);
           return;
         }
-        snippetArray = snippet.split('\n');
-        for (var i = 0; i < snippetArray.length; i++) {
-          if (snippetArray[i].startsWith('public class main {')) {
-            expect(snippetArray[i + 1].substr(0, 4)).to.equal(SINGLE_SPACE.repeat(4));
-            expect(snippetArray[i + 1].charAt(4)).to.not.equal(SINGLE_SPACE);
-          }
-        }
+        expect(snippet).to.include('val client = OkHttpClient()\n');
       });
     });
 
@@ -39,7 +25,16 @@ describe('okhttp convert function', function () {
           expect.fail(null, null, error);
           return;
         }
-        expect(snippet).to.include('import java.io.*;\nimport okhttp3.*;\n\nfun main(args: Array<String>) {\n');
+        let headerSnippet = 'import okhttp3.MediaType.Companion.toMediaType\n' +
+        'import okhttp3.MultipartBody\n' +
+        'import okhttp3.OkHttpClient\n' +
+        'import okhttp3.Request\n' +
+        'import okhttp3.RequestBody.Companion.toRequestBody\n' +
+        'import okhttp3.RequestBody.Companion.asRequestBody\n' +
+        'import java.io.File\n' +
+        'import java.util.concurrent.TimeUnit\n\n';
+        expect(snippet).to.include(headerSnippet);
+        expect(snippet).to.include('println(response.body!!.string())');
       });
     });
 
@@ -60,23 +55,6 @@ describe('okhttp convert function', function () {
           return;
         }
         expect(snippet).to.not.include('.followRedirects(false)');
-      });
-    });
-
-    it('should generate snippet with Tab as an indent type with exact indent count', function () {
-      convert(request, options, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-          return;
-        }
-        snippetArray = snippet.split('\n');
-        for (var i = 0; i < snippetArray.length; i++) {
-          if (snippetArray[i].startsWith('public class main {')) {
-            expect(snippetArray[i + 1].charAt(0)).to.equal('\t');
-            expect(snippetArray[i + 1].charAt(1)).to.equal('\t');
-            expect(snippetArray[i + 1].charAt(2)).to.not.equal('\t');
-          }
-        }
       });
     });
 
