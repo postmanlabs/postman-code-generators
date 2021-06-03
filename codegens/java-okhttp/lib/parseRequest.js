@@ -74,7 +74,8 @@ function parseBody (requestBody, indentString, trimFields) {
                         `"${parseUrlencode(requestBody, trimFields)}");\n`;
       case 'raw':
         return 'RequestBody body = RequestBody.create(mediaType, ' +
-                        `${JSON.stringify(requestBody[requestBody.mode])});\n`;
+          `${JSON.stringify(requestBody[requestBody.mode])});\n`;
+
       case 'graphql':
         // eslint-disable-next-line no-case-declarations
         let query = requestBody[requestBody.mode].query,
@@ -87,7 +88,7 @@ function parseBody (requestBody, indentString, trimFields) {
         }
         return 'RequestBody body = RequestBody.create(mediaType, ' +
         `"${sanitize(JSON.stringify({
-          query: query,
+          query: query || '',
           variables: graphqlVariables
         }), trimFields)}");\n`;
       case 'formdata':

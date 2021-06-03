@@ -187,18 +187,20 @@ function getBody (request, trimRequestBody) {
           requestBody += request.body[request.body.mode].toString();
         }
         return trimRequestBody ? requestBody.trim() : requestBody;
+
       case GRAPHQL:
         // eslint-disable-next-line no-case-declarations
-        let query = request.body[request.body.mode].query,
+        let graphql = request.body[request.body.mode],
+          query = graphql ? graphql.query : '',
           graphqlVariables;
         try {
-          graphqlVariables = JSON.parse(request.body[request.body.mode].variables);
+          graphqlVariables = JSON.parse(graphql ? graphql.variables : '{}');
         }
         catch (e) {
           graphqlVariables = {};
         }
         requestBody += JSON.stringify({
-          query: query,
+          query: query || '',
           variables: graphqlVariables
         });
         return trimRequestBody ? requestBody.trim() : requestBody;
