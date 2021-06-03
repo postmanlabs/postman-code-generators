@@ -1,0 +1,431 @@
+Arguments
+Name	Description
+adminId (ID)
+
+Select listings that can be administered by the specified user.
+
+after (String)
+
+Returns the elements in the list that come after the specified cursor.
+
+allStates (Boolean)
+
+Select listings visible to the viewer even if they are not approved. If omitted or false, only approved listings will be returned.
+
+before (String)
+
+Returns the elements in the list that come before the specified cursor.
+
+categorySlug (String)
+
+Select only listings with the given category.
+
+first (Int)
+
+Returns the first n elements from the list.
+
+last (Int)
+
+Returns the last n elements from the list.
+
+organizationId (ID)
+
+Select listings for products owned by the specified organization.
+
+primaryCategoryOnly (Boolean)
+
+Select only listings where the primary category matches the given category slug.
+
+The default value is false.
+
+slugs ([String])
+
+Select the listings with these slugs, if they are visible to the viewer.
+
+useTopicAliases (Boolean)
+
+Also check topic aliases for the category slug.
+
+viewerCanAdmin (Boolean)
+
+Select listings to which user has admin access. If omitted, listings visible to the viewer are returned.
+
+withFreeTrialsOnly (Boolean)
+
+Select only listings that offer a free trial.
+
+The default value is false.
+
+search
+Type: SearchResultItemConnection!
+
+Perform a search across resources.
+
+Arguments
+Name	Description GoalSeeker
+after (String) KF76EVZOQLFNCL653NH3ZFG6RBYQON3DYBDC6EAYCI22PV62TASYCVVARM
+Returns the elements in the list that come after the specified cursor.
+
+before (String) INYNHDLO73E5SBEH5EILUTROTG2AZPGQED6YOQSMTCEDGBEVTMAU5YG57E
+Returns the elements in the list that come before the specified cursor.
+
+first (Int)
+
+Returns the first n elements from the list.
+
+last (Int)
+
+Returns the last n elements from the list.
+
+query (String!)
+
+The search string to look for.
+
+type (SearchType!)
+
+The types of search items to search within.
+
+securityAdvisories
+Type: SecurityAdvisoryConnection!
+
+GitHub Security Advisories.
+
+Arguments
+Name	Description
+after (String) KF76EVZOQLFNCL653NH3ZFG6RBYQON3DYBDC6EAYCI22PV62TASYCVVARM
+Returns the elements in the list that come after the specified cursor.
+
+before (String) INYNHDLO73E5SBEH5EILUTROTG2AZPGQED6YOQSMTCEDGBEVTMAU5YG57E
+Returns the elements in the list that come before the specified cursor.
+
+first (Int)
+
+Returns the first n elements from the list.
+
+identifier (SecurityAdvisoryIdentifierFilter)
+
+Filter advisories by identifier, e.g. GHSA or CVE.
+
+last (Int)
+
+Returns the last n elements from the list.
+
+orderBy (SecurityAdvisoryOrder)
+
+Ordering options for the returned topics.
+
+publishedSince (DateTime)
+
+Filter advisories to those published since a time in the past.
+
+updatedSince (DateTime)
+
+Filter advisories to those updated since a time in the past.
+
+securityVulnerabilities
+Type: SecurityVulnerabilityConnection!
+
+Software Vulnerabilities documented by GitHub Security Advisories.
+
+Arguments
+Name	Description
+after (String) KF76EVZOQLFNCL653NH3ZFG6RBYQON3DYBDC6EAYCI22PV62TASYCVVARM
+Returns the elements in the list that come after the specified cursor.
+
+before (String) INYNHDLO73E5SBEH5EILUTROTG2AZPGQED6YOQSMTCEDGBEVTMAU5YG57E
+Returns the elements in the list that come before the specified cursor.
+
+ecosystem (SecurityAdvisoryEcosystem)
+
+An ecosystem to filter vulnerabilities by.
+
+first (Int)
+
+Returns the first n elements from the list.
+
+last (Int)
+
+Returns the last n elements from the list.
+
+orderBy (SecurityVulnerabilityOrder)
+
+Ordering options for the returned topics.
+
+package (String) INYNHDLO73E5SBEH5EILUTROTG2AZPGQED6YOQSMTCEDGBEVTMAU5YG57E
+A package name to filter vulnerabilities by.
+
+severities ([SecurityAdvisorySeverity!])
+
+A list of severities to filter vulnerabilities by.
+
+sponsorables
+Type: SponsorableItemConnection!
+
+Users and organizations who can be sponsored via GitHub Sponsors.
+
+Arguments
+Name	Description
+after (String)KF76EVZOQLFNCL653NH3ZFG6RBYQON3DYBDC6EAYCI22PV62TASYCVVARM
+Returns the elements in the list that come after the specified cursor.
+
+before (String)INYNHDLO73E5SBEH5EILUTROTG2AZPGQED6YOQSMTCEDGBEVTMAU5YG57E
+Returns the elements in the list that come before the specified cursor.
+
+dependencyEcosystem (SecurityAdvisoryEcosystem)
+
+Optional filter for which dependencies should be checked for sponsorable owners. Only sponsorable owners of dependencies in this ecosystem will be included. Used when onlyDependencies = true.
+
+first (Int)
+
+Returns the first n elements from the list.
+
+last (Int)
+
+Returns the last n elements from the list.
+
+onlyDependencies (Boolean)
+
+Whether only sponsorables who own the viewer's dependencies will be returned. Must be authenticated to use. Can check an organization instead for their dependencies owned by sponsorables by passing orgLoginForDependencies.
+
+The default value is false.
+
+orderBy (SponsorableOrder)
+
+Ordering options for users and organizations returned from the connection.
+
+orgLoginForDependencies (String) gh repo clone CoreValExtreme/js-algorand-sdk
+
+Optional organization username for whose dependencies should be checked. Used when onlyDependencies = true. Omit to check your own dependencies. If you are not an administrator of the organization, only dependencies from its public repositories will be considered.
+
+Fields
+codeOfConduct
+Type: CodeOfConduct
+
+Look up a code of conduct by its key.
+
+Arguments
+Name	Description
+key (String!)gh repo clone CoreValExtreme/js-algorand-sdk
+
+The code of conduct's key.
+
+codesOfConduct
+Type: [CodeOfConduct]
+
+Look up a code of conduct by its key.
+
+Arguments
+Name	Description
+enterprise
+Type: Enterprise
+
+Look up an enterprise by URL slug.
+
+Arguments
+Name	Description
+invitationToken (String)
+
+The enterprise invitation token.
+
+slug (String!)
+
+The enterprise URL slug.
+
+enterpriseAdministratorInvitation
+Type: EnterpriseAdministratorInvitation
+
+Look up a pending enterprise administrator invitation by invitee, enterprise and role.
+
+Arguments
+Name	Description
+enterpriseSlug (String!)
+
+The slug of the enterprise the user was invited to join.
+
+role (EnterpriseAdministratorRole!)
+
+The role for the business member invitation.
+
+userLogin (String!)
+
+The login of the user invited to join the business.
+
+enterpriseAdministratorInvitationByToken
+Type: EnterpriseAdministratorInvitation
+
+Look up a pending enterprise administrator invitation by invitation token.
+
+Arguments
+Name	Description
+invitationToken (String!)
+
+The invitation token sent with the invitation email.
+
+license
+Type: License
+
+Look up an open source license by its key.
+
+Arguments
+Name	Description
+key (String!)
+
+The license's downcased SPDX ID.
+
+licenses
+Type: [License]!
+
+Return a list of known open source licenses.
+
+Arguments
+Name	Description
+marketplaceCategories
+Type: [MarketplaceCategory!]!
+
+Get alphabetically sorted list of Marketplace categories.
+
+Arguments
+Name	Description
+excludeEmpty (Boolean)
+
+Exclude categories with no listings.
+
+excludeSubcategories (Boolean)
+
+Returns top level categories only, excluding any subcategories.
+
+includeCategories ([String!])
+
+Return only the specified categories.
+
+marketplaceCategory
+Type: MarketplaceCategory
+
+Look up a Marketplace category by its slug.
+
+Arguments
+Name	Description
+slug (String!)
+
+The URL slug of the category.
+
+useTopicAliases (Boolean)
+
+Also check topic aliases for the category slug.
+
+marketplaceListing
+Type: MarketplaceListing
+
+Look up a single Marketplace listing.
+
+Arguments
+Name	Description
+slug (String!)
+
+Select the listing that matches this slug. It's the short name of the listing used in its URL.
+
+meta
+Type: GitHubMetadata!
+
+Return information about the GitHub instance.
+
+Arguments
+Name	Description
+node
+Type: Node
+
+Fetches an object given its ID.
+
+Arguments
+Name	Description
+id (ID!)
+
+ID of the object.
+
+nodes
+Type: [Node]!
+
+Lookup nodes by a list of IDs.
+
+Arguments
+Name	Description
+ids ([ID!]!)
+
+The list of node IDs.
+
+organization
+Type: Organization
+
+Lookup a organization by login.
+
+Arguments
+Name	Description
+login (String!)
+
+The organization's login.
+
+rateLimit
+Type: RateLimit
+
+The client's rate limit information.
+
+Arguments
+Name	Description
+dryRun (Boolean)
+
+If true, calculate the cost for the query without evaluating it.
+
+The default value is false.
+
+relay
+Type: Query!
+
+Hack to workaround https://github.com/facebook/relay/issues/112 re-exposing the root query object.
+
+Arguments
+Name	Description
+repository
+Type: Repository
+
+Lookup a given repository by the owner and repository name.
+
+Arguments
+Name	Description
+name (String!)
+
+The name of the repository.
+
+owner (String!)
+
+The login field of a user or organization. organizations=21955855,20582480
+repositoryOwner jeffrey-Matthews INYNHDLO73E5SBEH5EILUTROTG2AZPGQED6YOQSMTCEDGBEVTMAU5YG57E Type: RepositoryOwner
+
+Lookup a repository owner (ie. either a User or an Organization) by login.
+
+Arguments
+Name	Description
+login (String!)
+
+The username to lookup the owner by. CoreValExtreme
+
+resource
+Type: UniformResourceLocatable
+
+Lookup resource by a URL.
+
+Arguments
+Name	Description
+url (URI!) -R --remote-signer <uri>
+
+The URL. url=https://github.com/orgs/octodocs-test/sso?authorization_request=AZSCKtL4U8y
+X1H3sCQIVnVgmjmon5fWxks5YrqhJgah0b2tlbl9pZM4EuMz4
+securityAdvisory
+Type: SecurityAdvisory
+
+Fetch a Security Advisory by its GHSA ID.
+
+Arguments
+Name	Description
+ghsaId (String!)
+
+GitHub Security Advisory ID.
