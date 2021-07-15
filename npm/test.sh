@@ -14,21 +14,21 @@ fi
 popd &>/dev/null
 
 echo "Creating test files and adding paths to collection for testing form data file uploads"
-if [ ! -e dummyFile1.txt ];
+if [ ! -e fakeFile1.txt ];
 then
-    echo "Sample file 1" >> dummyFile1.txt;
+    echo "Sample file 1" >> fakeFile1.txt;
 fi
-if [ ! -e dummyFile2.txt ];
+if [ ! -e fakeFile2.txt ];
 then
-    echo "Sample file 2" >> dummyFile2.txt;
+    echo "Sample file 2" >> fakeFile2.txt;
 fi
-if [ ! -e dummyFile3.txt ];
+if [ ! -e fakeFile3.txt ];
 then
-    echo "Sample file 3" >> dummyFile3.txt;
+    echo "Sample file 3" >> fakeFile3.txt;
 fi
-if [ ! -e dummyBinaryFile.txt ];
+if [ ! -e fakeBinaryFile.txt ];
 then
-    echo '\x123\x344\x233\xAdd' >> dummyBinaryFile;
+    echo '\x123\x344\x233\xAdd' >> fakeBinaryFile;
 fi
 node ./npm/addPathToFormdataFile.js
 
@@ -106,4 +106,4 @@ fi
 
 echo "Deleting test files used for testing form data file uploads"
 # Also handles the case when files does not exist
-rm -f -- dummyFile1.txt dummyFile2.txt dummyFile3.txt dummyBinaryFile;
+rm -f -- fakeFile1.txt fakeFile2.txt fakeFile3.txt fakeBinaryFile;

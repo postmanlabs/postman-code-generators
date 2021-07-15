@@ -67,4 +67,5 @@ typings/
 out/
 
 newmanResponses.json
-dummyFile*.txt
+fakeFile*.txt
+fakeBinaryFile
