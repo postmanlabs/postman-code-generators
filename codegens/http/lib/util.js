@@ -388,7 +388,6 @@ function getPath (url) {
   // Sometimes url.host contains protocol as well as path
   // Extract that here
   if (getHost(url).length !== url.host.join('.').length) {
-    console.log(getHostWithoutProtocol(url).split('/').slice(1));
     url.path = getHostWithoutProtocol(url).split('/').slice(1).concat(url.path);
   }
   if (url.path) {
