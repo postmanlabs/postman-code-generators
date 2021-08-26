@@ -47,6 +47,26 @@ function parseFormdata (bodyArray, indentString, trimBody) {
   }, '');
 }
 
+/** generate graphql code snippet
+ *
+ * @param body GraphQL body
+ * @param indentString string defining indentation
+ */
+function parseGraphql (body, indentString) {
+  let query = body ? body.query : '',
+    graphqlVariables = body ? body.variables : '{}';
+  try {
+    graphqlVariables = JSON.parse(graphqlVariables || '{}');
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  return indentString + '.send(JSON.stringify({\n' +
+    `${indentString.repeat(2)}query: \`${query ? query.trim() : ''}\`,\n` +
+    `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
+    `${indentString}}))\n`;
+}
+
 /**
  * Parses body object based on mode of body and converts into nodejs(unirest) code snippet
  *
@@ -66,7 +86,8 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
         if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
           try {
             let jsonBody = JSON.parse(requestbody[requestbody.mode]);
-            return `${indentString}.send(JSON.stringify(${JSON.stringify(jsonBody)}))\n`;
+            return `${indentString}.send(JSON.stringify(${JSON.stringify(jsonBody, null,
+              indentString.length).replace(/\n/g, '\n' + indentString)}))\n`;
           }
           catch (error) {
             return indentString + '.send(' + JSON.stringify(requestbody[requestbody.mode]) + ')\n';
@@ -74,19 +95,7 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
         }
         return indentString + '.send(' + JSON.stringify(requestbody[requestbody.mode]) + ')\n';
       case 'graphql':
-        // eslint-disable-next-line no-case-declarations
-        let query = requestbody[requestbody.mode].query,
-          graphqlVariables;
-        try {
-          graphqlVariables = JSON.parse(requestbody[requestbody.mode].variables);
-        }
-        catch (e) {
-          graphqlVariables = {};
-        }
-        return indentString + '.send(JSON.stringify({\n' +
-          `${indentString.repeat(2)}query: \`${query.trim()}\`,\n` +
-          `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
-          `${indentString}}))\n`;
+        return parseGraphql(requestbody[requestbody.mode], indentString);
       case 'urlencoded':
         return parseFormdata(requestbody[requestbody.mode], indentString, trimBody);
       case 'formdata':

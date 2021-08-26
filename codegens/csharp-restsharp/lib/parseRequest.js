@@ -48,16 +48,16 @@ function parseContentType (request) {
  * @returns {String} code snippet for graphql body
  */
 function parseGraphQL (requestBody, trimFields) {
-  let query = requestBody.graphql.query,
-    graphqlVariables;
+  let query = requestBody.graphql ? requestBody.graphql.query : '',
+    graphqlVariables = requestBody.graphql ? requestBody.graphql.variables : '{}';
   try {
-    graphqlVariables = JSON.parse(requestBody.graphql.variables);
+    graphqlVariables = JSON.parse(graphqlVariables || '{}');
   }
   catch (e) {
     graphqlVariables = {};
   }
   return 'request.AddParameter("application/json", ' +
-          `"${sanitize(JSON.stringify({query: query, variables: graphqlVariables}), trimFields)}",
+          `"${sanitize(JSON.stringify({query: query || '', variables: graphqlVariables}), trimFields)}",
            ParameterType.RequestBody);\n`;
 
 }
@@ -78,8 +78,12 @@ function parseBody (request, trimFields) {
       case 'formdata':
         return parseFormData(requestBody, trimFields);
       case 'raw':
-        return `request.AddParameter("${parseContentType(request)}", ` +
-                    `${JSON.stringify(requestBody[requestBody.mode])},  ParameterType.RequestBody);\n`;
+        return `var body = ${requestBody[requestBody.mode]
+          .split('\n')
+          .map((line) => { return '@"' + line.replace(/"/g, '""') + '"'; })
+          .join(' + "\\n" +\n')};\n` +
+          `request.AddParameter("${parseContentType(request)}", ` +
+          'body,  ParameterType.RequestBody);\n';
       case 'graphql':
         return parseGraphQL(requestBody, trimFields);
         /* istanbul ignore next */

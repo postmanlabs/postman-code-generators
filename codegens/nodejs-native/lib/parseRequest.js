@@ -73,6 +73,25 @@ function generateMultipartFormData (requestbody) {
   return postData;
 }
 
+/** generate graphql code snippet
+ *
+ * @param body GraphQL body
+ * @param indentString string defining indentation
+ */
+function parseGraphql (body, indentString) {
+  let query = body ? body.query : '',
+    graphqlVariables = body ? body.variables : '{}';
+  try {
+    graphqlVariables = JSON.parse(graphqlVariables || '{}');
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  return 'JSON.stringify({\n' +
+  `${indentString}query: \`${query ? query.trim() : ''}\`,\n` +
+  `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n})`;
+}
+
 /**
  * Parses body object based on mode of body and returns code snippet
  *
@@ -91,7 +110,7 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
         if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
           try {
             let jsonBody = JSON.parse(requestbody[requestbody.mode]);
-            return `JSON.stringify(${JSON.stringify(jsonBody)})`;
+            return `JSON.stringify(${JSON.stringify(jsonBody, null, indentString.length)})`;
           }
           catch (error) {
             return ` ${JSON.stringify(requestbody[requestbody.mode])}`;
@@ -99,18 +118,7 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
         }
         return ` ${JSON.stringify(requestbody[requestbody.mode])}`;
       case 'graphql':
-        // eslint-disable-next-line no-case-declarations
-        let query = requestbody[requestbody.mode].query,
-          graphqlVariables;
-        try {
-          graphqlVariables = JSON.parse(requestbody[requestbody.mode].variables);
-        }
-        catch (e) {
-          graphqlVariables = {};
-        }
-        return 'JSON.stringify({\n' +
-        `${indentString}query: \`${query.trim()}\`,\n` +
-        `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n})`;
+        return parseGraphql(requestbody[requestbody.mode], indentString);
       case 'formdata':
         return generateMultipartFormData(requestbody);
       case 'urlencoded':

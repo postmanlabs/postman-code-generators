@@ -117,6 +117,30 @@ function convertPropertyListToString (propertyList, joinUsing, includeDisabled =
   }), joinUsing);
 }
 
+/**
+ * Url encodes the members of the property list.
+ *
+ * @param {Object} propertyList propertyList
+ * @param {String} joinUsing specify string that should be used to join the list of properties
+ * @param {Boolean} includeDisabled indicated whether or not to include disabled properties
+ * @param {Boolean} trimRequestBody indicates whether or not to trim request body
+ * @returns {String} Stringified and Url encoded property List
+ */
+function convertPropListToStringUrlEncoded (propertyList, joinUsing, includeDisabled = false, trimRequestBody = false) {
+  const properties = getMembersOfPropertyList(propertyList, includeDisabled),
+    keyvalues = [];
+
+  properties.forEach((property) => {
+    const key = trimRequestBody ? property.key.trim() : property.key,
+      value = trimRequestBody ? property.value.trim() : property.value,
+      keyvalue = `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+
+    keyvalues.push(keyvalue);
+  });
+
+  return keyvalues.join(joinUsing);
+}
+
 
 /**
  * Returns the request headers as a string
@@ -163,25 +187,28 @@ function getBody (request, trimRequestBody) {
           requestBody += request.body[request.body.mode].toString();
         }
         return trimRequestBody ? requestBody.trim() : requestBody;
+
       case GRAPHQL:
         // eslint-disable-next-line no-case-declarations
-        let query = request.body[request.body.mode].query,
+        let graphql = request.body[request.body.mode],
+          query = graphql ? graphql.query : '',
           graphqlVariables;
         try {
-          graphqlVariables = JSON.parse(request.body[request.body.mode].variables);
+          graphqlVariables = JSON.parse(graphql ? graphql.variables : '{}');
         }
         catch (e) {
           graphqlVariables = {};
         }
         requestBody += JSON.stringify({
-          query: query,
+          query: query || '',
           variables: graphqlVariables
         });
         return trimRequestBody ? requestBody.trim() : requestBody;
       case URL_ENCODED:
         /* istanbul ignore else */
         if (!_.isEmpty(request.body[request.body.mode])) {
-          requestBody += convertPropertyListToString(request.body[request.body.mode], '&', false, trimRequestBody);
+          const propertyList = request.body[request.body.mode];
+          requestBody += convertPropListToStringUrlEncoded(propertyList, '&', false, trimRequestBody);
         }
         return trimRequestBody ? requestBody.trim() : requestBody;
 
