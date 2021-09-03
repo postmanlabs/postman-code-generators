@@ -46,7 +46,7 @@
     "newman": "5.2.0",
     "jsdoc": "3.6.6",
     "mocha": "5.2.0",
-    "lodash": "4.17.20",
+    "lodash": "4.17.21",
     "nyc": "14.1.1",
     "parse-gitignore": "1.0.1",
     "pretty-ms": "3.2.0",
