@@ -42,7 +42,7 @@
     "eslint-plugin-mocha": "4.12.1",
     "eslint-plugin-security": "1.4.0",
     "istanbul": "0.4.5",
-    "js-yaml": "3.14.0",
+    "js-yaml": "3.14.1",
     "newman": "5.2.0",
     "jsdoc": "3.6.6",
     "mocha": "5.2.0",
