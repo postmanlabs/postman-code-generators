@@ -9,54 +9,37 @@ function parseContentType (request) {
 /**
  * Parses header in Postman-SDK request and returns code snippet of csharp-httpclient for adding headers
  *
+ * @param {Object} builder - Code Builder
  * @param {Object} requestJson - Postman SDK request object
- * @returns {String} code snippet for adding headers in csharp-httpclient
  */
-function parseHeader (requestJson) {
+function parseHeader (builder, requestJson) {
   // Possibly add support for the typed header properties
   if (!Array.isArray(requestJson.header)) {
-    return '';
+    return;
   }
 
-  return requestJson.header.reduce((headerSnippet, header) => {
+  return requestJson.header.forEach((header) => {
     if (!header.disabled && sanitize(header.key) !== 'Content-Type') {
-      headerSnippet += `request.Headers.Add("${sanitize(header.key, true)}", "${sanitize(header.value)}");\n`;
+      builder.appendLine(`request.Headers.Add("${sanitize(header.key, true)}", "${sanitize(header.value)}");`);
     }
-    return headerSnippet;
-  }, '');
+  });
 }
 
-function parseContentTypeOnContent (request) {
-  return 'content.Headers.ContentType = new MediaTypeHeaderValue("' +
-    `${sanitize(parseContentType(request))}");\n`;
-}
-
-function safeAddRealContentType (snippet, request) {
-  if (!snippet) {
-    return '';
-  }
-
-  var contentType = request.getHeaders({ ignoreCase: true, enabled: true })['content-type'];
-
-  if (contentType &&
-    snippet.includes('var content = ') &&
-    !snippet.includes('content.Headers.ContentType = ')) {
-    return snippet +
-      'content.Headers.ContentType = new MediaTypeHeaderValue("' +
-      `${sanitize(contentType)}");\n`;
-  }
-
-  return snippet;
-}
-
-function parseFormUrlEncoded (requestBody, contentName) {
-  if (!Array.isArray(requestBody[requestBody.mode])) {
-    return '';
-  }
-
+/**
+ *
+ * @param {CodeBuilder} builder
+ * @param {Object} requestBody
+ * @param {String} contentName
+ */
+function parseFormUrlEncoded (builder, requestBody, contentName) {
   if (!contentName) {
     contentName = 'content';
   }
+
+  if (!Array.isArray(requestBody[requestBody.mode])) {
+    return;
+  }
+
 
   let list = requestBody[requestBody.mode].reduce((collection, data) => {
     if (data.disabled || data.type === 'file') {
@@ -64,24 +47,27 @@ function parseFormUrlEncoded (requestBody, contentName) {
     }
 
     (!data.value) && (data.value = '');
-    collection += 'collection.Add(new KeyValuePair<string, string>' +
-      `("${sanitize(data.key)}", "${sanitize(data.value)}"));\n`;
+    collection.push('collection.Add(new' +
+      `("${sanitize(data.key)}", "${sanitize(data.value)}"));`);
 
     return collection;
-  }, '');
+  }, []);
 
   if (list) {
-    return 'var collection = new List<KeyValuePair<string, string>>();\n' +
-    list +
-    `var ${contentName} = new FormUrlEncodedContent(collection);\n`;
+    builder.appendLine('var collection = new List<KeyValuePair<string, string>>();');
+    builder.appendLines(list);
+    builder.appendLine('var content = new FormUrlEncodedContent(collection);');
   }
-  return '';
 }
 
-
-function parseFormData2 (requestBody) {
+/**
+ *
+ * @param {CodeBuilder} builder
+ * @param {Object} requestBody
+ */
+function parseFormData (builder, requestBody) {
   if (!Array.isArray(requestBody[requestBody.mode])) {
-    return '';
+    return;
   }
 
   // Determine mode
@@ -95,7 +81,7 @@ function parseFormData2 (requestBody) {
 
   if (hasFile && hasText) {
     // Mixed mode, I will find both form and file items in here
-    formContent = parseFormUrlEncoded(requestBody, 'formContent');
+    parseFormUrlEncoded(builder, requestBody, 'formContent');
 
     return 'var content = new MultipartFormDataContent();\n' +
       formContent +
@@ -103,7 +89,7 @@ function parseFormData2 (requestBody) {
   }
   else if (hasFile) {
     // This is file only mode
-    return 'var content = new MultipartFormDataContent();\n' +
+    builder.appendLine('var content = new MultipartFormDataContent();\n' +
       requestBody[requestBody.mode].reduce((body, data) => {
         if (Array.isArray(data.src)) {
           // Many files
@@ -121,18 +107,18 @@ function parseFormData2 (requestBody) {
             `Path.GetFileName("${sanitize(data.src)}"));\n`;
         }
         return body;
-      }, '');
+      }, ''));
   }
   // This is a form only
-  formContent = parseFormUrlEncoded(requestBody);
-
-  if (formContent && formContent.includes('var content = ')) {
-    return formContent +
-      'content.Headers.ContentType = new MediaTypeHeaderValue("");\n';
-  }
+  parseFormUrlEncoded(builder, requestBody);
 }
 
-function parseGraphQL (requestBody) {
+/**
+ *
+ * @param {CodeBuilder} builder
+ * @param {Object} requestBody
+ */
+function parseGraphQL (builder, requestBody) {
   let query = requestBody.graphql.query,
     graphqlVariables;
   try {
@@ -141,31 +127,47 @@ function parseGraphQL (requestBody) {
   catch (e) {
     graphqlVariables = {};
   }
-  return 'var content = new StringContent(' +
+  builder.appendLine('var content = new StringContent(' +
     `"${sanitize(JSON.stringify({query: query, variables: graphqlVariables}))}"` +
-    ', null, "application/json");\n';
+    ', null, "application/json");');
 }
 
-function parseBody (request) {
+/**
+ *
+ * @param {CodeBuilder} builder
+ * @param {Object} request
+ */
+function parseBody (builder, request) {
   var requestBody = request.body ? request.body.toJSON() : {};
   if (!_.isEmpty(requestBody)) {
     switch (requestBody.mode) {
       case 'urlencoded':
-        return safeAddRealContentType(parseFormUrlEncoded(requestBody), request);
+        parseFormUrlEncoded(builder, requestBody);
+        builder.appendLine(
+          `content.Headers.ContentType = new MediaTypeHeaderValue("${parseContentType(request)}");`);
+        builder.addUsing('System.Net.Http.Headers');
+        builder.appendLine('request.Content = content;');
+        break;
       case 'formdata':
-        return safeAddRealContentType(parseFormData2(requestBody), request);
+        parseFormData(builder, requestBody);
+        break;
       case 'raw':
-        return `var content = new StringContent(${JSON.stringify(requestBody[requestBody.mode])});\n` +
-          parseContentTypeOnContent(request);
+        builder.appendLine(
+          `var content = new StringContent(${JSON.stringify(requestBody[requestBody.mode])});`);
+        builder.appendLine(
+          `content.Headers.ContentType = new MediaTypeHeaderValue("${parseContentType(request)}");`);
+        builder.addUsing('System.Net.Http.Headers');
+        break;
       case 'graphql':
-        return parseGraphQL(requestBody);
+        parseGraphQL(builder, requestBody);
+        break;
       case 'file':
-        return 'var content = new StreamContent(File.Create("<file path>"));\n';
+        builder
+          .appendLine('var content = new StreamContent(File.Create("<file path>"));');
+        break;
       default:
-        return '';
     }
   }
-  return '';
 }
 
 module.exports = {

@@ -699,7 +699,62 @@
 				]
 			  }
 			}
-		  }
+		  },
+		  {
+			"name": "POST multipart/form-data with text parameters",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "pl",
+							"value": "'a'",
+							"type": "text"
+						},
+						{
+							"key": "qu",
+							"value": "\"b\"",
+							"type": "text"
+						},
+						{
+							"key": "sa",
+							"value": "d",
+							"type": "text"
+						},
+						{
+							"key": "Special",
+							"value": "!@#$%&*()^_+=`~",
+							"type": "text"
+						},
+						{
+							"key": "Not Select",
+							"value": "Disabled",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "more",
+							"value": ",./';[]}{\":?><|\\\\",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://postman-echo.com/post",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"post"
+					]
+				}
+			},
+			"response": []
+		}
 	],
 	"event": [
 		{

@@ -1,51 +1,44 @@
+
 var _ = require('./lodash'),
   parseRequest = require('./parseRequest'),
   sanitize = require('./util').sanitize,
   csharpify = require('./util').csharpify,
   sanitizeOptions = require('./util').sanitizeOptions,
+  CodeBuilder = require('./CodeBuilder'),
   self;
 
 /**
  *
+ * @param {CodeBuilder} builder - Code builder for generating code
  * @param {Object} request - Postman SDK request object
  * @returns {String} csharp-httpclient code snippet for given request object
  */
-function makeSnippet (request) {
+function makeSnippet (builder, request) {
   const IS_PROPERTY_METHOD = [ 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE' ];
 
-  var snippet = 'var client = new HttpClient();\n';
-
-  // Add in request timeout e.g client.Timeout = TimeSpan.FromSeconds();
+  builder.appendLine('var client = new HttpClient();');
 
   // Create the request
-  snippet += 'var request = new HttpRequestMessage(';
+  builder.append(`${builder.indentation}var request = new HttpRequestMessage(`);
 
   if (IS_PROPERTY_METHOD.includes(request.method)) {
-    snippet += `HttpMethod.${csharpify(request.method)}`;
+    builder.append(`HttpMethod.${csharpify(request.method)}`);
   }
   else {
-    snippet += `new HttpMethod("${request.method}")`;
+    builder.append(`new HttpMethod("${request.method}")`);
   }
 
-  snippet += `, "${sanitize(request.url.toString())}");\n`;
+  builder.append(`, "${sanitize(request.url.toString())}");${builder.newLineChar}`);
   // Finish the initial creation of the request
 
   // Parse headers
-  snippet += parseRequest.parseHeader(request.toJSON());
+  parseRequest.parseHeader(builder, request.toJSON());
 
   // Configure the body
-  let bodyContent = parseRequest.parseBody(request);
-  if (bodyContent) {
-    snippet += bodyContent;
-    // Add in content type header
-    snippet += 'request.Content = content;\n';
-  }
-
-  snippet += 'var response = await client.SendAsync(request);\n';
-  snippet += 'response.EnsureSuccessStatusCode();\n';
-  snippet += 'Console.WriteLine(await response.Content.ReadAsStringAsync());\n';
-
-  return snippet;
+  parseRequest.parseBody(builder, request);
+  builder.appendLine('var response = await client.SendAsync(request);');
+  builder.appendLine('response.EnsureSuccessStatusCode();');
+  builder.appendLine('Console.WriteLine(await response.Content.ReadAsStringAsync());');
 }
 
 self = module.exports = {
@@ -106,13 +99,7 @@ self = module.exports = {
 
     // String representing value of indentation required
     var indentString,
-
-      // snippets to include C# class definition according to options
-      headerSnippet = '',
-      footerSnippet = '',
-
-      // snippet to create request in csharp-httpclient
-      snippet = '';
+      codeBuilder;
 
     // TODO: Sanitize options here
     options = sanitizeOptions(options, self.getOptions());
@@ -121,26 +108,23 @@ self = module.exports = {
     indentString = options.indentType === 'Tab' ? '\t' : ' ';
     indentString = indentString.repeat(options.indentCount);
 
+    codeBuilder = new CodeBuilder(options.indentCount, indentString);
+
     if (options.includeBoilerplate) {
-      headerSnippet = 'using System;\n' +
-        'using System.Collections.Generic;\n' +
-        'using System.IO;\n' +
-        'using System.Net.Http;\n' +
-        'using System.Net.Http.Headers;\n' +
-        'using System.Threading.Tasks;\n' +
-        'namespace HelloWorldApplication\n' +
-        '{\n' +
-        indentString + 'class HelloWorld\n' +
-        indentString + '{\n' +
-        indentString.repeat(2) + 'static async Task Main(string[] args)\n' +
-        indentString.repeat(2) + '{\n';
+      codeBuilder.addUsing('System');
+      codeBuilder.addUsing('System.Net.Http');
+      codeBuilder.addUsing('System.Threading.Tasks');
 
-      footerSnippet = indentString.repeat(2) + '}\n' +
-        indentString + '}\n' +
-        '}\n';
+      codeBuilder.appendBlock('namespace HelloWorldApplication');
+      codeBuilder.appendBlock('static async Task Main(string[] args)');
+      makeSnippet(codeBuilder, request);
+      codeBuilder.endBlock();
+      codeBuilder.endBlock();
     }
-    snippet = makeSnippet(request);
+    else {
+      makeSnippet(codeBuilder, request);
+    }
 
-    return callback(null, headerSnippet + snippet + footerSnippet);
+    return callback(null, codeBuilder.build(options.includeBoilerplate));
   }
 };
