@@ -11,9 +11,7 @@ describe('convert for different request types', function () {
       // Run script required to run the generated code snippet
       runScript: 'dotnet run --project ' + projectPath,
       // Compile script required to compile the code snippet
-      compileScript: 'dotnet build ' + projectPath,
-      // Array of name of collections for which newman tests has to be skipped.
-      skipCollections: ['sameNameHeadersCollection']
+      compileScript: 'dotnet build ' + projectPath
     },
     options = {
       includeBoilerplate: true

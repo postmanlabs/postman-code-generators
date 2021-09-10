@@ -73,10 +73,6 @@ function addFile (builder, key, fileSrc) {
  * @param {Object} requestBody
  */
 function parseFormData (builder, requestBody) {
-  if (!Array.isArray(requestBody[requestBody.mode])) {
-    return;
-  }
-
   var anyEnabled = requestBody[requestBody.mode].some((i) => {
     return !i.disabled;
   });
