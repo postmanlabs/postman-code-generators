@@ -1,8 +1,8 @@
 var _ = require('./lodash'),
   sanitize = require('./util').sanitize;
 
-function parseContentType (request) {
-  return request.getHeaders({ enabled: true, ignoreCase: true })['content-type'] || 'text/plain';
+function parseContentType (contentType) {
+  return contentType || 'text/plain';
 }
 
 /**
@@ -139,7 +139,8 @@ function parseGraphQL (builder, requestBody) {
  * @param {Object} request
  */
 function parseBody (builder, request) {
-  var requestBody = request.body ? request.body.toJSON() : {};
+  var requestBody = request.body ? request.body.toJSON() : {},
+    contentType = request.getHeaders({ enabled: true, ignoreCase: true })['content-type'];
   if (!_.isEmpty(requestBody)) {
     switch (requestBody.mode) {
       case 'urlencoded':
@@ -154,7 +155,7 @@ function parseBody (builder, request) {
         builder.appendLine(
           `var content = new StringContent(${JSON.stringify(requestBody[requestBody.mode])});`);
         builder.appendLine(
-          `content.Headers.ContentType = new MediaTypeHeaderValue("${parseContentType(request)}");`);
+          `content.Headers.ContentType = new MediaTypeHeaderValue("${parseContentType(contentType)}");`);
         builder.addUsing('System.Net.Http.Headers');
         builder.appendLine('request.Content = content;');
         break;
@@ -172,10 +173,17 @@ function parseBody (builder, request) {
       default:
     }
   }
+  else if (contentType) {
+    // The request has no body but sometimes it wants me to force a content-type anyways
+    builder.appendLine('var content = new StringContent(string.Empty);');
+    builder.appendLine('content.Headers.ContentType = new MediaTypeHeaderValue("' +
+      `${contentType}");`);
+    builder.addUsing('System.Net.Http.Headers');
+    builder.appendLine('request.Content = content;');
+  }
 }
 
 module.exports = {
   parseHeader: parseHeader,
-  parseBody: parseBody,
-  parseContentType: parseContentType
+  parseBody: parseBody
 };
