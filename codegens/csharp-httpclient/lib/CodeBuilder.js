@@ -76,8 +76,8 @@ class CodeBuilder {
    * Method to add the end block character and remove one indentation
    */
   endBlock () {
-    this.snippet += this.indentation + '}' + this.newLineChar;
     this.currentIndentCount--;
+    this.snippet += this.indentation + '}' + this.newLineChar;
   }
 
   /**

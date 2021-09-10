@@ -116,8 +116,10 @@ self = module.exports = {
       codeBuilder.addUsing('System.Threading.Tasks');
 
       codeBuilder.appendBlock('namespace HelloWorldApplication');
+      codeBuilder.appendBlock('public class Program');
       codeBuilder.appendBlock('static async Task Main(string[] args)');
       makeSnippet(codeBuilder, request);
+      codeBuilder.endBlock();
       codeBuilder.endBlock();
       codeBuilder.endBlock();
     }
