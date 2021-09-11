@@ -76,11 +76,11 @@ function addFile (builder, key, fileSrc) {
  * @param {Object} requestBody
  */
 function parseFormData (builder, requestBody) {
-  var anyEnabled = requestBody[requestBody.mode].some((i) => {
-    return !i.disabled;
+  var allDisabled = requestBody[requestBody.mode].every((i) => {
+    return i.disabled;
   });
 
-  if (!anyEnabled) {
+  if (allDisabled) {
     return;
   }
 
