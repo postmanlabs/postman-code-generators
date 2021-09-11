@@ -30,7 +30,7 @@ class CodeBuilder {
    * @param {String} line
    * @param {Function} build
    */
-  block (line, build) {
+  block (line, build) { // uncovered
     this.appendBlock(line);
     build(this);
     this.endBlock();
@@ -73,11 +73,15 @@ class CodeBuilder {
   }
 
   /**
-   * Method to add the end block character and remove one indentation
+   *
+   * @param {String} extra - value to add after closing brace
    */
-  endBlock () {
+  endBlock (extra) {
+    if (!extra) {
+      extra = '';
+    }
     this.currentIndentCount--;
-    this.snippet += this.indentation + '}' + this.newLineChar;
+    this.snippet += this.indentation + '}' + extra + this.newLineChar;
   }
 
   /**

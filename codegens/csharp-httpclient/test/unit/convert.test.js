@@ -43,7 +43,9 @@ describe('csharp httpclient function', function () {
           expect.fail(null, null, error);
           return;
         }
-        expect(snippet).to.include('using System.Net.Http;\n');
+        expect(snippet).to.include('using System;\nusing System.Net.Http;\nusing System.Threading.Tasks;\n' +
+          'namespace HelloWorldApplication\n{\n  public class Program\n  {\n    ' +
+          'static async Task Main(string[] args)\n    {');
       });
     });
 

@@ -11,12 +11,32 @@ var _ = require('./lodash'),
  *
  * @param {CodeBuilder} builder - Code builder for generating code
  * @param {Object} request - Postman SDK request object
+ * @param {Object} options - Options to tweak code snippet generated in C#
+ * @param {String} options.indentType - type for indentation eg: Space, Tab (default: Space)
+ * @param {String} options.indentCount - number of spaces or tabs for indentation. (default: 4 for indentType:
+ *                                      Space, default: 1 for indentType: Tab)
+ * @param {Boolean} [options.includeBoilerplate] - indicates whether to include class definition in C#
+ * @param {Number} options.requestTimeout - time in seconds after which request will bail out
+ *                                               (default: 0 -> use .NET default timeout of 100 seconds)
+ * @param {Boolean} options.followRedirect - whether to enable follow redirect
  * @returns {String} csharp-httpclient code snippet for given request object
  */
-function makeSnippet (builder, request) {
+function makeSnippet (builder, request, options) {
   const IS_PROPERTY_METHOD = [ 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE' ];
 
-  builder.appendLine('var client = new HttpClient();');
+  if (options.followRedirect) {
+    // By default .NET does follow redirects so we can just leave this alone
+    builder.appendLine('var client = new HttpClient();');
+  }
+  else {
+    builder.appendBlock('var client = new HttpClient(new HttpClientHandler');
+    builder.appendLine('AllowAutoRedirect = false,');
+    builder.endBlock(');');
+  }
+
+  if (options.requestTimeout !== 0) {
+    builder.appendLine(`client.Timeout = TimeSpan.FromSeconds(${options.requestTimeout});`);
+  }
 
   // Create the request
   builder.append(`${builder.indentation}var request = new HttpRequestMessage(`);
@@ -73,6 +93,21 @@ self = module.exports = {
         availableOptions: ['Tab', 'Space'],
         default: 'Space',
         description: 'Select the character used to indent lines of code'
+      },
+      {
+        name: 'Set request timeout',
+        id: 'requestTimeout',
+        type: 'positiveInteger',
+        default: 0,
+        description: 'Set number of milliseconds the request should wait for a response before timing out ' +
+          '(use 0 for infinity)'
+      },
+      {
+        name: 'Follow redirects',
+        id: 'followRedirect',
+        type: 'boolean',
+        description: 'Automatically follow HTTP redirects',
+        default: true
       }
     ];
   },
@@ -88,6 +123,9 @@ self = module.exports = {
    * @param {String} options.indentCount - number of spaces or tabs for indentation. (default: 4 for indentType:
    *                                      Space, default: 1 for indentType: Tab)
    * @param {Boolean} [options.includeBoilerplate] - indicates whether to include class definition in C#
+   * @param {Number} options.requestTimeout - time in seconds after which request will bail out
+   *                                               (default: 0 -> use .NET default timeout of 100 seconds)
+   * @param {Boolean} options.followRedirect - whether to enable follow redirect
    * @param {Function} callback - Callback function with parameters (error, snippet)
    *
    * @returns {String} Generated C# snippet via callback
@@ -106,7 +144,6 @@ self = module.exports = {
 
     // TODO: Get this stuff from options
     indentString = options.indentType === 'Tab' ? '\t' : ' ';
-    indentString = indentString.repeat(options.indentCount);
 
     codeBuilder = new CodeBuilder(options.indentCount, indentString);
 
@@ -118,13 +155,13 @@ self = module.exports = {
       codeBuilder.appendBlock('namespace HelloWorldApplication');
       codeBuilder.appendBlock('public class Program');
       codeBuilder.appendBlock('static async Task Main(string[] args)');
-      makeSnippet(codeBuilder, request);
+      makeSnippet(codeBuilder, request, options);
       codeBuilder.endBlock();
       codeBuilder.endBlock();
       codeBuilder.endBlock();
     }
     else {
-      makeSnippet(codeBuilder, request);
+      makeSnippet(codeBuilder, request, options);
     }
 
     return callback(null, codeBuilder.build(options.includeBoilerplate));
