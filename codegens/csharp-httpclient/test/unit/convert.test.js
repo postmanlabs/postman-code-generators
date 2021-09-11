@@ -87,5 +87,52 @@ describe('csharp httpclient function', function () {
       });
     });
 
+    it('should create custom HttpMethod when method is non-standard', function () {
+      var request = new sdk.Request({
+        'method': 'NOTNORMAL',
+        'header': [],
+        'url': {
+          'raw': 'https://google.com',
+          'protocol': 'https',
+          'host': [
+            'google',
+            'com'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('new HttpMethod("NOTNORMAL")');
+      });
+    });
+
+    it('should throw when callback is not a function', function () {
+      expect(function () { convert(request, {}, 'not a function'); })
+        .to.throw('C#-HttpClient-Converter: Callback is not valid function');
+    });
+
+    it('should add fake body when content type header added to empty body', function () {
+      var request = new sdk.Request({
+        'method': 'DELETE',
+        'body': {},
+        'header': [
+          {
+            'key': 'Content-Type',
+            'value': 'application/json'
+          }
+        ]
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.include('var content = new StringContent(string.Empty);');
+        expect(snippet).to.include('content.Headers.ContentType = new MediaTypeHeaderValue(' +
+          '"application/json");');
+      });
+    });
   });
 });
