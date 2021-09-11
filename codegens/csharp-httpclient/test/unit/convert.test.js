@@ -5,8 +5,8 @@ var expect = require('chai').expect,
   testCollection = require('./fixtures/testcollection/collectionForEdge.json'),
   // getOptions = require('../../lib/index').getOptions,
   testResponse = require('./fixtures/testresponse.json');
-  // sanitize = require('../../lib/util').sanitize,
-  // csharpify = require('../../lib/util').csharpify;
+// sanitize = require('../../lib/util').sanitize,
+// csharpify = require('../../lib/util').csharpify;
 
 describe('csharp httpclient function', function () {
 
@@ -38,7 +38,7 @@ describe('csharp httpclient function', function () {
       };
 
     it('should return snippet with boilerplate code given option', function () {
-      convert(request, { includeBoilerplate: true}, function (error, snippet) {
+      convert(request, { includeBoilerplate: true }, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
           return;
@@ -64,27 +64,28 @@ describe('csharp httpclient function', function () {
           }
         }
       });
+    });
 
-      it('should add client timeout configurations when requestTimeout is set to non zero value', function() {
-        convert(request, {requestTimeout: 5}, function (error, snippet) {
-          if (error) {
-            expect.fail(null, null, error);
-          }
-          expect(snippet).to.be.a('string');
-          expect(snippet).to.include('client.Timeout = TimeSpan.FromSeconds(5);');
-        });
-      });
-
-      it('should add client FollowRedirects configurations when followRedirects is set to false', function() {
-        convert(request, {followRedirect: false}, function (error, snippet) {
-          if (error) {
-            expect.fail(null, null, error);
-          }
-
-          expect(snippet).to.be.a('string');
-          expect(snippet).to.include('AllowAutoRedirect = false')
-        });
+    it('should add client timeout configurations when requestTimeout is set to non zero value', function () {
+      convert(request, { requestTimeout: 5 }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('client.Timeout = TimeSpan.FromSeconds(5);');
       });
     });
+
+    it('should add client FollowRedirects configurations when followRedirects is set to false', function () {
+      convert(request, { followRedirect: false }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('AllowAutoRedirect = false');
+      });
+    });
+
   });
 });
