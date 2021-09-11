@@ -36,11 +36,6 @@ function parseHeader (builder, requestJson) {
  * @param {Object} requestBody
  */
 function parseFormUrlEncoded (builder, requestBody) {
-  if (!Array.isArray(requestBody[requestBody.mode])) {
-    return;
-  }
-
-
   let list = requestBody[requestBody.mode].reduce((collection, data) => {
     if (data.disabled || data.type === 'file') {
       return collection;

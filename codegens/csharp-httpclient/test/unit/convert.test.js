@@ -322,6 +322,42 @@ describe('csharp httpclient function', function () {
         expect(snippet).to.include('request.Content = new StreamContent(File.OpenRead("./test.txt"));');
       });
     });
+
+    it('should add all enabled headers to request', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'url': 'https://postman-echo.com/post',
+        'header': [
+          {
+            'key': 'my-header',
+            'value': 'my-header-value'
+          },
+          {
+            'key': 'Content-Type',
+            'value': 'application/json'
+          },
+          {
+            'key': 'disabled-header',
+            'value': 'diabled-header-value',
+            'disabled': true
+          }
+        ],
+        'body': {
+          'mode': 'raw',
+          'raw': '{\n  "json": "Test-Test"\n}'
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('request.Headers.Add("my-header", "my-header-value");');
+        expect(snippet).not.to.include('Content-Type');
+        expect(snippet).not.to.include('disabled-header');
+        expect(snippet).not.to.include('disabled-header-value');
+      });
+    });
   });
 
   describe('getOptions function', function () {
