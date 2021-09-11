@@ -27,17 +27,6 @@ class CodeBuilder {
 
   /**
    *
-   * @param {String} line
-   * @param {Function} build
-   */
-  block (line, build) { // uncovered
-    this.appendBlock(line);
-    build(this);
-    this.endBlock();
-  }
-
-  /**
-   *
    * @param {String} line - the line to be appended
    */
   appendLine (line) {

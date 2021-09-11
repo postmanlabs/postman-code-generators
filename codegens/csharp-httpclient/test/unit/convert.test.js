@@ -64,6 +64,27 @@ describe('csharp httpclient function', function () {
           }
         }
       });
+
+      it('should add client timeout configurations when requestTimeout is set to non zero value', function() {
+        convert(request, {requestTimeout: 5}, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.include('client.Timeout = TimeSpan.FromSeconds(5);');
+        });
+      });
+
+      it('should add client FollowRedirects configurations when followRedirects is set to false', function() {
+        convert(request, {followRedirect: false}, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.include('AllowAutoRedirect = false')
+        });
+      });
     });
   });
 });
