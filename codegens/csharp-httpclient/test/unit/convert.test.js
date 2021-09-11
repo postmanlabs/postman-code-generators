@@ -170,6 +170,36 @@ describe('csharp httpclient function', function () {
       });
     });
 
+    it('should include multiple form content when file has multiple sources', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'no file',
+              'value': '',
+              'type': 'file',
+              'src': [
+                '/test1.txt',
+                '/test2.txt'
+              ]
+            }
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to
+          .include('content.Add(new StreamContent(File.OpenRead("/test1.txt")), "no file", "/test1.txt");');
+        expect(snippet).to
+          .include('content.Add(new StreamContent(File.OpenRead("/test2.txt")), "no file", "/test2.txt");');
+      });
+    });
+
     it('should include graphql body in the snippet', function () {
       var request = new sdk.Request({
         'method': 'POST',
@@ -205,7 +235,59 @@ describe('csharp httpclient function', function () {
       });
     });
 
-    it('should run raw request well', function () {
+    it('should add blank graphql variables when invalid', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'graphql',
+          'graphql': {
+            'query': '{ body { graphql } }',
+            'variables': '<text>some xml</text>'
+          }
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'protocol': 'http',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to
+          .include('var content = new StringContent("{\\"query\\":\\"{ body { graphql } }\\",' +
+            '\\"variables\\":{}}", null, "application/json");');
+
+      });
+    });
+
+    it('should not add multiport form content when disabled', function () {
+      var request = new sdk.Request(mainCollection.item[15].request);
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('content.Add(new StringContent("\'a\'"), "pl");');
+        expect(snippet).to.include('content.Add(new StringContent("\\"b\\""), "qu");');
+        expect(snippet).to.include('content.Add(new StringContent("d"), "sa");');
+        expect(snippet).to.include('content.Add(new StringContent("!@#$%&*()^_+=`~"), "Special");');
+        expect(snippet).to.include('content.Add(new StringContent(",./\';[]}{\\":?><|\\\\\\\\"), "more");');
+        expect(snippet).not.to.include('Not Select');
+        expect(snippet).not.to.include('Disabled');
+      });
+    });
+
+    it('should run add content as string on raw request', function () {
       var request = new sdk.Request(mainCollection.item[12].request);
       convert(request, {}, function (error, snippet) {
         if (error) {
@@ -220,7 +302,7 @@ describe('csharp httpclient function', function () {
       });
     });
 
-    it('should run a file request well', function () {
+    it('should run add a file on file request', function () {
       var request = new sdk.Request({
         'method': 'POST',
         'url': 'https://google.com',
