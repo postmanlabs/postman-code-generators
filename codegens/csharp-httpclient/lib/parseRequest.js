@@ -37,7 +37,8 @@ function parseHeader (builder, requestJson) {
  */
 function parseFormUrlEncoded (builder, requestBody) {
   let list = requestBody[requestBody.mode].reduce((collection, data) => {
-    if (data.disabled || data.type === 'file') {
+    console.log(data);
+    if (data.disabled) {
       return collection;
     }
 
@@ -48,10 +49,11 @@ function parseFormUrlEncoded (builder, requestBody) {
     return collection;
   }, []);
 
-  if (list) {
+  if (list && !_.isEmpty(list)) {
     builder.appendLine('var collection = new List<KeyValuePair<string, string>>();');
     builder.appendLines(list);
     builder.appendLine('var content = new FormUrlEncodedContent(collection);');
+    builder.appendLine('request.Content = content;');
     builder.addUsing('System.Collections.Generic');
   }
 }
@@ -142,8 +144,6 @@ function parseBody (builder, request) {
     switch (requestBody.mode) {
       case 'urlencoded':
         parseFormUrlEncoded(builder, requestBody);
-        builder.addUsing('System.Net.Http.Headers');
-        builder.appendLine('request.Content = content;');
         break;
       case 'formdata':
         parseFormData(builder, requestBody);

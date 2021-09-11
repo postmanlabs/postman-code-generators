@@ -358,6 +358,61 @@ describe('csharp httpclient function', function () {
         expect(snippet).not.to.include('disabled-header-value');
       });
     });
+
+    it('should skip disabled form url encoded values', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'url': 'https://postman-echo.com/post',
+        'body': {
+          'mode': 'urlencoded',
+          'urlencoded': [
+            {
+              'key': 'enabled',
+              'value': 'enabled-value'
+            },
+            {
+              'key': 'disabled',
+              'value': 'disabled-value',
+              'disabled': true
+            }
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('collection.Add(new("enabled", "enabled-value"));');
+        expect(snippet).not.to.include('disabled');
+      });
+    });
+  });
+
+  it('should skip collection initialization when no values are enabled', function () {
+    var request = new sdk.Request({
+      'method': 'POST',
+      'header': [],
+      'url': 'https://postman-echo.com/post',
+      'body': {
+        'mode': 'urlencoded',
+        'urlencoded': [
+          {
+            'key': 'disabled',
+            'value': 'disabled-value',
+            'disabled': true
+          }
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).not.to.include('var collection = new List<KeyValuePair<string, string>>();');
+    });
   });
 
   describe('getOptions function', function () {
