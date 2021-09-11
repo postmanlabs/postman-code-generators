@@ -302,7 +302,7 @@ describe('csharp httpclient function', function () {
       });
     });
 
-    it('should run add a file on file request', function () {
+    it('should add a file on file request', function () {
       var request = new sdk.Request({
         'method': 'POST',
         'url': 'https://google.com',
@@ -388,30 +388,55 @@ describe('csharp httpclient function', function () {
         expect(snippet).not.to.include('disabled');
       });
     });
-  });
 
-  it('should skip collection initialization when no values are enabled', function () {
-    var request = new sdk.Request({
-      'method': 'POST',
-      'header': [],
-      'url': 'https://postman-echo.com/post',
-      'body': {
-        'mode': 'urlencoded',
-        'urlencoded': [
-          {
-            'key': 'disabled',
-            'value': 'disabled-value',
-            'disabled': true
-          }
-        ]
-      }
+    it('should skip collection initialization when no urlencoded values are enabled', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'url': 'https://postman-echo.com/post',
+        'body': {
+          'mode': 'urlencoded',
+          'urlencoded': [
+            {
+              'key': 'disabled',
+              'value': 'disabled-value',
+              'disabled': true
+            }
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).not.to.include('var collection = new List<KeyValuePair<string, string>>();');
+      });
     });
-    convert(request, {}, function (error, snippet) {
-      if (error) {
-        expect.fail(null, null, error);
-      }
-      expect(snippet).to.be.a('string');
-      expect(snippet).not.to.include('var collection = new List<KeyValuePair<string, string>>();');
+
+    it('should skip creating multipart form data content when all values are disabled', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'url': 'https://postman-echo.com/post',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'disabled',
+              'value': 'disabled-value',
+              'disabled': true
+            }
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).not.to.include('var content = new MultipartFormDataContent();');
+      });
     });
   });
 
