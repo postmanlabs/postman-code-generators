@@ -3,9 +3,10 @@ var expect = require('chai').expect,
   convert = require('../../lib/index').convert,
   mainCollection = require('./fixtures/testcollection/collection.json'),
   testCollection = require('./fixtures/testcollection/collectionForEdge.json'),
-  // getOptions = require('../../lib/index').getOptions,
-  testResponse = require('./fixtures/testresponse.json');
-// sanitize = require('../../lib/util').sanitize,
+  getOptions = require('../../lib/index').getOptions,
+  testResponse = require('./fixtures/testresponse.json'),
+  sanitize = require('../../lib/util').sanitize,
+  sanitizeOptions = require('../../lib/util').sanitizeOptions;
 // csharpify = require('../../lib/util').csharpify;
 
 describe('csharp httpclient function', function () {
@@ -133,6 +134,130 @@ describe('csharp httpclient function', function () {
         expect(snippet).to.include('content.Headers.ContentType = new MediaTypeHeaderValue(' +
           '"application/json");');
       });
+    });
+
+    it('should only include one System.IO using with multiple files', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'no file',
+              'value': '',
+              'type': 'file',
+              'src': '/test1.txt'
+            },
+            {
+              'key': 'no file',
+              'value': '',
+              'type': 'file',
+              'src': '/test2.txt'
+            }
+          ]
+        }
+      });
+      convert(request, { includeBoilerplate: true, indentCount: 2, indentType: 'Space' }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.include('using System;\nusing System.IO;\nusing System.Net.Http;\n');
+        expect(snippet).to
+          .include('content.Add(new StreamContent(File.OpenRead("/test1.txt")), "no file", "/test1.txt");');
+        expect(snippet).to
+          .include('content.Add(new StreamContent(File.OpenRead("/test2.txt")), "no file", "/test2.txt");');
+      });
+    });
+  });
+
+  describe('getOptions function', function () {
+    it('should return array of options for csharp-httpclient converter', function () {
+      expect(getOptions()).to.be.an('array');
+    });
+
+    it('should return all the valid options', function () {
+      expect(getOptions()[0]).to.have.property('id', 'includeBoilerplate');
+      expect(getOptions()[1]).to.have.property('id', 'indentCount');
+      expect(getOptions()[2]).to.have.property('id', 'indentType');
+      expect(getOptions()[3]).to.have.property('id', 'requestTimeout');
+      expect(getOptions()[4]).to.have.property('id', 'followRedirect');
+    });
+  });
+
+  describe('Sanitize function', function () {
+    it('should return empty string when input is not a string type', function () {
+      expect(sanitize(123, false)).to.equal('');
+      expect(sanitize(null, false)).to.equal('');
+      expect(sanitize({}, false)).to.equal('');
+      expect(sanitize([], false)).to.equal('');
+    });
+
+    it('should trim input string when needed', function () {
+      expect(sanitize('inputString        ', true)).to.equal('inputString');
+    });
+  });
+
+  describe('sanitizeOptions function', function () {
+    var defaultOptions = {},
+      testOptions = {},
+      sanitizedOptions;
+
+    getOptions().forEach((option) => {
+      defaultOptions[option.id] = {
+        default: option.default,
+        type: option.type
+      };
+      if (option.type === 'enum') {
+        defaultOptions[option.id].availableOptions = option.availableOptions;
+      }
+    });
+
+    it('should remove option not supported by module', function () {
+      testOptions.randomName = 'random value';
+      sanitizedOptions = sanitizeOptions(testOptions, getOptions());
+      expect(sanitizedOptions).to.not.have.property('randomName');
+    });
+
+    it('should use defaults when option value type does not match with expected type', function () {
+      testOptions = {};
+      testOptions.indentCount = '5';
+      testOptions.indentType = 'tabSpace';
+      sanitizedOptions = sanitizeOptions(testOptions, getOptions());
+      expect(sanitizedOptions.indentCount).to.equal(defaultOptions.indentCount.default);
+      expect(sanitizedOptions.indentType).to.equal(defaultOptions.indentType.default);
+    });
+
+    it('should use defaults when option type is valid but value is invalid', function () {
+      testOptions = {};
+      testOptions.indentCount = -1;
+      testOptions.indentType = 'spaceTab';
+      testOptions.requestTimeout = -3000;
+      sanitizedOptions = sanitizeOptions(testOptions, getOptions());
+      expect(sanitizedOptions.indentCount).to.equal(defaultOptions.indentCount.default);
+      expect(sanitizedOptions.indentType).to.equal(defaultOptions.indentType.default);
+      expect(sanitizedOptions.requestTimeout).to.equal(defaultOptions.requestTimeout.default);
+    });
+
+    it('should return the same object when default options are provided', function () {
+      for (var id in defaultOptions) {
+        if (defaultOptions.hasOwnProperty(id)) {
+          testOptions[id] = defaultOptions[id].default;
+        }
+      }
+      sanitizedOptions = sanitizeOptions(testOptions, getOptions());
+      expect(sanitizedOptions).to.deep.equal(testOptions);
+    });
+
+    it('should return the same object when valid (but not necessarily defaults) options are provided', function () {
+      testOptions = {};
+      testOptions.indentType = 'Tab';
+      testOptions.indentCount = 3;
+      testOptions.requestTimeout = 3000;
+      testOptions.followRedirect = false;
+      testOptions.includeBoilerplate = true;
+      sanitizedOptions = sanitizeOptions(testOptions, getOptions());
+      expect(sanitizedOptions).to.deep.equal(testOptions);
     });
   });
 });
