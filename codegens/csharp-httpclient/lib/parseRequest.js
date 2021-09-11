@@ -155,10 +155,8 @@ function parseBody (builder, request) {
         break;
       case 'raw':
         builder.appendLine(
-          `var content = new StringContent(${JSON.stringify(requestBody[requestBody.mode])});`);
-        builder.appendLine(
-          `content.Headers.ContentType = new MediaTypeHeaderValue("${parseContentType(contentType)}");`);
-        builder.addUsing('System.Net.Http.Headers');
+          `var content = new StringContent(${JSON.stringify(requestBody[requestBody.mode])}, null, ` +
+          `"${parseContentType(contentType)}");`);
         builder.appendLine('request.Content = content;');
         break;
       case 'graphql':
@@ -167,7 +165,9 @@ function parseBody (builder, request) {
         break;
       case 'file':
         builder
-          .appendLine('var content = new StreamContent(File.Create("<file path>"));');
+          .appendLine('request.Content = new StreamContent(File.OpenRead("' +
+            `${sanitize(requestBody[requestBody.mode].src || '"<File path>"')}"));`);
+        builder.addUsing('System.IO');
         break;
       default:
     }

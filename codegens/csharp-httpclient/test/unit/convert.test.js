@@ -204,6 +204,42 @@ describe('csharp httpclient function', function () {
 
       });
     });
+
+    it('should run raw request well', function () {
+      var request = new sdk.Request(mainCollection.item[12].request);
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to
+          .include('var content = new StringContent("Curabitur auctor, elit nec pulvinar porttitor, ' +
+            'ex augue condimentum enim, eget suscipit urna felis quis neque.\\nSuspendisse sit amet' +
+            ' luctus massa, nec venenatis mi. Suspendisse tincidunt massa at nibh efficitur fringilla. ' +
+            'Nam quis congue mi. Etiam volutpat.", null, "text/plain");');
+      });
+    });
+
+    it('should run a file request well', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'url': 'https://google.com',
+        'header': [],
+        'body': {
+          'mode': 'file',
+          'file': {
+            'src': './test.txt'
+          }
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('request.Content = new StreamContent(File.OpenRead("./test.txt"));');
+      });
+    });
   });
 
   describe('getOptions function', function () {
