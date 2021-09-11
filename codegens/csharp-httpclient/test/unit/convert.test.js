@@ -169,6 +169,41 @@ describe('csharp httpclient function', function () {
           .include('content.Add(new StreamContent(File.OpenRead("/test2.txt")), "no file", "/test2.txt");');
       });
     });
+
+    it('should include graphql body in the snippet', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'graphql',
+          'graphql': {
+            'query': '{ body { graphql } }',
+            'variables': '{"variable_key": "variable_value"}'
+          }
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'protocol': 'http',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to
+          .include('var content = new StringContent("{\\"query\\":\\"{ body { graphql } }\\",' +
+            '\\"variables\\":{\\"variable_key\\":\\"variable_value\\"}}", null, "application/json");');
+
+      });
+    });
   });
 
   describe('getOptions function', function () {
@@ -222,9 +257,11 @@ describe('csharp httpclient function', function () {
     it('should use defaults when option value type does not match with expected type', function () {
       testOptions = {};
       testOptions.indentCount = '5';
+      testOptions.includeBoilerplate = 'true';
       testOptions.indentType = 'tabSpace';
       sanitizedOptions = sanitizeOptions(testOptions, getOptions());
       expect(sanitizedOptions.indentCount).to.equal(defaultOptions.indentCount.default);
+      expect(sanitizedOptions.includeBoilerplate).to.equal(defaultOptions.includeBoilerplate.default);
       expect(sanitizedOptions.indentType).to.equal(defaultOptions.indentType.default);
     });
 

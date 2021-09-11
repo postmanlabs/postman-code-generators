@@ -1,6 +1,12 @@
 var _ = require('./lodash'),
   sanitize = require('./util').sanitize;
 
+/**
+ * Returns given content type or default if falsey
+ *
+ * @param {String} contentType
+ * @returns {String}
+ */
 function parseContentType (contentType) {
   return contentType || 'text/plain';
 }
@@ -17,7 +23,7 @@ function parseHeader (builder, requestJson) {
     return;
   }
 
-  return requestJson.header.forEach((header) => {
+  requestJson.header.forEach((header) => {
     if (!header.disabled && sanitize(header.key) !== 'Content-Type') {
       builder.appendLine(`request.Headers.Add("${sanitize(header.key, true)}", "${sanitize(header.value)}");`);
     }
@@ -157,9 +163,6 @@ function parseBody (builder, request) {
         break;
       case 'graphql':
         parseGraphQL(builder, requestBody);
-        builder.appendLine(
-          'content.Headers.ContentType = new MediaTypeHeaderValue("application/json");');
-        builder.addUsing('System.Net.Http.Headers');
         builder.appendLine('request.Content = content;');
         break;
       case 'file':
