@@ -37,7 +37,6 @@ function parseHeader (builder, requestJson) {
  */
 function parseFormUrlEncoded (builder, requestBody) {
   let list = requestBody[requestBody.mode].reduce((collection, data) => {
-    console.log(data);
     if (data.disabled) {
       return collection;
     }
