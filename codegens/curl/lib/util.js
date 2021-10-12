@@ -1,3 +1,10 @@
+const conventionalMethods = [
+  'GET',
+  'POST',
+  'PUT',
+  'HEAD'
+];
+
 var self = module.exports = {
   /**
      * sanitizes input string by handling escape characters eg: converts '''' to '\'\'', (" to \"  and \ to \\ )
@@ -196,6 +203,39 @@ var self = module.exports = {
         disabled: disabled,
         contentType: contentType
       });
+    }
+  },
+
+  /** Computes whether -X option should be added or not
+   *
+   * @param {Object} request - Request
+   * @param {Object} options - Options provided by the user
+   * @returns {Boolean}
+   */
+  addXOption: function (request, options) {
+    const convMethods = conventionalMethods.includes(request.method),
+      method = request.method,
+      followRedirect = options.followRedirect,
+      followOriginalMethod = request.protocolProfileBehavior.followOriginalHttpMethod,
+      disableBodyPruning = request.protocolProfileBehavior.disableBodyPruning;
+    
+    if (!convMethods) {
+      return true;
+    }
+    // Deviating from normal behavior, we'll need -XGET
+    else if (disableBodyPruning) {
+      return true;
+    }
+    // check for file upload in case of PUT
+    else if (method === 'PUT' && request.body) {
+      return true;
+    }
+    // use -X with -L ONLY if followOriginalHttpMethod is true
+    else if (followOriginalMethod && followRedirect) {
+      return true;
+    }
+    else {
+      return false;
     }
   }
 };

@@ -2,6 +2,7 @@ var sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
   getUrlStringfromUrlObject = require('./util').getUrlStringfromUrlObject,
   addFormParam = require('./util').addFormParam,
+  addXOption = require('./util').addXOption,
   form = require('./util').form,
   _ = require('./lodash'),
   self;
@@ -15,7 +16,7 @@ self = module.exports = {
     options = sanitizeOptions(options, self.getOptions());
 
     var indent, trim, headersData, body, redirect, timeout, multiLine,
-      format, snippet, silent, url, quoteType;
+      format, snippet, silent, url, quoteType, addXOption;
 
     redirect = options.followRedirect;
     timeout = options.requestTimeout;
@@ -25,6 +26,7 @@ self = module.exports = {
     silent = options.silent;
     quoteType = options.quoteType === 'single' ? '\'' : '"';
     url = getUrlStringfromUrlObject(request.url, quoteType);
+    addXOption = addXOption(request, options);
 
     snippet = silent ? `curl ${form('-s', format)}` : 'curl';
 
@@ -47,8 +49,11 @@ self = module.exports = {
     if (request.method === 'HEAD') {
       snippet += ` ${form('-I', format)} ${quoteType + url + quoteType}`;
     }
+    else if (request.method === 'PUT' && !addXOption) {
+      snippet += ` ${form('-T', format)} ${quoteType + url + quoteType}`;
+    }
     else {
-      snippet += ` ${form('-X', format)} ${request.method} ${quoteType + url + quoteType}`;
+      snippet += ` ${addXOption ? `${form('-X', format)} ${request.method}` : ''} ${quoteType + url + quoteType}`;
     }
 
     if (request.body && !request.headers.has('Content-Type')) {
