@@ -227,7 +227,7 @@ var self = module.exports = {
       return true;
     }
     // check for file upload in case of PUT
-    else if (method === 'PUT' && request.body) {
+    else if (method === 'PUT' && !request.body) {
       return true;
     }
     // use -X with -L ONLY if followOriginalHttpMethod is true
