@@ -14,12 +14,13 @@ self = module.exports = {
     }
     options = sanitizeOptions(options, self.getOptions());
 
-    var indent, trim, headersData, body, redirect, timeout, multiLine,
+    var indent, trim, headersData, body, redirect, timeout, multiLine, bodySingleLine,
       format, snippet, silent, url, quoteType;
 
     redirect = options.followRedirect;
     timeout = options.requestTimeoutInSeconds;
     multiLine = options.multiLine;
+    bodySingleLine = options.bodySingleLine;
     format = options.longFormat;
     trim = options.trimRequestBody;
     silent = options.silent;
@@ -136,7 +137,12 @@ self = module.exports = {
             });
             break;
           case 'raw':
-            snippet += indent + `--data-raw ${quoteType}${sanitize(body.raw.toString(), trim, quoteType)}${quoteType}`;
+            // remove any new line character if bodySingleLine is true
+            if (bodySingleLine) {
+              snippet += indent + `--data-raw ${quoteType}${sanitize(body.raw.toString(), trim, quoteType).replace(/[\n\r]/g, '')}${quoteType}`;
+            } else {
+              snippet += indent + `--data-raw ${quoteType}${sanitize(body.raw.toString(), trim, quoteType)}${quoteType}`;
+            }
             break;
 
           case 'graphql':
@@ -195,6 +201,13 @@ self = module.exports = {
         type: 'boolean',
         default: true,
         description: 'Split cURL command across multiple lines'
+      },
+      {
+        name: 'Remove new line characters from raw body',
+        id: 'bodySingleLine',
+        type: 'boolean',
+        default: false,
+        description: 'Remove new line characters from raw body so that cURL code snippet will for sure be one line when used with Generate multiline snippet option'
       },
       {
         name: 'Use long form options',
