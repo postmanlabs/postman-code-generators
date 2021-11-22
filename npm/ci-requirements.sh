@@ -35,8 +35,8 @@ pushd ./codegens/csharp-httpclient &>/dev/null;
   sudo dpkg -i packages-microsoft-prod.deb
   sudo apt-get install apt-transport-https
   sudo apt-get update
-  sudo apt-get install dotnet-sdk-5.0
-  dotnet new console -o testProject -f net5.0
+  sudo apt-get install dotnet-sdk-6.0
+  dotnet new console -o testProject -f net6.0
   # no extra packages needed
 popd &>/dev/null;
 
@@ -86,4 +86,3 @@ dependencies:
 ''' > pubspec.yaml
   dart pub get
 popd &>/dev/null;
-

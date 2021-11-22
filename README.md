@@ -18,6 +18,7 @@ List of supported code generators:
 | Language | Variant        |
 |-----------|---------------|
 | C | libcurl |
+| C# | HttpClient |
 | C# | RestSharp | 
 | cURL | cURL | 
 | Dart | http | 
@@ -46,16 +47,24 @@ List of supported code generators:
 | Swift | URLSession | 
 ## Table of contents 
 
-1. [Getting Started](#getting-started)
-2. [Prerequisite](#prerequisite)
-3. [Usage](#usage)
-    1. [Using postman code generators as a Library](#using-postman-code-generators-as-a-library)
-4. [Development](#development)
-    1. [Installing Dependencies](#installing-dependencies)
-    2. [Testing](#testing)
-    3. [Packaging](#packaging)
-7. [Contributing](#contributing)
-8. [License](#license)
+- [postman-code-generators ![Build Status](https://travis-ci.com/postmanlabs/postman-code-generators)](#postman-code-generators-)
+  - [Table of contents](#table-of-contents)
+  - [Getting Started](#getting-started)
+  - [Prerequisite](#prerequisite)
+  - [Usage](#usage)
+    - [Using postman-code-generators as a Library](#using-postman-code-generators-as-a-library)
+      - [getLanguageList](#getlanguagelist)
+        - [Example:](#example)
+      - [getOptions](#getoptions)
+        - [Example:](#example-1)
+      - [convert](#convert)
+        - [Example:](#example-2)
+  - [Development](#development)
+    - [Installing dependencies](#installing-dependencies)
+    - [Testing](#testing)
+    - [Packaging](#packaging)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ## Getting Started
 To install postman-code-generators as your dependency

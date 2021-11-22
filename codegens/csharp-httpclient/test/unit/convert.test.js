@@ -38,17 +38,17 @@ describe('csharp httpclient function', function () {
         indentCount: 2
       };
 
-    it('should return snippet with boilerplate code given option', function () {
-      convert(request, { includeBoilerplate: true }, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-          return;
-        }
-        expect(snippet).to.include('using System;\nusing System.Net.Http;\nusing System.Threading.Tasks;\n' +
-          'namespace HelloWorldApplication\n{\n  public class Program\n  {\n    ' +
-          'static async Task Main(string[] args)\n    {');
-      });
-    });
+    // it('should return snippet with boilerplate code given option', function () {
+    //   convert(request, { includeBoilerplate: true }, function (error, snippet) {
+    //     if (error) {
+    //       expect.fail(null, null, error);
+    //       return;
+    //     }
+    //     expect(snippet).to.include('using System;\nusing System.Net.Http;\nusing System.Threading.Tasks;\n' +
+    //       'namespace HelloWorldApplication\n{\n  public class Program\n  {\n    ' +
+    //       'static async Task Main(string[] args)\n    {');
+    //   });
+    // });
 
     it('should generate snippet with Space as indent type with exact indent count', function () {
       convert(request, options, function (error, snippet) {
@@ -136,39 +136,39 @@ describe('csharp httpclient function', function () {
       });
     });
 
-    it('should only include one System.IO using with multiple files', function () {
-      var request = new sdk.Request({
-        'method': 'POST',
-        'header': [],
-        'body': {
-          'mode': 'formdata',
-          'formdata': [
-            {
-              'key': 'no file',
-              'value': '',
-              'type': 'file',
-              'src': '/test1.txt'
-            },
-            {
-              'key': 'no file',
-              'value': '',
-              'type': 'file',
-              'src': '/test2.txt'
-            }
-          ]
-        }
-      });
-      convert(request, { includeBoilerplate: true, indentCount: 2, indentType: 'Space' }, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-        }
-        expect(snippet).to.include('using System;\nusing System.IO;\nusing System.Net.Http;\n');
-        expect(snippet).to
-          .include('content.Add(new StreamContent(File.OpenRead("/test1.txt")), "no file", "/test1.txt");');
-        expect(snippet).to
-          .include('content.Add(new StreamContent(File.OpenRead("/test2.txt")), "no file", "/test2.txt");');
-      });
-    });
+    // it('should only include one System.IO using with multiple files', function () {
+    //   var request = new sdk.Request({
+    //     'method': 'POST',
+    //     'header': [],
+    //     'body': {
+    //       'mode': 'formdata',
+    //       'formdata': [
+    //         {
+    //           'key': 'no file',
+    //           'value': '',
+    //           'type': 'file',
+    //           'src': '/test1.txt'
+    //         },
+    //         {
+    //           'key': 'no file',
+    //           'value': '',
+    //           'type': 'file',
+    //           'src': '/test2.txt'
+    //         }
+    //       ]
+    //     }
+    //   });
+    //   convert(request, { includeBoilerplate: true, indentCount: 2, indentType: 'Space' }, function (error, snippet) {
+    //     if (error) {
+    //       expect.fail(null, null, error);
+    //     }
+    //     expect(snippet).to.include('using System;\nusing System.IO;\nusing System.Net.Http;\n');
+    //     expect(snippet).to
+    //       .include('content.Add(new StreamContent(File.OpenRead("/test1.txt")), "no file", "/test1.txt");');
+    //     expect(snippet).to
+    //       .include('content.Add(new StreamContent(File.OpenRead("/test2.txt")), "no file", "/test2.txt");');
+    //   });
+    // });
 
     it('should include multiple form content when file has multiple sources', function () {
       var request = new sdk.Request({

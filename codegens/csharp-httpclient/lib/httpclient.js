@@ -148,21 +148,11 @@ self = module.exports = {
     codeBuilder = new CodeBuilder(options.indentCount, indentString);
 
     if (options.includeBoilerplate) {
-      codeBuilder.addUsing('System');
-      codeBuilder.addUsing('System.Net.Http');
-      codeBuilder.addUsing('System.Threading.Tasks');
+      codeBuilder.appendLine('// No more boilerplate needed with top level statements ' +
+        '(https://docs.microsoft.com/en-us/dotnet/core/tutorials/top-level-templates)');
+    }
 
-      codeBuilder.appendBlock('namespace HelloWorldApplication');
-      codeBuilder.appendBlock('public class Program');
-      codeBuilder.appendBlock('static async Task Main(string[] args)');
-      makeSnippet(codeBuilder, request, options);
-      codeBuilder.endBlock();
-      codeBuilder.endBlock();
-      codeBuilder.endBlock();
-    }
-    else {
-      makeSnippet(codeBuilder, request, options);
-    }
+    makeSnippet(codeBuilder, request, options);
 
     return callback(null, codeBuilder.build(options.includeBoilerplate));
   }
