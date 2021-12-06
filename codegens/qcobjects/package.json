@@ -27,9 +27,9 @@
   "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/qcobjects",
   "dependencies": {
     "postman-collection": "3.6.9",
-    "qcobjects-sdk":"2.3.14",
-    "qcobjects":"2.3.26",
-    "qcobjects-cli":"2.3.19"
+    "qcobjects-sdk":"2.3.30",
+    "qcobjects":"2.3.65",
+    "qcobjects-cli":"2.3.47"
   },
   "devDependencies": {
     "follow-redirects": "1.13.1"
