@@ -65,7 +65,7 @@ describe('nodejs-request convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.contain('body: JSON.stringify({"data":{"hello":"world"}})');
+        expect(snippet).to.contain('body: JSON.stringify({\n    "data": {\n      "hello": "world"\n    }\n  })');
       });
     });
 
@@ -356,7 +356,7 @@ describe('nodejs-request convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('body: JSON.stringify({"json":"Test-Test"})');
+        expect(snippet).to.include('body: JSON.stringify({\n    "json": "Test-Test"\n  })');
       });
     });
 

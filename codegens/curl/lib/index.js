@@ -18,13 +18,13 @@ self = module.exports = {
       format, snippet, silent, url, quoteType;
 
     redirect = options.followRedirect;
-    timeout = options.requestTimeout;
+    timeout = options.requestTimeoutInSeconds;
     multiLine = options.multiLine;
     format = options.longFormat;
     trim = options.trimRequestBody;
     silent = options.silent;
-    url = getUrlStringfromUrlObject(request.url);
     quoteType = options.quoteType === 'single' ? '\'' : '"';
+    url = getUrlStringfromUrlObject(request.url, quoteType);
 
     snippet = silent ? `curl ${form('-s', format)}` : 'curl';
 
@@ -72,14 +72,14 @@ self = module.exports = {
         if (!header.key) {
           return;
         }
-        snippet += indent + `${form('-H', format)} '${sanitize(header.key, true)}`;
+        snippet += indent + `${form('-H', format)} ${quoteType}${sanitize(header.key, true, quoteType)}`;
         // If the header value is an empty string then add a semicolon after key
         // otherwise the header would be ignored by curl
         if (header.value) {
-          snippet += `: ${sanitize(header.value)}'`;
+          snippet += `: ${sanitize(header.value, false, quoteType)}${quoteType}`;
         }
         else {
-          snippet += ';\'';
+          snippet += ';' + quoteType;
         }
       });
     }
@@ -130,16 +130,18 @@ self = module.exports = {
                 // Using the long form below without considering the longFormat option,
                 // to generate more accurate and correct snippet
                 snippet += indent + '--data-urlencode';
-                snippet += ` '${sanitize(data.key, trim)}=${sanitize(data.value, trim)}'`;
+                snippet += ` ${quoteType}${sanitize(data.key, trim, quoteType)}=` +
+                  `${sanitize(data.value, trim, quoteType)}${quoteType}`;
               }
             });
             break;
           case 'raw':
-            snippet += indent + `--data-raw '${sanitize(body.raw.toString(), trim)}'`;
+            snippet += indent + `--data-raw ${quoteType}${sanitize(body.raw.toString(), trim, quoteType)}${quoteType}`;
             break;
+
           case 'graphql':
             // eslint-disable-next-line no-case-declarations
-            let query = body.graphql.query,
+            let query = body.graphql ? body.graphql.query : '',
               graphqlVariables;
             try {
               graphqlVariables = JSON.parse(body.graphql.variables);
@@ -147,35 +149,38 @@ self = module.exports = {
             catch (e) {
               graphqlVariables = {};
             }
-            snippet += indent + `--data-raw '${sanitize(JSON.stringify({
+            snippet += indent + `--data-raw ${quoteType}${sanitize(JSON.stringify({
               query: query,
               variables: graphqlVariables
-            }), trim)}'`;
+            }), trim, quoteType)}${quoteType}`;
             break;
           case 'formdata':
             _.forEach(body.formdata, function (data) {
               if (!(data.disabled)) {
                 if (data.type === 'file') {
                   snippet += indent + `${form('-F', format)}`;
-                  snippet += ` '${sanitize(data.key, trim)}=@"${sanitize(data.src, trim, true, true)}"'`;
+                  snippet += ` ${quoteType}${sanitize(data.key, trim, quoteType)}=` +
+                    `${sanitize(`@"${sanitize(data.src, trim, '"', true)}"`, trim, quoteType, quoteType === '"')}`;
+                  snippet += quoteType;
                 }
                 else {
                   snippet += indent + `${form('-F', format)}`;
-                  snippet += ` '${sanitize(data.key, trim)}="${sanitize(data.value, trim, true, true)}"`;
+                  snippet += ` ${quoteType}${sanitize(data.key, trim, quoteType)}=` +
+                    sanitize(`"${sanitize(data.value, trim, '"', true)}"`, trim, quoteType, quoteType === '"');
                   if (data.contentType) {
                     snippet += `;type=${data.contentType}`;
                   }
-                  snippet += '\'';
+                  snippet += quoteType;
                 }
               }
             });
             break;
           case 'file':
             snippet += indent + '--data-binary';
-            snippet += ` '@${sanitize(body[body.mode].src, trim)}'`;
+            snippet += ` ${quoteType}@${sanitize(body[body.mode].src, trim)}${quoteType}`;
             break;
           default:
-            snippet += `${form('-d', format)} ''`;
+            snippet += `${form('-d', format)} ${quoteType}${quoteType}`;
         }
       }
     }
@@ -217,11 +222,11 @@ self = module.exports = {
           '(Use double quotes when running curl in cmd.exe and single quotes for the rest)'
       },
       {
-        name: 'Set request timeout',
-        id: 'requestTimeout',
+        name: 'Set request timeout (in seconds)',
+        id: 'requestTimeoutInSeconds',
         type: 'positiveInteger',
         default: 0,
-        description: 'Set number of milliseconds the request should wait for a response before ' +
+        description: 'Set number of seconds the request should wait for a response before ' +
           'timing out (use 0 for infinity)'
       },
       {

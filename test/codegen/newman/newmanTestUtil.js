@@ -126,7 +126,9 @@ function runSnippet (testConfig, snippets, collectionName) {
             'if-none-match',
             'referer',
             'x-amzn-trace-id',
-            'transfer-encoding'
+            'transfer-encoding',
+            'cf-connecting-ip',
+            'cf-request-id'
           ];
         if (result[0]) {
           propertiesTodelete.forEach(function (property) {

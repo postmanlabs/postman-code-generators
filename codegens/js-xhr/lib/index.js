@@ -27,8 +27,9 @@ function parseURLEncodedBody (body) {
  * @param {*} body Raw body data
  * @param {*} trim trim body option
  * @param {String} contentType Content type of the body being sent
+ * @param {String} indentString Indentation string
  */
-function parseRawBody (body, trim, contentType) {
+function parseRawBody (body, trim, contentType, indentString) {
   var bodySnippet = 'var data = ';
   // Match any application type whose underlying structure is json
   // For example application/vnd.api+json
@@ -36,7 +37,7 @@ function parseRawBody (body, trim, contentType) {
   if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
     try {
       let jsonBody = JSON.parse(body);
-      bodySnippet += `JSON.stringify(${JSON.stringify(jsonBody)});\n`;
+      bodySnippet += `JSON.stringify(${JSON.stringify(jsonBody, null, indentString.length)});\n`;
     }
     catch (error) {
       bodySnippet += `"${sanitize(body.toString(), trim)}";\n`;
@@ -125,7 +126,7 @@ function parseBody (body, trim, indentString, contentType) {
       case 'urlencoded':
         return parseURLEncodedBody(body.urlencoded, trim);
       case 'raw':
-        return parseRawBody(body.raw, trim, contentType);
+        return parseRawBody(body.raw, trim, contentType, indentString);
       case 'graphql':
         return parseGraphQL(body.graphql, trim, indentString);
       case 'formdata':

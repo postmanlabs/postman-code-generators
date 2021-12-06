@@ -103,7 +103,7 @@ describe('jQuery converter', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.contain('"data": JSON.stringify({"data":{"hello":"world"}})');
+      expect(snippet).to.contain('JSON.stringify({\n    "data": {\n      "hello": "world"\n    }\n  })');
     });
   });
 
@@ -163,7 +163,7 @@ describe('jQuery converter', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('"data": JSON.stringify({"json":"Test-Test"})');
+      expect(snippet).to.include('"data": JSON.stringify({\n    "json": "Test-Test"\n  }');
     });
   });
 

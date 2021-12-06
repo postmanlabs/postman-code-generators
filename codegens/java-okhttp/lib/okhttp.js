@@ -6,7 +6,7 @@ var _ = require('./lodash'),
   sanitizeOptions = require('./util').sanitizeOptions;
 
 //  Since Java OkHttp requires to add extralines of code to handle methods with body
-const METHODS_WITHOUT_BODY = ['GET', 'HEAD', 'COPY', 'UNLOCK', 'UNLINK', 'PURGE', 'LINK', 'VIEW'];
+const METHODS_WITHOUT_BODY = ['HEAD', 'COPY', 'UNLOCK', 'UNLINK', 'PURGE', 'LINK', 'VIEW'];
 
 /**
  * returns snippet of java okhttp by parsing data from Postman-SDK request object
