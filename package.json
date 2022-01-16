@@ -27,7 +27,7 @@
   "dependencies": {
     "async": "2.6.3",
     "path": "0.12.7",
-    "postman-collection": "3.6.8",
+    "postman-collection": "4.0.0",
     "shelljs": "0.8.4"
   },
   "devDependencies": {
@@ -43,7 +43,7 @@
     "eslint-plugin-security": "1.4.0",
     "istanbul": "0.4.5",
     "js-yaml": "3.14.0",
-    "newman": "5.2.0",
+    "newman": "5.2.4",
     "jsdoc": "3.6.6",
     "mocha": "5.2.0",
     "lodash": "4.17.20",
