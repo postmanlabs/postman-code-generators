@@ -55,7 +55,7 @@ self = module.exports = {
       // Explicity using the -X disables this behaviour. So we are removing -X here
       // to choose the default curl behaviour. Curl will automatically determine the
       // method due to request body being present
-      snippet += `${quoteType + url + quoteType}`;
+      snippet += ` ${quoteType + url + quoteType}`;
     }
     else {
       snippet += ` ${form('-X', format)} ${request.method} ${quoteType + url + quoteType}`;

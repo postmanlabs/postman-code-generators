@@ -52,7 +52,7 @@ describe('curl convert function', function () {
         }
 
         snippetArray = snippet.split(' ');
-        expect(snippetArray[3][0]).to.equal('\'');
+        expect(snippetArray[2][0]).to.equal('\'');
       });
     });
 
@@ -74,7 +74,7 @@ describe('curl convert function', function () {
         }
 
         snippetArray = snippet.split(' ');
-        expect(snippetArray[3][0]).to.equal('"');
+        expect(snippetArray[2][0]).to.equal('"');
       });
     });
 
