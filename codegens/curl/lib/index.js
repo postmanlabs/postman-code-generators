@@ -47,6 +47,16 @@ self = module.exports = {
     if (request.method === 'HEAD') {
       snippet += ` ${form('-I', format)} ${quoteType + url + quoteType}`;
     }
+    else if (request.method === 'POST' && request.body && redirect) {
+      // Curl documentation says that if -L option is specified
+      // _and_ the server returns a 301, 302 or 303 response 
+      // _and_ if the original request is a POST
+      // then curl will do the following request using GET
+      // Explicity using the -X disables this behaviour. So we are removing -X here
+      // to choose the default curl behaviour. Curl will automatically determine the 
+      // method due to request body being present
+      snippet += `${quoteType + url + quoteType}`;
+    }
     else {
       snippet += ` ${form('-X', format)} ${request.method} ${quoteType + url + quoteType}`;
     }
