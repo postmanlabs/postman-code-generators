@@ -27,14 +27,14 @@
   "dependencies": {
     "async": "2.6.3",
     "path": "0.12.7",
-    "postman-collection": "3.6.8",
-    "shelljs": "0.8.4"
+    "postman-collection": "4.1.1",
+    "shelljs": "0.8.5"
   },
   "devDependencies": {
     "browserify": "14.5.0",
     "chai": "4.2.0",
     "chalk": "2.4.2",
-    "eslint": "5.16.0",
+    "eslint": "8.10.0",
     "dependency-check": "2.10.1",
     "editorconfig": "0.15.3",
     "eslint-plugin-jsdoc": "3.15.1",
@@ -43,15 +43,15 @@
     "eslint-plugin-security": "1.4.0",
     "istanbul": "0.4.5",
     "js-yaml": "3.14.0",
-    "newman": "5.2.0",
-    "jsdoc": "3.6.7",
-    "mocha": "5.2.0",
-    "lodash": "4.17.20",
-    "nyc": "14.1.1",
+    "newman": "5.3.1",
+    "jsdoc": "3.6.10",
+    "mocha": "9.2.1",
+    "lodash": "4.17.21",
+    "nyc": "15.1.0",
     "parse-gitignore": "1.0.1",
     "pretty-ms": "3.2.0",
     "recursive-readdir": "2.2.2",
-    "watchify": "3.11.1"
+    "watchify": "4.0.0"
   },
   "engines": {
     "node": ">=6"
