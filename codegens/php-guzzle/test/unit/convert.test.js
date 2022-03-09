@@ -10,7 +10,7 @@ describe('convert function', function () {
   it('should convert a simple get request', function (done) {
     const collection = new sdk.Collection(JSON.parse(
       fs.readFileSync(path.resolve(__dirname, './fixtures/sample_collection.json').toString())));
-    convert(collection.items.members[7].request, {asyncType: 'sync'}, function (err, snippet) {
+    convert(collection.items.members[4].request, {asyncType: 'sync'}, function (err, snippet) {
       if (err) {
         console.error(err);
       }
