@@ -38,6 +38,14 @@ const options = [
     type: 'boolean',
     default: true,
     description: 'Automatically follow HTTP redirects'
+  },
+  {
+    name: 'Set communication type',
+    id: 'asyncType',
+    type: 'enum',
+    availableOptions: ['async', 'sync'],
+    default: 'async',
+    description: 'Set if the requests will be asynchronous or synchronous'
   }
 ];
 

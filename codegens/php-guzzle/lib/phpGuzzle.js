@@ -122,13 +122,23 @@ function getSnippetHeader () {
 }
 
 /**
-  * Returns the snippet footer
+  * Returns the snippet footer sync
   *
   * @module convert
-  *
   * @returns {string} the snippet headers (uses)
   */
-function getSnippetFooter () {
+function getSnippetFooterSync () {
+  return '$res = $client->send($request);\n' +
+    'echo $res->getStatusCode();\n';
+}
+
+/**
+  * Returns the snippet footer async
+  *
+  * @module convert
+  * @returns {string} the snippet headers (uses)
+  */
+function getSnippetFooterAsync () {
   return '$promise = $client->sendAsync($request);\n' +
   '$promise->then(\n' +
   '  function (ResponseInterface $res) {\n' +
@@ -139,6 +149,20 @@ function getSnippetFooter () {
   '    echo $e->getRequest()->getMethod();\n' +
   '  }\n' +
   ');\n';
+}
+
+/**
+  * Returns the snippet footer
+  *
+  * @module convert
+ * @param  {object} options - process options
+  * @returns {string} the snippet headers (uses)
+  */
+function getSnippetFooter (options) {
+  if (options && options.asyncType && options.asyncType === 'sync') {
+    return getSnippetFooterSync();
+  }
+  return getSnippetFooterAsync();
 }
 
 /**
@@ -190,7 +214,7 @@ function getSnippetClient (options) {
   * @module convert
   *
   * @param  {Object} request - postman SDK-request object
-  * @param  {Object} options
+ * @param  {object} options - process options
   * @param  {Function} callback - function with parameters (error, snippet)
   * @returns {String} - returns generated PHP-Guzzle snippet via callback
   */
@@ -214,7 +238,7 @@ function convert (request, options, callback) {
   snippet += snippetHeaders;
   snippet += parseBody(request.body, indentation, getBodyTrim(options), request.headers.get('Content-Type'));
   snippet += requestBuilderSnippet;
-  snippet += getSnippetFooter();
+  snippet += getSnippetFooter(options);
 
   return callback(null, snippet);
 }
@@ -235,5 +259,6 @@ module.exports = {
   getURL: getRequestURL,
   getMethod: getRequestMethod,
   getIndentation,
-  getSnippetClient
+  getSnippetClient,
+  getSnippetFooter
 };

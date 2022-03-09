@@ -9,7 +9,8 @@ var expect = require('chai').expect,
     getMethod,
     getIndentation,
     getSnippetClient,
-    convert
+    convert,
+    getSnippetFooter
   } = require('../../lib/phpGuzzle'),
   collectionsPath = './fixtures';
 
@@ -172,6 +173,43 @@ describe('getSnippetClient function', function () {
   '  \'allow_redirects\' => false\n' +
   ']\n);\n';
     expect(getSnippetClient({followRedirect: false})).to.equal(expectedString);
+  });
+
+});
+
+describe('getSnippetFooter function', function () {
+  it('should return the async version without options', function () {
+    const expectedString = '$promise = $client->sendAsync($request);\n$promise->then' +
+    '(\n  function (ResponseInterface $res) {\n    echo $res->getStatusCode();\n  },\n ' +
+    ' function (RequestException $e) {\n    echo $e->getMessage();\n    echo $e->getRequest()->getMethod();\n  }\n);\n';
+    expect(getSnippetFooter()).to.equal(expectedString);
+  });
+
+  it('should return the async version with empty options', function () {
+    const expectedString = '$promise = $client->sendAsync($request);\n$promise->then' +
+    '(\n  function (ResponseInterface $res) {\n    echo $res->getStatusCode();\n  },\n ' +
+    ' function (RequestException $e) {\n    echo $e->getMessage();\n    echo $e->getRequest()->getMethod();\n  }\n);\n';
+    expect(getSnippetFooter({})).to.equal(expectedString);
+  });
+
+  it('should return the async version with options as async', function () {
+    const expectedString = '$promise = $client->sendAsync($request);\n$promise->then' +
+    '(\n  function (ResponseInterface $res) {\n    echo $res->getStatusCode();\n  },\n ' +
+    ' function (RequestException $e) {\n    echo $e->getMessage();\n    echo $e->getRequest()->getMethod();\n  }\n);\n';
+    expect(getSnippetFooter({asyncType: 'async'})).to.equal(expectedString);
+  });
+
+  it('should return the async version with options as other string', function () {
+    const expectedString = '$promise = $client->sendAsync($request);\n$promise->then' +
+    '(\n  function (ResponseInterface $res) {\n    echo $res->getStatusCode();\n  },\n ' +
+    ' function (RequestException $e) {\n    echo $e->getMessage();\n    echo $e->getRequest()->getMethod();\n  }\n);\n';
+    expect(getSnippetFooter({asyncType: 'other'})).to.equal(expectedString);
+  });
+
+  it('should return the async version with options as sync', function () {
+    const expectedString = '$res = $client->send($request);\n' +
+    'echo $res->getStatusCode();\n';
+    expect(getSnippetFooter({asyncType: 'sync'})).to.equal(expectedString);
   });
 
 });

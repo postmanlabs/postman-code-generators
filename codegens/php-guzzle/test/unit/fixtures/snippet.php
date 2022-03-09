@@ -17,13 +17,5 @@ $body = [
   'more' => ',./\';[]}{":?><|\\\\'
 ]];
 $request = new Request('POST', 'https://postman-echo.com/post', $headers, $body);
-$promise = $client->sendAsync($request);
-$promise->then(
-  function (ResponseInterface $res) {
-    echo $res->getStatusCode();
-  },
-  function (RequestException $e) {
-    echo $e->getMessage();
-    echo $e->getRequest()->getMethod();
-  }
-);
+$res = $client->send($request);
+echo $res->getStatusCode();
