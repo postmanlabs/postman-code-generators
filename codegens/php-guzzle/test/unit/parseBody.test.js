@@ -97,4 +97,25 @@ describe('parseBody function', function () {
     expect(result).to.equal(expectedBody);
 
   });
+
+  it('should return form-data params with a file"', function () {
+    const collection = new sdk.Collection(JSON.parse(
+        fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
+      body = collection.items.members[26].request.body,
+      indentation = '  ',
+      bodyTrim = false,
+      expectedBody = '$body = [\n  \'multipart\' => [\n' +
+      '    [\n' +
+      '      \'name\' => \'test-file\',\n' +
+      '      \'contents\' => \'\',\n' +
+      '      \'filename\' => \'\',\n' +
+      '      \'headers\'  => [\n' +
+      '        \'Content-Type\' => \'<Content-type header>\'\n' +
+      '      ]\n' +
+      '    ]\n' +
+    ']];\n',
+      result = parseBody(body, indentation, bodyTrim, 'formdata');
+    expect(result).to.equal(expectedBody);
+
+  });
 });

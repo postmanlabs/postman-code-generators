@@ -129,6 +129,43 @@ function parseURLEncodedBody (body, indentation, bodyTrim) {
 }
 
 /**
+ *  Takes in a key value form data and creates the PHP guzzle structure
+ *
+ * @param {Object} data item from the array of form data (key value).
+ * @param {String} indentation indentation to be added to the snippet
+ * @param {boolean} bodyTrim trim body option
+ * @returns {String} snippet of the body generation
+ */
+function buildFormDataParam (data, indentation, bodyTrim) {
+  let name = `${indentation.repeat(2)}[\n${indentation.repeat(3)}` +
+  `'name' => '${sanitizeString(data.key, bodyTrim)}',\n` +
+    `${indentation.repeat(3)}'contents' => '${sanitizeString(data.value, bodyTrim)}'\n` +
+    `${indentation.repeat(2)}]`;
+  return name;
+}
+
+/**
+ *  Takes in a key value form data and creates the PHP guzzle structure
+ * for files
+ *
+ * @param {Object} data item from the array of form data (key value).
+ * @param {String} indentation indentation to be added to the snippet
+ * @param {boolean} bodyTrim trim body option
+ * @returns {String} snippet of the body generation
+ */
+function buildFormDataParamFile (data, indentation, bodyTrim) {
+  let name = `${indentation.repeat(2)}[\n${indentation.repeat(3)}` +
+  `'name' => '${sanitizeString(data.key, bodyTrim)}',\n` +
+    `${indentation.repeat(3)}'contents' => '${sanitizeString(data.value, bodyTrim)}',\n` +
+    `${indentation.repeat(3)}'filename' => '${sanitizeString(data.src, bodyTrim)}',\n` +
+    `${indentation.repeat(3)}'headers'  => [\n` +
+    `${indentation.repeat(4)}'Content-Type' => '<Content-type header>'\n${indentation.repeat(3)}]\n` +
+    `${indentation.repeat(2)}]`;
+  return name;
+}
+
+
+/**
  * Parses form data
  *
  * @param {Object} body body object from request.
@@ -141,11 +178,10 @@ function parseFormData (body, indentation, bodyTrim) {
     bodySnippet = '';
   if (!_.isEmpty(enabledBodyList)) {
     let bodyDataMap = _.map(enabledBodyList, (data) => {
-      let name = `${indentation.repeat(2)}[\n${indentation.repeat(3)}` +
-      `'name' => '${sanitizeString(data.key, bodyTrim)}',\n` +
-        `${indentation.repeat(3)}'contents' => '${sanitizeString(data.value, bodyTrim)}` +
-        `'\n${indentation.repeat(2)}]`;
-      return name;
+      if (data.type === 'file') {
+        return buildFormDataParamFile(data, indentation, bodyTrim);
+      }
+      return buildFormDataParam(data, indentation, bodyTrim);
     });
     bodySnippet += `[\n${indentation}'multipart' => [\n${bodyDataMap.join(',\n')}\n]];`;
   }
