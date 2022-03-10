@@ -10,7 +10,8 @@ var expect = require('chai').expect,
     getIndentation,
     getSnippetClient,
     convert,
-    getSnippetFooter
+    getSnippetFooter,
+    getSnippetRequestObject
   } = require('../../lib/phpGuzzle'),
   collectionsPath = './fixtures';
 
@@ -213,3 +214,28 @@ describe('getSnippetFooter function', function () {
   });
 
 });
+
+describe('getSnippetRequestObject method', function () {
+  it('should return snippet with body and headers', function () {
+    const result = getSnippetRequestObject('POST', 'URL', true, 'some');
+    expect(result).to.include('$body');
+    expect(result).to.include('$headers');
+  });
+  it('should return snippet with headers', function () {
+    const result = getSnippetRequestObject('POST', 'URL', false, 'some');
+    expect(result).to.not.include('$body');
+    expect(result).to.include('$headers');
+  });
+  it('should return snippet with body', function () {
+    const result = getSnippetRequestObject('POST', 'URL', true, '');
+    expect(result).to.include('$body');
+    expect(result).to.not.include('$headers');
+  });
+
+  it('should return snippet without body and headers', function () {
+    const result = getSnippetRequestObject('POST', 'URL', false, '');
+    expect(result).to.not.include('$body');
+    expect(result).to.not.include('$headers');
+  });
+});
+

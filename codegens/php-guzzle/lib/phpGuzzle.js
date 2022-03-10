@@ -174,13 +174,20 @@ function getSnippetFooter (options) {
   * @param  {string} method - request's method in string representation
   * @param  {string} url - request's url in string representation
   * @param  {boolean} hasBody - wheter the request has body or not
+  * @param  {string} snippetHeaders - the generated snippet headers
   * @returns {String} - returns generated PHP-Guzzle snippet for request creation
   */
-function getSnippetRequestObject (method, url, hasBody) {
-  if (hasBody) {
+function getSnippetRequestObject (method, url, hasBody, snippetHeaders) {
+  if (hasBody && snippetHeaders !== '') {
     return `$request = new Request('${method}', '${url}', $headers, $body);\n`;
   }
-  return `$request = new Request('${method}', '${url}', $headers);\n`;
+  if (!hasBody && snippetHeaders !== '') {
+    return `$request = new Request('${method}', '${url}', $headers);\n`;
+  }
+  if (hasBody && snippetHeaders === '') {
+    return `$request = new Request('${method}', '${url}', $body);\n`;
+  }
+  return `$request = new Request('${method}', '${url}');\n`;
 }
 
 /**
@@ -232,7 +239,7 @@ function convert (request, options, callback) {
     snippetHeaders = getSnippetHeaders(getRequestHeaders(request), indentation),
     snippetHeader = getSnippetHeader(),
     snippetClient = getSnippetClient(options),
-    requestBuilderSnippet = getSnippetRequestObject(method, url, hasBody);
+    requestBuilderSnippet = getSnippetRequestObject(method, url, hasBody, snippetHeaders);
   snippet += snippetHeader;
   snippet += snippetClient;
   snippet += snippetHeaders;
@@ -260,5 +267,6 @@ module.exports = {
   getMethod: getRequestMethod,
   getIndentation,
   getSnippetClient,
-  getSnippetFooter
+  getSnippetFooter,
+  getSnippetRequestObject
 };
