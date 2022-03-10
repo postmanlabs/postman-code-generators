@@ -189,6 +189,39 @@ function parseFormData (body, indentation, bodyTrim) {
 }
 
 /**
+ * Parses Body of file
+ *
+ * @return {String} the data for a binary file
+ */
+function parseFromFile () {
+  return '\'<file contents here>\';';
+}
+
+/**
+ * Parses Body of graphql
+ *
+ * @param {Object} body body object from request.
+ * @param {boolean} bodyTrim trim body option
+ * @return {String} the data for a binary file
+ */
+function parseGraphQL (body, bodyTrim) {
+  const query = body.query;
+  let bodySnippet = '',
+    graphqlVariables;
+  try {
+    graphqlVariables = JSON.parse(body.variables);
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  bodySnippet = `'${sanitizeString(JSON.stringify({
+    query: query,
+    variables: graphqlVariables
+  }), bodyTrim)}');`;
+  return bodySnippet;
+}
+
+/**
  * Parses Body from the Request
  *
  * @param {Object} body body object from request.
@@ -202,12 +235,12 @@ function processBodyModes (body, indentation, bodyTrim, contentType) {
       return parseURLEncodedBody(body.urlencoded, indentation, bodyTrim);
     case 'raw':
       return parseRawBody(body.raw, indentation, bodyTrim, contentType);
-    // case 'graphql':
-    //   return parseGraphQL(body.graphql, trim, bodyTrim, ES6_enabled);
+    case 'graphql':
+      return parseGraphQL(body.graphql, bodyTrim);
     case 'formdata':
       return parseFormData(body.formdata, indentation, bodyTrim);
-    // case 'file':
-    //   return parseFileData();
+    case 'file':
+      return parseFromFile();
     default:
       return parseRawBody(body.raw, indentation, bodyTrim, contentType);
   }

@@ -216,6 +216,22 @@ function getSnippetClient (options) {
 }
 
 /**
+  * Add the content type header if needed
+  *
+  * @module convert
+  *
+  * @param  {Object} request - postman SDK-request object
+  */
+function addContentTypeHeader (request) {
+  if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
+    request.addHeader({
+      key: 'Content-Type',
+      value: 'application/json'
+    });
+  }
+}
+
+/**
   * Used to convert the postman sdk-request object in PHP-Guzzle request snippet
   *
   * @module convert
@@ -232,6 +248,8 @@ function convert (request, options, callback) {
   }
   let snippet = '';
   options = sanitizeOptions(options, getOptions());
+  addContentTypeHeader(request);
+
   const method = getRequestMethod(request),
     indentation = getIndentation(options),
     url = getRequestURL(request),
@@ -270,3 +288,5 @@ module.exports = {
   getSnippetFooter,
   getSnippetRequestObject
 };
+
+

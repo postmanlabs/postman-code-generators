@@ -42,7 +42,7 @@ describe('parseBody function', function () {
     expect(bodySnippet).to.equal(expectedBody);
   });
 
-  it('should return form-url-encoded params"', function () {
+  it('should return form-url-encoded params', function () {
     const collection = new sdk.Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[7].request.body,
@@ -61,7 +61,7 @@ describe('parseBody function', function () {
 
   });
 
-  it('should return form-data params"', function () {
+  it('should return form-data params', function () {
     const collection = new sdk.Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[4].request.body,
@@ -98,7 +98,7 @@ describe('parseBody function', function () {
 
   });
 
-  it('should return form-data params with a file"', function () {
+  it('should return form-data params with a file', function () {
     const collection = new sdk.Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[26].request.body,
@@ -116,6 +116,33 @@ describe('parseBody function', function () {
     ']];\n',
       result = parseBody(body, indentation, bodyTrim, 'formdata');
     expect(result).to.equal(expectedBody);
+
+  });
+
+  it('should return binary data params with a file', function () {
+    const collection = new sdk.Collection(JSON.parse(
+        fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
+      body = collection.items.members[25].request.body,
+      indentation = '  ',
+      bodyTrim = false,
+      expectedBody = '$body = \'<file contents here>\';\n',
+      result = parseBody(body, indentation, bodyTrim, 'formdata');
+    expect(result).to.equal(expectedBody);
+
+  });
+
+  it('should return graphql params', function () {
+    const collection = new sdk.Collection(JSON.parse(
+        fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
+      body = collection.items.members[27].request.body,
+      indentation = '  ',
+      bodyTrim = false,
+      pesult = '$body = \'{"query":"{\\\\n  findScenes(\\\\n    filter: {per_page: 0}\\\\n   ' +
+      ' scene_filter: {is_missing: \\\\"performers\\\\"}){\\\\n    count\\\\n    scenes' +
+      ' {\\\\n      id\\\\n      title\\\\n      path\\\\n    }\\\\n  }\\\\n}","variables":' +
+      '{"variable_key":"variable_value"}}\');\n',
+      result = parseBody(body, indentation, bodyTrim, 'formdata');
+    expect(result).to.equal(pesult);
 
   });
 });
