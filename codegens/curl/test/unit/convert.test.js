@@ -52,7 +52,7 @@ describe('curl convert function', function () {
         }
 
         snippetArray = snippet.split(' ');
-        expect(snippetArray[2][0]).to.equal('\'');
+        expect(snippetArray[4][0]).to.equal('\'');
       });
     });
 
@@ -74,7 +74,7 @@ describe('curl convert function', function () {
         }
 
         snippetArray = snippet.split(' ');
-        expect(snippetArray[2][0]).to.equal('"');
+        expect(snippetArray[4][0]).to.equal('"');
       });
     });
 
@@ -277,7 +277,7 @@ describe('curl convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include("GET 'https://google.com'"); // eslint-disable-line quotes
+        expect(snippet).to.include("'https://google.com'"); // eslint-disable-line quotes
       });
     });
 
@@ -634,6 +634,135 @@ describe('curl convert function', function () {
         outputUrlString = getUrlStringfromUrlObject(urlObject);
         expect(outputUrlString).to.equal(rawUrl);
       });
+    });
+
+    it('should not add --request parameter in POST request if body is present', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'graphql',
+          'graphql': {
+            'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+            'variables': '{\n\t"variable_key": "variable_value"\n}'
+          }
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, { followRedirect: true }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.not.include('--request POST');
+      });
+    });
+
+    it('should  add --request parameter in POST request if body is not present', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, { followRedirect: true }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('--request POST');
+      });
+    });
+
+    it('should  add --request parameter in GET request if body is present', function () {
+      var request = new sdk.Request({
+        'method': 'GET',
+        'header': [],
+        'body': {
+          'mode': 'graphql',
+          'graphql': {
+            'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+            'variables': '{\n\t"variable_key": "variable_value"\n}'
+          }
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/get',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'get'
+          ]
+        }
+      });
+
+      convert(request, { followRedirect: true }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('--request GET');
+      });
+    });
+
+    it('should always add --request parameter followRedirect option is false', function () {
+      var methods = ['GET', 'HEAD', 'DELETE', 'PUT', 'POST', 'PATCH'],
+        request = new sdk.Request({
+          'method': 'POST',
+          'header': [],
+          'body': {
+            'mode': 'graphql',
+            'graphql': {
+              'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+              'variables': '{\n\t"variable_key": "variable_value"\n}'
+            }
+          },
+          'url': {
+            'raw': 'https://postman-echo.com/post',
+            'protocol': 'https',
+            'host': [
+              'postman-echo',
+              'com'
+            ],
+            'path': [
+              'post'
+            ]
+          }
+        });
+
+      for (let method of methods) {
+        request.method = method;
+        convert(request, { followRedirect: false }, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.include(`--request ${method}`);
+        });
+      }
     });
   });
 });

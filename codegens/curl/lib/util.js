@@ -199,5 +199,44 @@ var self = module.exports = {
         contentType: contentType
       });
     }
+  },
+
+  /**
+   * Decide whether we should add the -X option in the snippet or not
+   * See: https://postmanlabs.atlassian.net/wiki/spaces/AD/pages/3540288287
+   *
+   * @param {Object} request
+   * @param {Boolean} redirect
+   *
+   * @returns {Boolean}
+   */
+  shouldAddXOption: function (request, redirect) {
+    if (!redirect) {
+      return true;
+    }
+
+    switch (request.method) {
+      case 'HEAD':
+        return false;
+      case 'GET':
+        if (request.body) {
+          return true;
+        }
+
+        return false;
+
+      case 'POST':
+        if (!request.body || request.body.isEmpty() || request.body.mode === 'file') {
+          return true;
+        }
+
+        return false;
+
+      case 'DELETE':
+      case 'PUT':
+      case 'PATCH':
+      default:
+        return true;
+    }
   }
 };

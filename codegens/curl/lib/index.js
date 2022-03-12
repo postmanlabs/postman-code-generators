@@ -3,6 +3,7 @@ var sanitize = require('./util').sanitize,
   getUrlStringfromUrlObject = require('./util').getUrlStringfromUrlObject,
   addFormParam = require('./util').addFormParam,
   form = require('./util').form,
+  shouldAddXOption = require('./util').shouldAddXOption,
   _ = require('./lodash'),
   self;
 
@@ -45,26 +46,14 @@ self = module.exports = {
       indent = ' ';
     }
     if (request.method === 'HEAD') {
-      snippet += ` ${form('-I', format)} ${quoteType + url + quoteType}`;
+      snippet += ` ${form('-I', format)}`;
     }
-    else if (request.method === 'POST' &&
-      redirect &&
-      request.body &&
-      (!_.includes(['formdata', 'urlencoded'], request.body.mode) ||
-        !_.isEmpty(_.get(request.body, `${request.body.mode}.members`)))) {
 
-      // Curl documentation says that if -L option is specified
-      // _and_ the server returns a 301, 302 or 303 response
-      // _and_ if the original request is a POST
-      // then curl will do the following request using GET
-      // Explicity using the -X disables this behaviour. So we are removing -X here
-      // to choose the default curl behaviour.
-      // Curl will automatically determine the method due to --data option being present
-      snippet += ` ${quoteType + url + quoteType}`;
+    if (shouldAddXOption(request, redirect)) {
+      snippet += ` ${form('-X', format)} ${request.method}`;
     }
-    else {
-      snippet += ` ${form('-X', format)} ${request.method} ${quoteType + url + quoteType}`;
-    }
+
+    snippet += ` ${quoteType + url + quoteType}`;
 
     if (request.body && !request.headers.has('Content-Type')) {
       if (request.body.mode === 'file') {
