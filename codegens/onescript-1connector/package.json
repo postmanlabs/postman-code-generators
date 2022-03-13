@@ -1,7 +1,7 @@
 {
-  "name": "@postman/codegen-onescript",
+  "name": "@postman/codegen-onescript-1connector",
   "version": "0.0.1",
-  "description": "Converts Postman SDK Requests to OneScript code snippet",
+  "description": "Generates code snippets for onescript-1connector variant",
   "main": "index.js",
   "com_postman_plugin": {
     "type": "code_generator",
