@@ -45,6 +45,7 @@ module.exports = {
         return false;
       }
     }
+
     return true;
   },
 
@@ -342,6 +343,7 @@ module.exports = {
       return string.replace(/\s*$/, '');
     }
     chars += '$';
+    // eslint-disable-next-line security/detect-non-literal-regexp
     return string.replace(new RegExp(chars, 'g'), '');
   },
 

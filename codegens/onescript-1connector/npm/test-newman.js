@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* eslint-env node, es6 */
 // ---------------------------------------------------------------------------------------------------------------------
-// This script is intended to execute all unit tests.
+// This script is intended to execute all newman tests.
 // ---------------------------------------------------------------------------------------------------------------------
 
 var shell = require('shelljs'),
@@ -35,12 +35,13 @@ module.exports = function (exit) {
 
   nyc.wrap();
   // add all spec files to mocha
-  recursive(SPEC_SOURCE_DIR, function (err, files) {
+  // eslint-disable-next-line consistent-return
+  recursive(SPEC_SOURCE_DIR, (err, files) => {
     if (err) { console.error(err); return exit(1); }
 
     var mocha = new Mocha({ timeout: 1000 * 60 });
 
-    files.filter(function (file) { // extract all test files
+    files.filter(function (file) {
       return (file.substr(-8) === '.test.js');
     }).forEach(mocha.addFile.bind(mocha));
 

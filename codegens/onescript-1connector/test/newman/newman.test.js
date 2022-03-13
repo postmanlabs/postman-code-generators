@@ -16,7 +16,7 @@ describe('OneScript Converter', function () {
         // Compile script required to compile the code snippet
         compileScript: '',
         // Array of name of collections for which newman tests has to be skipped.
-        skipCollections: []
+        skipCollections: ['formdataCollection']
       };
     runNewmanTest(convert, options, testConfig);
   });

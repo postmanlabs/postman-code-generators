@@ -18,7 +18,7 @@ module.exports = {
         case 'raw':
           return JSON.stringify(inputString);
         case 'urlencoded':
-          return encodeURIComponent(inputString).replace(/'/g, '\\\'');
+          return encodeURIComponent(inputString);// .replace(/'/g, '\\\'');
         case 'formdata':
           return inputString.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
         case 'file':
@@ -107,18 +107,16 @@ module.exports = {
  * @param {String} type - type of form data param(file/text)
  * @param {String} val - value/src property of form data param
  * @param {String} disabled - Boolean denoting whether the param is disabled or not
- * @param {String} contentType - content type header of the param
  *
  * Appends a single param to form data array
  */
-  addFormParam: function (array, key, type, val, disabled, contentType) {
+  addFormParam: function (array, key, type, val, disabled) {
     if (type === 'file') {
       array.push({
         key: key,
         type: type,
         src: val,
-        disabled: disabled,
-        contentType: contentType
+        disabled: disabled
       });
     }
     else {
@@ -126,8 +124,7 @@ module.exports = {
         key: key,
         type: type,
         value: val,
-        disabled: disabled,
-        contentType: contentType
+        disabled: disabled
       });
     }
   }
