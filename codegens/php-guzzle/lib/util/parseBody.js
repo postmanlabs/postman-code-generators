@@ -256,10 +256,15 @@ function processBodyModes (body, indentation, bodyTrim, contentType) {
 * @returns {String} snippet of the body generation
 */
 function parseBody (body, indentation, bodyTrim, contentType) {
-  let snippet = '';
+  let snippet = '',
+    snippetBody = '';
   if (body && !_.isEmpty(body)) {
     body = solveMultiFile(body);
-    snippet += `$body = ${processBodyModes(body, indentation, bodyTrim, contentType)}\n`;
+    snippetBody = processBodyModes(body, indentation, bodyTrim, contentType);
+    if (snippetBody === '') {
+      return snippet;
+    }
+    snippet += `$body = ${snippetBody}\n`;
   }
   return snippet;
 }

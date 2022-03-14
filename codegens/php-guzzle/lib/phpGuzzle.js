@@ -232,6 +232,19 @@ function addContentTypeHeader (request) {
 }
 
 /**
+  * Identifies if the request should have a body
+  *
+  * @module convert
+  *
+  * @param  {Object} request - postman SDK-request object
+  * @param  {string} snippetBody - generated body snippet
+  * @returns {String} - returns generated PHP-Guzzle snippet via callback
+*/
+function includeBody (request, snippetBody) {
+  !_.isEmpty(request.body) || !snippetBody === '';
+}
+
+/**
   * Used to convert the postman sdk-request object in PHP-Guzzle request snippet
   *
   * @module convert
@@ -246,22 +259,27 @@ function convert (request, options, callback) {
   if (!validateIsFunction(callback)) {
     throw new Error('Php-Guzzle~convert: Callback is not a function');
   }
-  let snippet = '';
+  let snippet = '',
+    snippetbody,
+    requestBuilderSnippet,
+    hasBody;
   options = sanitizeOptions(options, getOptions());
   addContentTypeHeader(request);
 
   const method = getRequestMethod(request),
     indentation = getIndentation(options),
     url = getRequestURL(request),
-    hasBody = !_.isEmpty(request.body),
     snippetHeaders = getSnippetHeaders(getRequestHeaders(request), indentation),
     snippetHeader = getSnippetHeader(),
-    snippetClient = getSnippetClient(options),
-    requestBuilderSnippet = getSnippetRequestObject(method, url, hasBody, snippetHeaders);
+    snippetClient = getSnippetClient(options);
+  snippetbody = parseBody(request.body, indentation, getBodyTrim(options), request.headers.get('Content-Type'));
+  hasBody = includeBody(request.body, snippetbody);
+  requestBuilderSnippet = getSnippetRequestObject(method, url, hasBody, snippetHeaders);
+
   snippet += snippetHeader;
   snippet += snippetClient;
   snippet += snippetHeaders;
-  snippet += parseBody(request.body, indentation, getBodyTrim(options), request.headers.get('Content-Type'));
+  snippet += snippetbody;
   snippet += requestBuilderSnippet;
   snippet += getSnippetFooter(options);
 

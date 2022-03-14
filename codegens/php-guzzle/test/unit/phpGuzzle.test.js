@@ -181,35 +181,35 @@ describe('getSnippetClient function', function () {
 describe('getSnippetFooter function', function () {
   it('should return the async version without options', function () {
     const expectedString = '$promise = $client->sendAsync($request);\n$promise->then' +
-    '(\n  function (ResponseInterface $res) {\n    echo $res->getStatusCode();\n  },\n ' +
+    '(\n  function (ResponseInterface $res) {\n    echo $res->getBody();\n  },\n ' +
     ' function (RequestException $e) {\n    echo $e->getMessage();\n    echo $e->getRequest()->getMethod();\n  }\n);\n';
     expect(getSnippetFooter()).to.equal(expectedString);
   });
 
   it('should return the async version with empty options', function () {
     const expectedString = '$promise = $client->sendAsync($request);\n$promise->then' +
-    '(\n  function (ResponseInterface $res) {\n    echo $res->getStatusCode();\n  },\n ' +
+    '(\n  function (ResponseInterface $res) {\n    echo $res->getBody();\n  },\n ' +
     ' function (RequestException $e) {\n    echo $e->getMessage();\n    echo $e->getRequest()->getMethod();\n  }\n);\n';
     expect(getSnippetFooter({})).to.equal(expectedString);
   });
 
   it('should return the async version with options as async', function () {
     const expectedString = '$promise = $client->sendAsync($request);\n$promise->then' +
-    '(\n  function (ResponseInterface $res) {\n    echo $res->getStatusCode();\n  },\n ' +
+    '(\n  function (ResponseInterface $res) {\n    echo $res->getBody();\n  },\n ' +
     ' function (RequestException $e) {\n    echo $e->getMessage();\n    echo $e->getRequest()->getMethod();\n  }\n);\n';
     expect(getSnippetFooter({asyncType: 'async'})).to.equal(expectedString);
   });
 
   it('should return the async version with options as other string', function () {
     const expectedString = '$promise = $client->sendAsync($request);\n$promise->then' +
-    '(\n  function (ResponseInterface $res) {\n    echo $res->getStatusCode();\n  },\n ' +
+    '(\n  function (ResponseInterface $res) {\n    echo $res->getBody();\n  },\n ' +
     ' function (RequestException $e) {\n    echo $e->getMessage();\n    echo $e->getRequest()->getMethod();\n  }\n);\n';
     expect(getSnippetFooter({asyncType: 'other'})).to.equal(expectedString);
   });
 
   it('should return the async version with options as sync', function () {
     const expectedString = '$res = $client->send($request);\n' +
-    'echo $res->getStatusCode();\n';
+    'echo $res->getBody();\n';
     expect(getSnippetFooter({asyncType: 'sync'})).to.equal(expectedString);
   });
 
