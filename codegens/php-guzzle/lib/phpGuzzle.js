@@ -129,7 +129,7 @@ function getSnippetHeader () {
   */
 function getSnippetFooterSync () {
   return '$res = $client->send($request);\n' +
-    'echo $res->getStatusCode();\n';
+    'echo $res->getBody();\n';
 }
 
 /**
@@ -142,7 +142,7 @@ function getSnippetFooterAsync () {
   return '$promise = $client->sendAsync($request);\n' +
   '$promise->then(\n' +
   '  function (ResponseInterface $res) {\n' +
-  '    echo $res->getStatusCode();\n' +
+  '    echo $res->getBody();\n' +
   '  },\n' +
   '  function (RequestException $e) {\n' +
   '    echo $e->getMessage();\n' +

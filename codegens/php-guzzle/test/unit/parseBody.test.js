@@ -15,7 +15,7 @@ describe('parseBody function', function () {
       body = collection.items.members[8].request.body,
       indentation = '  ',
       bodyTrim = false,
-      expectedBody = '$body = {\n  "json": "Test-Test"\n};\n';
+      expectedBody = '$body = \'{\n  "json": "Test-Test"\n}\';\n';
     let bodySnippet = parseBody(body, indentation, bodyTrim, 'application/json');
     expect(bodySnippet).to.equal(expectedBody);
   });
@@ -26,7 +26,7 @@ describe('parseBody function', function () {
       body = collection.items.members[8].request.body,
       indentation = '   ',
       bodyTrim = false,
-      expectedBody = '$body = {\n   "json": "Test-Test"\n};\n';
+      expectedBody = '$body = \'{\n   "json": "Test-Test"\n}\';\n';
     let bodySnippet = parseBody(body, indentation, bodyTrim, 'application/json');
     expect(bodySnippet).to.equal(expectedBody);
   });
@@ -140,7 +140,7 @@ describe('parseBody function', function () {
       pesult = '$body = \'{"query":"{\\\\n  findScenes(\\\\n    filter: {per_page: 0}\\\\n   ' +
       ' scene_filter: {is_missing: \\\\"performers\\\\"}){\\\\n    count\\\\n    scenes' +
       ' {\\\\n      id\\\\n      title\\\\n      path\\\\n    }\\\\n  }\\\\n}","variables":' +
-      '{"variable_key":"variable_value"}}\');\n',
+      '{"variable_key":"variable_value"}}\';\n',
       result = parseBody(body, indentation, bodyTrim, 'formdata');
     expect(result).to.equal(pesult);
 

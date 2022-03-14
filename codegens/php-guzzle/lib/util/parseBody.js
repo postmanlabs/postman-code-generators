@@ -96,7 +96,7 @@ function parseRawBody (body, indentation, bodyTrim, contentType) {
   if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
     try {
       let jsonBody = JSON.parse(body);
-      bodySnippet += `${JSON.stringify(jsonBody, null, indentation.length)};`;
+      bodySnippet += `'${JSON.stringify(jsonBody, null, indentation.length)}';`;
     }
     catch (error) {
       bodySnippet += `'${sanitizeString(body.toString(), bodyTrim)}';`;
@@ -217,7 +217,7 @@ function parseGraphQL (body, bodyTrim) {
   bodySnippet = `'${sanitizeString(JSON.stringify({
     query: query,
     variables: graphqlVariables
-  }), bodyTrim)}');`;
+  }), bodyTrim)}';`;
   return bodySnippet;
 }
 
