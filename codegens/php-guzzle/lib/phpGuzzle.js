@@ -171,27 +171,11 @@ function getSnippetFooterSync (includeRequestOptions) {
   */
 function getSnippetFooterAsync (includeRequestOptions) {
   if (!includeRequestOptions) {
-    return '$promise = $client->sendAsync($request);\n' +
-    '$promise->then(\n' +
-    '  function (ResponseInterface $res) {\n' +
-    '    echo $res->getBody();\n' +
-    '  },\n' +
-    '  function (RequestException $e) {\n' +
-    '    echo $e->getMessage();\n' +
-    '    echo $e->getRequest()->getMethod();\n' +
-    '  }\n' +
-    ');\n';
+    return '$res = $client->sendAsync($request)->wait();\n' +
+    'echo $res->getBody();\n';
   }
-  return '$promise = $client->sendAsync($request, $options);\n' +
-  '$promise->then(\n' +
-  '  function (ResponseInterface $res) {\n' +
-  '    echo $res->getBody();\n' +
-  '  },\n' +
-  '  function (RequestException $e) {\n' +
-  '    echo $e->getMessage();\n' +
-  '    echo $e->getRequest()->getMethod();\n' +
-  '  }\n' +
-  ');\n';
+  return '$res = $client->sendAsync($request, $options)->wait();\n' +
+  'echo $res->getBody();\n';
 }
 
 /**
