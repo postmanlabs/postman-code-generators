@@ -107,7 +107,7 @@ describe('parseBody function', function () {
       expectedBody = '$options = [\n  \'multipart\' => [\n' +
       '    [\n' +
       '      \'name\' => \'test-file\',\n' +
-      '      \'contents\' => \'\',\n' +
+      '      \'contents\' => Utils::tryFopen(\'\', \'r\'),\n' +
       '      \'filename\' => \'\',\n' +
       '      \'headers\'  => [\n' +
       '        \'Content-Type\' => \'<Content-type header>\'\n' +

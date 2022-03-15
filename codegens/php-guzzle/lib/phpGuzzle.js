@@ -142,6 +142,7 @@ function getSnippetHeader () {
     'use Psr\\Http\\Message\\ResponseInterface;\n' +
     'use GuzzleHttp\\Exception\\RequestException;\n' +
     'use GuzzleHttp\\Client;\n' +
+    'use GuzzleHttp\\Psr7\\Utils;\n' +
     'use GuzzleHttp\\Psr7\\Request;\n';
 }
 

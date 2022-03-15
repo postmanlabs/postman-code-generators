@@ -145,6 +145,19 @@ function buildFormDataParam (data, indentation, bodyTrim) {
 }
 
 /**
+ *  Gets the content file of the param
+ *
+ * @param {Object} data item from the array of form data (key value).
+ * @returns {String} snippet of the content
+ */
+function getContentFileFormData (data) {
+  if (!data.value) {
+    return `Utils::tryFopen('${data.src}', 'r')`;
+  }
+  return `'${sanitizeString(data.value, bodyTrim)}'`;
+}
+
+/**
  *  Takes in a key value form data and creates the PHP guzzle structure
  * for files
  *
@@ -156,7 +169,7 @@ function buildFormDataParam (data, indentation, bodyTrim) {
 function buildFormDataParamFile (data, indentation, bodyTrim) {
   let name = `${indentation.repeat(2)}[\n${indentation.repeat(3)}` +
   `'name' => '${sanitizeString(data.key, bodyTrim)}',\n` +
-    `${indentation.repeat(3)}'contents' => '${sanitizeString(data.value, bodyTrim)}',\n` +
+    `${indentation.repeat(3)}'contents' => ${getContentFileFormData(data)},\n` +
     `${indentation.repeat(3)}'filename' => '${sanitizeString(data.src, bodyTrim)}',\n` +
     `${indentation.repeat(3)}'headers'  => [\n` +
     `${indentation.repeat(4)}'Content-Type' => '<Content-type header>'\n${indentation.repeat(3)}]\n` +

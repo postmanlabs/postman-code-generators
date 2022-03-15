@@ -1632,6 +1632,44 @@
 				}
 			},
 			"response": []
-		}
+		},
+		{
+      "name": "Single/multiple file upload via form-data",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "single file",
+              "value": "",
+              "type": "file",
+              "src": "/Users/luis.tejeda/Documents/Source/GitHub/postmanlabs/postman-code-generators/dummyFile1.txt"
+            },
+            {
+              "key": "multiple files",
+              "value": "",
+              "type": "file",
+              "src": [
+                "/Users/luis.tejeda/Documents/Source/GitHub/postmanlabs/postman-code-generators/dummyFile2.txt",
+                "/Users/luis.tejeda/Documents/Source/GitHub/postmanlabs/postman-code-generators/dummyFile3.txt"
+              ]
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://postman-echo.com/post",
+          "protocol": "https",
+          "host": [
+            "postman-echo",
+            "com"
+          ],
+          "path": [
+            "post"
+          ]
+        }
+      }
+    }
 	]
 }
