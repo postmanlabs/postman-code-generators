@@ -17,4 +17,17 @@ describe('PHP-Guzzle Converter', function () {
       };
     runNewmanTest(convert, options, testConfig);
   });
+  describe('Convert for different types of request', function () {
+    var testConfig = {
+        runScript: 'php codesnippet.php',
+        fileName: 'codesnippet.php',
+        compileScript: null
+      },
+      options = {
+        indentType: 'Space',
+        indentCount: 4,
+        asyncType: 'async'
+      };
+    runNewmanTest(convert, options, testConfig);
+  });
 });
