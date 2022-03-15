@@ -16,6 +16,7 @@ Convert function takes three parameters
     * `indentType` - String denoting type of indentation for code snippet. eg: 'Space', 'Tab'
     * `indentCount` - The number of indentation characters to add per code level
     * `trimRequestBody` - Whether or not request body fields should be trimmed
+    * `asyncType` - String denoting call types. eg: 'async', 'sync'
 
 * `callback` - callback function with first parameter as error and second parameter as string for code snippet
 
