@@ -210,6 +210,38 @@ var self = module.exports = {
   },
 
   /**
+   * @param {Object} body
+   * @returns {boolean}
+   *
+   * Determines if a request body is actually empty.
+   * This is needed because body.isEmpty() returns true for formdata
+   * and urlencoded when they contain only disabled params which will not
+   * be a part of the curl request.
+   */
+  isBodyEmpty (body) {
+    if (!body) {
+      return true;
+    }
+
+    if (body.isEmpty()) {
+      return true;
+    }
+
+    if (body.mode === 'formdata' || body.mode === 'urlencoded') {
+      let memberCount = 0;
+      body[body.mode].members && body[body.mode].members.forEach((param) => {
+        if (!param.disabled) {
+          memberCount += 1;
+        }
+      });
+
+      return memberCount === 0;
+    }
+
+    return false;
+  },
+
+  /**
    * Decide whether we should add the -X option in the snippet or not
    * See: https://postmanlabs.atlassian.net/wiki/spaces/AD/pages/3540288287
    *
@@ -227,14 +259,17 @@ var self = module.exports = {
       case 'HEAD':
         return false;
       case 'GET':
-        if (request.body && options.disableBodyPruning) {
+        // disableBodyPruning will generally not be present in the request
+        // the only time it will be present, its value will be _false_
+        // i.e. the user wants to prune the request body despite it being present
+        if (!self.isBodyEmpty(request.body) && (options.disableBodyPruning !== false)) {
           return true;
         }
 
         return false;
 
       case 'POST':
-        if (!request.body || request.body.isEmpty() || request.body.mode === 'file') {
+        if (self.isBodyEmpty(request.body)) {
           return true;
         }
 

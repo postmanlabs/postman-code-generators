@@ -261,7 +261,7 @@ self = module.exports = {
       {
         id: 'disableBodyPruning',
         type: 'boolean',
-        default: false
+        default: true
       },
       {
         id: 'followOriginalHttpMethod',
