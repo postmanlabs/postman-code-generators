@@ -138,7 +138,8 @@ function validateIsFunction (validateFunction) {
   */
 function getSnippetHeader () {
   return '<?php\n' +
-    'require \'vendor/autoload.php\';\n' +
+    '$composerHome = substr(shell_exec(\'composer config home -g\'), 0, -1).\'/vendor/autoload.php\';\n' +
+    'require $composerHome; // your path to autoload.php \n' +
     'use Psr\\Http\\Message\\ResponseInterface;\n' +
     'use GuzzleHttp\\Exception\\RequestException;\n' +
     'use GuzzleHttp\\Client;\n' +
