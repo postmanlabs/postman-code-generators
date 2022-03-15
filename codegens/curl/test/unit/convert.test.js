@@ -719,7 +719,7 @@ describe('curl convert function', function () {
         }
       });
 
-      convert(request, { followRedirect: true }, function (error, snippet) {
+      convert(request, { followRedirect: true, disableBodyPruning: true }, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
         }

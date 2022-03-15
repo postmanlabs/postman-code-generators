@@ -64,10 +64,11 @@ var self = module.exports = {
     *
     * @param {Object} options - Options provided by the user
     * @param {Array} optionsArray - options array received from getOptions function
+    * @param {Array} protocolProfileBehaviorOptions - protocolProfileBehavior options set in Postman App
     *
     * @returns {Object} - Sanitized options object
     */
-  sanitizeOptions: function (options, optionsArray) {
+  sanitizeOptions: function (options, optionsArray, protocolProfileBehaviorOptions) {
     var result = {},
       defaultOptions = {},
       id;
@@ -79,6 +80,13 @@ var self = module.exports = {
       if (option.type === 'enum') {
         defaultOptions[option.id].availableOptions = option.availableOptions;
       }
+    });
+
+    protocolProfileBehaviorOptions.forEach((option) => {
+      defaultOptions[option.id] = {
+        default: option.default,
+        type: option.type
+      };
     });
 
     for (id in options) {
@@ -206,12 +214,12 @@ var self = module.exports = {
    * See: https://postmanlabs.atlassian.net/wiki/spaces/AD/pages/3540288287
    *
    * @param {Object} request
-   * @param {Boolean} redirect
+   * @param {Object} options
    *
    * @returns {Boolean}
    */
-  shouldAddXOption: function (request, redirect) {
-    if (!redirect) {
+  shouldAddXOption: function (request, options) {
+    if (!options.followRedirect || options.followOriginalHttpMethod) {
       return true;
     }
 
@@ -219,7 +227,7 @@ var self = module.exports = {
       case 'HEAD':
         return false;
       case 'GET':
-        if (request.body) {
+        if (request.body && options.disableBodyPruning) {
           return true;
         }
 
