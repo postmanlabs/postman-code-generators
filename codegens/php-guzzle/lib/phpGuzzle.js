@@ -34,6 +34,28 @@ function getBodyTrim (options) {
 }
 
 /**
+ * Takes in an array and group the ones with same key
+ *
+ * @param  {Array} headerArray - postman SDK-headers
+ * @returns {String} - request headers in the desired format
+ */
+function groupHeadersSameKey (headerArray) {
+  let res = [],
+    group = headerArray.reduce((header, a) => {
+      header[a.key] = [...header[a.key] || [], a];
+      return header;
+    }, {});
+  Object.keys(group).forEach((item) => {
+    let values = [];
+    group[item].forEach((child) => {
+      values.push(child.value);
+    });
+    res.push({key: item, value: values.join(', ') });
+  });
+  return res;
+}
+
+/**
  * Transforms an array of headers into the desired form of the language
  *
  * @param  {Array} mapToSnippetArray - array of key values
@@ -42,9 +64,10 @@ function getBodyTrim (options) {
  * @returns {String} - array in the form of [ key => value ]
  */
 function getSnippetArray (mapToSnippetArray, indentation, sanitize) {
+  mapToSnippetArray = groupHeadersSameKey(mapToSnippetArray);
   let mappedArray = mapToSnippetArray.map((entry) => {
     return `${indentation}'${sanitize ? sanitizeString(entry.key, true) : entry.key}' => ` +
-      `${sanitize ? '\'' + sanitizeString(entry.value) + '\'' : entry.value}`;
+    `${sanitize ? '\'' + sanitizeString(entry.value) + '\'' : entry.value}`;
   });
   return `[\n${mappedArray.join(',\n')}\n]`;
 }
@@ -115,6 +138,7 @@ function validateIsFunction (validateFunction) {
   */
 function getSnippetHeader () {
   return '<?php\n' +
+    'require \'vendor/autoload.php\';\n' +
     'use Psr\\Http\\Message\\ResponseInterface;\n' +
     'use GuzzleHttp\\Exception\\RequestException;\n' +
     'use GuzzleHttp\\Client;\n' +
@@ -124,22 +148,40 @@ function getSnippetHeader () {
 /**
   * Returns the snippet footer sync
   *
+  * @param  {string} includeRequestOptions - wheter to include the request options
   * @module convert
   * @returns {string} the snippet headers (uses)
   */
-function getSnippetFooterSync () {
-  return '$res = $client->send($request);\n' +
+function getSnippetFooterSync (includeRequestOptions) {
+  if (!includeRequestOptions) {
+    return '$res = $client->send($request);\n' +
     'echo $res->getBody();\n';
+  }
+  return '$res = $client->send($request, $options);\n' +
+  'echo $res->getBody();\n';
 }
 
 /**
   * Returns the snippet footer async
   *
   * @module convert
+  * @param  {string} includeRequestOptions - wheter to include the request options
   * @returns {string} the snippet headers (uses)
   */
-function getSnippetFooterAsync () {
-  return '$promise = $client->sendAsync($request);\n' +
+function getSnippetFooterAsync (includeRequestOptions) {
+  if (!includeRequestOptions) {
+    return '$promise = $client->sendAsync($request);\n' +
+    '$promise->then(\n' +
+    '  function (ResponseInterface $res) {\n' +
+    '    echo $res->getBody();\n' +
+    '  },\n' +
+    '  function (RequestException $e) {\n' +
+    '    echo $e->getMessage();\n' +
+    '    echo $e->getRequest()->getMethod();\n' +
+    '  }\n' +
+    ');\n';
+  }
+  return '$promise = $client->sendAsync($request, $options);\n' +
   '$promise->then(\n' +
   '  function (ResponseInterface $res) {\n' +
   '    echo $res->getBody();\n' +
@@ -155,14 +197,15 @@ function getSnippetFooterAsync () {
   * Returns the snippet footer
   *
   * @module convert
- * @param  {object} options - process options
+  * @param  {object} options - process options
+  * @param  {boolean} includeRequestOptions - wheter to include the request options
   * @returns {string} the snippet headers (uses)
   */
-function getSnippetFooter (options) {
+function getSnippetFooter (options, includeRequestOptions) {
   if (options && options.asyncType && options.asyncType === 'sync') {
-    return getSnippetFooterSync();
+    return getSnippetFooterSync(includeRequestOptions);
   }
-  return getSnippetFooterAsync();
+  return getSnippetFooterAsync(includeRequestOptions);
 }
 
 /**
@@ -185,7 +228,7 @@ function getSnippetRequestObject (method, url, hasBody, snippetHeaders) {
     return `$request = new Request('${method}', '${url}', $headers);\n`;
   }
   if (hasBody && snippetHeaders === '') {
-    return `$request = new Request('${method}', '${url}', $body);\n`;
+    return `$request = new Request('${method}', '${url}', [], $body);\n`;
   }
   return `$request = new Request('${method}', '${url}');\n`;
 }
@@ -241,7 +284,22 @@ function addContentTypeHeader (request) {
   * @returns {String} - returns generated PHP-Guzzle snippet via callback
 */
 function includeBody (request, snippetBody) {
-  !_.isEmpty(request.body) || !snippetBody === '';
+  if (_.isEmpty(request.body) || snippetBody === '' || snippetBody.startsWith('$options')) {
+    return false;
+  }
+  return true;
+}
+
+/**
+  * Identifies if the params should go as option
+  *
+  * @module convert
+  *
+  * @param  {string} snippetBody - generated body snippet
+  * @returns {String} - returns generated PHP-Guzzle snippet via callback
+*/
+function includeRequestOptions (snippetBody) {
+  return snippetBody.startsWith('$options');
 }
 
 /**
@@ -262,6 +320,7 @@ function convert (request, options, callback) {
   let snippet = '',
     snippetbody,
     requestBuilderSnippet,
+    includeParamsAsOption,
     hasBody;
   options = sanitizeOptions(options, getOptions());
   addContentTypeHeader(request);
@@ -273,7 +332,8 @@ function convert (request, options, callback) {
     snippetHeader = getSnippetHeader(),
     snippetClient = getSnippetClient(options);
   snippetbody = parseBody(request.body, indentation, getBodyTrim(options), request.headers.get('Content-Type'));
-  hasBody = includeBody(request.body, snippetbody);
+  hasBody = includeBody(request, snippetbody);
+  includeParamsAsOption = includeRequestOptions(snippetbody);
   requestBuilderSnippet = getSnippetRequestObject(method, url, hasBody, snippetHeaders);
 
   snippet += snippetHeader;
@@ -281,7 +341,7 @@ function convert (request, options, callback) {
   snippet += snippetHeaders;
   snippet += snippetbody;
   snippet += requestBuilderSnippet;
-  snippet += getSnippetFooter(options);
+  snippet += getSnippetFooter(options, includeParamsAsOption);
 
   return callback(null, snippet);
 }
@@ -304,7 +364,8 @@ module.exports = {
   getIndentation,
   getSnippetClient,
   getSnippetFooter,
-  getSnippetRequestObject
+  getSnippetRequestObject,
+  groupHeadersSameKey
 };
 
 

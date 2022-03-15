@@ -48,7 +48,7 @@ describe('parseBody function', function () {
       body = collection.items.members[7].request.body,
       indentation = '  ',
       bodyTrim = false,
-      expectedBody = '$body = [\n\'form_params\' => [\n' +
+      expectedBody = '$options = [\n\'form_params\' => [\n' +
       '  \'1\' => \'\\\'a\\\'\',\n' +
       '  \'2\' => \'"b"\',\n' +
       '  \'\\\'3\\\'\' => \'c\',\n' +
@@ -67,7 +67,7 @@ describe('parseBody function', function () {
       body = collection.items.members[4].request.body,
       indentation = '  ',
       bodyTrim = false,
-      expectedBody = '$body = [\n  \'multipart\' => [\n' +
+      expectedBody = '$options = [\n  \'multipart\' => [\n' +
       '    [\n' +
       '      \'name\' => \'pl\',\n' +
       '      \'contents\' => \'\\\'a\\\'\'\n' +
@@ -104,7 +104,7 @@ describe('parseBody function', function () {
       body = collection.items.members[26].request.body,
       indentation = '  ',
       bodyTrim = false,
-      expectedBody = '$body = [\n  \'multipart\' => [\n' +
+      expectedBody = '$options = [\n  \'multipart\' => [\n' +
       '    [\n' +
       '      \'name\' => \'test-file\',\n' +
       '      \'contents\' => \'\',\n' +
@@ -141,19 +141,19 @@ describe('parseBody function', function () {
       ' scene_filter: {is_missing: \\\\"performers\\\\"}){\\\\n    count\\\\n    scenes' +
       ' {\\\\n      id\\\\n      title\\\\n      path\\\\n    }\\\\n  }\\\\n}","variables":' +
       '{"variable_key":"variable_value"}}\';\n',
-      result = parseBody(body, indentation, bodyTrim, 'formdata');
+      result = parseBody(body, indentation, bodyTrim, 'graphql');
     expect(result).to.equal(expectedBody);
 
   });
 
-  it('should return graphql params', function () {
+  it('should return empty form data', function () {
     const collection = new sdk.Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[28].request.body,
       indentation = '  ',
       bodyTrim = false,
       expectedBody = '',
-      result = parseBody(body, indentation, bodyTrim, 'formdata');
+      result = parseBody(body, indentation, bodyTrim, 'graphql');
     expect(result).to.equal(expectedBody);
 
   });

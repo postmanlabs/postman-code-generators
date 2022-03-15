@@ -1547,6 +1547,91 @@
         }
       },
       "response": []
-    }
+    },
+		{
+			"name": "Multiple headers with same name",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "key",
+						"value": "value1",
+						"type": "text"
+					},
+					{
+						"key": "key",
+						"value": "value2",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://postman-echo.com/get",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST multipart/form-data with text parameters",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "pl",
+							"value": "'a'",
+							"type": "text"
+						},
+						{
+							"key": "qu",
+							"value": "\"b\"",
+							"type": "text"
+						},
+						{
+							"key": "sa",
+							"value": "d",
+							"type": "text"
+						},
+						{
+							"key": "Special",
+							"value": "!@#$%&*()^_+=`~",
+							"type": "text"
+						},
+						{
+							"key": "Not Select",
+							"value": "Disabled",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "more",
+							"value": ",./';[]}{\":?><|\\\\",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://postman-echo.com/post",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"post"
+					]
+				}
+			},
+			"response": []
+		}
 	]
 }

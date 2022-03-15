@@ -230,19 +230,32 @@ function parseGraphQL (body, bodyTrim) {
  * @param {String} contentType Content type of the body being sent
  */
 function processBodyModes (body, indentation, bodyTrim, contentType) {
+  let bodySnippet = '';
   switch (body.mode) {
-    case 'urlencoded':
-      return parseURLEncodedBody(body.urlencoded, indentation, bodyTrim);
-    case 'raw':
-      return parseRawBody(body.raw, indentation, bodyTrim, contentType);
-    case 'graphql':
-      return parseGraphQL(body.graphql, bodyTrim);
-    case 'formdata':
-      return parseFormData(body.formdata, indentation, bodyTrim);
-    case 'file':
-      return parseFromFile();
-    default:
-      return parseRawBody(body.raw, indentation, bodyTrim, contentType);
+    case 'urlencoded': {
+      bodySnippet = parseURLEncodedBody(body.urlencoded, indentation, bodyTrim);
+      return bodySnippet === '' ? '' : `$options = ${bodySnippet}\n`;
+    }
+    case 'raw': {
+      bodySnippet = parseRawBody(body.raw, indentation, bodyTrim, contentType);
+      return bodySnippet === '' ? '' : `$body = ${bodySnippet}\n`;
+    }
+    case 'graphql': {
+      bodySnippet = parseGraphQL(body.graphql, bodyTrim);
+      return bodySnippet === '' ? '' : `$body = ${bodySnippet}\n`;
+    }
+    case 'formdata': {
+      bodySnippet = parseFormData(body.formdata, indentation, bodyTrim);
+      return bodySnippet === '' ? '' : `$options = ${bodySnippet}\n`;
+    }
+    case 'file': {
+      bodySnippet = parseFromFile();
+      return bodySnippet === '' ? '' : `$body = ${bodySnippet}\n`;
+    }
+    default: {
+      bodySnippet = parseRawBody(body.raw, indentation, bodyTrim, contentType);
+      return bodySnippet === '' ? '' : `$body = ${bodySnippet}\n`;
+    }
   }
 }
 
@@ -256,15 +269,10 @@ function processBodyModes (body, indentation, bodyTrim, contentType) {
 * @returns {String} snippet of the body generation
 */
 function parseBody (body, indentation, bodyTrim, contentType) {
-  let snippet = '',
-    snippetBody = '';
+  let snippet = '';
   if (body && !_.isEmpty(body)) {
     body = solveMultiFile(body);
-    snippetBody = processBodyModes(body, indentation, bodyTrim, contentType);
-    if (snippetBody === '') {
-      return snippet;
-    }
-    snippet += `$body = ${snippetBody}\n`;
+    return processBodyModes(body, indentation, bodyTrim, contentType);
   }
   return snippet;
 }

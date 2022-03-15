@@ -11,7 +11,8 @@ var expect = require('chai').expect,
     getSnippetClient,
     convert,
     getSnippetFooter,
-    getSnippetRequestObject
+    getSnippetRequestObject,
+    groupHeadersSameKey
   } = require('../../lib/phpGuzzle'),
   collectionsPath = './fixtures';
 
@@ -186,6 +187,13 @@ describe('getSnippetFooter function', function () {
     expect(getSnippetFooter()).to.equal(expectedString);
   });
 
+  it('should return the async version with request options', function () {
+    const expectedString = '$promise = $client->sendAsync($request, $options);\n$promise->then' +
+    '(\n  function (ResponseInterface $res) {\n    echo $res->getBody();\n  },\n ' +
+    ' function (RequestException $e) {\n    echo $e->getMessage();\n    echo $e->getRequest()->getMethod();\n  }\n);\n';
+    expect(getSnippetFooter({}, true)).to.equal(expectedString);
+  });
+
   it('should return the async version with empty options', function () {
     const expectedString = '$promise = $client->sendAsync($request);\n$promise->then' +
     '(\n  function (ResponseInterface $res) {\n    echo $res->getBody();\n  },\n ' +
@@ -207,10 +215,16 @@ describe('getSnippetFooter function', function () {
     expect(getSnippetFooter({asyncType: 'other'})).to.equal(expectedString);
   });
 
-  it('should return the async version with options as sync', function () {
+  it('should return the sync version with options as sync', function () {
     const expectedString = '$res = $client->send($request);\n' +
     'echo $res->getBody();\n';
     expect(getSnippetFooter({asyncType: 'sync'})).to.equal(expectedString);
+  });
+
+  it('should return the options when are present', function () {
+    const expectedString = '$res = $client->send($request, $options);\n' +
+    'echo $res->getBody();\n';
+    expect(getSnippetFooter({asyncType: 'sync'}, true)).to.equal(expectedString);
   });
 
 });
@@ -239,3 +253,11 @@ describe('getSnippetRequestObject method', function () {
   });
 });
 
+describe('groupHeadersSameKey method', function () {
+  it('should group two headers with same key', function () {
+    const result = groupHeadersSameKey([{ key: 'key1', value: 'value1'}, { key: 'key1', value: 'value2'}]);
+    expect(result.length).to.equal(1);
+    expect(result[0].value).to.equal('value1, value2');
+    expect(result[0].key).to.equal('key1');
+  });
+});
