@@ -27,7 +27,7 @@
   "dependencies": {
     "async": "2.6.3",
     "path": "0.12.7",
-    "postman-collection": "3.6.8",
+    "postman-collection": "3.6.11",
     "shelljs": "0.8.4"
   },
   "devDependencies": {
@@ -44,7 +44,7 @@
     "istanbul": "0.4.5",
     "js-yaml": "3.14.0",
     "newman": "5.2.0",
-    "jsdoc": "3.6.6",
+    "jsdoc": "3.6.10",
     "mocha": "5.2.0",
     "lodash": "4.17.21",
     "nyc": "14.1.1",
