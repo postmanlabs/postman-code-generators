@@ -5,7 +5,7 @@ var expect = require('chai').expect,
   getOptions = require('../../lib').getOptions,
   sanitize = require('../../lib/util/sanitize').sanitize,
   parseBody = require('../../lib/util/parseBody'),
-  collection = new sdk.Collection(JSON.parse(fs.readFileSync(__dirname + '/fixtures/sample_collection.json').toString()));
+  collection = new sdk.Collection(JSON.parse(fs.readFileSync('test/unit/fixtures/sample_collection.json').toString()));
 
 describe('Request Snippet', function () {
 
