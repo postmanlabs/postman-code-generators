@@ -10,12 +10,13 @@ describe('convert function', function () {
   it('should convert a simple get request', function (done) {
     const collection = new sdk.Collection(JSON.parse(
       fs.readFileSync(path.resolve(__dirname, './fixtures/sample_collection.json').toString())));
-    convert(collection.items.members[31].request, {asyncType: 'sync'}, function (err, snippet) {
-      if (err) {
-        console.error(err);
-      }
-      expect(snippet).to.not.be.empty;
-      fs.writeFileSync(path.resolve(__dirname, './fixtures/snippet.php'), snippet);
+    collection.items.members.forEach((item) => {
+      convert(item.request, { asyncType: 'sync' }, function (err, snippet) {
+        if (err) {
+          console.error(err);
+        }
+        expect(snippet).to.not.be.empty;
+      });
     });
     done();
   });

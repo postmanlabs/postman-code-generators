@@ -26,7 +26,6 @@ describe('convert function', function () {
         console.error(err);
       }
       expect(snippet).to.not.be.empty;
-      fs.writeFileSync(path.resolve(__dirname, collectionsPath, './snippet.php'), snippet);
     });
     done();
   });
@@ -181,37 +180,27 @@ describe('getSnippetClient function', function () {
 
 describe('getSnippetFooter function', function () {
   it('should return the async version without options', function () {
-    const expectedString = '$promise = $client->sendAsync($request);\n$promise->then' +
-    '(\n  function (ResponseInterface $res) {\n    echo $res->getBody();\n  },\n ' +
-    ' function (RequestException $e) {\n    echo $e->getMessage();\n    echo $e->getRequest()->getMethod();\n  }\n);\n';
+    const expectedString = '$res = $client->sendAsync($request)->wait();\necho $res->getBody();\n';
     expect(getSnippetFooter()).to.equal(expectedString);
   });
 
   it('should return the async version with request options', function () {
-    const expectedString = '$promise = $client->sendAsync($request, $options);\n$promise->then' +
-    '(\n  function (ResponseInterface $res) {\n    echo $res->getBody();\n  },\n ' +
-    ' function (RequestException $e) {\n    echo $e->getMessage();\n    echo $e->getRequest()->getMethod();\n  }\n);\n';
+    const expectedString = '$res = $client->sendAsync($request, $options)->wait();\necho $res->getBody();\n';
     expect(getSnippetFooter({}, true)).to.equal(expectedString);
   });
 
   it('should return the async version with empty options', function () {
-    const expectedString = '$promise = $client->sendAsync($request);\n$promise->then' +
-    '(\n  function (ResponseInterface $res) {\n    echo $res->getBody();\n  },\n ' +
-    ' function (RequestException $e) {\n    echo $e->getMessage();\n    echo $e->getRequest()->getMethod();\n  }\n);\n';
+    const expectedString = '$res = $client->sendAsync($request)->wait();\necho $res->getBody();\n';
     expect(getSnippetFooter({})).to.equal(expectedString);
   });
 
   it('should return the async version with options as async', function () {
-    const expectedString = '$promise = $client->sendAsync($request);\n$promise->then' +
-    '(\n  function (ResponseInterface $res) {\n    echo $res->getBody();\n  },\n ' +
-    ' function (RequestException $e) {\n    echo $e->getMessage();\n    echo $e->getRequest()->getMethod();\n  }\n);\n';
+    const expectedString = '$res = $client->sendAsync($request)->wait();\necho $res->getBody();\n';
     expect(getSnippetFooter({asyncType: 'async'})).to.equal(expectedString);
   });
 
   it('should return the async version with options as other string', function () {
-    const expectedString = '$promise = $client->sendAsync($request);\n$promise->then' +
-    '(\n  function (ResponseInterface $res) {\n    echo $res->getBody();\n  },\n ' +
-    ' function (RequestException $e) {\n    echo $e->getMessage();\n    echo $e->getRequest()->getMethod();\n  }\n);\n';
+    const expectedString = '$res = $client->sendAsync($request)->wait();\necho $res->getBody();\n';
     expect(getSnippetFooter({asyncType: 'other'})).to.equal(expectedString);
   });
 
