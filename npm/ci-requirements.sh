@@ -80,4 +80,4 @@ echo "Installing dependencies required for tests in codegens/php-guzzle"
   php composer-setup.php
   php -r "unlink('composer-setup.php');"
   sudo mv composer.phar /usr/bin/composer
-  composer global require guzzlehttp/guzzle php:7.4.1
+  composer global require guzzlehttp/guzzle:7.4.1
