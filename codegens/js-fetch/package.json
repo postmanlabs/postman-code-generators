@@ -29,7 +29,7 @@
   "dependencies": {},
   "devDependencies": {
     "form-data": "2.5.1",
-    "node-fetch": "2.6.1"
+    "node-fetch": "2.6.7"
   },
   "engines": {
     "node": ">=8"
