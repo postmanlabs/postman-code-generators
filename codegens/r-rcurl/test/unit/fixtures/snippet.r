@@ -1,8 +1,6 @@
 library(RCurl)
 headers = c(
-  "my-sample-header" = "Lorem ipsum dolor sit amet",
-  "testing" = "'singlequotes'",
-  "TEST" = "\"doublequotes\""
+  "Content-Type" = "text/xml"
 )
-res <- getURL("https://postman-echo.com/headers", httpheader = headers)
+res <- postForm("https://postman-echo.com/post", .params = p, .opts=list(httpheader=headers), style = "")
 print(res)

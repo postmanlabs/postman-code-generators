@@ -111,8 +111,61 @@ function getSnippetHeaders (headers, indentation) {
   return '';
 }
 
-function getSnippetRequest(url) {
-  return `res <- getURL("${url}", httpheader = headers)\n`
+/**
+  * Creates the snippet request for the postForm method
+  *
+  * @module convert
+  *
+  * @param  {string} url - string url of the service
+  * @param  {string} style - "post":urlencoded params "httpost":multipart/form-data
+  * @param  {boolean} hasParams - wheter or not include the params
+  * @param  {boolean} hasHeaders - wheter or not include the headers
+  * @returns {String} - returns generated snippet
+  */
+function getSnippetPostForm (url, style, hasParams, hasHeaders) {
+  let paramsSnippet = hasParams ? '.params = p,' : '',
+    headersSnippet = hasHeaders ? ' .opts=list(httpheader=headers),' : '';
+
+  return `res <- postForm("${url}",` +
+    ` ${paramsSnippet}${headersSnippet} style = "${style}")\n`;
+}
+
+/**
+  * Creates the snippet request for the getUrl method
+  *
+  * @module convert
+  *
+  * @param  {string} url - string url of the service
+  * @param  {string} hasHeaders - wheter or not include the headers
+  * @returns {String} - returns generated snippet
+  */
+function getSnippetGetURL (url, hasHeaders) {
+  let headersSnippet = hasHeaders ? ', httpheader = headers' : '';
+  return `res <- getURL("${url}"${headersSnippet})\n`;
+}
+
+/**
+  * Creates the snippet request for either get ulr or post form
+  *
+  * @module convert
+  *
+  * @param  {string} url - string url of the service
+  * @param  {string} method - request http method
+  * @param  {string} style - "post":urlencoded params "httpost":multipart/form-data
+  * @param  {boolean} hasParams - wheter or not include the params
+  * @param  {boolean} hasHeaders - wheter or not include the headers
+  * @returns {String} - returns generated snippet
+  */
+function getSnippetRequest (url, method, style, hasParams, hasHeaders) {
+  const methodUC = method.toUpperCase();
+  let snippetRequest = '';
+  if (methodUC === 'GET') {
+    snippetRequest = getSnippetGetURL(url, hasHeaders);
+  }
+  if (methodUC === 'POST') {
+    snippetRequest = getSnippetPostForm(url, style, hasParams, hasHeaders);
+  }
+  return snippetRequest;
 }
 
 /**
@@ -130,7 +183,9 @@ function convert (request, options, callback) {
   if (!validateIsFunction(callback)) {
     throw new Error('R-Rcurl~convert: Callback is not a function');
   }
-  let snippet = '';
+  let snippet = '',
+    style = '';
+
   options = sanitizeOptions(options, getOptions());
 
   const method = getRequestMethod(request),
@@ -139,7 +194,7 @@ function convert (request, options, callback) {
     snippetHeaders = getSnippetHeaders(getRequestHeaders(request), indentation),
     snippetHeader = getSnippetHeader(),
     snippetFooter = getSnippetFooter(),
-    snippetRequest = getSnippetRequest(url);
+    snippetRequest = getSnippetRequest(url, method, style, true, snippetHeaders !== '');
 
   snippet += snippetHeader;
   snippet += snippetHeaders;
@@ -159,5 +214,9 @@ module.exports = {
    */
   getOptions,
 
-  convert
+  convert,
+  getSnippetHeaders,
+  getSnippetPostForm,
+  getSnippetGetURL,
+  getSnippetRequest
 };
