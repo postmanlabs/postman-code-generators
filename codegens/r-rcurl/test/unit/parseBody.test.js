@@ -4,7 +4,8 @@ var expect = require('chai').expect,
   path = require('path'),
   {
     parseURLEncodedBody,
-    parseBody
+    parseBody,
+    parseFormData
   } = require('../../lib/util/parseBody'),
   collectionsPath = './fixtures';
 
@@ -35,7 +36,36 @@ describe('parseURLEncodedBody method', function () {
   });
 });
 
-describe('parseURLEncodedBody method', function () {
+describe('parseFormData method', function () {
+  it('should return form data params', function () {
+    const collection = new sdk.Collection(JSON.parse(
+        fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
+      body = collection.items.members[4].request.body.formdata,
+      indentation = '  ',
+      bodyTrim = false,
+      expectedBody = 'c(\n' +
+        '  "pl" = "\'a\'",\n' +
+        '  "qu" = "\\"b\\"",\n' +
+        '  "hdjkljh    " = "c    ",\n' +
+        '  "sa" = "d",\n' +
+        '  "Special    " = "!@#$%&*()^_+=`~    ",\n' +
+        '  "more" = ",./\';[]}{\\":?><|\\\\\\\\"\n' +
+        ')',
+      result = parseFormData(body, indentation, bodyTrim);
+    expect(result).to.equal(expectedBody);
+  });
+
+  it('should return empty snippet for emtpy formdata params', function () {
+    const indentation = '  ',
+      bodyTrim = false,
+      expectedBody = '',
+      result = parseFormData({ members: []}, indentation, bodyTrim);
+    expect(result).to.equal(expectedBody);
+  });
+});
+
+
+describe('parseBody method', function () {
   it('should return form-url-encoded params', function () {
     const collection = new sdk.Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
@@ -48,6 +78,24 @@ describe('parseURLEncodedBody method', function () {
         '  "\'3\'" = "c",\n' +
         '  "\\"4\\"      " = "d      ",\n' +
         '  "Special" = "!@#$%&*()^_=`~",\n' +
+        '  "more" = ",./\';[]}{\\":?><|\\\\\\\\"\n' +
+        ')\n',
+      result = parseBody(body, indentation, bodyTrim);
+    expect(result).to.equal(expectedBody);
+  });
+
+  it('should return form data params', function () {
+    const collection = new sdk.Collection(JSON.parse(
+        fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
+      body = collection.items.members[4].request.body,
+      indentation = '  ',
+      bodyTrim = false,
+      expectedBody = 'params = c(\n' +
+        '  "pl" = "\'a\'",\n' +
+        '  "qu" = "\\"b\\"",\n' +
+        '  "hdjkljh    " = "c    ",\n' +
+        '  "sa" = "d",\n' +
+        '  "Special    " = "!@#$%&*()^_+=`~    ",\n' +
         '  "more" = ",./\';[]}{\\":?><|\\\\\\\\"\n' +
         ')\n',
       result = parseBody(body, indentation, bodyTrim);

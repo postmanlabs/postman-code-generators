@@ -103,6 +103,40 @@ function parseURLEncodedBody (body, indentation, bodyTrim) {
 }
 
 /**
+ * builds a single data param
+ *
+ * @param {Object} data data of the param.
+ * @param {String} indentation indentation to be added to the snippet
+ * @param {boolean} bodyTrim trim body option
+ * @returns {String} snippet of the body generation
+ */
+function buildFormDataParam (data, indentation, bodyTrim) {
+  return `${indentation}"${sanitizeString(data.key, bodyTrim)}" = "${sanitizeString(data.value, bodyTrim)}"`;
+}
+
+/**
+ * builds a data param
+ *
+ * @param {Object} body body object from request.
+ * @param {String} indentation indentation to be added to the snippet
+ * @param {boolean} bodyTrim trim body option
+ * @returns {String} snippet of the body generation
+ */
+function parseFormData (body, indentation, bodyTrim) {
+  let enabledBodyList = _.reject(body.members, 'disabled'),
+    bodySnippet = '';
+  if (!_.isEmpty(enabledBodyList)) {
+    let bodyDataMap = _.map(enabledBodyList, (data) => {
+      // if (data.type !== 'file') {
+      return buildFormDataParam(data, indentation, bodyTrim);
+      // }
+    });
+    bodySnippet += `c(\n${bodyDataMap.join(',\n')}\n)`;
+  }
+  return bodySnippet;
+}
+
+/**
  * Parses Body from the Request
  *
  * @param {Object} body body object from request.
@@ -160,5 +194,6 @@ function parseBody (body, indentation, bodyTrim, contentType) {
 
 module.exports = {
   parseBody,
-  parseURLEncodedBody
+  parseURLEncodedBody,
+  parseFormData
 };
