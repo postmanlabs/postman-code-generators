@@ -16,7 +16,7 @@ describe('convert function', function () {
     const collection = new sdk.Collection(JSON.parse(
       fs.readFileSync(path.resolve(__dirname, './fixtures/sample_collection.json').toString())));
     // collection.items.members.forEach((item) => {
-    convert(collection.items.members[10].request, {}, function (err, snippet) {
+    convert(collection.items.members[1].request, {}, function (err, snippet) {
       if (err) {
         console.error(err);
       }
@@ -59,7 +59,7 @@ describe('getSnippetPostForm function', function () {
 
   it('should generate postForm snippet with params headers and post style', function () {
     const expected = 'res <- postForm("https://postman-echo.com/post",' +
-      ' .params = p, .opts=list(httpheader=headers), style = "post")\n',
+      ' .params = params, .opts=list(httpheader=headers), style = "post")\n',
       res = getSnippetPostForm('https://postman-echo.com/post', 'post', true, true);
     expect(res).to.equal(expected);
   });
@@ -73,7 +73,7 @@ describe('getSnippetPostForm function', function () {
 
   it('should generate postForm snippet without headers with params and post style', function () {
     const expected = 'res <- postForm("https://postman-echo.com/post",' +
-    ' .params = p, style = "post")\n',
+    ' .params = params, style = "post")\n',
       res = getSnippetPostForm('https://postman-echo.com/post', 'post', true, false);
     expect(res).to.equal(expected);
   });
@@ -111,14 +111,14 @@ describe('getSnippetRequest function', function () {
 
   it('should generate snippet method POST with params headers and post style', function () {
     const expected = 'res <- postForm("https://postman-echo.com/post",' +
-      ' .params = p, .opts=list(httpheader=headers), style = "post")\n',
+      ' .params = params, .opts=list(httpheader=headers), style = "post")\n',
       res = getSnippetPostForm('https://postman-echo.com/post', 'post', true, true);
     expect(res).to.equal(expected);
   });
 
   it('should generate snippet method POST with params headers and httppost style', function () {
     const expected = 'res <- postForm("https://postman-echo.com/post",' +
-      ' .params = p, .opts=list(httpheader=headers), style = "httpost")\n',
+      ' .params = params, .opts=list(httpheader=headers), style = "httpost")\n',
       res = getSnippetPostForm('https://postman-echo.com/post', 'httpost', true, true);
     expect(res).to.equal(expected);
   });

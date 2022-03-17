@@ -1,6 +1,7 @@
 const getOptions = require('./options').getOptions,
   sanitizeString = require('./util/sanitize').sanitizeString,
-  sanitizeOptions = require('./util/sanitize').sanitizeOptions;
+  sanitizeOptions = require('./util/sanitize').sanitizeOptions,
+  parseBody = require('./util/parseBody').parseBody;
 
 /**
   * Returns the snippet header
@@ -123,7 +124,7 @@ function getSnippetHeaders (headers, indentation) {
   * @returns {String} - returns generated snippet
   */
 function getSnippetPostForm (url, style, hasParams, hasHeaders) {
-  let paramsSnippet = hasParams ? '.params = p,' : '',
+  let paramsSnippet = hasParams ? '.params = params,' : '',
     headersSnippet = hasHeaders ? ' .opts=list(httpheader=headers),' : '';
 
   return `res <- postForm("${url}",` +
@@ -169,6 +170,39 @@ function getSnippetRequest (url, method, style, hasParams, hasHeaders) {
 }
 
 /**
+ * Gets the defined body trim from options
+ *
+ * @param  {object} options - process options
+ * @returns {boolea} - wheter to trim the request body
+ */
+function getBodyTrim (options) {
+  if (options && options.trimRequestBody) {
+    return options.trimRequestBody;
+  }
+  return false;
+}
+
+/**
+ * Gets the http post style
+ *
+ *"post":urlencoded params "httpost":multipart/form-data
+
+ * @param  {string} method - request http method
+ * @param  {string} contentType - request content type
+ * @returns {string} - the post form style
+ */
+function getCurlStyle (method, contentType) {
+  if (method.toUpperCase() === 'POST') {
+    if (contentType === 'application/x-www-form-urlencoded') {
+      return 'post';
+    }
+    return 'httppost';
+  }
+  return '';
+}
+
+
+/**
   * Used to convert the postman sdk-request object in PHP-Guzzle request snippet
   *
   * @module convert
@@ -183,9 +217,7 @@ function convert (request, options, callback) {
   if (!validateIsFunction(callback)) {
     throw new Error('R-Rcurl~convert: Callback is not a function');
   }
-  let snippet = '',
-    style = '';
-
+  let snippet = '';
   options = sanitizeOptions(options, getOptions());
 
   const method = getRequestMethod(request),
@@ -194,10 +226,13 @@ function convert (request, options, callback) {
     snippetHeaders = getSnippetHeaders(getRequestHeaders(request), indentation),
     snippetHeader = getSnippetHeader(),
     snippetFooter = getSnippetFooter(),
-    snippetRequest = getSnippetRequest(url, method, style, true, snippetHeaders !== '');
+    snippetbody = parseBody(request.body, indentation, getBodyTrim(options), request.headers.get('Content-Type')),
+    snippetRequest = getSnippetRequest(url, method, getCurlStyle(method, request.headers.get('Content-Type')),
+      snippetbody !== '', snippetHeaders !== '');
 
   snippet += snippetHeader;
   snippet += snippetHeaders;
+  snippet += snippetbody;
   snippet += snippetRequest;
   snippet += snippetFooter;
 
