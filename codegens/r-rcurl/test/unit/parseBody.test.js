@@ -5,7 +5,8 @@ var expect = require('chai').expect,
   {
     parseURLEncodedBody,
     parseBody,
-    parseFormData
+    parseFormData,
+    parseRawBody
   } = require('../../lib/util/parseBody'),
   collectionsPath = './fixtures';
 
@@ -64,6 +65,22 @@ describe('parseFormData method', function () {
   });
 });
 
+describe('parseFormData method', function () {
+  it('should return raw json params', function () {
+    const collection = new sdk.Collection(JSON.parse(
+        fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
+      body = collection.items.members[8].request.body.raw,
+      indentation = '  ',
+      bodyTrim = false,
+      expectedBody = '"{\n' +
+      '  \\"json\\": \\"Test-Test\\"\n' +
+      '}"',
+      result = parseRawBody(body, indentation, bodyTrim);
+    expect(result).to.equal(expectedBody);
+  });
+
+});
+
 
 describe('parseBody method', function () {
   it('should return form-url-encoded params', function () {
@@ -98,6 +115,19 @@ describe('parseBody method', function () {
         '  "Special    " = "!@#$%&*()^_+=`~    ",\n' +
         '  "more" = ",./\';[]}{\\":?><|\\\\\\\\"\n' +
         ')\n',
+      result = parseBody(body, indentation, bodyTrim);
+    expect(result).to.equal(expectedBody);
+  });
+
+  it('should return raw json params', function () {
+    const collection = new sdk.Collection(JSON.parse(
+        fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
+      body = collection.items.members[8].request.body,
+      indentation = '  ',
+      bodyTrim = false,
+      expectedBody = 'params = "{\n' +
+      '  \\"json\\": \\"Test-Test\\"\n' +
+      '}"\n',
       result = parseBody(body, indentation, bodyTrim);
     expect(result).to.equal(expectedBody);
   });

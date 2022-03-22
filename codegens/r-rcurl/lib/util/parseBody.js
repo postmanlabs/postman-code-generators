@@ -137,6 +137,32 @@ function parseFormData (body, indentation, bodyTrim) {
 }
 
 /**
+ * Parses Raw data
+ *
+ * @param {Object} body body object from request.
+ * @param {String} indentation indentation to be added to the snippet
+ * @param {boolean} bodyTrim trim body option
+ * @param {String} contentType Content type of the body being sent
+ * @returns {String} snippet of the body generation
+ */
+function parseRawBody (body, indentation, bodyTrim, contentType) {
+  let bodySnippet = '';
+  if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
+    try {
+      let jsonBody = JSON.parse(body);
+      bodySnippet += `"${sanitizeString(JSON.stringify(jsonBody, null, indentation.length), bodyTrim)}"`;
+    }
+    catch (error) {
+      bodySnippet += `"${sanitizeString(body.toString(), bodyTrim)}"`;
+    }
+  }
+  else {
+    bodySnippet += `"${sanitizeString(body.toString(), bodyTrim)}"`;
+  }
+  return bodySnippet;
+}
+
+/**
  * Parses Body from the Request
  *
  * @param {Object} body body object from request.
@@ -195,5 +221,6 @@ function parseBody (body, indentation, bodyTrim, contentType) {
 module.exports = {
   parseBody,
   parseURLEncodedBody,
-  parseFormData
+  parseFormData,
+  parseRawBody
 };

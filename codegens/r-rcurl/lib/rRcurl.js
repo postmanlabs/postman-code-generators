@@ -123,7 +123,7 @@ function getSnippetHeaders (headers, indentation) {
   * @param  {boolean} hasHeaders - wheter or not include the headers
   * @returns {String} - returns generated snippet
   */
-function getSnippetPostForm (url, style, hasParams, hasHeaders) {
+function getSnippetPostFormInParams (url, style, hasParams, hasHeaders) {
   let paramsSnippet = hasParams ? '.params = params,' : '',
     headersSnippet = hasHeaders ? ' .opts=list(httpheader=headers),' : '';
 
@@ -146,6 +146,36 @@ function getSnippetGetURL (url, hasHeaders) {
 }
 
 /**
+  * Creates the snippet request for the postForm method
+  *
+  * @module convert
+  *
+  * @param  {string} url - string url of the service
+  * @param  {string} style - "post":urlencoded params "httpost":multipart/form-data
+  * @param  {boolean} hasParams - wheter or not include the params
+  * @param  {boolean} hasHeaders - wheter or not include the headers
+  * @returns {String} - returns generated snippet
+  */
+function getSnippetPostFormInOptions (url, style, hasParams, hasHeaders) {
+
+  if (hasHeaders && hasParams) {
+    return `res <- postForm("${url}", .opts=list(httpheader=headers, postfields=params), style = "${style}")\n`;
+  }
+  if (hasHeaders && !hasParams) {
+    return `res <- postForm("${url}", .opts=list(httpheader=headers), style = "${style}")\n`;
+  }
+  if (!hasHeaders && hasParams) {
+    return `res <- postForm("${url}", .opts=list(postfields=params), style = "${style}")\n`;
+  }
+  if (!hasHeaders && !hasParams) {
+    return `res <- postForm("${url}", style = "${style}")\n`;
+  }
+  return `res <- postForm("${url}", style = "${style}")\n`;
+}
+
+/**
+
+/**
   * Creates the snippet request for either get ulr or post form
   *
   * @module convert
@@ -155,18 +185,22 @@ function getSnippetGetURL (url, hasHeaders) {
   * @param  {string} style - "post":urlencoded params "httpost":multipart/form-data
   * @param  {boolean} hasParams - wheter or not include the params
   * @param  {boolean} hasHeaders - wheter or not include the headers
+  * @param  {string} contentTypeHeaderValue - the content type header value
   * @returns {String} - returns generated snippet
   */
-function getSnippetRequest (url, method, style, hasParams, hasHeaders) {
+function getSnippetRequest (url, method, style, hasParams, hasHeaders, contentTypeHeaderValue) {
   const methodUC = method.toUpperCase();
-  let snippetRequest = '';
   if (methodUC === 'GET') {
-    snippetRequest = getSnippetGetURL(url, hasHeaders);
+    return getSnippetGetURL(url, hasHeaders);
+  }
+  if (methodUC === 'POST' && contentTypeHeaderValue === 'application/x-www-form-urlencoded' ||
+    contentTypeHeaderValue === 'multipart/form-data') {
+    return getSnippetPostFormInParams(url, style, hasParams, hasHeaders);
   }
   if (methodUC === 'POST') {
-    snippetRequest = getSnippetPostForm(url, style, hasParams, hasHeaders);
+    return getSnippetPostFormInOptions(url, 'post', hasParams, hasHeaders);
   }
-  return snippetRequest;
+  return '';
 }
 
 /**
@@ -222,13 +256,14 @@ function convert (request, options, callback) {
 
   const method = getRequestMethod(request),
     indentation = getIndentation(options),
+    contentTypeHeaderValue = request.headers.get('Content-Type'),
     url = getRequestURL(request),
     snippetHeaders = getSnippetHeaders(getRequestHeaders(request), indentation),
     snippetHeader = getSnippetHeader(),
     snippetFooter = getSnippetFooter(),
-    snippetbody = parseBody(request.body, indentation, getBodyTrim(options), request.headers.get('Content-Type')),
-    snippetRequest = getSnippetRequest(url, method, getCurlStyle(method, request.headers.get('Content-Type')),
-      snippetbody !== '', snippetHeaders !== '');
+    snippetbody = parseBody(request.body, indentation, getBodyTrim(options), contentTypeHeaderValue),
+    snippetRequest = getSnippetRequest(url, method, getCurlStyle(method, contentTypeHeaderValue),
+      snippetbody !== '', snippetHeaders !== '', contentTypeHeaderValue);
 
   snippet += snippetHeader;
   snippet += snippetHeaders;
@@ -251,7 +286,8 @@ module.exports = {
 
   convert,
   getSnippetHeaders,
-  getSnippetPostForm,
+  getSnippetPostFormInParams,
   getSnippetGetURL,
-  getSnippetRequest
+  getSnippetRequest,
+  getSnippetPostFormInOptions
 };
