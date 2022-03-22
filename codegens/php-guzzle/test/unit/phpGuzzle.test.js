@@ -12,7 +12,9 @@ var expect = require('chai').expect,
     convert,
     getSnippetFooter,
     getSnippetRequestObject,
-    groupHeadersSameKey
+    groupHeadersSameKey,
+    getSnippetBoilerplate,
+    getIncludeBoilerplate
   } = require('../../lib/phpGuzzle'),
   collectionsPath = './fixtures';
 
@@ -21,7 +23,7 @@ describe('convert function', function () {
   it('should convert a simple get request', function (done) {
     const collection = new sdk.Collection(JSON.parse(
       fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString())));
-    convert(collection.items.members[0].request, {}, function (err, snippet) {
+    convert(collection.items.members[0].request, {includeBoilerplate: true}, function (err, snippet) {
       if (err) {
         console.error(err);
       }
@@ -33,6 +35,19 @@ describe('convert function', function () {
   it('should throw an error when callback is not a function', function () {
     expect(function () { convert({}, {}); })
       .to.throw('Php-Guzzle~convert: Callback is not a function');
+  });
+
+  it('should convert a simple get request without boilerplate', function (done) {
+    const collection = new sdk.Collection(JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString())));
+    convert(collection.items.members[0].request, {includeBoilerplate: false}, function (err, snippet) {
+      if (err) {
+        console.error(err);
+      }
+      expect(snippet).to.not.be.empty;
+      expect(snippet).to.not.include('use');
+    });
+    done();
   });
 });
 
@@ -248,5 +263,61 @@ describe('groupHeadersSameKey method', function () {
     expect(result.length).to.equal(1);
     expect(result[0].value).to.equal('value1, value2');
     expect(result[0].key).to.equal('key1');
+  });
+});
+
+describe('getSnippetBoilerplate method', function () {
+  it('should the boilerplate with include option in true"', function () {
+    const expected = '<?php\n' +
+    '$composerHome = substr(shell_exec(\'composer config home -g\'), 0, -1).\'/vendor/autoload.php\';\n' +
+    'require $composerHome; // your path to autoload.php \n' +
+    'use Psr\\Http\\Message\\ResponseInterface;\n' +
+    'use GuzzleHttp\\Exception\\RequestException;\n' +
+    'use GuzzleHttp\\Client;\n' +
+    'use GuzzleHttp\\Psr7\\Utils;\n' +
+    'use GuzzleHttp\\Psr7\\Request;\n',
+      result = getSnippetBoilerplate(true);
+    expect(result).to.equal(expected);
+  });
+
+  it('should return empty string for include option in false', function () {
+    const expected = '',
+      result = getSnippetBoilerplate(false);
+    expect(result).to.equal(expected);
+  });
+});
+
+describe('getIncludeBoilerplate method', function () {
+  it('should return false with empty options', function () {
+    const result = getIncludeBoilerplate({});
+    expect(result).to.be.false;
+  });
+  it('should return false with undefined options', function () {
+    const result = getIncludeBoilerplate();
+    expect(result).to.be.false;
+  });
+  it('should return false with null options', function () {
+    const result = getIncludeBoilerplate(null);
+    expect(result).to.be.false;
+  });
+  it('should return false with options and include option not present', function () {
+    const result = getIncludeBoilerplate({asyncType: 'sync'});
+    expect(result).to.be.false;
+  });
+  it('should return false with options and include option present with value of false', function () {
+    const result = getIncludeBoilerplate({includeBoilerplate: false});
+    expect(result).to.be.false;
+  });
+  it('should return false with options and include option present with value of false', function () {
+    const result = getIncludeBoilerplate({includeBoilerplate: true});
+    expect(result).to.be.true;
+  });
+  it('should return false with options and include option present with value of false', function () {
+    const result = getIncludeBoilerplate({includeBoilerplate: undefined});
+    expect(result).to.be.false;
+  });
+  it('should return false with options and include option present with value of false', function () {
+    const result = getIncludeBoilerplate({includeBoilerplate: null});
+    expect(result).to.be.false;
   });
 });

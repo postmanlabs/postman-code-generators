@@ -46,6 +46,13 @@ const options = [
     availableOptions: ['async', 'sync'],
     default: 'async',
     description: 'Set if the requests will be asynchronous or synchronous'
+  },
+  {
+    name: 'Include boilerplate',
+    id: 'includeBoilerplate',
+    type: 'boolean',
+    default: false,
+    description: 'Include class definition and import statements in snippet'
   }
 ];
 

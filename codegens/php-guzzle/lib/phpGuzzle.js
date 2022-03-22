@@ -133,18 +133,21 @@ function validateIsFunction (validateFunction) {
   * Returns the snippet header
   *
   * @module convert
-  *
+  * @param  {string} includeBoilerplate - wheter to include the boilerplate
   * @returns {string} the snippet headers (uses)
   */
-function getSnippetHeader () {
-  return '<?php\n' +
-    '$composerHome = substr(shell_exec(\'composer config home -g\'), 0, -1).\'/vendor/autoload.php\';\n' +
-    'require $composerHome; // your path to autoload.php \n' +
-    'use Psr\\Http\\Message\\ResponseInterface;\n' +
-    'use GuzzleHttp\\Exception\\RequestException;\n' +
-    'use GuzzleHttp\\Client;\n' +
-    'use GuzzleHttp\\Psr7\\Utils;\n' +
-    'use GuzzleHttp\\Psr7\\Request;\n';
+function getSnippetBoilerplate (includeBoilerplate) {
+  if (includeBoilerplate) {
+    return '<?php\n' +
+      '$composerHome = substr(shell_exec(\'composer config home -g\'), 0, -1).\'/vendor/autoload.php\';\n' +
+      'require $composerHome; // your path to autoload.php \n' +
+      'use Psr\\Http\\Message\\ResponseInterface;\n' +
+      'use GuzzleHttp\\Exception\\RequestException;\n' +
+      'use GuzzleHttp\\Client;\n' +
+      'use GuzzleHttp\\Psr7\\Utils;\n' +
+      'use GuzzleHttp\\Psr7\\Request;\n';
+  }
+  return '';
 }
 
 /**
@@ -289,6 +292,20 @@ function includeRequestOptions (snippetBody) {
 }
 
 /**
+ * Gets the defined indentation from options
+ *
+ * @param  {object} options - process options
+ * @returns {String} - indentation characters
+ */
+function getIncludeBoilerplate (options) {
+  if (options && options.includeBoilerplate !== undefined && options.includeBoilerplate !== null) {
+    return options.includeBoilerplate;
+  }
+  return false;
+}
+
+
+/**
   * Used to convert the postman sdk-request object in PHP-Guzzle request snippet
   *
   * @module convert
@@ -313,9 +330,10 @@ function convert (request, options, callback) {
 
   const method = getRequestMethod(request),
     indentation = getIndentation(options),
+    includeBoilerplate = getIncludeBoilerplate(options),
     url = getRequestURL(request),
     snippetHeaders = getSnippetHeaders(getRequestHeaders(request), indentation),
-    snippetHeader = getSnippetHeader(),
+    snippetHeader = getSnippetBoilerplate(includeBoilerplate),
     snippetClient = getSnippetClient(options);
   snippetbody = parseBody(request.body, indentation, getBodyTrim(options), request.headers.get('Content-Type'));
   hasBody = includeBody(request, snippetbody);
@@ -345,13 +363,15 @@ module.exports = {
   convert,
   getHeaders: getRequestHeaders,
   getSnippetHeaders,
+  getSnippetBoilerplate,
   getURL: getRequestURL,
   getMethod: getRequestMethod,
   getIndentation,
   getSnippetClient,
   getSnippetFooter,
   getSnippetRequestObject,
-  groupHeadersSameKey
+  groupHeadersSameKey,
+  getIncludeBoilerplate
 };
 
 
