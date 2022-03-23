@@ -8,7 +8,8 @@ var expect = require('chai').expect,
     getSnippetPostFormInParams,
     getSnippetGetURL,
     getSnippetRequest,
-    getSnippetPostFormInOptions
+    getSnippetPostFormInOptions,
+    addContentTypeHeader
   } = require('../../lib/rRcurl');
 
 describe('convert function', function () {
@@ -17,7 +18,7 @@ describe('convert function', function () {
     const collection = new sdk.Collection(JSON.parse(
       fs.readFileSync(path.resolve(__dirname, './fixtures/sample_collection.json').toString())));
     // collection.items.members.forEach((item) => {
-    convert(collection.items.members[8].request, {}, function (err, snippet) {
+    convert(collection.items.members[25].request, {}, function (err, snippet) {
       if (err) {
         console.error(err);
       }
@@ -114,7 +115,7 @@ describe('getSnippetRequest function', function () {
     const expected = 'res <- postForm("https://postman-echo.com/post",' +
     ' .params = params, .opts=list(httpheader=headers), style = "post")\n',
       res = getSnippetRequest('https://postman-echo.com/post', 'POST', 'post',
-        true, true, 'application/x-www-form-urlencoded');
+        true, true, 'application/x-www-form-urlencoded', {});
     expect(res).to.equal(expected);
   });
 
@@ -122,7 +123,7 @@ describe('getSnippetRequest function', function () {
     const expected = 'res <- postForm("https://postman-echo.com/post",' +
     ' .params = params, .opts=list(httpheader=headers), style = "post")\n',
       res = getSnippetRequest('https://postman-echo.com/post', 'POST', 'post',
-        true, true, 'multipart/form-data');
+        true, true, 'multipart/form-data', {});
     expect(res).to.equal(expected);
   });
 
@@ -130,7 +131,7 @@ describe('getSnippetRequest function', function () {
     const expected = 'res <- postForm("https://postman-echo.com/post",' +
     ' .opts=list(httpheader=headers, postfields=params), style = "post")\n',
       res = getSnippetRequest('https://postman-echo.com/post', 'POST', 'post',
-        true, true, 'application/json');
+        true, true, 'application/json', {});
     expect(res).to.equal(expected);
   });
 
@@ -193,5 +194,49 @@ describe('getSnippetPostFormInOptions method', function () {
       ' style = "post")\n',
       res = getSnippetPostFormInOptions('https://postman-echo.com/post', 'post', false, false);
     expect(res).to.equal(expected);
+  });
+});
+
+describe('addContentTypeHeader method', function () {
+  it('should add content type header when is graphql', function () {
+    const request = new sdk.Request({
+      'method': 'POST',
+      'header': [
+      ],
+      'url': {
+        'raw': 'https://google.com',
+        'protocol': 'https',
+        'host': [
+          'google',
+          'com'
+        ]
+      },
+      'body': {
+        mode: 'graphql'
+      }
+    });
+    addContentTypeHeader(request);
+    expect(request.headers.members[0].value).to.equal('application/json');
+  });
+
+  it('should not add content type header when is not graphql', function () {
+    const request = new sdk.Request({
+      'method': 'POST',
+      'header': [
+      ],
+      'url': {
+        'raw': 'https://google.com',
+        'protocol': 'https',
+        'host': [
+          'google',
+          'com'
+        ]
+      },
+      'body': {
+        mode: 'raw'
+      }
+    });
+    addContentTypeHeader(request);
+    expect(request.headers.members).to.be.empty;
   });
 });

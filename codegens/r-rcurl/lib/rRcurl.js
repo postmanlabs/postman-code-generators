@@ -186,12 +186,17 @@ function getSnippetPostFormInOptions (url, style, hasParams, hasHeaders) {
   * @param  {boolean} hasParams - wheter or not include the params
   * @param  {boolean} hasHeaders - wheter or not include the headers
   * @param  {string} contentTypeHeaderValue - the content type header value
+  * @param  {object} request - the PM request
   * @returns {String} - returns generated snippet
   */
-function getSnippetRequest (url, method, style, hasParams, hasHeaders, contentTypeHeaderValue) {
+function getSnippetRequest (url, method, style, hasParams, hasHeaders, contentTypeHeaderValue,
+  request) {
   const methodUC = method.toUpperCase();
   if (methodUC === 'GET') {
     return getSnippetGetURL(url, hasHeaders);
+  }
+  if (methodUC === 'POST' && request.body && request.body.mode === 'file') {
+    return getSnippetPostFormInOptions(url, 'post', hasParams, hasHeaders);
   }
   if (methodUC === 'POST' && contentTypeHeaderValue === 'application/x-www-form-urlencoded' ||
     contentTypeHeaderValue === 'multipart/form-data') {
@@ -235,6 +240,22 @@ function getCurlStyle (method, contentType) {
   return '';
 }
 
+/**
+  * Add the content type header if needed
+  *
+  * @module convert
+  *
+  * @param  {Object} request - postman SDK-request object
+  */
+function addContentTypeHeader (request) {
+  if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
+    request.addHeader({
+      key: 'Content-Type',
+      value: 'application/json'
+    });
+  }
+}
+
 
 /**
   * Used to convert the postman sdk-request object in PHP-Guzzle request snippet
@@ -253,7 +274,7 @@ function convert (request, options, callback) {
   }
   let snippet = '';
   options = sanitizeOptions(options, getOptions());
-
+  addContentTypeHeader(request);
   const method = getRequestMethod(request),
     indentation = getIndentation(options),
     contentTypeHeaderValue = request.headers.get('Content-Type'),
@@ -263,7 +284,7 @@ function convert (request, options, callback) {
     snippetFooter = getSnippetFooter(),
     snippetbody = parseBody(request.body, indentation, getBodyTrim(options), contentTypeHeaderValue),
     snippetRequest = getSnippetRequest(url, method, getCurlStyle(method, contentTypeHeaderValue),
-      snippetbody !== '', snippetHeaders !== '', contentTypeHeaderValue);
+      snippetbody !== '', snippetHeaders !== '', contentTypeHeaderValue, request);
 
   snippet += snippetHeader;
   snippet += snippetHeaders;
@@ -289,5 +310,6 @@ module.exports = {
   getSnippetPostFormInParams,
   getSnippetGetURL,
   getSnippetRequest,
-  getSnippetPostFormInOptions
+  getSnippetPostFormInOptions,
+  addContentTypeHeader
 };

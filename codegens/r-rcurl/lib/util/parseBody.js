@@ -163,6 +163,40 @@ function parseRawBody (body, indentation, bodyTrim, contentType) {
 }
 
 /**
+ * Parses Body of graphql
+ *
+ * @param {Object} body body object from request.
+ * @param {boolean} bodyTrim trim body option
+ * @return {String} the data for a binary file
+ */
+function parseGraphQL (body, bodyTrim) {
+  const query = body.query;
+  let bodySnippet = '',
+    graphqlVariables;
+  try {
+    graphqlVariables = JSON.parse(body.variables);
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  bodySnippet = `'${sanitizeString(JSON.stringify({
+    query: query,
+    variables: graphqlVariables
+  }), bodyTrim)}';`;
+  return bodySnippet;
+}
+
+/**
+ * Parses Body of file
+ *
+ * @return {String} the data for a binary file
+ */
+function parseFromFile () {
+  return '"<file contents here>";';
+}
+
+
+/**
  * Parses Body from the Request
  *
  * @param {Object} body body object from request.
@@ -222,5 +256,6 @@ module.exports = {
   parseBody,
   parseURLEncodedBody,
   parseFormData,
-  parseRawBody
+  parseRawBody,
+  parseGraphQL
 };
