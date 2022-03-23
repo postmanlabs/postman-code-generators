@@ -52,6 +52,7 @@ module.exports = function (exit) {
       nyc.report();
       exit(runError ? 1 : 0);
     });
+    return undefined;
   });
 };
 

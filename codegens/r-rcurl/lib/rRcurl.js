@@ -113,6 +113,35 @@ function getSnippetHeaders (headers, indentation) {
 }
 
 /**
+  * Creates the snippet request for the request options
+  *
+  * @module convert
+  *
+  * @param  {boolean} hasParams - wheter or not include the params
+  * @param  {boolean} hasHeaders - wheter or not include the headers
+  * @param  {number} requestTimeout - the request timeout
+  * @returns {String} - returns generated snippet
+*/
+function buildOptionsSnippet (hasParams, hasHeaders, requestTimeout) {
+  let options = [],
+    mappedArray;
+  if (hasParams) {
+    options.push({ key: 'postfields', value: 'params' });
+  }
+  if (hasHeaders) {
+    options.push({ key: 'httpheader', value: 'headers' });
+  }
+  if (requestTimeout && requestTimeout !== 0) {
+    options.push({ key: 'timeout.ms', value: requestTimeout });
+  }
+  mappedArray = options.map((entry) => {
+    return `${entry.key} = ${entry.value}`;
+  });
+  return `${mappedArray.join(', ')}`;
+}
+
+
+/**
   * Creates the snippet request for the postForm method
   *
   * @module convert
@@ -120,15 +149,18 @@ function getSnippetHeaders (headers, indentation) {
   * @param  {string} url - string url of the service
   * @param  {string} style - "post":urlencoded params "httpost":multipart/form-data
   * @param  {boolean} hasParams - wheter or not include the params
-  * @param  {boolean} hasHeaders - wheter or not include the headers
+  * @param  {boolean} hasHeaders - wheter or not include the header
+  * @param  {number} requestTimeout - the request timeout
   * @returns {String} - returns generated snippet
   */
-function getSnippetPostFormInParams (url, style, hasParams, hasHeaders) {
-  let paramsSnippet = hasParams ? '.params = params,' : '',
-    headersSnippet = hasHeaders ? ' .opts=list(httpheader=headers),' : '';
-
-  return `res <- postForm("${url}",` +
-    ` ${paramsSnippet}${headersSnippet} style = "${style}")\n`;
+function getSnippetPostFormInParams (url, style, hasParams, hasHeaders, requestTimeout) {
+  let optionsSnipppet = buildOptionsSnippet(false, hasHeaders, requestTimeout),
+    paramsSnippet = hasParams ? '.params = params, ' : '';
+  if (optionsSnipppet !== '') {
+    return `res <- postForm("${url}", ${paramsSnippet}.opts=list(${optionsSnipppet}),` +
+    ` style = "${style}")\n`;
+  }
+  return `res <- postForm("${url}", ${paramsSnippet}style = "${style}")\n`;
 }
 
 /**
@@ -138,11 +170,16 @@ function getSnippetPostFormInParams (url, style, hasParams, hasHeaders) {
   *
   * @param  {string} url - string url of the service
   * @param  {string} hasHeaders - wheter or not include the headers
+  * @param  {number} requestTimeout - the request timeout
   * @returns {String} - returns generated snippet
   */
-function getSnippetGetURL (url, hasHeaders) {
-  let headersSnippet = hasHeaders ? ', httpheader = headers' : '';
-  return `res <- getURL("${url}"${headersSnippet})\n`;
+function getSnippetGetURL (url, hasHeaders, requestTimeout) {
+  let optionsSnipppet = buildOptionsSnippet(false, hasHeaders, requestTimeout);
+
+  if (optionsSnipppet !== '') {
+    return `res <- getURL("${url}", .opts=list(${optionsSnipppet}))\n`;
+  }
+  return `res <- getURL("${url}")\n`;
 }
 
 /**
@@ -154,21 +191,14 @@ function getSnippetGetURL (url, hasHeaders) {
   * @param  {string} style - "post":urlencoded params "httpost":multipart/form-data
   * @param  {boolean} hasParams - wheter or not include the params
   * @param  {boolean} hasHeaders - wheter or not include the headers
+  * @param  {number} requestTimeout - the request timeout
   * @returns {String} - returns generated snippet
   */
-function getSnippetPostFormInOptions (url, style, hasParams, hasHeaders) {
-
-  if (hasHeaders && hasParams) {
-    return `res <- postForm("${url}", .opts=list(httpheader=headers, postfields=params), style = "${style}")\n`;
-  }
-  if (hasHeaders && !hasParams) {
-    return `res <- postForm("${url}", .opts=list(httpheader=headers), style = "${style}")\n`;
-  }
-  if (!hasHeaders && hasParams) {
-    return `res <- postForm("${url}", .opts=list(postfields=params), style = "${style}")\n`;
-  }
-  if (!hasHeaders && !hasParams) {
-    return `res <- postForm("${url}", style = "${style}")\n`;
+function getSnippetPostFormInOptions (url, style, hasParams, hasHeaders, requestTimeout) {
+  let optionsSnipppet = buildOptionsSnippet(hasParams, hasHeaders, requestTimeout);
+  if (optionsSnipppet !== '') {
+    return `res <- postForm("${url}", .opts=list(${optionsSnipppet}),` +
+    ` style = "${style}")\n`;
   }
   return `res <- postForm("${url}", style = "${style}")\n`;
 }
@@ -187,23 +217,24 @@ function getSnippetPostFormInOptions (url, style, hasParams, hasHeaders) {
   * @param  {boolean} hasHeaders - wheter or not include the headers
   * @param  {string} contentTypeHeaderValue - the content type header value
   * @param  {object} request - the PM request
+  * @param  {number} requestTimeout - request timeout from options
   * @returns {String} - returns generated snippet
   */
 function getSnippetRequest (url, method, style, hasParams, hasHeaders, contentTypeHeaderValue,
-  request) {
+  request, requestTimeout) {
   const methodUC = method.toUpperCase();
   if (methodUC === 'GET') {
-    return getSnippetGetURL(url, hasHeaders);
+    return getSnippetGetURL(url, hasHeaders, requestTimeout);
   }
   if (methodUC === 'POST' && request.body && request.body.mode === 'file') {
-    return getSnippetPostFormInOptions(url, 'post', hasParams, hasHeaders);
+    return getSnippetPostFormInOptions(url, 'post', hasParams, hasHeaders, requestTimeout);
   }
   if (methodUC === 'POST' && contentTypeHeaderValue === 'application/x-www-form-urlencoded' ||
     contentTypeHeaderValue === 'multipart/form-data') {
-    return getSnippetPostFormInParams(url, style, hasParams, hasHeaders);
+    return getSnippetPostFormInParams(url, style, hasParams, hasHeaders, requestTimeout);
   }
   if (methodUC === 'POST') {
-    return getSnippetPostFormInOptions(url, 'post', hasParams, hasHeaders);
+    return getSnippetPostFormInOptions(url, 'post', hasParams, hasHeaders, requestTimeout);
   }
   return '';
 }
@@ -277,6 +308,7 @@ function convert (request, options, callback) {
   addContentTypeHeader(request);
   const method = getRequestMethod(request),
     indentation = getIndentation(options),
+    connectionTimeout = options.requestTimeout,
     contentTypeHeaderValue = request.headers.get('Content-Type'),
     url = getRequestURL(request),
     snippetHeaders = getSnippetHeaders(getRequestHeaders(request), indentation),
@@ -284,7 +316,7 @@ function convert (request, options, callback) {
     snippetFooter = getSnippetFooter(),
     snippetbody = parseBody(request.body, indentation, getBodyTrim(options), contentTypeHeaderValue),
     snippetRequest = getSnippetRequest(url, method, getCurlStyle(method, contentTypeHeaderValue),
-      snippetbody !== '', snippetHeaders !== '', contentTypeHeaderValue, request);
+      snippetbody !== '', snippetHeaders !== '', contentTypeHeaderValue, request, connectionTimeout);
 
   snippet += snippetHeader;
   snippet += snippetHeaders;
@@ -311,5 +343,6 @@ module.exports = {
   getSnippetGetURL,
   getSnippetRequest,
   getSnippetPostFormInOptions,
-  addContentTypeHeader
+  addContentTypeHeader,
+  buildOptionsSnippet
 };
