@@ -119,6 +119,30 @@ describe('getSnippetHeaders function', function () {
   it('should return an empty string when headers is an empty array', function () {
     expect(getSnippetHeaders([], '  ')).to.equal('');
   });
+
+  it('should return an string representing the headers trim only values', function () {
+    const headersArray =
+    [
+      {
+        key: 'my-sample-header ',
+        value: 'Lorem ipsum dolor sit amet '
+      },
+      {
+        key: 'testing',
+        value: '\'singlequotes\''
+      },
+      {
+        key: 'TEST',
+        value: '"doublequotes"'
+      }
+    ],
+      expectedString = '$headers = [\n' +
+      '  \'my-sample-header\' => \'Lorem ipsum dolor sit amet \',' +
+      '\n  \'testing\' => \'\\\'singlequotes\\\'\',' +
+      '\n  \'TEST\' => \'"doublequotes"\'' +
+      '\n];\n';
+    expect(getSnippetHeaders(headersArray, '  ')).to.equal(expectedString);
+  });
 });
 
 describe('getURL function', function () {

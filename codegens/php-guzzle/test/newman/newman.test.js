@@ -4,7 +4,7 @@ var runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').ru
 
 describe('PHP-Guzzle Converter', function () {
 
-  describe('Convert for different types of request', function () {
+  describe('Convert for different types of request for sync', function () {
     var testConfig = {
         runScript: 'php codesnippet.php',
         fileName: 'codesnippet.php',
@@ -18,7 +18,7 @@ describe('PHP-Guzzle Converter', function () {
       };
     runNewmanTest(convert, options, testConfig);
   });
-  describe('Convert for different types of request', function () {
+  describe('Convert for different types of request for async', function () {
     var testConfig = {
         runScript: 'php codesnippet.php',
         fileName: 'codesnippet.php',

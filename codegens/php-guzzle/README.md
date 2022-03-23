@@ -17,6 +17,8 @@ Convert function takes three parameters
     * `indentCount` - The number of indentation characters to add per code level
     * `trimRequestBody` - Whether or not request body fields should be trimmed
     * `asyncType` - String denoting call types. eg: 'async', 'sync'
+    * `followRedirect` : Boolean denoting whether to redirect a request (default: true)
+    * `requestTimeout` : The number of milliseconds the request should wait for a response before timing out (use 0 for infinity) 
     * `includeBoilerplate` - Include class definition and import statements in snippet
 
 * `callback` - callback function with first parameter as error and second parameter as string for code snippet
