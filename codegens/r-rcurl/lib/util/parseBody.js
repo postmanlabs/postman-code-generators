@@ -151,13 +151,14 @@ function parseRawBody (body, indentation, bodyTrim, contentType) {
     try {
       let jsonBody = JSON.parse(body);
       bodySnippet += `"${sanitizeString(JSON.stringify(jsonBody, null, indentation.length), bodyTrim)}"`;
+      // bodySnippet += `'${JSON.stringify(jsonBody, null, indentation.length)}';`;
     }
     catch (error) {
       bodySnippet += `"${sanitizeString(body.toString(), bodyTrim)}"`;
     }
   }
   else {
-    bodySnippet += `"${sanitizeString(body.toString(), bodyTrim)}"`;
+    bodySnippet += JSON.stringify(body.toString());
   }
   return bodySnippet;
 }

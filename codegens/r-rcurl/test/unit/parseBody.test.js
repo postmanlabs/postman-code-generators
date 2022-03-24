@@ -66,7 +66,7 @@ describe('parseFormData method', function () {
   });
 });
 
-describe('parseFormData method', function () {
+describe('parseRawBody method', function () {
   it('should return formData json params', function () {
     const collection = new sdk.Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
@@ -76,7 +76,7 @@ describe('parseFormData method', function () {
       expectedBody = '"{\n' +
       '  \\"json\\": \\"Test-Test\\"\n' +
       '}"',
-      result = parseRawBody(body, indentation, bodyTrim);
+      result = parseRawBody(body, indentation, bodyTrim, 'application/json');
     expect(result).to.equal(expectedBody);
   });
 });
@@ -143,18 +143,18 @@ describe('parseBody method', function () {
       expectedBody = 'params = "{\n' +
       '  \\"json\\": \\"Test-Test\\"\n' +
       '}"\n',
-      result = parseBody(body, indentation, bodyTrim);
+      result = parseBody(body, indentation, bodyTrim, 'application/json');
     expect(result).to.equal(expectedBody);
   });
 
-  it('should return raw json params', function () {
+  it('should return raw string params', function () {
     const collection = new sdk.Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[6].request.body,
       indentation = '  ',
       bodyTrim = false,
       expectedBody = 'params = "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. ' +
-      'Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit,' +
+      'Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\\nMaecenas consequat elementum elit,' +
       ' id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."\n',
       result = parseBody(body, indentation, bodyTrim);
     expect(result).to.equal(expectedBody);

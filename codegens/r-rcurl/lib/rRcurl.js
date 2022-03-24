@@ -21,7 +21,7 @@ function getSnippetHeader () {
   * @returns {string} the snippet headers (uses)
   */
 function getSnippetFooter () {
-  return 'print(res)';
+  return 'cat(res)';
 }
 
 /**
