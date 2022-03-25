@@ -19,7 +19,7 @@ describe('convert function', function () {
     const collection = new sdk.Collection(JSON.parse(
       fs.readFileSync(path.resolve(__dirname, './fixtures/sample_collection.json').toString())));
     // collection.items.members.forEach((item) => {
-    convert(collection.items.members[25].request, { requestTimeout: 5000}, function (err, snippet) {
+    convert(collection.items.members[32].request, { requestTimeout: 5000}, function (err, snippet) {
       if (err) {
         console.error(err);
       }
@@ -120,6 +120,13 @@ describe('getSnippetRequest function', function () {
     expect(res).to.equal(expected);
   });
 
+  it('should generate snippet method GET with follow location in false', function () {
+    const expected = 'res <- getURL("https://postman-echo.com/headers", .opts=list(followlocation = FALSE))\n',
+      res = getSnippetRequest('https://postman-echo.com/headers', 'GET', '', false, false,
+        undefined, undefined, 0, false);
+    expect(res).to.equal(expected);
+  });
+
   it('should generate snippet method GET without headers', function () {
     const expected = 'res <- getURL("https://postman-echo.com/headers")\n',
       res = getSnippetRequest('https://postman-echo.com/headers', 'GET', '', false, false);
@@ -139,6 +146,14 @@ describe('getSnippetRequest function', function () {
     ' .params = params, .opts=list(httpheader = headers), style = "post")\n',
       res = getSnippetRequest('https://postman-echo.com/post', 'POST', 'post',
         true, true, 'multipart/form-data', {});
+    expect(res).to.equal(expected);
+  });
+
+  it('should generate snippet method POST for form data encoded with params and not follow location', function () {
+    const expected = 'res <- postForm("https://postman-echo.com/post",' +
+    ' .params = params, .opts=list(followlocation = FALSE), style = "post")\n',
+      res = getSnippetRequest('https://postman-echo.com/post', 'POST', 'post',
+        true, false, 'multipart/form-data', {}, 0, false);
     expect(res).to.equal(expected);
   });
 
@@ -179,6 +194,13 @@ describe('getSnippetPostFormInParams method', function () {
     const expected = 'res <- postForm("https://postman-echo.com/post",' +
       ' .params = params, .opts=list(timeout.ms = 5000), style = "post")\n',
       res = getSnippetPostFormInParams('https://postman-echo.com/post', 'post', true, false, 5000);
+    expect(res).to.equal(expected);
+  });
+
+  it('should generate snippet method POST with params no headers, post style timeout no follow location', function () {
+    const expected = 'res <- postForm("https://postman-echo.com/post",' +
+      ' .params = params, .opts=list(timeout.ms = 5000, followlocation = FALSE), style = "post")\n',
+      res = getSnippetPostFormInParams('https://postman-echo.com/post', 'post', true, false, 5000, false);
     expect(res).to.equal(expected);
   });
 });
@@ -337,6 +359,16 @@ describe('buildOptionsSnippet method', function () {
   it('should return empty string options for no options', function () {
     const result = buildOptionsSnippet(false, false, 0);
     expect(result).to.equal('');
+  });
+
+  it('should return options for params headers timeout and follow redirect on false', function () {
+    const result = buildOptionsSnippet(true, true, 5000, false);
+    expect(result).to.equal('postfields = params, httpheader = headers, timeout.ms = 5000, followlocation = FALSE');
+  });
+
+  it('should return options for headers timeout and follow redirect on false', function () {
+    const result = buildOptionsSnippet(false, true, 5000, false);
+    expect(result).to.equal('httpheader = headers, timeout.ms = 5000, followlocation = FALSE');
   });
 
 });

@@ -120,9 +120,10 @@ function getSnippetHeaders (headers, indentation) {
   * @param  {boolean} hasParams - wheter or not include the params
   * @param  {boolean} hasHeaders - wheter or not include the headers
   * @param  {number} requestTimeout - the request timeout
+  * @param  {boolean} followRedirect - wheter to follow location or not
   * @returns {String} - returns generated snippet
 */
-function buildOptionsSnippet (hasParams, hasHeaders, requestTimeout) {
+function buildOptionsSnippet (hasParams, hasHeaders, requestTimeout, followRedirect) {
   let options = [],
     mappedArray;
   if (hasParams) {
@@ -133,6 +134,9 @@ function buildOptionsSnippet (hasParams, hasHeaders, requestTimeout) {
   }
   if (requestTimeout && requestTimeout !== 0) {
     options.push({ key: 'timeout.ms', value: requestTimeout });
+  }
+  if (followRedirect === false) {
+    options.push({ key: 'followlocation', value: 'FALSE' });
   }
   mappedArray = options.map((entry) => {
     return `${entry.key} = ${entry.value}`;
@@ -151,10 +155,11 @@ function buildOptionsSnippet (hasParams, hasHeaders, requestTimeout) {
   * @param  {boolean} hasParams - wheter or not include the params
   * @param  {boolean} hasHeaders - wheter or not include the header
   * @param  {number} requestTimeout - the request timeout
+  * @param  {boolean} followRedirect - follow redirect from options
   * @returns {String} - returns generated snippet
   */
-function getSnippetPostFormInParams (url, style, hasParams, hasHeaders, requestTimeout) {
-  let optionsSnipppet = buildOptionsSnippet(false, hasHeaders, requestTimeout),
+function getSnippetPostFormInParams (url, style, hasParams, hasHeaders, requestTimeout, followRedirect) {
+  let optionsSnipppet = buildOptionsSnippet(false, hasHeaders, requestTimeout, followRedirect),
     paramsSnippet = hasParams ? '.params = params, ' : '';
   if (optionsSnipppet !== '') {
     return `res <- postForm("${url}", ${paramsSnippet}.opts=list(${optionsSnipppet}),` +
@@ -171,10 +176,11 @@ function getSnippetPostFormInParams (url, style, hasParams, hasHeaders, requestT
   * @param  {string} url - string url of the service
   * @param  {string} hasHeaders - wheter or not include the headers
   * @param  {number} requestTimeout - the request timeout
+  * @param  {boolean} followRedirect - follow redirect from options
   * @returns {String} - returns generated snippet
   */
-function getSnippetGetURL (url, hasHeaders, requestTimeout) {
-  let optionsSnipppet = buildOptionsSnippet(false, hasHeaders, requestTimeout);
+function getSnippetGetURL (url, hasHeaders, requestTimeout, followRedirect) {
+  let optionsSnipppet = buildOptionsSnippet(false, hasHeaders, requestTimeout, followRedirect);
 
   if (optionsSnipppet !== '') {
     return `res <- getURL("${url}", .opts=list(${optionsSnipppet}))\n`;
@@ -192,10 +198,11 @@ function getSnippetGetURL (url, hasHeaders, requestTimeout) {
   * @param  {boolean} hasParams - wheter or not include the params
   * @param  {boolean} hasHeaders - wheter or not include the headers
   * @param  {number} requestTimeout - the request timeout
+  * @param  {boolean} followRedirect - follow redirect from options
   * @returns {String} - returns generated snippet
   */
-function getSnippetPostFormInOptions (url, style, hasParams, hasHeaders, requestTimeout) {
-  let optionsSnipppet = buildOptionsSnippet(hasParams, hasHeaders, requestTimeout);
+function getSnippetPostFormInOptions (url, style, hasParams, hasHeaders, requestTimeout, followRedirect) {
+  let optionsSnipppet = buildOptionsSnippet(hasParams, hasHeaders, requestTimeout, followRedirect);
   if (optionsSnipppet !== '') {
     return `res <- postForm("${url}", .opts=list(${optionsSnipppet}),` +
     ` style = "${style}")\n`;
@@ -218,23 +225,24 @@ function getSnippetPostFormInOptions (url, style, hasParams, hasHeaders, request
   * @param  {string} contentTypeHeaderValue - the content type header value
   * @param  {object} request - the PM request
   * @param  {number} requestTimeout - request timeout from options
+  * @param  {boolean} followRedirect - follow redirect from options
   * @returns {String} - returns generated snippet
   */
 function getSnippetRequest (url, method, style, hasParams, hasHeaders, contentTypeHeaderValue,
-  request, requestTimeout) {
+  request, requestTimeout, followRedirect) {
   const methodUC = method.toUpperCase();
   if (methodUC === 'GET') {
-    return getSnippetGetURL(url, hasHeaders, requestTimeout);
+    return getSnippetGetURL(url, hasHeaders, requestTimeout, followRedirect);
   }
   if (methodUC === 'POST' && request.body && request.body.mode === 'file') {
-    return getSnippetPostFormInOptions(url, 'post', hasParams, hasHeaders, requestTimeout);
+    return getSnippetPostFormInOptions(url, 'post', hasParams, hasHeaders, requestTimeout, followRedirect);
   }
   if (methodUC === 'POST' && contentTypeHeaderValue === 'application/x-www-form-urlencoded' ||
     contentTypeHeaderValue === 'multipart/form-data') {
-    return getSnippetPostFormInParams(url, style, hasParams, hasHeaders, requestTimeout);
+    return getSnippetPostFormInParams(url, style, hasParams, hasHeaders, requestTimeout, followRedirect);
   }
   if (methodUC === 'POST') {
-    return getSnippetPostFormInOptions(url, 'post', hasParams, hasHeaders, requestTimeout);
+    return getSnippetPostFormInOptions(url, 'post', hasParams, hasHeaders, requestTimeout, followRedirect);
   }
   return '';
 }
@@ -309,6 +317,7 @@ function convert (request, options, callback) {
   const method = getRequestMethod(request),
     indentation = getIndentation(options),
     connectionTimeout = options.requestTimeout,
+    followRedirect = options.followRedirect,
     contentTypeHeaderValue = request.headers.get('Content-Type'),
     url = getRequestURL(request),
     snippetHeaders = getSnippetHeaders(getRequestHeaders(request), indentation),
@@ -316,7 +325,7 @@ function convert (request, options, callback) {
     snippetFooter = getSnippetFooter(),
     snippetbody = parseBody(request.body, indentation, getBodyTrim(options), contentTypeHeaderValue),
     snippetRequest = getSnippetRequest(url, method, getCurlStyle(method, contentTypeHeaderValue),
-      snippetbody !== '', snippetHeaders !== '', contentTypeHeaderValue, request, connectionTimeout);
+      snippetbody !== '', snippetHeaders !== '', contentTypeHeaderValue, request, connectionTimeout, followRedirect);
 
   snippet += snippetHeader;
   snippet += snippetHeaders;
