@@ -1,3 +1,4 @@
+const _ = require('./lodash');
 var self = module.exports = {
   /**
      * sanitizes input string by handling escape characters eg: converts '''' to '\'\'', (" to \"  and \ to \\ )
@@ -64,11 +65,10 @@ var self = module.exports = {
     *
     * @param {Object} options - Options provided by the user
     * @param {Array} optionsArray - options array received from getOptions function
-    * @param {Array} protocolProfileBehaviorOptions - protocolProfileBehavior options set in Postman App
     *
     * @returns {Object} - Sanitized options object
     */
-  sanitizeOptions: function (options, optionsArray, protocolProfileBehaviorOptions) {
+  sanitizeOptions: function (options, optionsArray) {
     var result = {},
       defaultOptions = {},
       id;
@@ -80,13 +80,6 @@ var self = module.exports = {
       if (option.type === 'enum') {
         defaultOptions[option.id].availableOptions = option.availableOptions;
       }
-    });
-
-    protocolProfileBehaviorOptions.forEach((option) => {
-      defaultOptions[option.id] = {
-        default: option.default,
-        type: option.type
-      };
     });
 
     for (id in options) {
@@ -251,7 +244,10 @@ var self = module.exports = {
    * @returns {Boolean}
    */
   shouldAddXOption: function (request, options) {
-    if (!options.followRedirect || options.followOriginalHttpMethod) {
+    let followOriginalHttpMethod = _.get(request, 'protocolProfileBehavior.followOriginalHttpMethod', false),
+      disableBodyPruning = _.get(request, 'protocolProfileBehavior.disableBodyPruning', true);
+
+    if (!options.followRedirect || followOriginalHttpMethod) {
       return true;
     }
 
@@ -262,7 +258,7 @@ var self = module.exports = {
         // disableBodyPruning will generally not be present in the request
         // the only time it will be present, its value will be _false_
         // i.e. the user wants to prune the request body despite it being present
-        if (!self.isBodyEmpty(request.body) && (options.disableBodyPruning !== false)) {
+        if (!self.isBodyEmpty(request.body) && (disableBodyPruning !== false)) {
           return true;
         }
 

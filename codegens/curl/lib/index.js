@@ -13,7 +13,7 @@ self = module.exports = {
     if (!_.isFunction(callback)) {
       throw new Error('Curl-Converter: callback is not valid function');
     }
-    options = sanitizeOptions(options, self.getOptions(), self.getProtocolProfileBehaviorOptions());
+    options = sanitizeOptions(options, self.getOptions());
 
     var indent, trim, headersData, body, redirect, timeout, multiLine,
       format, snippet, silent, url, quoteType;
@@ -253,20 +253,6 @@ self = module.exports = {
         type: 'boolean',
         default: false,
         description: 'Display the requested data without showing the cURL progress meter or error messages'
-      }
-    ];
-  },
-  getProtocolProfileBehaviorOptions: function () {
-    return [
-      {
-        id: 'disableBodyPruning',
-        type: 'boolean',
-        default: true
-      },
-      {
-        id: 'followOriginalHttpMethod',
-        type: 'boolean',
-        default: false
       }
     ];
   }
