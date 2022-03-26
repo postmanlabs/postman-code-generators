@@ -15,7 +15,9 @@
     "deepinstall": "node npm/deepinstall.js",
     "boilerplate": "node npm/boilerplate.js",
     "cirequirements": "npm/ci-requirements.sh",
-    "test-lint": "node npm/test-lint.js"
+    "test-lint": "node npm/test-lint.js",
+    "prepare": "npm run snyk-protect",
+    "snyk-protect": "snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -28,7 +30,8 @@
     "async": "2.6.3",
     "path": "0.12.7",
     "postman-collection": "3.6.8",
-    "shelljs": "0.8.4"
+    "shelljs": "0.8.4",
+    "@snyk/protect": "latest"
   },
   "devDependencies": {
     "browserify": "14.5.0",
@@ -43,7 +46,7 @@
     "eslint-plugin-security": "1.4.0",
     "istanbul": "0.4.5",
     "js-yaml": "3.14.0",
-    "newman": "5.2.0",
+    "newman": "5.2.2",
     "jsdoc": "3.6.6",
     "mocha": "5.2.0",
     "lodash": "4.17.20",
@@ -55,5 +58,6 @@
   },
   "engines": {
     "node": ">=6"
-  }
+  },
+  "snyk": true
 }
