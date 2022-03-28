@@ -54,7 +54,7 @@ describe('parseFormData method', function () {
         '  "more" = ",./\';[]}{\\":?><|\\\\\\\\"\n' +
         ')',
       result = parseFormData(body, indentation, bodyTrim);
-    expect(result).to.equal(expectedBody);
+    expect(result.bodySnippet).to.equal(expectedBody);
   });
 
   it('should return empty snippet for emtpy formdata params', function () {
@@ -62,7 +62,7 @@ describe('parseFormData method', function () {
       bodyTrim = false,
       expectedBody = '',
       result = parseFormData({ members: []}, indentation, bodyTrim);
-    expect(result).to.equal(expectedBody);
+    expect(result.bodySnippet).to.equal(expectedBody);
   });
 });
 
@@ -131,7 +131,7 @@ describe('parseBody method', function () {
         '  "more" = ",./\';[]}{\\":?><|\\\\\\\\"\n' +
         ')\n',
       result = parseBody(body, indentation, bodyTrim);
-    expect(result).to.equal(expectedBody);
+    expect(result.bodySnippet).to.equal(expectedBody);
   });
 
   it('should return raw json params', function () {

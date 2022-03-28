@@ -19,7 +19,7 @@ describe('convert function', function () {
     const collection = new sdk.Collection(JSON.parse(
       fs.readFileSync(path.resolve(__dirname, './fixtures/sample_collection.json').toString())));
     // collection.items.members.forEach((item) => {
-    convert(collection.items.members[32].request, { requestTimeout: 5000}, function (err, snippet) {
+    convert(collection.items.members[31].request, { requestTimeout: 5000}, function (err, snippet) {
       if (err) {
         console.error(err);
       }

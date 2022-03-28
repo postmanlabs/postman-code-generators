@@ -115,6 +115,21 @@ function buildFormDataParam (data, indentation, bodyTrim) {
 }
 
 /**
+ * builds a data param for a file
+ *
+ * @param {Object} data item from the array of form data (key value).
+ * @param {String} indentation indentation to be added to the snippet
+ * @param {boolean} bodyTrim trim body option
+ * @param {number} index index of the current file
+ * @returns {String} snippet of file uploading
+ */
+function buildFormDataParamFile (data, indentation, bodyTrim, index) {
+  return `file${index} = fileUpload(\n` +
+    `${indentation.repeat(1)}filename = path.expand('${sanitizeString(data.src, bodyTrim)}')` +
+    ')\n';
+}
+
+/**
  * builds a data param
  *
  * @param {Object} body body object from request.
@@ -124,16 +139,27 @@ function buildFormDataParam (data, indentation, bodyTrim) {
  */
 function parseFormData (body, indentation, bodyTrim) {
   let enabledBodyList = _.reject(body.members, 'disabled'),
-    bodySnippet = '';
+    numberOfFiles = 0,
+    bodySnippet = '',
+    fileSnippet = '';
   if (!_.isEmpty(enabledBodyList)) {
-    let bodyDataMap = _.map(enabledBodyList, (data) => {
-      // if (data.type !== 'file') {
+    let formDataFile, formData, bodyDataMap;
+    formDataFile = enabledBodyList.filter((param) => {
+      return param.type === 'file';
+    });
+    formData = enabledBodyList.filter((param) => {
+      return param.type !== 'file';
+    });
+    bodyDataMap = _.map(formData, (data) => {
       return buildFormDataParam(data, indentation, bodyTrim);
-      // }
+    });
+    numberOfFiles = formDataFile.length;
+    _.forEach(formDataFile, (data, index) => {
+      fileSnippet += buildFormDataParamFile(data, indentation, bodyTrim, index);
     });
     bodySnippet += `c(\n${bodyDataMap.join(',\n')}\n)`;
   }
-  return bodySnippet;
+  return {bodySnippet, fileSnippet, numberOfFiles};
 }
 
 /**
@@ -221,8 +247,11 @@ function processBodyModes (body, indentation, bodyTrim, contentType) {
       return bodySnippet === '' ? '' : `params = ${bodySnippet}\n`;
     }
     case 'formdata': {
-      bodySnippet = parseFormData(body.formdata, indentation, bodyTrim);
-      return bodySnippet === '' ? '' : `params = ${bodySnippet}\n`;
+      let formData = parseFormData(body.formdata, indentation, bodyTrim),
+        formParamsSnippet = formData.bodySnippet === '' ? '' : `params = ${formData.bodySnippet}\n`;
+      return { bodySnippet: formParamsSnippet,
+        fileSnippet: formData.fileSnippet,
+        numberOfFiles: formData.numberOfFiles};
     }
     case 'file': {
       bodySnippet = parseFromFile();
@@ -242,7 +271,7 @@ function processBodyModes (body, indentation, bodyTrim, contentType) {
 * @param {string} indentation - indentation character
 * @param {boolean} bodyTrim trim body option
 * @param {String} contentType Content type of the body being sent
-* @returns {String} snippet of the body generation
+* @returns {String/Object} snippet of the body generation or object for files information
 */
 function parseBody (body, indentation, bodyTrim, contentType) {
   let snippet = '';

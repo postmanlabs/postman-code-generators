@@ -144,6 +144,25 @@ function buildOptionsSnippet (hasParams, hasHeaders, requestTimeout, followRedir
   return `${mappedArray.join(', ')}`;
 }
 
+/**
+  * Creates the snippet request for the postForm method
+  *
+  * @module convert
+  *
+  * @param  {object} filesInfo - information of the form data files
+  * @returns {String} - returns generated snippet
+  */
+function buildFileRequestSnippet (filesInfo) {
+  if (!filesInfo) {
+    return '';
+  }
+  let files = [];
+  for (let index = 0; index < filesInfo.numberOfFiles; index++) {
+    files.push(`file = file${index}`);
+  }
+  return `${files.join(', ')}, `;
+}
+
 
 /**
   * Creates the snippet request for the postForm method
@@ -156,16 +175,19 @@ function buildOptionsSnippet (hasParams, hasHeaders, requestTimeout, followRedir
   * @param  {boolean} hasHeaders - wheter or not include the header
   * @param  {number} requestTimeout - the request timeout
   * @param  {boolean} followRedirect - follow redirect from options
+  * @param  {object} filesInfo - information of the form data files
   * @returns {String} - returns generated snippet
   */
-function getSnippetPostFormInParams (url, style, hasParams, hasHeaders, requestTimeout, followRedirect) {
+function getSnippetPostFormInParams (url, style, hasParams, hasHeaders, requestTimeout, followRedirect,
+  filesInfo) {
   let optionsSnipppet = buildOptionsSnippet(false, hasHeaders, requestTimeout, followRedirect),
+    fileRequestSnippet = buildFileRequestSnippet(filesInfo),
     paramsSnippet = hasParams ? '.params = params, ' : '';
   if (optionsSnipppet !== '') {
-    return `res <- postForm("${url}", ${paramsSnippet}.opts=list(${optionsSnipppet}),` +
+    return `res <- postForm("${url}", ${fileRequestSnippet}${paramsSnippet}.opts=list(${optionsSnipppet}),` +
     ` style = "${style}")\n`;
   }
-  return `res <- postForm("${url}", ${paramsSnippet}style = "${style}")\n`;
+  return `res <- postForm("${url}", ${fileRequestSnippet}${paramsSnippet}style = "${style}")\n`;
 }
 
 /**
@@ -226,10 +248,11 @@ function getSnippetPostFormInOptions (url, style, hasParams, hasHeaders, request
   * @param  {object} request - the PM request
   * @param  {number} requestTimeout - request timeout from options
   * @param  {boolean} followRedirect - follow redirect from options
+  * @param  {object} filesInfo - information of the form data files
   * @returns {String} - returns generated snippet
   */
 function getSnippetRequest (url, method, style, hasParams, hasHeaders, contentTypeHeaderValue,
-  request, requestTimeout, followRedirect) {
+  request, requestTimeout, followRedirect, filesInfo) {
   const methodUC = method.toUpperCase();
   if (methodUC === 'GET') {
     return getSnippetGetURL(url, hasHeaders, requestTimeout, followRedirect);
@@ -238,8 +261,9 @@ function getSnippetRequest (url, method, style, hasParams, hasHeaders, contentTy
     return getSnippetPostFormInOptions(url, 'post', hasParams, hasHeaders, requestTimeout, followRedirect);
   }
   if (methodUC === 'POST' && contentTypeHeaderValue === 'application/x-www-form-urlencoded' ||
-    contentTypeHeaderValue === 'multipart/form-data') {
-    return getSnippetPostFormInParams(url, style, hasParams, hasHeaders, requestTimeout, followRedirect);
+    contentTypeHeaderValue === 'multipart/form-data' || filesInfo !== undefined) {
+    return getSnippetPostFormInParams(url, style, hasParams, hasHeaders, requestTimeout, followRedirect,
+      filesInfo);
   }
   if (methodUC === 'POST') {
     return getSnippetPostFormInOptions(url, 'post', hasParams, hasHeaders, requestTimeout, followRedirect);
@@ -311,7 +335,9 @@ function convert (request, options, callback) {
   if (!validateIsFunction(callback)) {
     throw new Error('R-Rcurl~convert: Callback is not a function');
   }
-  let snippet = '';
+  let snippet = '',
+    snippetRequest,
+    snippetBody;
   options = sanitizeOptions(options, getOptions());
   addContentTypeHeader(request);
   const method = getRequestMethod(request),
@@ -322,14 +348,25 @@ function convert (request, options, callback) {
     url = getRequestURL(request),
     snippetHeaders = getSnippetHeaders(getRequestHeaders(request), indentation),
     snippetHeader = getSnippetHeader(),
-    snippetFooter = getSnippetFooter(),
-    snippetbody = parseBody(request.body, indentation, getBodyTrim(options), contentTypeHeaderValue),
+    snippetFooter = getSnippetFooter();
+  snippetBody = parseBody(request.body, indentation, getBodyTrim(options), contentTypeHeaderValue);
+  if (typeof snippetBody === 'string') {
     snippetRequest = getSnippetRequest(url, method, getCurlStyle(method, contentTypeHeaderValue),
-      snippetbody !== '', snippetHeaders !== '', contentTypeHeaderValue, request, connectionTimeout, followRedirect);
+      snippetBody !== '', snippetHeaders !== '', contentTypeHeaderValue, request, connectionTimeout, followRedirect);
+  }
+  else {
+    let paramsBody = snippetBody.bodySnippet,
+      filesInfo = { fileSnippet: snippetBody.fileSnippet,
+        numberOfFiles: snippetBody.numberOfFiles};
+    snippetRequest = getSnippetRequest(url, method, getCurlStyle(method, contentTypeHeaderValue),
+      paramsBody !== '', snippetHeaders !== '', contentTypeHeaderValue, request, connectionTimeout, followRedirect,
+      filesInfo);
+    snippetBody = paramsBody + filesInfo.fileSnippet;
+  }
 
   snippet += snippetHeader;
   snippet += snippetHeaders;
-  snippet += snippetbody;
+  snippet += snippetBody;
   snippet += snippetRequest;
   snippet += snippetFooter;
 
