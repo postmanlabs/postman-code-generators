@@ -157,7 +157,9 @@ function parseFormData (body, indentation, bodyTrim) {
     _.forEach(formDataFile, (data, index) => {
       fileSnippet += buildFormDataParamFile(data, indentation, bodyTrim, index);
     });
-    bodySnippet += `c(\n${bodyDataMap.join(',\n')}\n)`;
+    if (bodyDataMap.length > 0) {
+      bodySnippet += `c(\n${bodyDataMap.join(',\n')}\n)`;
+    }
   }
   return {bodySnippet, fileSnippet, numberOfFiles};
 }

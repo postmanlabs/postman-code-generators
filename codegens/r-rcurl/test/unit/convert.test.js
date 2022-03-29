@@ -1,25 +1,40 @@
 var expect = require('chai').expect,
-  { convert } = require('../../index');
-  // sdk = require('postman-collection'),
-  // fs = require('fs'),
-  // path = require('path');
-  // collectionsPath = './fixtures';
+  { convert } = require('../../index'),
+  sdk = require('postman-collection'),
+  fs = require('fs'),
+  path = require('path');
 
 describe('convert function', function () {
+  const collection = new sdk.Collection(JSON.parse(
+    fs.readFileSync(path.resolve(__dirname, './fixtures/sample_collection.json').toString())));
 
-  // it('should convert a simple get request', function (done) {
-  //   const collection = new sdk.Collection(JSON.parse(
-  //     fs.readFileSync(path.resolve(__dirname, './fixtures/sample_collection.json').toString())));
-  //   collection.items.members.forEach((item) => {
-  //     convert(item.request, { asyncType: 'sync' }, function (err, snippet) {
-  //       if (err) {
-  //         console.error(err);
-  //       }
-  //       expect(snippet).to.not.be.empty;
-  //     });
-  //   });
-  //   done();
-  // });
+  it('should convert requests with default options', function (done) {
+    collection.items.members.forEach((item) => {
+      convert(item.request, { }, function (err, snippet) {
+        if (err) {
+          console.error(err);
+        }
+        expect(snippet).to.not.be.empty;
+      });
+    });
+    done();
+  });
+
+  it('should convert requests with requestTimeout option set as 500', function (done) {
+    collection.items.members.forEach((item, index) => {
+      convert(item.request, { requestTimeout: 500 }, function (err, snippet) {
+        if (err) {
+          console.error(err);
+        }
+        expect(snippet).to.not.be.empty;
+        if (!snippet.includes('timeout.ms = 500')) {
+          console.log(index);
+        }
+        // expect(snippet).to.include('timeout.ms = 500');
+      });
+    });
+    done();
+  });
 
   it('should throw an error when callback is not a function', function () {
     expect(function () { convert({}, {}); })

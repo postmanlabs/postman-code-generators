@@ -10,7 +10,9 @@ var expect = require('chai').expect,
     getSnippetRequest,
     getSnippetPostFormInOptions,
     addContentTypeHeader,
-    buildOptionsSnippet
+    buildOptionsSnippet,
+    groupHeadersSameKey,
+    getIndentation
   } = require('../../lib/rRcurl');
 
 describe('convert function', function () {
@@ -19,7 +21,7 @@ describe('convert function', function () {
     const collection = new sdk.Collection(JSON.parse(
       fs.readFileSync(path.resolve(__dirname, './fixtures/sample_collection.json').toString())));
     // collection.items.members.forEach((item) => {
-    convert(collection.items.members[31].request, { requestTimeout: 5000}, function (err, snippet) {
+    convert(collection.items.members[15].request, { requestTimeout: 5000}, function (err, snippet) {
       if (err) {
         console.error(err);
       }
@@ -56,6 +58,47 @@ describe('getSnippetHeaders function', function () {
     expect(res).to.equal(expected);
   });
 
+  it('should return an string representing the headers special characters', function () {
+    const headersArray =
+    [
+      {
+        key: 'my-sample-header',
+        value: 'Lorem ipsum dolor sit amet'
+      },
+      {
+        key: 'TEST',
+        value: '@#$%^&*()'
+      },
+      {
+        key: 'more',
+        value: ',./\';[]}{\\":?><|'
+      }
+    ],
+      expectedString = 'headers = c(\n  "my-sample-header" = "Lorem ipsum dolor sit amet",\n' +
+      '  "TEST" = "@#$%^&*()",\n  "more" = ",./\';[]}{\\\\\\":?><|"\n)\n';
+    expect(getSnippetHeaders(headersArray, '  ')).to.equal(expectedString);
+  });
+
+  it('should return an string representing the headers trim only values', function () {
+    const headersArray =
+    [
+      {
+        key: 'my-sample-header ',
+        value: 'Lorem ipsum dolor sit amet '
+      },
+      {
+        key: 'testing',
+        value: '\'singlequotes\''
+      },
+      {
+        key: 'TEST',
+        value: '"doublequotes"'
+      }
+    ],
+      expectedString = 'headers = c(\n  "my-sample-header" = "Lorem ipsum dolor sit amet ",\n' +
+      '  "testing" = "\'singlequotes\'",\n  "TEST" = "\\"doublequotes\\""\n)\n';
+    expect(getSnippetHeaders(headersArray, '  ')).to.equal(expectedString);
+  });
 });
 
 describe('getSnippetPostFormInParams function', function () {
@@ -371,4 +414,39 @@ describe('buildOptionsSnippet method', function () {
     expect(result).to.equal('httpheader = headers, timeout.ms = 5000, followlocation = FALSE');
   });
 
+});
+
+describe('groupHeadersSameKey method', function () {
+  it('should group two headers with same key', function () {
+    const result = groupHeadersSameKey([{ key: 'key1', value: 'value1'}, { key: 'key1', value: 'value2'}]);
+    expect(result.length).to.equal(1);
+    expect(result[0].value).to.equal('value1, value2');
+    expect(result[0].key).to.equal('key1');
+  });
+});
+
+describe('getIndentation function', function () {
+  it('should return 3 whitespaces when indentType is whitespace and indentCount is 3', function () {
+    expect(getIndentation({ indentType: ' ', indentCount: 3 })).to.equal('   ');
+  });
+
+  it('should return 3 spaces when indentType is the word Space and indentCount is 3', function () {
+    expect(getIndentation({ indentType: 'Space', indentCount: 3 })).to.equal('   ');
+  });
+
+  it('should return 3 tabspaces when indentType is the word Space and indentCount is 3', function () {
+    expect(getIndentation({ indentType: 'Space', indentCount: 3 })).to.equal('   ');
+  });
+
+  it('should return 1 tabspace when indentType is the word Tab and indentCount is 1', function () {
+    expect(getIndentation({ indentType: 'Tab', indentCount: 1 })).to.equal('\t');
+  });
+
+  it('should return 2 whitespaces when there is no options object', function () {
+    expect(getIndentation()).to.equal('  ');
+  });
+
+  it('should return 2 whitespaces when there is no indentation options in object', function () {
+    expect(getIndentation({})).to.equal('  ');
+  });
 });

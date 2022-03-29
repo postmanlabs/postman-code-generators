@@ -4,6 +4,28 @@ const getOptions = require('./options').getOptions,
   parseBody = require('./util/parseBody').parseBody;
 
 /**
+ * Takes in an array and group the ones with same key
+ *
+ * @param  {Array} headerArray - postman SDK-headers
+ * @returns {String} - request headers in the desired format
+ */
+function groupHeadersSameKey (headerArray) {
+  let res = [],
+    group = headerArray.reduce((header, a) => {
+      header[a.key] = [...header[a.key] || [], a];
+      return header;
+    }, {});
+  Object.keys(group).forEach((item) => {
+    let values = [];
+    group[item].forEach((child) => {
+      values.push(child.value);
+    });
+    res.push({key: item, value: values.join(', ') });
+  });
+  return res;
+}
+
+/**
   * Returns the snippet header
   *
   * @module convert
@@ -89,7 +111,7 @@ function getRequestMethod (request) {
  * @returns {String} - array in the form of [ key => value ]
  */
 function getSnippetArray (mapToSnippetArray, indentation, sanitize) {
-  // mapToSnippetArray = groupHeadersSameKey(mapToSnippetArray);
+  mapToSnippetArray = groupHeadersSameKey(mapToSnippetArray);
   let mappedArray = mapToSnippetArray.map((entry) => {
     return `${indentation}"${sanitize ? sanitizeString(entry.key, true) : entry.key}" = ` +
     `${sanitize ? '"' + sanitizeString(entry.value) + '"' : entry.value}`;
@@ -238,15 +260,31 @@ function getSnippetPostFormInOptions (url, style, hasParams, hasHeaders, request
   * @module convert
   *
   * @param  {string} url - string url of the service
+  * @param  {boolean} hasHeaders - wheter or not include the headers
+  * @param  {number} requestTimeout - the request timeout
+  * @param  {boolean} followRedirect - follow redirect from options
+  * @returns {String} - returns generated snippet
+  */
+function getSnippetPut (url, hasHeaders, requestTimeout, followRedirect) {
+  let optionsSnipppet = buildOptionsSnippet(false, hasHeaders, requestTimeout, followRedirect);
+  return `res <- httpPUT("${url}", params, ${optionsSnipppet})\n`;
+}
+
+/**
+  * Creates the snippet request for the httpPut method
+  *
+  * @module convert
+  *
+  * @param  {string} url - string url of the service
   * @param  {boolean} hasParams - wheter or not include the params
   * @param  {boolean} hasHeaders - wheter or not include the headers
   * @param  {number} requestTimeout - the request timeout
   * @param  {boolean} followRedirect - follow redirect from options
   * @returns {String} - returns generated snippet
   */
-function getSnippetPut (url, hasParams, hasHeaders, requestTimeout, followRedirect) {
-  let optionsSnipppet = buildOptionsSnippet(false, hasHeaders, requestTimeout, followRedirect);
-  return `res <- httpPUT("${url}", params, ${optionsSnipppet})\n`;
+function getSnippetDelete (url, hasParams, hasHeaders, requestTimeout, followRedirect) {
+  let optionsSnipppet = buildOptionsSnippet(hasParams, hasHeaders, requestTimeout, followRedirect);
+  return `res <- httpDELETE("${url}", ${optionsSnipppet})\n`;
 }
 
 /**
@@ -284,7 +322,10 @@ function getSnippetRequest (url, method, style, hasParams, hasHeaders, contentTy
     return getSnippetPostFormInOptions(url, 'post', hasParams, hasHeaders, requestTimeout, followRedirect);
   }
   if (methodUC === 'PUT') {
-    return getSnippetPut(url, hasParams, hasHeaders, requestTimeout, followRedirect);
+    return getSnippetPut(url, hasHeaders, requestTimeout, followRedirect);
+  }
+  if (methodUC === 'DELETE') {
+    return getSnippetDelete(url, hasParams, hasHeaders, requestTimeout, followRedirect);
   }
   return '';
 }
@@ -408,5 +449,7 @@ module.exports = {
   getSnippetRequest,
   getSnippetPostFormInOptions,
   addContentTypeHeader,
-  buildOptionsSnippet
+  buildOptionsSnippet,
+  groupHeadersSameKey,
+  getIndentation
 };
