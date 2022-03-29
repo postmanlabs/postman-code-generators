@@ -287,5 +287,6 @@ module.exports = {
   parseURLEncodedBody,
   parseFormData,
   parseRawBody,
-  parseGraphQL
+  parseGraphQL,
+  buildFormDataParamFile
 };

@@ -7,7 +7,8 @@ var expect = require('chai').expect,
     parseBody,
     parseFormData,
     parseRawBody,
-    parseGraphQL
+    parseGraphQL,
+    buildFormDataParamFile
   } = require('../../lib/util/parseBody'),
   collectionsPath = './fixtures';
 
@@ -64,6 +65,17 @@ describe('parseFormData method', function () {
       result = parseFormData({ members: []}, indentation, bodyTrim);
     expect(result.bodySnippet).to.equal(expectedBody);
   });
+
+  it('should return form data params file', function () {
+    const collection = new sdk.Collection(JSON.parse(
+        fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
+      body = collection.items.members[26].request.body.formdata,
+      indentation = '  ',
+      bodyTrim = false,
+      result = parseFormData(body, indentation, bodyTrim);
+    expect(result.numberOfFiles).to.equal(1);
+    expect(result.fileSnippet).to.equal('file0 = fileUpload(\n  filename = path.expand(\'\'))\n');
+  });
 });
 
 describe('parseRawBody method', function () {
@@ -95,7 +107,6 @@ describe('parseGraphQL method', function () {
     expect(result).to.equal(expectedBody);
   });
 });
-
 
 describe('parseBody method', function () {
   it('should return form-url-encoded params', function () {
@@ -173,5 +184,21 @@ describe('parseBody method', function () {
       result = parseBody(body, indentation, bodyTrim, 'graphql');
     expect(result).to.equal(expectedBody);
 
+  });
+});
+
+describe('buildFormDataParamFile method', function () {
+  it('should return a snippet for file var creation"', function () {
+    const expected = 'file0 = fileUpload(\n' +
+      '  filename = path.expand(\'/Users/name/dummyFile1.txt\'))\n',
+      res = buildFormDataParamFile({ src: '/Users/name/dummyFile1.txt'}, '  ', true, 0);
+    expect(expected).to.equal(res);
+  });
+
+  it('should return a snippet for file var creation index 1"', function () {
+    const expected = 'file1 = fileUpload(\n' +
+      '  filename = path.expand(\'/Users/name/dummyFile1.txt\'))\n',
+      res = buildFormDataParamFile({ src: '/Users/name/dummyFile1.txt'}, '  ', true, 1);
+    expect(expected).to.equal(res);
   });
 });

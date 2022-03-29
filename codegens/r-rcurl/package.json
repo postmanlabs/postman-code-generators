@@ -1,13 +1,13 @@
 {
-  "name": "<<CODEGEN_NAME>>",
+  "name": "@postman/codegen-r-rcurl",
   "version": "0.0.1",
-  "description": "Converts Postman SDK Requests to swift code snippet",
+  "description": "Converts Postman SDK Requests to R-Curl code snippet",
   "main": "index.js",
   "com_postman_plugin": {
     "type": "code_generator",
-    "lang": "<<LANG>>",
-    "variant": "<<VARIANT>>",
-    "syntax_mode": "<<SYNTAX_MODE>>"
+    "lang": "r",
+    "variant": "rcurl",
+    "syntax_mode": "r"
   },
   "directories": {
     "lib": "lib",
@@ -23,9 +23,9 @@
     "type": "git",
     "url": ""
   },
-  "author": "$AUTHOR_NAME",
+  "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/<<CODEGEN_NAME>>",
+  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/r-curl",
   "dependencies": {},
   "devDependencies": {},
   "engines": {

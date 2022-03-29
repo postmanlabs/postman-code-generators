@@ -233,6 +233,21 @@ function getSnippetPostFormInOptions (url, style, hasParams, hasHeaders, request
 }
 
 /**
+  * Creates the snippet request for the httpPut method
+  *
+  * @module convert
+  *
+  * @param  {string} url - string url of the service
+  * @param  {boolean} hasParams - wheter or not include the params
+  * @param  {boolean} hasHeaders - wheter or not include the headers
+  * @param  {number} requestTimeout - the request timeout
+  * @param  {boolean} followRedirect - follow redirect from options
+  * @returns {String} - returns generated snippet
+  */
+function getSnippetPut (url, hasParams, hasHeaders, requestTimeout, followRedirect) {
+  let optionsSnipppet = buildOptionsSnippet(false, hasHeaders, requestTimeout, followRedirect);
+  return `res <- httpPUT("${url}", params, ${optionsSnipppet})\n`;
+}
 
 /**
   * Creates the snippet request for either get ulr or post form
@@ -267,6 +282,9 @@ function getSnippetRequest (url, method, style, hasParams, hasHeaders, contentTy
   }
   if (methodUC === 'POST') {
     return getSnippetPostFormInOptions(url, 'post', hasParams, hasHeaders, requestTimeout, followRedirect);
+  }
+  if (methodUC === 'PUT') {
+    return getSnippetPut(url, hasParams, hasHeaders, requestTimeout, followRedirect);
   }
   return '';
 }
