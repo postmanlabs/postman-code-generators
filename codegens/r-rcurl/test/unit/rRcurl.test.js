@@ -23,15 +23,14 @@ describe('convert function', function () {
   it('should convert a simple get request', function (done) {
     const collection = new sdk.Collection(JSON.parse(
       fs.readFileSync(path.resolve(__dirname, './fixtures/sample_collection.json').toString())));
-    // collection.items.members.forEach((item) => {
-    convert(collection.items.members[34].request, { }, function (err, snippet) {
-      if (err) {
-        console.error(err);
-      }
-      expect(snippet).to.not.be.empty;
-      fs.writeFileSync(path.join(__dirname, './fixtures/snippet.r'), snippet);
+    collection.items.members.forEach((item) => {
+      convert(item.request, { }, function (err, snippet) {
+        if (err) {
+          console.error(err);
+        }
+        expect(snippet).to.not.be.empty;
+      });
     });
-    // });
     done();
   });
 
