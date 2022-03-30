@@ -21,16 +21,26 @@ describe('convert function', function () {
   });
 
   it('should convert requests with requestTimeout option set as 500', function (done) {
-    collection.items.members.forEach((item, index) => {
+    collection.items.members.forEach((item) => {
       convert(item.request, { requestTimeout: 500 }, function (err, snippet) {
         if (err) {
           console.error(err);
         }
         expect(snippet).to.not.be.empty;
-        if (!snippet.includes('timeout.ms = 500')) {
-          console.log(index);
+        expect(snippet).to.include('timeout.ms = 500');
+      });
+    });
+    done();
+  });
+
+  it('should convert requests with followRedirect option set as false', function (done) {
+    collection.items.members.forEach((item) => {
+      convert(item.request, { followRedirect: false }, function (err, snippet) {
+        if (err) {
+          console.error(err);
         }
-        // expect(snippet).to.include('timeout.ms = 500');
+        expect(snippet).to.not.be.empty;
+        expect(snippet).to.include('followlocation = FALSE');
       });
     });
     done();

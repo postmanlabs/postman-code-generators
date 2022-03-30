@@ -12,7 +12,10 @@ var expect = require('chai').expect,
     addContentTypeHeader,
     buildOptionsSnippet,
     groupHeadersSameKey,
-    getIndentation
+    getIndentation,
+    getSnippetPut,
+    getSnippetDelete,
+    getSnippetURLContent
   } = require('../../lib/rRcurl');
 
 describe('convert function', function () {
@@ -21,7 +24,7 @@ describe('convert function', function () {
     const collection = new sdk.Collection(JSON.parse(
       fs.readFileSync(path.resolve(__dirname, './fixtures/sample_collection.json').toString())));
     // collection.items.members.forEach((item) => {
-    convert(collection.items.members[15].request, { requestTimeout: 5000}, function (err, snippet) {
+    convert(collection.items.members[14].request, { requestTimeout: 5000}, function (err, snippet) {
       if (err) {
         console.error(err);
       }
@@ -450,3 +453,49 @@ describe('getIndentation function', function () {
     expect(getIndentation({})).to.equal('  ');
   });
 });
+
+describe('getSnippetPut method', function () {
+  it('should return put snippet with params headers and follow location false', function () {
+    const result = getSnippetPut('url', true, true, 0, false);
+    expect(result).to.equal('res <- httpPUT("url", params, httpheader = headers, followlocation = FALSE)\n');
+  });
+  it('should return put snippet without params headers and follow location false', function () {
+    const result = getSnippetPut('url', false, true, 0, false);
+    expect(result).to.equal('res <- httpPUT("url", httpheader = headers, followlocation = FALSE)\n');
+  });
+  it('should return put snippet with params and no options', function () {
+    const result = getSnippetPut('url', true, false, 0, true);
+    expect(result).to.equal('res <- httpPUT("url", params)\n');
+  });
+  it('should return put snippet without params and no options', function () {
+    const result = getSnippetPut('url', false, false, 0, true);
+    expect(result).to.equal('res <- httpPUT("url")\n');
+  });
+});
+
+describe('getSnippetDelete method', function () {
+  it('should return delete snippet with params headers and follow location false', function () {
+    const result = getSnippetDelete('url', true, true, 0, false);
+    expect(result).to.equal(
+      'res <- httpDELETE("url", postfields = params, httpheader = headers, followlocation = FALSE)\n');
+  });
+  it('should return delete snippet withoutout params and options', function () {
+    const result = getSnippetDelete('url', false, false, 0, true);
+    expect(result).to.equal('res <- httpDELETE("url")\n');
+  });
+});
+
+describe('getSnippetURLContent method', function () {
+  it('should return url content snippet for PATCH with params headers and follow location false', function () {
+    const result = getSnippetURLContent('url', true, true, 0, false, 'PATCH');
+    expect(result).to.equal(
+      'res <- getURLContent("url", customrequest = "PATCH", postfields = params, ' +
+      'httpheader = headers, followlocation = FALSE)\n');
+  });
+
+  it('should return delete snippet for PATCH withoutout params and options', function () {
+    const result = getSnippetURLContent('url', false, false, 0, true, 'PATCH');
+    expect(result).to.equal('res <- getURLContent("url", customrequest = "PATCH")\n');
+  });
+});
+

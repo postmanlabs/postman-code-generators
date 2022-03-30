@@ -260,14 +260,27 @@ function getSnippetPostFormInOptions (url, style, hasParams, hasHeaders, request
   * @module convert
   *
   * @param  {string} url - string url of the service
+  * @param  {boolean} hasParams - wheter or not include the params
   * @param  {boolean} hasHeaders - wheter or not include the headers
   * @param  {number} requestTimeout - the request timeout
   * @param  {boolean} followRedirect - follow redirect from options
   * @returns {String} - returns generated snippet
   */
-function getSnippetPut (url, hasHeaders, requestTimeout, followRedirect) {
+function getSnippetPut (url, hasParams, hasHeaders, requestTimeout, followRedirect) {
   let optionsSnipppet = buildOptionsSnippet(false, hasHeaders, requestTimeout, followRedirect);
-  return `res <- httpPUT("${url}", params, ${optionsSnipppet})\n`;
+  if (optionsSnipppet !== '' && hasParams) {
+    return `res <- httpPUT("${url}", params, ${optionsSnipppet})\n`;
+  }
+  else if (optionsSnipppet !== '' && !hasParams) {
+    return `res <- httpPUT("${url}", ${optionsSnipppet})\n`;
+  }
+  else if (optionsSnipppet === '' && hasParams) {
+    return `res <- httpPUT("${url}", params)\n`;
+  }
+  else if (optionsSnipppet === '' && !hasParams) {
+    return `res <- httpPUT("${url}")\n`;
+  }
+  return '';
 }
 
 /**
@@ -284,7 +297,32 @@ function getSnippetPut (url, hasHeaders, requestTimeout, followRedirect) {
   */
 function getSnippetDelete (url, hasParams, hasHeaders, requestTimeout, followRedirect) {
   let optionsSnipppet = buildOptionsSnippet(hasParams, hasHeaders, requestTimeout, followRedirect);
-  return `res <- httpDELETE("${url}", ${optionsSnipppet})\n`;
+  if (optionsSnipppet !== '') {
+    return `res <- httpDELETE("${url}", ${optionsSnipppet})\n`;
+  }
+  return `res <- httpDELETE("${url}")\n`;
+}
+
+/**
+  * Creates the snippet request with get rul content for other verbs than
+  * POST, PUT, DELETE, and GET
+  *
+  * @module convert
+  *
+  * @param  {string} url - string url of the service
+  * @param  {boolean} hasParams - wheter or not include the params
+  * @param  {boolean} hasHeaders - wheter or not include the headers
+  * @param  {number} requestTimeout - the request timeout
+  * @param  {boolean} followRedirect - follow redirect from options
+  * @param  {string} httpMethod - http method of the request
+  * @returns {String} - returns generated snippet
+  */
+function getSnippetURLContent (url, hasParams, hasHeaders, requestTimeout, followRedirect, httpMethod) {
+  let optionsSnipppet = buildOptionsSnippet(hasParams, hasHeaders, requestTimeout, followRedirect);
+  if (optionsSnipppet !== '') {
+    return `res <- getURLContent("${url}", customrequest = "${httpMethod}", ${optionsSnipppet})\n`;
+  }
+  return `res <- getURLContent("${url}", customrequest = "${httpMethod}")\n`;
 }
 
 /**
@@ -322,12 +360,12 @@ function getSnippetRequest (url, method, style, hasParams, hasHeaders, contentTy
     return getSnippetPostFormInOptions(url, 'post', hasParams, hasHeaders, requestTimeout, followRedirect);
   }
   if (methodUC === 'PUT') {
-    return getSnippetPut(url, hasHeaders, requestTimeout, followRedirect);
+    return getSnippetPut(url, hasParams, hasHeaders, requestTimeout, followRedirect);
   }
   if (methodUC === 'DELETE') {
     return getSnippetDelete(url, hasParams, hasHeaders, requestTimeout, followRedirect);
   }
-  return '';
+  return getSnippetURLContent(url, hasParams, hasHeaders, requestTimeout, followRedirect, methodUC);
 }
 
 /**
@@ -451,5 +489,8 @@ module.exports = {
   addContentTypeHeader,
   buildOptionsSnippet,
   groupHeadersSameKey,
-  getIndentation
+  getIndentation,
+  getSnippetPut,
+  getSnippetDelete,
+  getSnippetURLContent
 };
