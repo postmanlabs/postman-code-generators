@@ -24,7 +24,7 @@ describe('convert function', function () {
     const collection = new sdk.Collection(JSON.parse(
       fs.readFileSync(path.resolve(__dirname, './fixtures/sample_collection.json').toString())));
     // collection.items.members.forEach((item) => {
-    convert(collection.items.members[14].request, { requestTimeout: 5000}, function (err, snippet) {
+    convert(collection.items.members[34].request, { }, function (err, snippet) {
       if (err) {
         console.error(err);
       }
@@ -167,7 +167,7 @@ describe('getSnippetRequest function', function () {
   });
 
   it('should generate snippet method GET with follow location in false', function () {
-    const expected = 'res <- getURL("https://postman-echo.com/headers", .opts=list(followlocation = FALSE))\n',
+    const expected = 'res <- getURL("https://postman-echo.com/headers")\n',
       res = getSnippetRequest('https://postman-echo.com/headers', 'GET', '', false, false,
         undefined, undefined, 0, false);
     expect(res).to.equal(expected);
@@ -197,7 +197,7 @@ describe('getSnippetRequest function', function () {
 
   it('should generate snippet method POST for form data encoded with params and not follow location', function () {
     const expected = 'res <- postForm("https://postman-echo.com/post",' +
-    ' .params = params, .opts=list(followlocation = FALSE), style = "post")\n',
+    ' .params = params, style = "post")\n',
       res = getSnippetRequest('https://postman-echo.com/post', 'POST', 'post',
         true, false, 'multipart/form-data', {}, 0, false);
     expect(res).to.equal(expected);
@@ -245,7 +245,7 @@ describe('getSnippetPostFormInParams method', function () {
 
   it('should generate snippet method POST with params no headers, post style timeout no follow location', function () {
     const expected = 'res <- postForm("https://postman-echo.com/post",' +
-      ' .params = params, .opts=list(timeout.ms = 5000, followlocation = FALSE), style = "post")\n',
+      ' .params = params, .opts=list(timeout.ms = 5000), style = "post")\n',
       res = getSnippetPostFormInParams('https://postman-echo.com/post', 'post', true, false, 5000, false);
     expect(res).to.equal(expected);
   });
@@ -409,12 +409,12 @@ describe('buildOptionsSnippet method', function () {
 
   it('should return options for params headers timeout and follow redirect on false', function () {
     const result = buildOptionsSnippet(true, true, 5000, false);
-    expect(result).to.equal('postfields = params, httpheader = headers, timeout.ms = 5000, followlocation = FALSE');
+    expect(result).to.equal('postfields = params, httpheader = headers, timeout.ms = 5000');
   });
 
   it('should return options for headers timeout and follow redirect on false', function () {
     const result = buildOptionsSnippet(false, true, 5000, false);
-    expect(result).to.equal('httpheader = headers, timeout.ms = 5000, followlocation = FALSE');
+    expect(result).to.equal('httpheader = headers, timeout.ms = 5000');
   });
 
 });
@@ -457,19 +457,19 @@ describe('getIndentation function', function () {
 describe('getSnippetPut method', function () {
   it('should return put snippet with params headers and follow location false', function () {
     const result = getSnippetPut('url', true, true, 0, false);
-    expect(result).to.equal('res <- httpPUT("url", params, httpheader = headers, followlocation = FALSE)\n');
+    expect(result).to.equal('res <- httpPUT("url", params, httpheader = headers)\n');
   });
   it('should return put snippet without params headers and follow location false', function () {
     const result = getSnippetPut('url', false, true, 0, false);
-    expect(result).to.equal('res <- httpPUT("url", httpheader = headers, followlocation = FALSE)\n');
+    expect(result).to.equal('res <- httpPUT("url", httpheader = headers)\n');
   });
   it('should return put snippet with params and no options', function () {
     const result = getSnippetPut('url', true, false, 0, true);
-    expect(result).to.equal('res <- httpPUT("url", params)\n');
+    expect(result).to.equal('res <- httpPUT("url", params, followlocation = TRUE)\n');
   });
   it('should return put snippet without params and no options', function () {
     const result = getSnippetPut('url', false, false, 0, true);
-    expect(result).to.equal('res <- httpPUT("url")\n');
+    expect(result).to.equal('res <- httpPUT("url", followlocation = TRUE)\n');
   });
 });
 
@@ -477,11 +477,11 @@ describe('getSnippetDelete method', function () {
   it('should return delete snippet with params headers and follow location false', function () {
     const result = getSnippetDelete('url', true, true, 0, false);
     expect(result).to.equal(
-      'res <- httpDELETE("url", postfields = params, httpheader = headers, followlocation = FALSE)\n');
+      'res <- httpDELETE("url", postfields = params, httpheader = headers)\n');
   });
   it('should return delete snippet withoutout params and options', function () {
     const result = getSnippetDelete('url', false, false, 0, true);
-    expect(result).to.equal('res <- httpDELETE("url")\n');
+    expect(result).to.equal('res <- httpDELETE("url", followlocation = TRUE)\n');
   });
 });
 
@@ -490,12 +490,12 @@ describe('getSnippetURLContent method', function () {
     const result = getSnippetURLContent('url', true, true, 0, false, 'PATCH');
     expect(result).to.equal(
       'res <- getURLContent("url", customrequest = "PATCH", postfields = params, ' +
-      'httpheader = headers, followlocation = FALSE)\n');
+      'httpheader = headers)\n');
   });
 
   it('should return delete snippet for PATCH withoutout params and options', function () {
     const result = getSnippetURLContent('url', false, false, 0, true, 'PATCH');
-    expect(result).to.equal('res <- getURLContent("url", customrequest = "PATCH")\n');
+    expect(result).to.equal('res <- getURLContent("url", customrequest = "PATCH", followlocation = TRUE)\n');
   });
 });
 

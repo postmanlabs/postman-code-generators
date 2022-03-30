@@ -33,7 +33,7 @@ function groupHeadersSameKey (headerArray) {
   * @returns {string} the snippet headers (uses)
   */
 function getSnippetHeader () {
-  return 'library(RCurl)\n';
+  return 'library(RCurl)\noptions(warn=-1)\n';
 }
 
 /**
@@ -157,8 +157,8 @@ function buildOptionsSnippet (hasParams, hasHeaders, requestTimeout, followRedir
   if (requestTimeout && requestTimeout !== 0) {
     options.push({ key: 'timeout.ms', value: requestTimeout });
   }
-  if (followRedirect === false) {
-    options.push({ key: 'followlocation', value: 'FALSE' });
+  if (followRedirect === true) {
+    options.push({ key: 'followlocation', value: 'TRUE' });
   }
   mappedArray = options.map((entry) => {
     return `${entry.key} = ${entry.value}`;
@@ -175,7 +175,7 @@ function buildOptionsSnippet (hasParams, hasHeaders, requestTimeout, followRedir
   * @returns {String} - returns generated snippet
   */
 function buildFileRequestSnippet (filesInfo) {
-  if (!filesInfo) {
+  if (!filesInfo || filesInfo.numberOfFiles === 0) {
     return '';
   }
   let files = [];

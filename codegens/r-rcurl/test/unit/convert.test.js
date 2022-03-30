@@ -66,7 +66,7 @@ describe('convert function', function () {
           console.error(err);
         }
         expect(snippet).to.not.be.empty;
-        expect(snippet).to.include('followlocation = FALSE');
+        expect(snippet).to.not.include('followlocation = FALSE');
       });
     });
     done();
@@ -79,7 +79,7 @@ describe('convert function', function () {
           console.error(err);
         }
         expect(snippet).to.not.be.empty;
-        expect(snippet).to.not.include('followlocation = TRUE');
+        expect(snippet).to.include('followlocation = TRUE');
       });
     });
     done();
@@ -92,7 +92,7 @@ describe('convert function', function () {
           console.error(err);
         }
         expect(snippet).to.not.be.empty;
-        expect(snippet).to.not.include('followlocation');
+        expect(snippet).to.include('followlocation');
       });
     });
     done();
