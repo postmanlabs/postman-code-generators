@@ -33,6 +33,32 @@ describe('convert function', function () {
     done();
   });
 
+  it('should convert requests with requestTimeout option not present', function (done) {
+    collection.items.members.forEach((item) => {
+      convert(item.request, { }, function (err, snippet) {
+        if (err) {
+          console.error(err);
+        }
+        expect(snippet).to.not.be.empty;
+        expect(snippet).to.not.include('\'timeout\'');
+      });
+    });
+    done();
+  });
+
+  it('should convert requests with requestTimeout option set as 0', function (done) {
+    collection.items.members.forEach((item) => {
+      convert(item.request, { requestTimeout: 0 }, function (err, snippet) {
+        if (err) {
+          console.error(err);
+        }
+        expect(snippet).to.not.be.empty;
+        expect(snippet).to.not.include('\'timeout\' => 0');
+      });
+    });
+    done();
+  });
+
   it('should convert requests with followRedirect option set as false', function (done) {
     collection.items.members.forEach((item) => {
       convert(item.request, { followRedirect: false }, function (err, snippet) {
@@ -41,6 +67,32 @@ describe('convert function', function () {
         }
         expect(snippet).to.not.be.empty;
         expect(snippet).to.include('followlocation = FALSE');
+      });
+    });
+    done();
+  });
+
+  it('should convert requests with followRedirect option set as true', function (done) {
+    collection.items.members.forEach((item) => {
+      convert(item.request, { followRedirect: true }, function (err, snippet) {
+        if (err) {
+          console.error(err);
+        }
+        expect(snippet).to.not.be.empty;
+        expect(snippet).to.not.include('followlocation = TRUE');
+      });
+    });
+    done();
+  });
+
+  it('should convert requests with followRedirect option not present', function (done) {
+    collection.items.members.forEach((item) => {
+      convert(item.request, { }, function (err, snippet) {
+        if (err) {
+          console.error(err);
+        }
+        expect(snippet).to.not.be.empty;
+        expect(snippet).to.not.include('followlocation');
       });
     });
     done();
