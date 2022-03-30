@@ -40,4 +40,4 @@ typings/
 
 out/
 
-fixtures/snippet.r
+test/unit/fixtures/snippet.r
