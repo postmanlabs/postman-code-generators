@@ -17,6 +17,7 @@ Convert function takes three parameters
     * `indentCount` - The number of indentation characters to add per code level
     * `trimRequestBody` - Whether or not request body fields should be trimmed
     * `followRedirect` : Boolean denoting whether to redirect a request (default: true)
+    * `ignoreWarnings` : Add code to ignore R warnings (default: false)
 
 * `callback` - callback function with first parameter as error and second parameter as string for code snippet
 

@@ -14,6 +14,9 @@ var expect = require('chai').expect,
   },
   {
     4: 'followRedirect'
+  },
+  {
+    5: 'ignoreWarnings'
   }
   ];
 

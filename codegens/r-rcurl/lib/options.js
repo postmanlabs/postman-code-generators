@@ -38,6 +38,13 @@ const options = [
     type: 'boolean',
     default: true,
     description: 'Automatically follow HTTP redirects'
+  },
+  {
+    name: 'Ignore warnings',
+    id: 'ignoreWarnings',
+    type: 'boolean',
+    default: false,
+    description: 'Ignore warnings from R'
   }
 ];
 

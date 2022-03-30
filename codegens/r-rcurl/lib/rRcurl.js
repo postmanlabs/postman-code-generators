@@ -29,11 +29,15 @@ function groupHeadersSameKey (headerArray) {
   * Returns the snippet header
   *
   * @module convert
-  *
+ * @param  {boolean} ignoreWarnings - option to add code for ignoring warnings
   * @returns {string} the snippet headers (uses)
   */
-function getSnippetHeader () {
-  return 'library(RCurl)\noptions(warn=-1)\n';
+function getSnippetHeader (ignoreWarnings) {
+  if (ignoreWarnings) {
+    return 'library(RCurl)\noptions(warn=-1)\n';
+  }
+  return 'library(RCurl)\n';
+
 }
 
 /**
@@ -441,10 +445,11 @@ function convert (request, options, callback) {
     indentation = getIndentation(options),
     connectionTimeout = options.requestTimeout,
     followRedirect = options.followRedirect,
+    ignoreWarnings = options.ignoreWarnings,
     contentTypeHeaderValue = request.headers.get('Content-Type'),
     url = getRequestURL(request),
     snippetHeaders = getSnippetHeaders(getRequestHeaders(request), indentation),
-    snippetHeader = getSnippetHeader(),
+    snippetHeader = getSnippetHeader(ignoreWarnings),
     snippetFooter = getSnippetFooter();
   snippetBody = parseBody(request.body, indentation, getBodyTrim(options), contentTypeHeaderValue);
   if (typeof snippetBody === 'string') {

@@ -11,7 +11,8 @@ describe('R-Rcurl Converter', function () {
       },
       options = {
         indentType: 'Space',
-        indentCount: 4
+        indentCount: 4,
+        ignoreWarnings: true
       };
     runNewmanTest(convert, options, testConfig);
   });
