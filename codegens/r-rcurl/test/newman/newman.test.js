@@ -5,7 +5,7 @@ var runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').ru
 describe('R-Rcurl Converter', function () {
   describe('Convert for different types of request', function () {
     var testConfig = {
-        runScript: 'rscript codesnippet.r',
+        runScript: 'Rscript codesnippet.r',
         fileName: 'codesnippet.r',
         compileScript: null
       },
