@@ -1,5 +1,5 @@
 {
-  "name": "r-httr",
+  "name": "@postman/codegen-r-httr",
   "version": "0.0.1",
   "description": "Converts Postman SDK Requests to swift code snippet",
   "main": "index.js",
