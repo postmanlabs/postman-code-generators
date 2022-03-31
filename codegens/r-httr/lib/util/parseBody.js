@@ -179,24 +179,6 @@ function buildFormDataParamFile (data, indentation, bodyTrim) {
 }
 
 /**
- * Groups the params in the request by form, in case that there are multiple forms and multiple files
- *
- * @param {array} paramsList The params in the request
- */
-function groupParamsByForm (paramsList) {
-  let forms = {};
-  paramsList.forEach((param) => {
-    if (forms.hasOwnProperty(param.key)) {
-      forms[param.key].push(param);
-    }
-    else {
-      forms[param.key] = [param];
-    }
-  });
-  return Object.values(forms);
-}
-
-/**
  * builds a data param
  *
  * @param {Object} body body object from request.

@@ -169,15 +169,17 @@ function getEncodeSnippetByMode (mode) {
   * @param  {boolean} hasHeaders - wheter or not include the headers
   * @param  {string} methodUC - The method upper cased
   * @param  {string} mode - the request body mode
+  * @param  {number} requestTimeout - The request timeout in the options
   * @returns {String} - returns generated snippet
   */
-function getSnippetPostPutOrPatchForm (url, hasParams, hasHeaders, methodUC, mode) {
+function getSnippetPostPutOrPatchForm (url, hasParams, hasHeaders, methodUC, mode, requestTimeout = 0) {
   let paramsSnippet = hasParams ? ', body = body' : '',
     headersSnippet = hasHeaders ? ', add_headers(headers)' : '',
-    encodeSnippet = getEncodeSnippetByMode(mode);
+    encodeSnippet = getEncodeSnippetByMode(mode),
+    timeoutSnippet = requestTimeout ? `, timeout(${requestTimeout})` : '';
 
   return `res <- ${methodUC}("${url}"` +
-    `${paramsSnippet}${headersSnippet}${encodeSnippet})\n`;
+    `${paramsSnippet}${headersSnippet}${encodeSnippet}${timeoutSnippet})\n`;
 }
 
 /**
@@ -188,11 +190,13 @@ function getSnippetPostPutOrPatchForm (url, hasParams, hasHeaders, methodUC, mod
   * @param  {string} url - string url of the service
   * @param  {string} hasHeaders - wheter or not include the headers
   * @param  {string} methodUC - the request method upper cased
+  * @param  {number} requestTimeout - the request timeout from options
   * @returns {String} - returns generated snippet
   */
-function getSnippetGetOrDeleteURL (url, hasHeaders, methodUC) {
-  let headersSnippet = hasHeaders ? ', add_headers(headers)' : '';
-  return `res <- ${methodUC}("${url}"${headersSnippet})\n`;
+function getSnippetGetOrDeleteURL (url, hasHeaders, methodUC, requestTimeout = 0) {
+  let headersSnippet = hasHeaders ? ', add_headers(headers)' : '',
+    requestTimeoutSnippet = requestTimeout === 0 ? '' : `, timeout(${requestTimeout})`;
+  return `res <- ${methodUC}("${url}"${headersSnippet}${requestTimeoutSnippet})\n`;
 }
 
 /**
@@ -200,21 +204,22 @@ function getSnippetGetOrDeleteURL (url, hasHeaders, methodUC) {
   *
   * @module convert
   *
-  * @param  {string} url - string url of the service
-  * @param  {string} method - request http method
-  * @param  {boolean} hasParams - wheter or not include the params
-  * @param  {boolean} hasHeaders - wheter or not include the headers
-  * @param  {string} mode - the request body mode
+  * @param  {object} requestData - an object that includes:
+  * {string} method - request http method
+  * {boolean} hasParams - wheter or not include the params
+  * {boolean} hasHeaders - wheter or not include the headers
+  * {string} mode - the request body mode
+  * {number} requestTimeout - The request timeout from the options
   * @returns {String} - returns generated snippet
   */
-function getSnippetRequest (url, method, hasParams, hasHeaders, mode) {
+function getSnippetRequest ({url, method, hasParams, hasHeaders, mode, requestTimeout}) {
   const methodUC = method.toUpperCase();
   let snippetRequest = '';
   if (methodUC === 'GET' || methodUC === 'DELETE') {
-    snippetRequest = getSnippetGetOrDeleteURL(url, hasHeaders, methodUC);
+    snippetRequest = getSnippetGetOrDeleteURL(url, hasHeaders, methodUC, requestTimeout);
   }
   if (methodUC === 'POST' || methodUC === 'PUT' || methodUC === 'PATCH') {
-    snippetRequest = getSnippetPostPutOrPatchForm(url, hasParams, hasHeaders, methodUC, mode);
+    snippetRequest = getSnippetPostPutOrPatchForm(url, hasParams, hasHeaders, methodUC, mode, requestTimeout);
   }
   return snippetRequest;
 }
@@ -258,7 +263,14 @@ function convert (request, options, callback) {
     snippetHeader = getSnippetHeader(),
     snippetFooter = getSnippetFooter(),
     snippetbody = parseBody(request.body, indentation, getBodyTrim(options), request.headers.get('Content-Type')),
-    snippetRequest = getSnippetRequest(url, method, snippetbody !== '', snippetHeaders !== '', mode);
+    snippetRequest = getSnippetRequest({
+      url: url,
+      method: method,
+      hasParams: snippetbody !== '',
+      hasHeaders: snippetHeaders !== '',
+      mode: mode,
+      requestTimeout: options.requestTimeout
+    });
 
   snippet += snippetHeader;
   snippet += snippetHeaders;
@@ -283,5 +295,6 @@ module.exports = {
   getSnippetHeaders,
   getSnippetPostPutOrPatchForm,
   getSnippetGetOrDeleteURL,
-  getSnippetRequest
+  getSnippetRequest,
+  getIndentation
 };

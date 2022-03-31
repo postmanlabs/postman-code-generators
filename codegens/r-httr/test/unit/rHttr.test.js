@@ -7,7 +7,8 @@ var expect = require('chai').expect,
     getSnippetHeaders,
     getSnippetPostPutOrPatchForm,
     getSnippetGetOrDeleteURL,
-    getSnippetRequest
+    getSnippetRequest,
+    getIndentation
   } = require('../../lib/rHttr');
 
 describe('convert function', function () {
@@ -21,6 +22,22 @@ describe('convert function', function () {
         console.error(err);
       }
       expect(snippet).to.not.be.empty;
+      fs.writeFileSync(path.join(__dirname, './fixtures/snippet.r'), snippet);
+    });
+    // });
+    done();
+  });
+
+  it('should convert a simple get request with timeout', function (done) {
+    const collection = new sdk.Collection(JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, './fixtures/sample_collection.json').toString())));
+    // collection.items.members.forEach((item) => {
+    convert(collection.items.members[1].request, { requestTimeout: 3 }, function (err, snippet) {
+      if (err) {
+        console.error(err);
+      }
+      expect(snippet).to.not.be.empty;
+      expect(snippet.includes('timeout(3)')).to.be.true;
       fs.writeFileSync(path.join(__dirname, './fixtures/snippet.r'), snippet);
     });
     // });
@@ -172,7 +189,27 @@ describe('getSnippetPostPutOrPatchForm function', function () {
   it('should generate postForm snippet without params with headers and post style', function () {
     const expected = 'res <- POST("https://postman-echo.com/post"' +
       ', add_headers(headers), encode = \'form\')\n',
-      res = getSnippetPostPutOrPatchForm('https://postman-echo.com/post', false, true, 'POST', 'urlencoded');
+      res = getSnippetPostPutOrPatchForm(
+        'https://postman-echo.com/post',
+        false,
+        true,
+        'POST',
+        'urlencoded'
+      );
+    expect(res).to.equal(expected);
+  });
+
+  it('should generate postForm snippet without params with headers and post style', function () {
+    const expected = 'res <- POST("https://postman-echo.com/post"' +
+      ', add_headers(headers), encode = \'form\', timeout(3))\n',
+      res = getSnippetPostPutOrPatchForm(
+        'https://postman-echo.com/post',
+        false,
+        true,
+        'POST',
+        'urlencoded',
+        3
+      );
     expect(res).to.equal(expected);
   });
 
@@ -191,20 +228,60 @@ describe('getSnippetGetOrDeleteURL function', function () {
       res = getSnippetGetOrDeleteURL('https://postman-echo.com/headers', false, 'GET');
     expect(res).to.equal(expected);
   });
+
+  it('should generate GET snippet with timeout', function () {
+    const expected = 'res <- GET("https://postman-echo.com/headers", timeout(3))\n',
+      res = getSnippetGetOrDeleteURL('https://postman-echo.com/headers', false, 'GET', 3);
+    expect(res).to.equal(expected);
+  });
 });
 
 describe('getSnippetRequest function', function () {
 
   it('should generate snippet method GET with headers', function () {
     const expected = 'res <- GET("https://postman-echo.com/headers", add_headers(headers))\n',
-      res = getSnippetRequest('https://postman-echo.com/headers', 'GET', false, true);
+      res = getSnippetRequest({
+        url: 'https://postman-echo.com/headers',
+        method: 'GET',
+        hasParams: false,
+        hasHeaders: true
+      });
     expect(res).to.equal(expected);
   });
 
   it('should generate snippet method GET without headers', function () {
     const expected = 'res <- GET("https://postman-echo.com/headers")\n',
-      res = getSnippetRequest('https://postman-echo.com/headers', 'GET', false, false);
+      res = getSnippetRequest({
+        url: 'https://postman-echo.com/headers',
+        method: 'GET',
+        hasParams: false,
+        hasHeaders: false
+      });
     expect(res).to.equal(expected);
   });
 
+  it('should generate snippet method GET without headers and timeout', function () {
+    const expected = 'res <- GET("https://postman-echo.com/headers", timeout(3))\n',
+      res = getSnippetRequest({
+        url: 'https://postman-echo.com/headers',
+        method: 'GET',
+        hasParams: false,
+        hasHeaders: false,
+        requestTimeout: 3
+      });
+    expect(res).to.equal(expected);
+  });
+
+});
+
+describe('getIndentation method', function () {
+  it('should return two spaces', function () {
+    const options = {
+        indentType: 'Space',
+        indentCount: 2
+      },
+      expected = '  ',
+      result = getIndentation(options);
+    expect(result).to.be.equal(expected);
+  });
 });

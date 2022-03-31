@@ -31,21 +31,6 @@ const options = [
     description:
       'Set number of milliseconds the request should wait for a response' +
       ' before timing out (use 0 for infinity)'
-  },
-  {
-    name: 'Follow redirects',
-    id: 'followRedirect',
-    type: 'boolean',
-    default: true,
-    description: 'Automatically follow HTTP redirects'
-  },
-  {
-    name: 'Set communication type',
-    id: 'asyncType',
-    type: 'enum',
-    availableOptions: ['async', 'sync'],
-    default: 'async',
-    description: 'Set if the requests will be asynchronous or synchronous'
   }
 ];
 
