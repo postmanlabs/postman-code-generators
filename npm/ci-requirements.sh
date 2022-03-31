@@ -85,6 +85,7 @@ echo "Installing dependencies required for tests in codegens/php-guzzle"
 echo "Installing dependencies required for tests in codegens/r-rCurl Installing R"
 sudo apt-get update -qq
 sudo apt-get install --no-install-recommends software-properties-common dirmngr
+wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
 sudo add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran40/"
 sudo apt-get update
 sudo apt-get install --no-install-recommends r-base
