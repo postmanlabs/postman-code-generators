@@ -82,4 +82,4 @@ sudo apt-get update
 sudo apt-get install r-base
 
 echo "Installing RCurl"
-R --vanilla -e 'install.packages("RCurl", version="1.98.1.6", repos="http://cran.us.r-project.org")'
+sudo R --vanilla -e 'install.packages("RCurl", version="1.98.1.6", repos="http://cran.us.r-project.org")'
