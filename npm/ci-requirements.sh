@@ -83,12 +83,11 @@ echo "Installing dependencies required for tests in codegens/php-guzzle"
   composer global require guzzlehttp/guzzle:7.4.1
   
 echo "Installing dependencies required for tests in codegens/r-rCurl Installing R"
-sudo apt-get update -qq
-sudo apt-get install --no-install-recommends software-properties-common dirmngr
-wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
-sudo add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran40/"
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+sudo add-apt-repository 'deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/-cran40/'
 sudo apt-get update
-sudo apt-get install --no-install-recommends r-base
+sudo apt-get install r-base
+
 
 echo "Installing RCurl"
 sudo R --vanilla -e 'install.packages("RCurl", version="1.98.1.6", repos="http://cran.us.r-project.org")'
