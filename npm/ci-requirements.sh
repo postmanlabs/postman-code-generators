@@ -75,7 +75,14 @@ dependencies:
   dart pub get
 popd &>/dev/null;
 
-echo "Installing R"
+echo "Installing dependencies required for tests in codegens/php-guzzle"
+  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  php composer-setup.php
+  php -r "unlink('composer-setup.php');"
+  sudo mv composer.phar /usr/bin/composer
+  composer global require guzzlehttp/guzzle:7.4.1
+  
+echo "Installing dependencies required for tests in codegens/r-rCurl Installing R"
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
 sudo add-apt-repository 'deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/'
 sudo apt-get update

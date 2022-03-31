@@ -100,6 +100,7 @@ const expectedOptions = {
     'useMimeType',
     'ES6_enabled',
     'quoteType',
+    'asyncType',
     'ignoreWarnings'
   ],
   CODEGEN_ABS_PATH = `./codegens/${codegen}`;
