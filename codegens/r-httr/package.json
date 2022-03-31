@@ -6,8 +6,8 @@
   "com_postman_plugin": {
     "type": "code_generator",
     "lang": "r",
-    "variant": "<<VARIANT>>",
-    "syntax_mode": "<<SYNTAX_MODE>>"
+    "variant": "httr",
+    "syntax_mode": "r"
   },
   "directories": {
     "lib": "lib",
@@ -24,7 +24,7 @@
   },
   "author": "$AUTHOR_NAME",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/<<CODEGEN_NAME>>",
+  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/r-httr",
   "dependencies": {},
   "devDependencies": {},
   "engines": {

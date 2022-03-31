@@ -12,7 +12,7 @@ describe('r-httr Converter', function () {
         // filename along with the appropriate version of the file. This file will be used to run the snippet.
         fileName: 'snippet.r',
         // Run script required to run the generated code snippet
-        runScript: 'RScript snippet.r',
+        runScript: 'Rscript snippet.r',
         skipCollections: ['redirectCollection']
       };
     runNewmanTest(convert, options, testConfig);

@@ -89,4 +89,4 @@ echo "Installing dependencies required for tests in codegens/r-rCurl and r-httr 
   sudo apt-get install r-base
 
 echo "Installing httr"
-R --vanilla -e 'install.packages("httr", version="1.4.2", repos="http://cran.us.r-project.org")'
+  sudo R --vanilla -e 'install.packages("httr", version="1.4.2", repos="http://cran.us.r-project.org")'
