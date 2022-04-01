@@ -29,7 +29,7 @@
     "postman-collection": "3.6.9",
     "url":"0.11.0",
     "qcobjects-sdk":"2.3.30",
-    "qcobjects":"2.3.68",
+    "qcobjects":"2.3.69",
     "qcobjects-cli":"2.3.47"
   },
   "devDependencies": {
