@@ -44,6 +44,7 @@ List of supported code generators:
 | Shell | Httpie |
 | Shell | wget |
 | Swift | URLSession | 
+| QCObjects | QCObjects | 
 ## Table of contents 
 
 1. [Getting Started](#getting-started)
