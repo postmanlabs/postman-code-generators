@@ -127,7 +127,7 @@ describe('getSnippetRequest function', function () {
         url: 'https://postman-echo.com/headers',
         method: 'HEAD',
         hasParams: false,
-        hasHeaders: true
+        hasHeaders: false
       });
     expect(res).to.equal(expected);
   });
