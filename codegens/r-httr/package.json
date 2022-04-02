@@ -1,7 +1,7 @@
 {
   "name": "@postman/codegen-r-httr",
   "version": "0.0.1",
-  "description": "Converts Postman SDK Requests to swift code snippet",
+  "description": "Converts Postman SDK Requests to r-httr code snippet",
   "main": "index.js",
   "com_postman_plugin": {
     "type": "code_generator",
@@ -16,7 +16,8 @@
   "scripts": {
     "test": "node npm/test.js",
     "test-lint": "node npm/test-lint.js",
-    "test-newman": "node npm/test-newman.js"
+    "test-newman": "node npm/test-newman.js",
+    "test-unit": "node npm/test-unit.js"
   },
   "repository": {
     "type": "git",

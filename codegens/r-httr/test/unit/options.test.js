@@ -11,11 +11,6 @@ var expect = require('chai').expect,
   },
   {
     3: 'requestTimeout'
-  },
-  {
-    4: 'followRedirect'
-  }, {
-    5: 'asyncType'
   }
   ];
 

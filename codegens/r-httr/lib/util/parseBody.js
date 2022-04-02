@@ -103,7 +103,6 @@ function parseRawBody (body, indentation, bodyTrim, contentType) {
     }
   }
   else {
-    // bodySnippet += `"${sanitizeString(body.toString(), bodyTrim)}"`;
     bodySnippet += JSON.stringify(body.toString());
   }
   return bodySnippet;
@@ -167,14 +166,6 @@ function getContentFileFormData (data) {
  * @returns {String} snippet of the body generation
  */
 function buildFormDataParamFile (data, indentation, bodyTrim) {
-  // let name = `${indentation.repeat(2)}[\n${indentation.repeat(3)}` +
-  // `'name' => '${sanitizeString(data.key, bodyTrim)}',\n` +
-  //   `${indentation.repeat(3)}'contents' => ${getContentFileFormData(data)},\n` +
-  //   `${indentation.repeat(3)}'filename' => '${sanitizeString(data.src, bodyTrim)}',\n` +
-  //   `${indentation.repeat(3)}'headers'  => [\n` +
-  //   `${indentation.repeat(4)}'Content-Type' => '<Content-type header>'\n${indentation.repeat(3)}]\n` +
-  //   `${indentation.repeat(2)}]`;
-  // return name;
   return `${indentation}'${sanitizeString(data.key, bodyTrim)}' = upload_file('${getContentFileFormData(data)}')`;
 }
 

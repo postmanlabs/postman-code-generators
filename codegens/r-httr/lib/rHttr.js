@@ -89,7 +89,6 @@ function getRequestMethod (request) {
  * @returns {String} - array in the form of [ key => value ]
  */
 function getSnippetArray (mapToSnippetArray, indentation, sanitize) {
-  // mapToSnippetArray = groupHeadersSameKey(mapToSnippetArray);
   let mappedArray = mapToSnippetArray.map((entry) => {
     return `${indentation}'${sanitize ? sanitizeString(entry.key, true) : entry.key}' = ` +
     `${sanitize ? '\'' + sanitizeString(entry.value) + '\'' : entry.value}`;
@@ -172,31 +171,14 @@ function getEncodeSnippetByMode (mode) {
   * @param  {number} requestTimeout - The request timeout in the options
   * @returns {String} - returns generated snippet
   */
-function getSnippetPostPutOrPatchForm (url, hasParams, hasHeaders, methodUC, mode, requestTimeout = 0) {
+function getSnippetFromMethod (url, hasParams, hasHeaders, methodUC, mode, requestTimeout = 0) {
   let paramsSnippet = hasParams ? ', body = body' : '',
     headersSnippet = hasHeaders ? ', add_headers(headers)' : '',
     encodeSnippet = getEncodeSnippetByMode(mode),
     timeoutSnippet = requestTimeout ? `, timeout(${requestTimeout})` : '';
 
-  return `res <- ${methodUC}("${url}"` +
+  return `res <- VERB("${methodUC}", url = "${url}"` +
     `${paramsSnippet}${headersSnippet}${encodeSnippet}${timeoutSnippet})\n`;
-}
-
-/**
-  * Creates the snippet request for the getUrl method
-  *
-  * @module convert
-  *
-  * @param  {string} url - string url of the service
-  * @param  {string} hasHeaders - wheter or not include the headers
-  * @param  {string} methodUC - the request method upper cased
-  * @param  {number} requestTimeout - the request timeout from options
-  * @returns {String} - returns generated snippet
-  */
-function getSnippetGetOrDeleteURL (url, hasHeaders, methodUC, requestTimeout = 0) {
-  let headersSnippet = hasHeaders ? ', add_headers(headers)' : '',
-    requestTimeoutSnippet = requestTimeout === 0 ? '' : `, timeout(${requestTimeout})`;
-  return `res <- ${methodUC}("${url}"${headersSnippet}${requestTimeoutSnippet})\n`;
 }
 
 /**
@@ -215,11 +197,8 @@ function getSnippetGetOrDeleteURL (url, hasHeaders, methodUC, requestTimeout = 0
 function getSnippetRequest ({url, method, hasParams, hasHeaders, mode, requestTimeout}) {
   const methodUC = method.toUpperCase();
   let snippetRequest = '';
-  if (methodUC === 'GET' || methodUC === 'DELETE') {
-    snippetRequest = getSnippetGetOrDeleteURL(url, hasHeaders, methodUC, requestTimeout);
-  }
-  if (methodUC === 'POST' || methodUC === 'PUT' || methodUC === 'PATCH') {
-    snippetRequest = getSnippetPostPutOrPatchForm(url, hasParams, hasHeaders, methodUC, mode, requestTimeout);
+  if (methodUC && methodUC !== '') {
+    snippetRequest = getSnippetFromMethod(url, hasParams, hasHeaders, methodUC, mode, requestTimeout);
   }
   return snippetRequest;
 }
@@ -293,8 +272,7 @@ module.exports = {
 
   convert,
   getSnippetHeaders,
-  getSnippetPostPutOrPatchForm,
-  getSnippetGetOrDeleteURL,
+  getSnippetFromMethod,
   getSnippetRequest,
   getIndentation
 };
