@@ -361,7 +361,7 @@ function getSnippetRequest (url, method, style, hasParams, hasHeaders, contentTy
       filesInfo);
   }
   if (methodUC === 'POST') {
-    return getSnippetPostFormInOptions(url, 'post', hasParams, hasHeaders, requestTimeout, followRedirect);
+    return getSnippetPostFormInOptions(url, style, hasParams, hasHeaders, requestTimeout, followRedirect);
   }
   if (methodUC === 'PUT') {
     return getSnippetPut(url, hasParams, hasHeaders, requestTimeout, followRedirect);
@@ -447,7 +447,7 @@ function convert (request, options, callback) {
     followRedirect = options.followRedirect,
     ignoreWarnings = options.ignoreWarnings,
     contentTypeHeaderValue = request.headers.get('Content-Type'),
-    url = getRequestURL(request),
+    url = sanitizeString(getRequestURL(request)),
     snippetHeaders = getSnippetHeaders(getRequestHeaders(request), indentation),
     snippetHeader = getSnippetHeader(ignoreWarnings),
     snippetFooter = getSnippetFooter();
