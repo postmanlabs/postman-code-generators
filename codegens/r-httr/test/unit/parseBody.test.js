@@ -15,7 +15,7 @@ describe('parseBody function', function () {
       body = collection.items.members[8].request.body,
       indentation = '  ',
       bodyTrim = false,
-      expectedBody = 'body = \'{\n  "json": "Test-Test"\n}\';\n';
+      expectedBody = 'body = \'{\n  "json": "Test-Test"\n}\';\n\n';
     let bodySnippet = parseBody(body, indentation, bodyTrim, 'application/json');
     expect(bodySnippet).to.equal(expectedBody);
   });
@@ -26,7 +26,7 @@ describe('parseBody function', function () {
       body = collection.items.members[8].request.body,
       indentation = '   ',
       bodyTrim = false,
-      expectedBody = 'body = \'{\n   "json": "Test-Test"\n}\';\n';
+      expectedBody = 'body = \'{\n   "json": "Test-Test"\n}\';\n\n';
     let bodySnippet = parseBody(body, indentation, bodyTrim, 'application/json');
     expect(bodySnippet).to.equal(expectedBody);
   });
@@ -37,7 +37,7 @@ describe('parseBody function', function () {
       body = collection.items.members[10].request.body,
       indentation = '   ',
       bodyTrim = false,
-      expectedBody = 'body = "<xml>\n\tTest Test\n</xml>"\n';
+      expectedBody = 'body = "<xml>\n\tTest Test\n</xml>"\n\n';
     let bodySnippet = parseBody(body, indentation, bodyTrim, 'application/json');
     expect(bodySnippet).to.equal(expectedBody);
   });
@@ -53,7 +53,7 @@ describe('parseBody function', function () {
       '  \'"4"      \' = \'d      \',\n' +
       '  \'Special\' = \'!@#$%&*()^_=`~\',\n' +
       '  \'more\' = \',./\\\';[]}{":?><|\\\\\\\\\'\n' +
-      ')\n',
+      ')\n\n',
       result = parseBody(body, indentation, bodyTrim, 'application/x-www-form-urlencoded');
     expect(result).to.equal(expectedBody);
 
@@ -72,7 +72,7 @@ describe('parseBody function', function () {
       '  \'sa\' = \'d\',\n' +
       '  \'Special    \' = \'!@#$%&*()^_+=`~    \',\n' +
       '  \'more\' = \',./\\\';[]}{":?><|\\\\\\\\\'\n' +
-      ')\n',
+      ')\n\n',
       result = parseBody(body, indentation, bodyTrim, 'formdata');
     expect(result).to.equal(expectedBody);
 
@@ -86,7 +86,7 @@ describe('parseBody function', function () {
       bodyTrim = false,
       expectedBody = 'body = list(\n' +
       '  \'test-file\' = upload_file(\'/path/to/file\')\n' +
-      ')\n',
+      ')\n\n',
       result = parseBody(body, indentation, bodyTrim, 'formdata');
     expect(result).to.equal(expectedBody);
 
@@ -98,7 +98,7 @@ describe('parseBody function', function () {
       body = collection.items.members[25].request.body,
       indentation = '  ',
       bodyTrim = false,
-      expectedBody = 'body = upload_file(\'<file contents here>\')\n',
+      expectedBody = 'body = upload_file(\'<file contents here>\')\n\n',
       result = parseBody(body, indentation, bodyTrim, 'formdata');
     expect(result).to.equal(expectedBody);
 
@@ -113,7 +113,7 @@ describe('parseBody function', function () {
       expectedBody = 'body = \'{"query":"{\\\\n  findScenes(\\\\n    filter: {per_page: 0}\\\\n   ' +
       ' scene_filter: {is_missing: \\\\"performers\\\\"}){\\\\n    count\\\\n    scenes' +
       ' {\\\\n      id\\\\n      title\\\\n      path\\\\n    }\\\\n  }\\\\n}","variables":' +
-      '{"variable_key":"variable_value"}}\'\n',
+      '{"variable_key":"variable_value"}}\'\n\n',
       result = parseBody(body, indentation, bodyTrim, 'graphql');
     expect(result).to.equal(expectedBody);
 
