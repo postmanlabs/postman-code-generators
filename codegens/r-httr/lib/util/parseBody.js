@@ -218,10 +218,10 @@ function parseGraphQL (body, bodyTrim) {
   catch (e) {
     graphqlVariables = {};
   }
-  bodySnippet = `'${sanitizeString(JSON.stringify({
-    query: query,
-    variables: graphqlVariables
-  }), bodyTrim)}'`;
+  bodySnippet = `'${sanitizeString(`{
+    query: ${query},
+    variables: ${graphqlVariables}
+  }`, bodyTrim)}'`;
   return bodySnippet;
 }
 
@@ -238,27 +238,27 @@ function processBodyModes (body, indentation, bodyTrim, contentType) {
   switch (body.mode) {
     case 'urlencoded': {
       bodySnippet = parseURLEncodedBody(body.urlencoded, indentation, bodyTrim);
-      return bodySnippet === '' ? '' : `body = ${bodySnippet}\n`;
+      return bodySnippet === '' ? '' : `body = ${bodySnippet}\n\n`;
     }
     case 'raw': {
       bodySnippet = parseRawBody(body.raw, indentation, bodyTrim, contentType);
-      return bodySnippet === '' ? '' : `body = ${bodySnippet}\n`;
+      return bodySnippet === '' ? '' : `body = ${bodySnippet}\n\n`;
     }
     case 'graphql': {
       bodySnippet = parseGraphQL(body.graphql, bodyTrim);
-      return bodySnippet === '' ? '' : `body = ${bodySnippet}\n`;
+      return bodySnippet === '' ? '' : `body = ${bodySnippet}\n\n`;
     }
     case 'formdata': {
       bodySnippet = parseFormData(body.formdata, indentation, bodyTrim);
-      return bodySnippet === '' ? '' : `body = ${bodySnippet}\n`;
+      return bodySnippet === '' ? '' : `body = ${bodySnippet}\n\n`;
     }
     case 'file': {
       bodySnippet = parseFromFile();
-      return bodySnippet === '' ? '' : `body = upload_file(${bodySnippet})\n`;
+      return bodySnippet === '' ? '' : `body = upload_file(${bodySnippet})\n\n`;
     }
     default: {
       bodySnippet = parseRawBody(body.raw, indentation, bodyTrim, contentType);
-      return bodySnippet === '' ? '' : `body = ${bodySnippet}\n`;
+      return bodySnippet === '' ? '' : `body = ${bodySnippet}\n\n`;
     }
   }
 }

@@ -11,7 +11,7 @@ const getOptions = require('./options').getOptions,
   * @returns {string} the snippet headers (uses)
   */
 function getSnippetHeader () {
-  return 'library(httr)\n';
+  return 'library(httr)\n\n';
 }
 
 /**
@@ -133,7 +133,7 @@ function getSnippetHeaders (headers, indentation) {
   if (headers.length > 0) {
     headers = headers.filter((header) => { return !header.disabled; });
     headers = groupHeadersSameKey(headers);
-    return `headers = ${getSnippetArray(headers, indentation, true)}\n`;
+    return `headers = ${getSnippetArray(headers, indentation, true)}\n\n`;
   }
   return '';
 }
@@ -178,7 +178,7 @@ function getSnippetFromMethod (url, hasParams, hasHeaders, methodUC, mode, reque
     timeoutSnippet = requestTimeout ? `, timeout(${requestTimeout})` : '';
 
   return `res <- VERB("${methodUC}", url = "${url}"` +
-    `${paramsSnippet}${headersSnippet}${encodeSnippet}${timeoutSnippet})\n`;
+    `${paramsSnippet}${headersSnippet}${encodeSnippet}${timeoutSnippet})\n\n`;
 }
 
 /**
