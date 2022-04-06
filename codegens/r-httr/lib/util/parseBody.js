@@ -218,10 +218,10 @@ function parseGraphQL (body, bodyTrim) {
   catch (e) {
     graphqlVariables = {};
   }
-  bodySnippet = `'${sanitizeString(`{
-    query: ${query},
-    variables: ${graphqlVariables}
-  }`, bodyTrim)}'`;
+  bodySnippet = `'${sanitizeString(JSON.stringify({
+    query: query,
+    variables: graphqlVariables
+  }), bodyTrim)}'`;
   return bodySnippet;
 }
 
