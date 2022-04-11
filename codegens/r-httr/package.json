@@ -5,9 +5,9 @@
   "main": "index.js",
   "com_postman_plugin": {
     "type": "code_generator",
-    "lang": "r",
+    "lang": "R",
     "variant": "httr",
-    "syntax_mode": "r"
+    "syntax_mode": "R"
   },
   "directories": {
     "lib": "lib",
