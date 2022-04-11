@@ -49,11 +49,11 @@ const options = [
 ];
 
 /**
- * Used in order to get options for generation of PHP-Guzzle code snippet
+ * Used in order to get options for generation of R-RCurl code snippet
  *
  * @module getOptions
  *
- * @returns {Array} Options specific to generation of PHP-Guzzlep code snippet
+ * @returns {Array} Options specific to generation of R-RCurl code snippet
  */
 function getOptions () {
   return options;
@@ -61,11 +61,11 @@ function getOptions () {
 
 module.exports = {
   /**
-   * Used in order to get options for generation of PHP-Guzzle code snippet
+   * Used in order to get options for generation of R-RCurl code snippet
    *
    * @module getOptions
    *
-   * @returns {Array} Options specific to generation of PHP-Guzzle code snippet
+   * @returns {Array} Options specific to generation of R-RCurl code snippet
    */
   getOptions
 };

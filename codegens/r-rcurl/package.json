@@ -1,13 +1,13 @@
 {
   "name": "@postman/codegen-r-rcurl",
   "version": "0.0.1",
-  "description": "Converts Postman SDK Requests to R-Curl code snippet",
+  "description": "Converts Postman SDK Requests to R-RCurl code snippet",
   "main": "index.js",
   "com_postman_plugin": {
     "type": "code_generator",
-    "lang": "r",
-    "variant": "rcurl",
-    "syntax_mode": "r"
+    "lang": "R",
+    "variant": "RCurl",
+    "syntax_mode": "R"
   },
   "directories": {
     "lib": "lib",

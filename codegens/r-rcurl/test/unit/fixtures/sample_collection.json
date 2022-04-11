@@ -1,6 +1,6 @@
 {
 	"info": {
-		"name": "Code-Gen Test PHP Guzzle",
+		"name": "Code-Gen Test R RCurl",
 		"_postman_id": "43058ce7-94da-0f0f-366e-22b77d566316",
 		"description": "This collection contains requests that will be used to test validity of plugin created to convert postman request into code snippet of particular language.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"

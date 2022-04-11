@@ -21,7 +21,7 @@ var expect = require('chai').expect,
   ];
 
 describe('getOptions function', function () {
-  it('should return array of options for PHP-Guzzle converter', function () {
+  it('should return array of options for R-RCurl converter', function () {
     expect(getOptions()).to.be.an('array');
   });
 
