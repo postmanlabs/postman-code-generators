@@ -90,3 +90,6 @@ echo "Installing dependencies required for tests in codegens/r-rCurl and r-httr 
 
 echo "Installing httr"
   sudo R --vanilla -e 'install.packages("httr", version="1.4.2", repos="http://cran.us.r-project.org")'
+
+echo "Installing RCurl"
+sudo R --vanilla -e 'install.packages("RCurl", version="1.98.1.6", repos="http://cran.us.r-project.org")'
