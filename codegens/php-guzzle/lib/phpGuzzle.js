@@ -147,7 +147,7 @@ function getSnippetBoilerplate (includeBoilerplate) {
       'use GuzzleHttp\\Psr7\\Utils;\n' +
       'use GuzzleHttp\\Psr7\\Request;\n';
   }
-  return '';
+  return '<?php\n';
 }
 
 /**

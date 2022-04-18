@@ -305,7 +305,7 @@ describe('getSnippetBoilerplate method', function () {
   });
 
   it('should return empty string for include option in false', function () {
-    const expected = '',
+    const expected = '<?php\n',
       result = getSnippetBoilerplate(false);
     expect(result).to.equal(expected);
   });
