@@ -24,7 +24,7 @@ pushd ./codegens/csharp-restsharp &>/dev/null;
   sudo apt-get install dotnet-sdk-2.2
   dotnet new console -o testProject
   pushd ./testProject &>/dev/null;
-  dotnet add package RestSharp
+  dotnet add package RestSharp --version 106.15.0
   popd &>/dev/null;
 popd &>/dev/null;
 
@@ -75,3 +75,21 @@ dependencies:
   dart pub get
 popd &>/dev/null;
 
+echo "Installing dependencies required for tests in codegens/php-guzzle"
+  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  php composer-setup.php
+  php -r "unlink('composer-setup.php');"
+  sudo mv composer.phar /usr/bin/composer
+  composer global require guzzlehttp/guzzle:7.4.1
+
+echo "Installing dependencies required for tests in codegens/r-rCurl and r-httr Installing R"
+  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+  sudo add-apt-repository 'deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial-cran40/'
+  sudo apt-get update
+  sudo apt-get install r-base
+
+echo "Installing httr"
+  sudo R --vanilla -e 'install.packages("httr", version="1.4.2", repos="http://cran.us.r-project.org")'
+
+echo "Installing RCurl"
+sudo R --vanilla -e 'install.packages("RCurl", version="1.98.1.6", repos="http://cran.us.r-project.org")'
