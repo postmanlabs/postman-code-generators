@@ -1,3 +1,6 @@
+v1.2.1 (April 26, 2022)
+* Add label for 'R' language
+
 v1.2 (April 22, 2022)
 * Add new codegens - php-guzzle, R-httr, R-rcurl
 * Fix issue with pipeline failing due to updated version of RestSharp
