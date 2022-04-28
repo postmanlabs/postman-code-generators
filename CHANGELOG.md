@@ -1,3 +1,12 @@
+v1.2.1 (April 26, 2022)
+* Add label for 'R' language
+
+v1.2.0 (April 22, 2022)
+* Add new codegens - php-guzzle, R-httr, R-rcurl
+* Fix issue with pipeline failing due to updated version of RestSharp
+* Fix for - [502](https://github.com/postmanlabs/postman-code-generators/issues/502) Allow GET method to have a body in java-okhttp if present in input request
+* Fix for - [476](https://github.com/postmanlabs/postman-code-generators/pull/476) Properly escape already escaped double quotes in curl body
+
 v1.1.5 (May 10, 2021)
 * Fixed an issue with how JSON bodies are shown in code snippets for Ruby, C#, and Dart.
 
