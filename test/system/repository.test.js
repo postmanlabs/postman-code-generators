@@ -38,7 +38,7 @@ describe('project repository', function () {
         expect(json).to.have.property('repository');
 
         expect(json).to.have.property('engines');
-        expect(json.engines).to.eql({ node: '>=6' });
+        expect(json.engines).to.eql({ node: '>=10' });
       });
 
       it('must have a valid version string in form of <major>.<minor>.<revision>', function () {
