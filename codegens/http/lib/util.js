@@ -243,8 +243,8 @@ function getBody (request, trimRequestBody) {
               requestBody += '(data)\n';
             }
           });
-          requestBody += `--${FORM_DATA_BOUNDARY}--`;
         }
+        requestBody += `--${FORM_DATA_BOUNDARY}--`;
         return trimRequestBody ? requestBody.trim() : requestBody;
 
       case FILE:
