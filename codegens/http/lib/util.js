@@ -150,7 +150,7 @@ function convertPropListToStringUrlEncoded (propertyList, joinUsing, includeDisa
  */
 function getHeaders (request) {
   let contentTypeIndex = _.findIndex(request.headers.members, { key: 'Content-Type' }),
-    formDataHeader = `multipart/form-data; boundary=--${FORM_DATA_BOUNDARY}`,
+    formDataHeader = `multipart/form-data; boundary=${FORM_DATA_BOUNDARY}`,
     headers = '';
 
   if (contentTypeIndex >= 0) {
@@ -213,11 +213,11 @@ function getBody (request, trimRequestBody) {
         return trimRequestBody ? requestBody.trim() : requestBody;
 
       case FORM_DATA:
-        requestBody += `--${FORM_DATA_BOUNDARY}\n`;
         /* istanbul ignore else */
         if (!_.isEmpty(request.body[request.body.mode])) {
           let properties = getMembersOfPropertyList(request.body[request.body.mode]);
           _.forEach(properties, function (property) {
+            requestBody += `--${FORM_DATA_BOUNDARY}\n`;
             /* istanbul ignore else */
             if (property.type === 'text') {
               requestBody += 'Content-Disposition: form-data; name="';
@@ -242,8 +242,8 @@ function getBody (request, trimRequestBody) {
               }
               requestBody += '(data)\n';
             }
-            requestBody += `--${FORM_DATA_BOUNDARY}--\n`;
           });
+          requestBody += `--${FORM_DATA_BOUNDARY}--`;
         }
         return trimRequestBody ? requestBody.trim() : requestBody;
 
