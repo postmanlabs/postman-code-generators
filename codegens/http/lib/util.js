@@ -1,7 +1,7 @@
 let _ = require('./lodash'),
   path = require('path');
 
-const FORM_DATA_BOUNDARY = '----WebKitFormBoundary7MA4YWxkTrZu0gW',
+const FORM_DATA_BOUNDARY = '--WebKitFormBoundary7MA4YWxkTrZu0gW',
   RAW = 'raw',
   GRAPHQL = 'graphql',
   URL_ENCODED = 'urlencoded',
@@ -150,7 +150,7 @@ function convertPropListToStringUrlEncoded (propertyList, joinUsing, includeDisa
  */
 function getHeaders (request) {
   let contentTypeIndex = _.findIndex(request.headers.members, { key: 'Content-Type' }),
-    formDataHeader = `multipart/form-data; boundary=${FORM_DATA_BOUNDARY}`,
+    formDataHeader = `multipart/form-data; boundary=--${FORM_DATA_BOUNDARY}`,
     headers = '';
 
   if (contentTypeIndex >= 0) {
@@ -213,7 +213,7 @@ function getBody (request, trimRequestBody) {
         return trimRequestBody ? requestBody.trim() : requestBody;
 
       case FORM_DATA:
-        requestBody += `${FORM_DATA_BOUNDARY}\n`;
+        requestBody += `--${FORM_DATA_BOUNDARY}\n`;
         /* istanbul ignore else */
         if (!_.isEmpty(request.body[request.body.mode])) {
           let properties = getMembersOfPropertyList(request.body[request.body.mode]);
@@ -242,7 +242,7 @@ function getBody (request, trimRequestBody) {
               }
               requestBody += '(data)\n';
             }
-            requestBody += `${FORM_DATA_BOUNDARY}\n`;
+            requestBody += `--${FORM_DATA_BOUNDARY}--\n`;
           });
         }
         return trimRequestBody ? requestBody.trim() : requestBody;
