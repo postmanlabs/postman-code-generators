@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/postman-code-generators.iml" filepath="$PROJECT_DIR$/.idea/postman-code-generators.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../postman-code-generators-2/.idea/postman-code-generators.iml" filepath="$PROJECT_DIR$/../postman-code-generators-2/.idea/postman-code-generators.iml" />
     </modules>
   </component>
 </project>
