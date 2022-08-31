@@ -6,7 +6,7 @@ describe('Convert for different types of request', function () {
       runScript: 'java -cp *: main',
       compileScript: 'javac -cp *: main.java',
       fileName: 'main.java',
-      skipCollections: ['formdataCollection']
+      skipCollections: ['formdataCollection', 'emptyFormdataCollection']
     },
     options = {includeBoilerplate: true};
 

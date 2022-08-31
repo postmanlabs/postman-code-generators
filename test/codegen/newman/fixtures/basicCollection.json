@@ -288,7 +288,7 @@
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "{\n    body{\n        graphql\n    }\n}",
+						"query": "{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: \"performers\"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}",
 						"variables": "{\n\t\"variable_key\": \"variable_value\"\n}"
 					}
 				},
@@ -330,7 +330,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "var val = 6;\nconsole.log(val);"
+					"raw": "var val = 6;\nconsole.log(val);console.log('$text\r\n');\n"
 				},
 				"url": {
 					"raw": "https://postman-echo.com/post",
@@ -482,6 +482,11 @@
 						{
 							"key": "more",
 							"value": ",./';[]}{\":?><|\\\\    ",
+							"type": "text"
+						},
+						{
+							"key": "non-ascii",
+							"value": "테스트",
 							"type": "text"
 						}
 					]

@@ -24,7 +24,7 @@ function getheaders (request, indentation) {
     });
     return `headers = {\n${headerMap.join(',\n')}\n}\n`;
   }
-  return 'headers= {}\n';
+  return 'headers = {}\n';
 }
 
 self = module.exports = {
@@ -90,7 +90,8 @@ self = module.exports = {
   convert: function (request, options, callback) {
     var snippet = '',
       indentation = '',
-      identity = '';
+      identity = '',
+      contentType;
 
     if (_.isFunction(options)) {
       callback = options;
@@ -103,7 +104,15 @@ self = module.exports = {
 
     identity = options.indentType === 'Tab' ? '\t' : ' ';
     indentation = identity.repeat(options.indentCount);
-    snippet += 'import requests\n\n';
+    contentType = request.headers.get('Content-Type');
+    snippet += 'import requests\n';
+
+    // If contentType is json then include the json module for later use
+    if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
+      snippet += 'import json\n';
+    }
+
+    snippet += '\n';
     snippet += `url = "${sanitize(request.url.toString(), 'url')}"\n\n`;
 
     // The following code handles multiple files in the same formdata param.
@@ -147,8 +156,8 @@ self = module.exports = {
         formdata: formdataArray
       });
     }
-    snippet += `${parseBody(request.toJSON(), indentation, options.trimRequestBody)}`;
-    if (request.body && !request.headers.has('Content-Type')) {
+    snippet += `${parseBody(request.toJSON(), indentation, options.trimRequestBody, contentType)}`;
+    if (request.body && !contentType) {
       if (request.body.mode === 'file') {
         request.addHeader({
           key: 'Content-Type',
@@ -166,11 +175,11 @@ self = module.exports = {
     snippet += `response = requests.request("${request.method}", url, headers=headers`;
 
     snippet += request.body && request.body.mode && request.body.mode === 'formdata' ?
-      ', data = payload, files = files' : ', data = payload';
-    snippet += !options.followRedirect ? ', allow_redirects = False' : '';
+      ', data=payload, files=files' : ', data=payload';
+    snippet += !options.followRedirect ? ', allow_redirects=False' : '';
     snippet += options.requestTimeout !== 0 ? `, timeout=${options.requestTimeout}` : '';
     snippet += ')\n\n';
-    snippet += 'print(response.text.encode(\'utf8\'))\n';
+    snippet += 'print(response.text)\n';
 
     callback(null, snippet);
   }

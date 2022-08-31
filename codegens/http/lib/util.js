@@ -118,67 +118,29 @@ function convertPropertyListToString (propertyList, joinUsing, includeDisabled =
 }
 
 /**
- * parses variable of request url object and sets hostname, path and query in request object
+ * Url encodes the members of the property list.
  *
- * @param {Object} request - Postman SDK request object
+ * @param {Object} propertyList propertyList
+ * @param {String} joinUsing specify string that should be used to join the list of properties
+ * @param {Boolean} includeDisabled indicated whether or not to include disabled properties
+ * @param {Boolean} trimRequestBody indicates whether or not to trim request body
+ * @returns {String} Stringified and Url encoded property List
  */
-function parseURLVariable (request) {
-  const variableArray = _.get(request.toJSON(), 'url.variable', []);
+function convertPropListToStringUrlEncoded (propertyList, joinUsing, includeDisabled = false, trimRequestBody = false) {
+  const properties = getMembersOfPropertyList(propertyList, includeDisabled),
+    keyvalues = [];
 
-  if (!variableArray.length) {
-    return;
-  }
+  properties.forEach((property) => {
+    const key = trimRequestBody ? property.key.trim() : property.key,
+      value = trimRequestBody ? property.value.trim() : property.value,
+      keyvalue = `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
 
-  variableArray.forEach(function (variableArrayElement) {
-    request.url.path.forEach(function (pathArrayElement, pathArrayElementIndex) {
-      if (pathArrayElement === ':' + variableArrayElement.key) {
-        if (variableArrayElement.value) {
-          request.url.path[pathArrayElementIndex] = variableArrayElement.value;
-        }
-      }
-    });
+    keyvalues.push(keyvalue);
   });
+
+  return keyvalues.join(joinUsing);
 }
 
-/**
- * Returns the request end-point as a string.
- *
- * @param {Object} request - Postman SDK request
- * @returns {string} returns endpoint from the url path
- */
-function getEndPoint (request) {
-  let endPoint = '/',
-    params = '';
-
-  if (request.url.query.members && _.size(request.url.query.members)) {
-    params += `?${convertPropertyListToString(request.url.query, '&')}`;
-  }
-
-  if (request.url.path && _.size(request.url.path)) {
-    endPoint = `/${_.join(request.url.path, '/')}${params}`;
-  }
-
-  return endPoint;
-}
-
-/**
- * Returns the request host as a string.
- *
- * @param {Object} request - Postman SDK request
- * @returns {String} host
- */
-function getHost (request) {
-  if (!request.url.host) {
-    return '';
-  }
-
-  let host = _.join(request.url.host, '.');
-  if (request.url.port) {
-    host += `:${request.url.port}`;
-  }
-
-  return host;
-}
 
 /**
  * Returns the request headers as a string
@@ -203,7 +165,7 @@ function getHeaders (request) {
   });
   headers = convertPropertyListToString(request.headers, '\n', false);
   if (request.body && request.body.mode === 'formdata' && contentTypeIndex < 0) {
-    headers += `Content-Type: ${formDataHeader}`;
+    headers += `\nContent-Type: ${formDataHeader}`;
   }
   return headers;
 }
@@ -225,25 +187,28 @@ function getBody (request, trimRequestBody) {
           requestBody += request.body[request.body.mode].toString();
         }
         return trimRequestBody ? requestBody.trim() : requestBody;
-      // eslint-disable-next-line no-case-declarations
+
       case GRAPHQL:
-        let query = request.body[request.body.mode].query,
+        // eslint-disable-next-line no-case-declarations
+        let graphql = request.body[request.body.mode],
+          query = graphql ? graphql.query : '',
           graphqlVariables;
         try {
-          graphqlVariables = JSON.parse(request.body[request.body.mode].variables);
+          graphqlVariables = JSON.parse(graphql ? graphql.variables : '{}');
         }
         catch (e) {
           graphqlVariables = {};
         }
         requestBody += JSON.stringify({
-          query: query,
+          query: query || '',
           variables: graphqlVariables
         });
         return trimRequestBody ? requestBody.trim() : requestBody;
       case URL_ENCODED:
         /* istanbul ignore else */
         if (!_.isEmpty(request.body[request.body.mode])) {
-          requestBody += convertPropertyListToString(request.body[request.body.mode], '&', false, trimRequestBody);
+          const propertyList = request.body[request.body.mode];
+          requestBody += convertPropListToStringUrlEncoded(propertyList, '&', false, trimRequestBody);
         }
         return trimRequestBody ? requestBody.trim() : requestBody;
 
@@ -257,6 +222,9 @@ function getBody (request, trimRequestBody) {
             if (property.type === 'text') {
               requestBody += 'Content-Disposition: form-data; name="';
               requestBody += `${(trimRequestBody ? property.key.trim() : property.key)}"\n`;
+              if (property.contentType) {
+                requestBody += `Content-Type: ${property.contentType}\n`;
+              }
               requestBody += `\n${(trimRequestBody ? property.value.trim() : property.value)}\n`;
             }
             else if (property.type === 'file') {
@@ -389,9 +357,6 @@ function addFormParam (array, key, type, val, disabled, contentType) {
 }
 
 module.exports = {
-  parseURLVariable: parseURLVariable,
-  getEndPoint: getEndPoint,
-  getHost: getHost,
   getHeaders: getHeaders,
   getBody: getBody,
   sanitizeOptions: sanitizeOptions,

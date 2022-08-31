@@ -1,6 +1,7 @@
 var _ = require('./lodash'),
   Helpers = require('./util/helpers'),
   sanitizeOptions = require('./util/sanitize').sanitizeOptions,
+  quote = require('./util/sanitize').quote,
   addFormParam = require('./util/sanitize').addFormParam,
   self;
 
@@ -53,10 +54,7 @@ self = module.exports = {
       parsedHeaders,
       bodyMode,
       timeout,
-      // https://httpie.org/docs#request-url
-      // default scheme is `http://` for httpie
-      // thus, for url starting with `http://`, no need to add protocol
-      url = request.url.toString().startsWith('https') ? 'https://' : '',
+      url,
       handleRedirect = (enableRedirect) => { if (enableRedirect) { return GAP + '--follow' + GAP; } return GAP; },
       handleRequestTimeout = (time) => {
         if (time) {
@@ -76,8 +74,7 @@ self = module.exports = {
 
     options = sanitizeOptions(options, self.getOptions());
 
-    Helpers.parseURLVariable(request);
-    url += Helpers.addHost(request) + Helpers.addPort(request) + Helpers.addPathandQuery(request);
+    url = quote(request.url.toString());
     timeout = options.requestTimeout;
     if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
       request.addHeader({

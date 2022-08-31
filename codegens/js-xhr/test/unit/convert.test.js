@@ -34,6 +34,7 @@ describe('js-xhr convert function', function () {
       '"  value_containing_whitespaces  ")');
     });
   });
+
   it('should include JSON.stringify in the snippet for raw json bodies', function () {
     var request = new sdk.Request({
       'method': 'POST',
@@ -64,9 +65,44 @@ describe('js-xhr convert function', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('var data = JSON.stringify({"json":"Test-Test"})');
+      expect(snippet).to.include('JSON.stringify({\n  "json": "Test-Test"\n})');
     });
   });
+
+  it('should use JSON.parse if the content-type is application/vnd.api+json', function () {
+    let request = new sdk.Request({
+      'method': 'POST',
+      'header': [
+        {
+          'key': 'Content-Type',
+          'value': 'application/vnd.api+json'
+        }
+      ],
+      'body': {
+        'mode': 'raw',
+        'raw': '{"data": {"hello": "world"} }'
+      },
+      'url': {
+        'raw': 'https://postman-echo.com/get',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'get'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.contain('JSON.stringify({\n  "data": {\n    "hello": "world"\n  }\n})');
+    });
+  });
+
   it('should generate snippets for no files in form data', function () {
     var request = new sdk.Request({
       'method': 'POST',
