@@ -24,8 +24,20 @@ pushd ./codegens/csharp-restsharp &>/dev/null;
   sudo apt-get install dotnet-sdk-3.1
   dotnet new console -o testProject
   pushd ./testProject &>/dev/null;
-  dotnet add package RestSharp
+  dotnet add package RestSharp --version 106.15.0
   popd &>/dev/null;
+popd &>/dev/null;
+
+echo "Installing dependencies required for tests in codegens/csharp-httpclient"
+# Install latest .net5.0 sdk
+pushd ./codegens/csharp-httpclient &>/dev/null;
+  wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+  sudo dpkg -i packages-microsoft-prod.deb
+  sudo apt-get install apt-transport-https
+  sudo apt-get update
+  sudo apt-get install dotnet-sdk-6.0
+  dotnet new console -o testProject -f net6.0
+  # no extra packages needed
 popd &>/dev/null;
 
 echo "Installing dependencies required for tests in codegens/csharp-httpclient"
@@ -86,3 +98,22 @@ dependencies:
 ''' > pubspec.yaml
   dart pub get
 popd &>/dev/null;
+
+echo "Installing dependencies required for tests in codegens/php-guzzle"
+  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  php composer-setup.php
+  php -r "unlink('composer-setup.php');"
+  sudo mv composer.phar /usr/bin/composer
+  composer global require guzzlehttp/guzzle:7.4.1
+
+echo "Installing dependencies required for tests in codegens/r-rCurl and r-httr Installing R"
+  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+  sudo add-apt-repository 'deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial-cran40/'
+  sudo apt-get update
+  sudo apt-get install r-base
+
+echo "Installing httr"
+  sudo R --vanilla -e 'install.packages("httr", version="1.4.2", repos="http://cran.us.r-project.org")'
+
+echo "Installing RCurl"
+sudo R --vanilla -e 'install.packages("RCurl", version="1.98.1.6", repos="http://cran.us.r-project.org")'
