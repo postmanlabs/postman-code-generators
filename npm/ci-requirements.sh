@@ -29,7 +29,7 @@ pushd ./codegens/csharp-restsharp &>/dev/null;
 popd &>/dev/null;
 
 echo "Installing dependencies required for tests in codegens/csharp-httpclient"
-# Install latest .net5.0 sdk
+# Install latest .net6.0 sdk
 pushd ./codegens/csharp-httpclient &>/dev/null;
   wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
   sudo dpkg -i packages-microsoft-prod.deb
@@ -39,19 +39,6 @@ pushd ./codegens/csharp-httpclient &>/dev/null;
   dotnet new console -o testProject -f net6.0
   # no extra packages needed
 popd &>/dev/null;
-
-echo "Installing dependencies required for tests in codegens/csharp-httpclient"
-# Install latest .net5.0 sdk
-pushd ./codegens/csharp-httpclient &>/dev/null;
-  wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-  sudo dpkg -i packages-microsoft-prod.deb
-  sudo apt-get install apt-transport-https
-  sudo apt-get update
-  sudo apt-get install dotnet-sdk-6.0
-  dotnet new console -o testProject -f net6.0
-  # no extra packages needed
-popd &>/dev/null;
-
 
 echo "Installing Powershell"
   sudo apt-get install powershell -y
