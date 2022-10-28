@@ -7,6 +7,30 @@ var _ = require('./lodash'),
   self;
 
 /**
+* Takes in a string and returns a new string with only the first character capitalized
+*
+* @param  {string} string - string to change
+* @returns {String} - the same string with the first litter as capital letter
+*/
+function capitalizeFirstLetter (string) {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
+
+/**
+ * Gets the defined indentation from options
+ *
+ * @param  {object} options - process options
+ * @returns {String} - indentation characters
+ */
+function getIndentation (options) {
+  if (options && options.indentType && options.indentCount) {
+    let charIndentation = options.indentType === 'Tab' ? '\t' : ' ';
+    return charIndentation.repeat(options.indentCount);
+  }
+  return '  ';
+}
+
+/**
  * Generates snippet in csharp-restsharp by parsing data from Postman-SDK request object
  *
  * @param {Object} request - Postman SDK request object
@@ -15,21 +39,25 @@ var _ = require('./lodash'),
  */
 function makeSnippet (request, options) {
   const UNSUPPORTED_METHODS_LIKE_POST = ['LINK', 'UNLINK', 'LOCK', 'PROPFIND'],
-    UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW', 'COPY'];
+    UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW'];
 
-  var snippet = `var client = new RestClient("${sanitize(request.url.toString())}");\n`,
+  let snippet = `var options = new RestClientOptions("${sanitize(request.url.toString())}")\n{\n`,
     isUnSupportedMethod = UNSUPPORTED_METHODS_LIKE_GET.includes(request.method) ||
             UNSUPPORTED_METHODS_LIKE_POST.includes(request.method);
   if (options.requestTimeout) {
-    snippet += `client.Timeout = ${options.requestTimeout};\n`;
+    snippet += `${getIndentation(options)}MaxTimeout = ${options.requestTimeout},\n`;
   }
   else {
-    snippet += 'client.Timeout = -1;\n';
+    snippet += `${getIndentation(options)}MaxTimeout = -1,\n`;
   }
+
   if (!options.followRedirect) {
-    snippet += 'client.FollowRedirects = false;\n';
+    snippet += `${getIndentation(options)}FollowRedirects = false,\n`;
   }
-  snippet += `var request = new RestRequest(${isUnSupportedMethod ? '' : ('Method.' + request.method)});\n`;
+  snippet += '};\n'; // closing options object
+  snippet += 'var client = new RestClient(options);\n';
+  snippet += 'var request = new RestRequest("", ' +
+  `${isUnSupportedMethod ? '' : ('Method.' + capitalizeFirstLetter(request.method))});\n`;
   if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
     request.addHeader({
       key: 'Content-Type',
@@ -93,12 +121,12 @@ function makeSnippet (request, options) {
   snippet += parseRequest.parseBody(request, options.trimRequestBody);
   if (isUnSupportedMethod) {
     (UNSUPPORTED_METHODS_LIKE_GET.includes(request.method)) &&
-            (snippet += `IRestResponse response = client.ExecuteAsGet(request, "${request.method}");\n`);
+            (snippet += `RestResponse response = client.ExecuteAsGet(request, "${request.method}");\n`);
     (UNSUPPORTED_METHODS_LIKE_POST.includes(request.method)) &&
-            (snippet += `IRestResponse response = client.ExecuteAsPost(request, "${request.method}");\n`);
+            (snippet += `RestResponse response = client.ExecuteAsPost(request, "${request.method}");\n`);
   }
   else {
-    snippet += 'IRestResponse response = client.Execute(request);\n';
+    snippet += 'RestResponse response = client.Execute(request);\n';
   }
   snippet += 'Console.WriteLine(response.Content);';
 

@@ -24,7 +24,7 @@ pushd ./codegens/csharp-restsharp &>/dev/null;
   sudo apt-get install dotnet-sdk-2.2
   dotnet new console -o testProject
   pushd ./testProject &>/dev/null;
-  dotnet add package RestSharp --version 106.15.0
+  dotnet add package RestSharp
   popd &>/dev/null;
 popd &>/dev/null;
 

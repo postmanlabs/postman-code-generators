@@ -72,7 +72,7 @@ describe('csharp restsharp function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('client.Timeout = 5');
+        expect(snippet).to.include('MaxTimeout = 5');
       });
     });
 
@@ -82,7 +82,7 @@ describe('csharp restsharp function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('client.FollowRedirects = false');
+        expect(snippet).to.include('FollowRedirects = false');
       });
     });
 
