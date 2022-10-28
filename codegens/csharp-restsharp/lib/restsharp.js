@@ -31,19 +31,14 @@ function getIndentation (options) {
 }
 
 /**
- * Generates snippet in csharp-restsharp by parsing data from Postman-SDK request object
+ * Generates snippet for the RestClientOptions object
  *
  * @param {Object} request - Postman SDK request object
  * @param {Object} options - Options to tweak code snippet
- * @returns {String} csharp-restsharp code snippet for given request object
+ * @returns {String} csharp-restsharp RestClientOptions object snippet
  */
-function makeSnippet (request, options) {
-  const UNSUPPORTED_METHODS_LIKE_POST = ['LINK', 'UNLINK', 'LOCK', 'PROPFIND'],
-    UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW'];
-
-  let snippet = `var options = new RestClientOptions("${sanitize(request.url.toString())}")\n{\n`,
-    isUnSupportedMethod = UNSUPPORTED_METHODS_LIKE_GET.includes(request.method) ||
-            UNSUPPORTED_METHODS_LIKE_POST.includes(request.method);
+function makeOptionsSnippet (request, options) {
+  let snippet = `var options = new RestClientOptions("${sanitize(request.url.toString())}")\n{\n`;
   if (options.requestTimeout) {
     snippet += `${getIndentation(options)}MaxTimeout = ${options.requestTimeout},\n`;
   }
@@ -54,7 +49,24 @@ function makeSnippet (request, options) {
   if (!options.followRedirect) {
     snippet += `${getIndentation(options)}FollowRedirects = false,\n`;
   }
-  snippet += '};\n'; // closing options object
+  snippet += '};\n';
+  return snippet;
+}
+
+/**
+ * Generates snippet in csharp-restsharp by parsing data from Postman-SDK request object
+ *
+ * @param {Object} request - Postman SDK request object
+ * @param {Object} options - Options to tweak code snippet
+ * @returns {String} csharp-restsharp code snippet for given request object
+ */
+function makeSnippet (request, options) {
+  const UNSUPPORTED_METHODS_LIKE_POST = ['LINK', 'UNLINK', 'LOCK', 'PROPFIND'],
+    UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW'],
+    isUnSupportedMethod = UNSUPPORTED_METHODS_LIKE_GET.includes(request.method) ||
+    UNSUPPORTED_METHODS_LIKE_POST.includes(request.method);
+
+  let snippet = makeOptionsSnippet(request, options);
   snippet += 'var client = new RestClient(options);\n';
   snippet += 'var request = new RestRequest("", ' +
   `${isUnSupportedMethod ? '' : ('Method.' + capitalizeFirstLetter(request.method))});\n`;
@@ -66,17 +78,11 @@ function makeSnippet (request, options) {
   }
   snippet += parseRequest.parseHeader(request.toJSON(), options.trimRequestBody);
   if (request.body && request.body.mode === 'formdata') {
-    let isFile = false,
-      formdata = request.body.formdata,
+    let formdata = request.body.formdata,
       formdataArray = [];
-    request.body.toJSON().formdata.forEach((data) => {
-      if (!data.disabled && data.type === 'file') {
-        isFile = true;
-      }
-    });
     // The following statement needs to be added else the multipart/form-data request where there is no file
     // is being sent as x-www-form-urlencoded by default
-    if (!isFile) {
+    if (formdata.members.length > 0) {
       snippet += 'request.AlwaysMultipartFormData = true;\n';
     }
 
