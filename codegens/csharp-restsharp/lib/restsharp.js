@@ -17,37 +17,25 @@ function capitalizeFirstLetter (string) {
 }
 
 /**
- * Gets the defined indentation from options
- *
- * @param  {object} options - process options
- * @returns {String} - indentation characters
- */
-function getIndentation (options) {
-  if (options && options.indentType && options.indentCount) {
-    let charIndentation = options.indentType === 'Tab' ? '\t' : ' ';
-    return charIndentation.repeat(options.indentCount);
-  }
-  return '  ';
-}
-
-/**
  * Generates snippet for the RestClientOptions object
  *
  * @param {Object} request - Postman SDK request object
+ * @param {string} urlOrigin - String representing the origin of the url
  * @param {Object} options - Options to tweak code snippet
+ * @param {string} indentString - String representing value of indentation required
  * @returns {String} csharp-restsharp RestClientOptions object snippet
  */
-function makeOptionsSnippet (request, options) {
-  let snippet = `var options = new RestClientOptions("${sanitize(request.url.toString())}")\n{\n`;
+function makeOptionsSnippet (request, urlOrigin, options, indentString) {
+  let snippet = `var options = new RestClientOptions("${sanitize(urlOrigin)}")\n{\n`;
   if (options.requestTimeout) {
-    snippet += `${getIndentation(options)}MaxTimeout = ${options.requestTimeout},\n`;
+    snippet += `${indentString}MaxTimeout = ${options.requestTimeout},\n`;
   }
   else {
-    snippet += `${getIndentation(options)}MaxTimeout = -1,\n`;
+    snippet += `${indentString}MaxTimeout = -1,\n`;
   }
 
   if (!options.followRedirect) {
-    snippet += `${getIndentation(options)}FollowRedirects = false,\n`;
+    snippet += `${indentString}FollowRedirects = false,\n`;
   }
   snippet += '};\n';
   return snippet;
@@ -58,17 +46,20 @@ function makeOptionsSnippet (request, options) {
  *
  * @param {Object} request - Postman SDK request object
  * @param {Object} options - Options to tweak code snippet
- * @returns {String} csharp-restsharp code snippet for given request object
+ * @param {string} indentString - String representing value of indentation required
+ * @returns {string} csharp-restsharp code snippet for given request object
  */
-function makeSnippet (request, options) {
+function makeSnippet (request, options, indentString) {
   const UNSUPPORTED_METHODS_LIKE_POST = ['LINK', 'UNLINK', 'LOCK', 'PROPFIND'],
     UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW'],
     isUnSupportedMethod = UNSUPPORTED_METHODS_LIKE_GET.includes(request.method) ||
-    UNSUPPORTED_METHODS_LIKE_POST.includes(request.method);
+    UNSUPPORTED_METHODS_LIKE_POST.includes(request.method),
+    url = new URL(request.url.toString()),
+    urlPathAndHash = request.url.toString().replace(url.origin, '');
 
-  let snippet = makeOptionsSnippet(request, options);
+  let snippet = makeOptionsSnippet(request, url.origin, options, indentString);
   snippet += 'var client = new RestClient(options);\n';
-  snippet += 'var request = new RestRequest("", ' +
+  snippet += `var request = new RestRequest("${sanitize(urlPathAndHash)}", ` +
   `${isUnSupportedMethod ? '' : ('Method.' + capitalizeFirstLetter(request.method))});\n`;
   if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
     request.addHeader({
@@ -126,14 +117,14 @@ function makeSnippet (request, options) {
   }
   snippet += parseRequest.parseBody(request, options.trimRequestBody);
   if (isUnSupportedMethod) {
-    (UNSUPPORTED_METHODS_LIKE_GET.includes(request.method)) &&
-            (snippet += `RestResponse response = client.ExecuteAsGet(request, "${request.method}");\n`);
-    (UNSUPPORTED_METHODS_LIKE_POST.includes(request.method)) &&
-            (snippet += `RestResponse response = client.ExecuteAsPost(request, "${request.method}");\n`);
+    snippet += 'request.OnBeforeRequest = (request) =>\n';
+    snippet += '{\n';
+    snippet += `request.Method = new HttpMethod("${request.method}");\n`;
+    snippet += 'return default;\n';
+    snippet += '}\n';
   }
-  else {
-    snippet += 'RestResponse response = client.Execute(request);\n';
-  }
+
+  snippet += 'RestResponse response = client.Execute(request);\n';
   snippet += 'Console.WriteLine(response.Content);';
 
   return snippet;
@@ -244,7 +235,7 @@ self = module.exports = {
       footerSnippet = indentString.repeat(2) + '}\n' + indentString + '}\n}\n';
     }
 
-    snippet = makeSnippet(request, options);
+    snippet = makeSnippet(request, options, indentString);
 
     //  if boilerplate is included then two more indentString needs to be added in snippet
     (options.includeBoilerplate) &&
