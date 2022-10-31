@@ -19,13 +19,12 @@ function capitalizeFirstLetter (string) {
 /**
  * Generates snippet for the RestClientOptions object
  *
- * @param {Object} request - Postman SDK request object
  * @param {string} urlOrigin - String representing the origin of the url
  * @param {Object} options - Options to tweak code snippet
  * @param {string} indentString - String representing value of indentation required
  * @returns {String} csharp-restsharp RestClientOptions object snippet
  */
-function makeOptionsSnippet (request, urlOrigin, options, indentString) {
+function makeOptionsSnippet (urlOrigin, options, indentString) {
   let snippet = `var options = new RestClientOptions("${sanitize(urlOrigin)}")\n{\n`;
   if (options.requestTimeout) {
     snippet += `${indentString}MaxTimeout = ${options.requestTimeout},\n`;
@@ -57,7 +56,7 @@ function makeSnippet (request, options, indentString) {
     url = new URL(request.url.toString()),
     urlPathAndHash = request.url.toString().replace(url.origin, '');
 
-  let snippet = makeOptionsSnippet(request, url.origin, options, indentString);
+  let snippet = makeOptionsSnippet(url.origin, options, indentString);
   snippet += 'var client = new RestClient(options);\n';
   snippet += `var request = new RestRequest("${sanitize(urlPathAndHash)}", ` +
   `${isUnSupportedMethod ? '' : ('Method.' + capitalizeFirstLetter(request.method))});\n`;
@@ -124,7 +123,12 @@ function makeSnippet (request, options, indentString) {
     snippet += '}\n';
   }
 
-  snippet += 'RestResponse response = client.Execute(request);\n';
+  if (options.asyncType === 'sync') {
+    snippet += 'RestResponse response = client.Execute(request);\n';
+  }
+  else {
+    snippet += 'RestResponse response = await client.ExecuteAsync(request);\n';
+  }
   snippet += 'Console.WriteLine(response.Content);';
 
   return snippet;
@@ -183,6 +187,14 @@ self = module.exports = {
         type: 'boolean',
         default: false,
         description: 'Remove white space and additional lines that may affect the server\'s response'
+      },
+      {
+        name: 'Set communication type',
+        id: 'asyncType',
+        type: 'enum',
+        availableOptions: ['async', 'sync'],
+        default: 'async',
+        description: 'Set if the requests will be asynchronous or synchronous'
       }
     ];
   },
@@ -217,7 +229,7 @@ self = module.exports = {
       //  snippets to include C# class definition according to options
       headerSnippet = '',
       footerSnippet = '',
-
+      mainMethodSnippet = '',
       //  snippet to create request in csharp-restsharp
       snippet = '';
 
@@ -227,11 +239,17 @@ self = module.exports = {
     indentString = indentString.repeat(options.indentCount);
 
     if (options.includeBoilerplate) {
+      if (options.asyncType === 'sync') {
+        mainMethodSnippet = indentString.repeat(2) + 'static void Main(string[] args) {\n';
+      }
+      else {
+        mainMethodSnippet = indentString.repeat(2) + 'static async Task Main(string[] args) {\n';
+      }
       headerSnippet = 'using System;\n' +
                             'using RestSharp;\n' +
                             'namespace HelloWorldApplication {\n' +
                             indentString + 'class HelloWorld {\n' +
-                            indentString.repeat(2) + 'static void Main(string[] args) {\n';
+                            mainMethodSnippet;
       footerSnippet = indentString.repeat(2) + '}\n' + indentString + '}\n}\n';
     }
 

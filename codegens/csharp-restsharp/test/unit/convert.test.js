@@ -5,6 +5,7 @@ var expect = require('chai').expect,
   testCollection = require('./fixtures/testcollection/collectionForEdge.json'),
   getOptions = require('../../lib/index').getOptions,
   testResponse = require('./fixtures/testresponse.json'),
+  testResponseAsync = require('./fixtures/testResponseAsync.json'),
   sanitize = require('../../lib/util').sanitize,
   sanitizeOptions = require('../../lib/util').sanitizeOptions;
 
@@ -12,6 +13,25 @@ describe('csharp restsharp function', function () {
 
   describe('csharp-restsharp convert function', function () {
     it('should return expected snippet', function () {
+      var request = new sdk.Request(mainCollection.item[4].request),
+        options = {
+          indentCount: 1,
+          indentType: 'Tab',
+          followRedirect: true,
+          trimRequestBody: true,
+          asyncType: 'sync'
+        };
+
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+          return;
+        }
+        expect(snippet).deep.equal(testResponse.result);
+      });
+    });
+
+    it('should return expected snippet - Async', function () {
       var request = new sdk.Request(mainCollection.item[4].request),
         options = {
           indentCount: 1,
@@ -25,7 +45,7 @@ describe('csharp restsharp function', function () {
           expect.fail(null, null, error);
           return;
         }
-        expect(snippet).deep.equal(testResponse.result);
+        expect(snippet).deep.equal(testResponseAsync.result);
       });
     });
   });
@@ -192,6 +212,27 @@ describe('csharp restsharp function', function () {
         expect(snippet).to.include(expectValue);
       });
     });
+
+    it('should return snippet with boilerplate code given option and async', function () {
+      convert(request, { includeBoilerplate: true }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+          return;
+        }
+        expect(snippet).to.include('static async Task Main(string[] args) {');
+      });
+    });
+
+    it('should return snippet with boilerplate code given option and sync', function () {
+      convert(request, { includeBoilerplate: true, asyncType: 'sync' }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+          return;
+        }
+        expect(snippet).to.include('static void Main(string[] args) {');
+      });
+    });
+
   });
 
   describe('getOptions function', function () {
@@ -278,6 +319,7 @@ describe('csharp restsharp function', function () {
 
     it('should return the same object when valid (but not necessarily defaults) options are provided', function () {
       testOptions = {};
+      testOptions.asyncType = 'async';
       testOptions.indentType = 'Tab';
       testOptions.indentCount = 3;
       testOptions.requestTimeout = 3000;
