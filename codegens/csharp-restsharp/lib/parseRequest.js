@@ -42,6 +42,21 @@ function parseContentType (request) {
 }
 
 /**
+ * Generates a parameter using AddStringBody method
+ *
+ * @param {Object} requestBody - JSON object representing body of request
+ * @param {string} dataFormat - the data format to use "DataFormat.Json" or "DataFormat.Xml"
+ * @returns {String} snippet of the parameter generation
+ */
+function getAddStringBodyParam (requestBody, dataFormat) {
+  return `var body = ${requestBody[requestBody.mode]
+    .split('\n')
+    .map((line) => { return '@"' + line.replace(/"/g, '""') + '"'; })
+    .join(' + "\\n" +\n')};\n` +
+    `request.AddStringBody(body, ${dataFormat});\n`;
+}
+
+/**
  * Parses Raw data
  *
  * @param {Object} request - JSON object representing body of request
@@ -52,11 +67,10 @@ function parseRawBody (request, requestBody) {
   let bodySnippet = '',
     contentType = parseContentType(request);
   if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
-    bodySnippet = `var body = ${requestBody[requestBody.mode]
-      .split('\n')
-      .map((line) => { return '@"' + line.replace(/"/g, '""') + '"'; })
-      .join(' + "\\n" +\n')};\n` +
-      'request.AddStringBody(body, DataFormat.Json);\n';
+    bodySnippet = getAddStringBodyParam(requestBody, 'DataFormat.Json');
+  }
+  else if (contentType && (contentType === 'text/xml' || contentType.match(/\+xml$/))) {
+    bodySnippet = getAddStringBodyParam(requestBody, 'DataFormat.Xml');
   }
   else {
     bodySnippet = `var body = ${requestBody[requestBody.mode]
