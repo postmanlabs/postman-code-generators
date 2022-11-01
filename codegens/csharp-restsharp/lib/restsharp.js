@@ -87,7 +87,7 @@ function makeSnippet (request, options, indentString) {
   let snippet = makeOptionsSnippet(urlOrigin, options, indentString);
   snippet += 'var client = new RestClient(options);\n';
   snippet += `var request = new RestRequest("${sanitize(urlPathAndHash)}", ` +
-  `${isUnSupportedMethod ? '' : ('Method.' + capitalizeFirstLetter(request.method))});\n`;
+  `${isUnSupportedMethod ? 'Method.Get' : ('Method.' + capitalizeFirstLetter(request.method))});\n`;
   if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
     request.addHeader({
       key: 'Content-Type',
@@ -146,9 +146,9 @@ function makeSnippet (request, options, indentString) {
   if (isUnSupportedMethod) {
     snippet += 'request.OnBeforeRequest = (request) =>\n';
     snippet += '{\n';
-    snippet += `request.Method = new HttpMethod("${request.method}");\n`;
-    snippet += 'return default;\n';
-    snippet += '}\n';
+    snippet += `${indentString}request.Method = new HttpMethod("${request.method}");\n`;
+    snippet += `${indentString}return default;\n`;
+    snippet += '};\n';
   }
 
   if (options.asyncType === 'sync') {
