@@ -42,6 +42,41 @@ function parseContentType (request) {
 }
 
 /**
+ * Parses Raw data
+ *
+ * @param {Object} request - JSON object representing body of request
+ * @param {Object} requestBody - JSON object representing body of request
+ * @returns {String} snippet of the body generation
+ */
+function parseRawBody (request, requestBody) {
+  let bodySnippet = '',
+    jsonBody = '',
+    contentType = parseContentType(request);
+  if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
+    try {
+      jsonBody = JSON.parse(requestBody[requestBody.mode]);
+      jsonBody = `"${JSON.stringify(jsonBody, null).replace(/"/g, '""')}"`;
+    }
+    catch (error) {
+      jsonBody += `"${sanitizeString(body.toString())}"`;
+    }
+
+    bodySnippet = `var body = @${jsonBody};\n` +
+      'request.AddStringBody(body, DataFormat.Json);\n';
+  }
+  else {
+    bodySnippet = `var body = ${requestBody[requestBody.mode]
+      .split('\n')
+      .map((line) => { return '@"' + line.replace(/"/g, '""') + '"'; })
+      .join(' + "\\n" +\n')};\n` +
+      `request.AddParameter("${contentType}", ` +
+      'body,  ParameterType.RequestBody);\n';
+  }
+
+  return bodySnippet;
+}
+
+/**
  *
  * @param {Object} requestBody - JSON object representing body of request
  * @param {boolean} trimFields - Boolean denoting whether to trim body fields
@@ -78,12 +113,7 @@ function parseBody (request, trimFields) {
       case 'formdata':
         return parseFormData(requestBody, trimFields);
       case 'raw':
-        return `var body = ${requestBody[requestBody.mode]
-          .split('\n')
-          .map((line) => { return '@"' + line.replace(/"/g, '""') + '"'; })
-          .join(' + "\\n" +\n')};\n` +
-          `request.AddParameter("${parseContentType(request)}", ` +
-          'body,  ParameterType.RequestBody);\n';
+        return parseRawBody(request, requestBody);
       case 'graphql':
         return parseGraphQL(requestBody, trimFields);
         /* istanbul ignore next */

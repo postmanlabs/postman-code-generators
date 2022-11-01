@@ -6,6 +6,7 @@ var expect = require('chai').expect,
   getOptions = require('../../lib/index').getOptions,
   testResponse = require('./fixtures/testresponse.json'),
   testResponseAsync = require('./fixtures/testResponseAsync.json'),
+  testResponseJsonParams = require('./fixtures/testResponseJsonParams.json'),
   sanitize = require('../../lib/util').sanitize,
   sanitizeOptions = require('../../lib/util').sanitizeOptions;
 
@@ -46,6 +47,24 @@ describe('csharp restsharp function', function () {
           return;
         }
         expect(snippet).deep.equal(testResponseAsync.result);
+      });
+    });
+
+    it('should return expected snippet json params', function () {
+      var request = new sdk.Request(mainCollection.item[5].request),
+        options = {
+          indentCount: 1,
+          indentType: 'Tab',
+          followRedirect: true,
+          trimRequestBody: true
+        };
+
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+          return;
+        }
+        expect(snippet).deep.equal(testResponseJsonParams.result);
       });
     });
   });
