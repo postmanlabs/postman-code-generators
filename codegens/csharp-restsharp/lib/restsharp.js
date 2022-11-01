@@ -4,6 +4,7 @@ var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
   addFormParam = require('./util').addFormParam,
+  { URL } = require('url'),
   self;
 
 /**
@@ -41,6 +42,32 @@ function makeOptionsSnippet (urlOrigin, options, indentString) {
 }
 
 /**
+ * Generates an URL object from the string
+ *
+ * @param {string} stringToParse - url in string representation
+ * @returns {object} the URL object
+ */
+function parseURL (stringToParse) {
+  try {
+    let objectURL = new URL(stringToParse);
+    return objectURL;
+  }
+  catch (err) {
+    try {
+      var url = require('url');
+      let urlObj = url.parse(stringToParse);
+      if (urlObj.hostname === null) {
+        return false;
+      }
+      return urlObj;
+    }
+    catch (parseErr) {
+      return false;
+    }
+  }
+}
+
+/**
  * Generates snippet in csharp-restsharp by parsing data from Postman-SDK request object
  *
  * @param {Object} request - Postman SDK request object
@@ -53,10 +80,11 @@ function makeSnippet (request, options, indentString) {
     UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW'],
     isUnSupportedMethod = UNSUPPORTED_METHODS_LIKE_GET.includes(request.method) ||
     UNSUPPORTED_METHODS_LIKE_POST.includes(request.method),
-    url = new URL(request.url.toString()),
-    urlPathAndHash = request.url.toString().replace(url.origin, '');
+    url = parseURL(request.url.toString()),
+    urlOrigin = url ? parseURL(request.url.toString()) : request.url.toString(),
+    urlPathAndHash = url ? request.url.toString().replace(urlOrigin, '') : '';
 
-  let snippet = makeOptionsSnippet(url.origin, options, indentString);
+  let snippet = makeOptionsSnippet(urlOrigin, options, indentString);
   snippet += 'var client = new RestClient(options);\n';
   snippet += `var request = new RestRequest("${sanitize(urlPathAndHash)}", ` +
   `${isUnSupportedMethod ? '' : ('Method.' + capitalizeFirstLetter(request.method))});\n`;

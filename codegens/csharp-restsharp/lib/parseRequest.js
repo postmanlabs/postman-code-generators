@@ -50,18 +50,12 @@ function parseContentType (request) {
  */
 function parseRawBody (request, requestBody) {
   let bodySnippet = '',
-    jsonBody = '',
     contentType = parseContentType(request);
   if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
-    try {
-      jsonBody = JSON.parse(requestBody[requestBody.mode]);
-      jsonBody = `"${JSON.stringify(jsonBody, null).replace(/"/g, '""')}"`;
-    }
-    catch (error) {
-      jsonBody += `"${sanitizeString(body.toString())}"`;
-    }
-
-    bodySnippet = `var body = @${jsonBody};\n` +
+    bodySnippet = `var body = ${requestBody[requestBody.mode]
+      .split('\n')
+      .map((line) => { return '@"' + line.replace(/"/g, '""') + '"'; })
+      .join(' + "\\n" +\n')};\n` +
       'request.AddStringBody(body, DataFormat.Json);\n';
   }
   else {
