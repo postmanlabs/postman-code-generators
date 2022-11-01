@@ -8,14 +8,14 @@ describe('PHP-Guzzle Converter', function () {
     var testConfig = {
         runScript: 'php codesnippet.php',
         fileName: 'codesnippet.php',
-        compileScript: null
+        compileScript: null,
+        skipCollections: ['unsupportedMethods']
       },
       options = {
         indentType: 'Space',
         indentCount: 4,
         asyncType: 'sync',
-        includeBoilerplate: true,
-        skipCollections: ['unsupportedMethods']
+        includeBoilerplate: true
       };
     runNewmanTest(convert, options, testConfig);
   });
@@ -23,14 +23,14 @@ describe('PHP-Guzzle Converter', function () {
     var testConfig = {
         runScript: 'php codesnippet.php',
         fileName: 'codesnippet.php',
-        compileScript: null
+        compileScript: null,
+        skipCollections: ['unsupportedMethods']
       },
       options = {
         indentType: 'Space',
         indentCount: 4,
         asyncType: 'async',
-        includeBoilerplate: true,
-        skipCollections: ['unsupportedMethods']
+        includeBoilerplate: true
       };
     runNewmanTest(convert, options, testConfig);
   });
