@@ -258,6 +258,7 @@ self = module.exports = {
       headerSnippet = '',
       footerSnippet = '',
       mainMethodSnippet = '',
+      importTask = '',
       //  snippet to create request in csharp-restsharp
       snippet = '';
 
@@ -272,9 +273,11 @@ self = module.exports = {
       }
       else {
         mainMethodSnippet = indentString.repeat(2) + 'static async Task Main(string[] args) {\n';
+        importTask = 'using System.Threading;\nusing System.Threading.Tasks;\n';
       }
       headerSnippet = 'using System;\n' +
                             'using RestSharp;\n' +
+                            importTask +
                             'namespace HelloWorldApplication {\n' +
                             indentString + 'class HelloWorld {\n' +
                             mainMethodSnippet;

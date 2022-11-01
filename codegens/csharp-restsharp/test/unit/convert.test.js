@@ -84,7 +84,8 @@ describe('csharp restsharp function', function () {
           expect.fail(null, null, error);
           return;
         }
-        expect(snippet).to.include('using System;\nusing RestSharp;\nnamespace HelloWorldApplication {\n');
+        expect(snippet).to.include('using System;\nusing RestSharp;\nusing System.Threading;\nusing' +
+        ' System.Threading.Tasks;\nnamespace HelloWorldApplication {\n');
       });
     });
 
