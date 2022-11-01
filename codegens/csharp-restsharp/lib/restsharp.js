@@ -81,7 +81,7 @@ function makeSnippet (request, options, indentString) {
     isUnSupportedMethod = UNSUPPORTED_METHODS_LIKE_GET.includes(request.method) ||
     UNSUPPORTED_METHODS_LIKE_POST.includes(request.method),
     url = parseURL(request.url.toString()),
-    urlOrigin = url ? parseURL(request.url.toString()) : request.url.toString(),
+    urlOrigin = url ? parseURL(request.url.toString()).origin : request.url.toString(),
     urlPathAndHash = url ? request.url.toString().replace(urlOrigin, '') : '';
 
   let snippet = makeOptionsSnippet(urlOrigin, options, indentString);
