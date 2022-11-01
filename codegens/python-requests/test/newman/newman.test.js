@@ -14,7 +14,7 @@ describe('Convert for different types of request', function () {
         // Requests does not support multipart/form-data unless we are also
         // uploading a file. Headers are stored in a dict so we cannot have
         // two headers with same key
-        skipCollections: ['formdataCollection', 'sameNameHeadersCollection']
+        skipCollections: ['formdataCollection', 'sameNameHeadersCollection', 'unsupportedMethods']
       };
     runNewmanTest(convert, options, testConfig);
   });
@@ -31,7 +31,7 @@ describe('Convert for different types of request', function () {
         // Requests does not support multipart/form-data unless we are also
         // uploading a file. Headers are stored in a dict so we cannot have
         // two headers with same key
-        skipCollections: ['formdataCollection', 'sameNameHeadersCollection']
+        skipCollections: ['formdataCollection', 'sameNameHeadersCollection', 'unsupportedMethods']
       };
     runNewmanTest(convert, options, testConfig);
 
