@@ -14,7 +14,8 @@ describe('PHP-Guzzle Converter', function () {
         indentType: 'Space',
         indentCount: 4,
         asyncType: 'sync',
-        includeBoilerplate: true
+        includeBoilerplate: true,
+        skipCollections: ['unsupportedMethods']
       };
     runNewmanTest(convert, options, testConfig);
   });
@@ -28,7 +29,8 @@ describe('PHP-Guzzle Converter', function () {
         indentType: 'Space',
         indentCount: 4,
         asyncType: 'async',
-        includeBoilerplate: true
+        includeBoilerplate: true,
+        skipCollections: ['unsupportedMethods']
       };
     runNewmanTest(convert, options, testConfig);
   });
