@@ -23,19 +23,29 @@ function capitalizeFirstLetter (string) {
  * @param {string} urlOrigin - String representing the origin of the url
  * @param {Object} options - Options to tweak code snippet
  * @param {string} indentString - String representing value of indentation required
+ * @param {Array} headers - request headers
  * @returns {String} csharp-restsharp RestClientOptions object snippet
  */
-function makeOptionsSnippet (urlOrigin, options, indentString) {
-  let snippet = `var options = new RestClientOptions("${sanitize(urlOrigin)}")\n{\n`;
+function makeOptionsSnippet (urlOrigin, options, indentString, headers) {
+  let userAgentHeader,
+    snippet = `var options = new RestClientOptions("${sanitize(urlOrigin)}")\n{\n`;
+  if (Array.isArray(headers)) {
+    userAgentHeader = headers.find((header) => {
+      return (!header.disabled && sanitize(header.key, true).toLowerCase() === 'user-agent');
+
+    });
+  }
   if (options.requestTimeout) {
     snippet += `${indentString}MaxTimeout = ${options.requestTimeout},\n`;
   }
   else {
     snippet += `${indentString}MaxTimeout = -1,\n`;
   }
-
   if (!options.followRedirect) {
     snippet += `${indentString}FollowRedirects = false,\n`;
+  }
+  if (userAgentHeader) {
+    snippet += `${indentString}UserAgent = "${userAgentHeader.value}",\n`;
   }
   snippet += '};\n';
   return snippet;
@@ -84,7 +94,7 @@ function makeSnippet (request, options, indentString) {
     urlOrigin = url ? parseURL(request.url.toString()).origin : request.url.toString(),
     urlPathAndHash = url ? request.url.toString().replace(urlOrigin, '') : '';
 
-  let snippet = makeOptionsSnippet(urlOrigin, options, indentString);
+  let snippet = makeOptionsSnippet(urlOrigin, options, indentString, request.toJSON().header);
   snippet += 'var client = new RestClient(options);\n';
   snippet += `var request = new RestRequest("${sanitize(urlPathAndHash)}", ` +
   `${isUnSupportedMethod ? 'Method.Get' : ('Method.' + capitalizeFirstLetter(request.method))});\n`;
