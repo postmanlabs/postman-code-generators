@@ -213,11 +213,12 @@ function getBody (request, trimRequestBody) {
         return trimRequestBody ? requestBody.trim() : requestBody;
 
       case FORM_DATA:
-        requestBody += `${FORM_DATA_BOUNDARY}\n`;
+        requestBody += `--${FORM_DATA_BOUNDARY}\n`;
         /* istanbul ignore else */
         if (!_.isEmpty(request.body[request.body.mode])) {
-          let properties = getMembersOfPropertyList(request.body[request.body.mode]);
-          _.forEach(properties, function (property) {
+          let properties = getMembersOfPropertyList(request.body[request.body.mode]),
+            numberOfProperties = properties.length;
+          _.forEach(properties, function (property, index) {
             /* istanbul ignore else */
             if (property.type === 'text') {
               requestBody += 'Content-Disposition: form-data; name="';
@@ -242,7 +243,12 @@ function getBody (request, trimRequestBody) {
               }
               requestBody += '(data)\n';
             }
-            requestBody += `${FORM_DATA_BOUNDARY}\n`;
+            if (index === numberOfProperties - 1) {
+              requestBody += `--${FORM_DATA_BOUNDARY}--\n`;
+            }
+            else {
+              requestBody += `--${FORM_DATA_BOUNDARY}\n`;
+            }
           });
         }
         return trimRequestBody ? requestBody.trim() : requestBody;
