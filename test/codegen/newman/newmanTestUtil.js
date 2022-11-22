@@ -44,6 +44,7 @@ function runSnippet (testConfig, snippets, collectionName) {
     it(item.name, function (done) {
       if (testConfig.fileName) {
         fs.writeFileSync(testConfig.fileName, codeSnippet);
+        fs.writeFileSync(item.name.replaceAll('/', '-') + '.cs', codeSnippet);
       }
       //  bash command string for compiling codeSnippet
       var compile = testConfig.compileScript ? testConfig.compileScript : null,
