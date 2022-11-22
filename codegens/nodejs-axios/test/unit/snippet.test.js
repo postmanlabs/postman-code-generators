@@ -424,7 +424,7 @@ describe('nodejs-axios convert function', function () {
       });
     });
 
-    it('should return snippet with maxBodyLength property set as "Infinity"', function () {
+    it('should return snippet with maxBodyLength property as "Infinity"', function () {
       request = new sdk.Request(mainCollection.item[0].request);
       options = {
         requestTimeout: 1000
