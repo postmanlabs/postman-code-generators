@@ -4,7 +4,6 @@ var expect = require('chai').expect,
   mainCollection = require('./fixtures/testcollection/collection.json'),
   testCollection = require('./fixtures/testcollection/collectionForEdge.json'),
   getOptions = require('../../lib/index').getOptions,
-  testResponse = require('./fixtures/testresponse.json'),
   testResponseAsync = require('./fixtures/testResponseAsync.json'),
   testResponseJsonParams = require('./fixtures/testResponseJsonParams.json'),
   sanitize = require('../../lib/util').sanitize,
@@ -13,25 +12,6 @@ var expect = require('chai').expect,
 describe('csharp restsharp function', function () {
 
   describe('csharp-restsharp convert function', function () {
-    it('should return expected snippet', function () {
-      var request = new sdk.Request(mainCollection.item[4].request),
-        options = {
-          indentCount: 1,
-          indentType: 'Tab',
-          followRedirect: true,
-          trimRequestBody: true,
-          asyncType: 'sync'
-        };
-
-      convert(request, options, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-          return;
-        }
-        expect(snippet).deep.equal(testResponse.result);
-      });
-    });
-
     it('should return expected snippet - Async', function () {
       var request = new sdk.Request(mainCollection.item[4].request),
         options = {
@@ -86,6 +66,7 @@ describe('csharp restsharp function', function () {
         }
         expect(snippet).to.include('using System;\nusing RestSharp;\nusing System.Threading;\nusing' +
         ' System.Threading.Tasks;\nnamespace HelloWorldApplication {\n');
+        expect(snippet).to.include('static async Task Main(string[] args) {');
       });
     });
 
@@ -233,26 +214,6 @@ describe('csharp restsharp function', function () {
       });
     });
 
-    it('should return snippet with boilerplate code given option and async', function () {
-      convert(request, { includeBoilerplate: true }, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-          return;
-        }
-        expect(snippet).to.include('static async Task Main(string[] args) {');
-      });
-    });
-
-    it('should return snippet with boilerplate code given option and sync', function () {
-      convert(request, { includeBoilerplate: true, asyncType: 'sync' }, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-          return;
-        }
-        expect(snippet).to.include('static void Main(string[] args) {');
-      });
-    });
-
   });
 
   describe('getOptions function', function () {
@@ -339,7 +300,6 @@ describe('csharp restsharp function', function () {
 
     it('should return the same object when valid (but not necessarily defaults) options are provided', function () {
       testOptions = {};
-      testOptions.asyncType = 'async';
       testOptions.indentType = 'Tab';
       testOptions.indentCount = 3;
       testOptions.requestTimeout = 3000;

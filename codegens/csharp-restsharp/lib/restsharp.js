@@ -161,12 +161,7 @@ function makeSnippet (request, options, indentString) {
     snippet += '};\n';
   }
 
-  if (options.asyncType === 'sync') {
-    snippet += 'RestResponse response = client.Execute(request);\n';
-  }
-  else {
-    snippet += 'RestResponse response = await client.ExecuteAsync(request);\n';
-  }
+  snippet += 'RestResponse response = await client.ExecuteAsync(request);\n';
   snippet += 'Console.WriteLine(response.Content);';
 
   return snippet;
@@ -225,14 +220,6 @@ self = module.exports = {
         type: 'boolean',
         default: false,
         description: 'Remove white space and additional lines that may affect the server\'s response'
-      },
-      {
-        name: 'Set communication type',
-        id: 'asyncType',
-        type: 'enum',
-        availableOptions: ['async', 'sync'],
-        default: 'async',
-        description: 'Set if the requests will be asynchronous or synchronous'
       }
     ];
   },
@@ -278,13 +265,10 @@ self = module.exports = {
     indentString = indentString.repeat(options.indentCount);
 
     if (options.includeBoilerplate) {
-      if (options.asyncType === 'sync') {
-        mainMethodSnippet = indentString.repeat(2) + 'static void Main(string[] args) {\n';
-      }
-      else {
-        mainMethodSnippet = indentString.repeat(2) + 'static async Task Main(string[] args) {\n';
-        importTask = 'using System.Threading;\nusing System.Threading.Tasks;\n';
-      }
+
+      mainMethodSnippet = indentString.repeat(2) + 'static async Task Main(string[] args) {\n';
+      importTask = 'using System.Threading;\nusing System.Threading.Tasks;\n';
+
       headerSnippet = 'using System;\n' +
                             'using RestSharp;\n' +
                             importTask +
