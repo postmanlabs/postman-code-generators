@@ -8,7 +8,8 @@ describe('PHP-Guzzle Converter', function () {
     var testConfig = {
         runScript: 'php codesnippet.php',
         fileName: 'codesnippet.php',
-        compileScript: null
+        compileScript: null,
+        skipCollections: ['unsupportedMethods']
       },
       options = {
         indentType: 'Space',
@@ -22,7 +23,8 @@ describe('PHP-Guzzle Converter', function () {
     var testConfig = {
         runScript: 'php codesnippet.php',
         fileName: 'codesnippet.php',
-        compileScript: null
+        compileScript: null,
+        skipCollections: ['unsupportedMethods']
       },
       options = {
         indentType: 'Space',

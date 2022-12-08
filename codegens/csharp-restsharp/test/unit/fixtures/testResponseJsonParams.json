@@ -1,0 +1,3 @@
+{
+  "result": "var options = new RestClientOptions(\"https://postman-echo.com\")\n{\n\tMaxTimeout = -1,\n};\nvar client = new RestClient(options);\nvar request = new RestRequest(\"/post\", Method.Post);\nrequest.AddHeader(\"Content-Type\", \"application/json\");\nvar body = @\"{\" + \"\\n\" +\n@\"  \"\"json\"\": \"\"Test-Test\"\"\" + \"\\n\" +\n@\"}\";\nrequest.AddStringBody(body, DataFormat.Json);\nRestResponse response = await client.ExecuteAsync(request);\nConsole.WriteLine(response.Content);"
+}

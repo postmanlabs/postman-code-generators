@@ -10,7 +10,7 @@ describe.skip('Convert for different types of request', function () {
     testConfig = {
       fileName: 'snippet.swift',
       runScript: 'swift-5.3-RELEASE-ubuntu16.04/usr/bin/swift snippet.swift',
-      skipCollections: ['sameNameHeadersCollection']
+      skipCollections: ['sameNameHeadersCollection', 'unsupportedMethods']
     };
   runNewmanTest(convert, options, testConfig);
 });
