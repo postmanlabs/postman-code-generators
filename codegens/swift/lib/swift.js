@@ -109,7 +109,7 @@ function parseFormData (body, mode, trim, indent) {
     }
   });
   parameters = '[\n' + _.join(parameters, ',\n') + ']';
-  bodySnippet = `let parameters = ${parameters} as [[String : Any]]\n\n`;
+  bodySnippet = `let parameters = ${parameters} as [[String: Any]]\n\n`;
   bodySnippet += 'let boundary = "Boundary-\\(UUID().uuidString)"\n';
   bodySnippet += 'var body = ""\nvar error: Error? = nil\n';
   bodySnippet += 'for param in parameters {\n';
