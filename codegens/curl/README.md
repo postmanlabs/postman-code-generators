@@ -20,6 +20,7 @@ Convert function takes three parameters
     * `followRedirect` - Boolean denoting whether to redirect a request
     * `requestTimeoutInSeconds` - Integer denoting time after which the request will bail out in seconds
     * `multiLine` - Boolean denoting whether to output code snippet with multi line breaks
+    * `bodySingleLine` - Boolean denoting whether to remove new line characters from raw body
     * `longFormat` - Boolean denoting whether to use longform cURL options in snippet
     * `quoteType` - String denoting the quote type to use (single or double) for URL
 
