@@ -12,5 +12,6 @@ jobs:
         with:
           node-version: '8.x'
       - run: npm run cirequirements
+      - run: npm install
       - run: npm run deepinstall dev
       - run: npm run test
