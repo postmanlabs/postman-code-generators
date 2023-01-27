@@ -1,0 +1,16 @@
+name: Test
+
+on:
+  [pull_request]
+
+jobs:
+  Unit-Tests:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '8.x'
+      - run: npm run cirequirements
+      - run: npm run deepinstall dev
+      - run: npm run test
