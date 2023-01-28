@@ -531,6 +531,36 @@ describe('curl convert function', function () {
       });
     });
 
+    it('should longer option for body even if longFormat is disabled if @ character is present', function () {
+      let request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': '@hello'
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, { longFormat: false }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        expect(snippet).include('--data-raw');
+      });
+    });
+
     describe('getUrlStringfromUrlObject function', function () {
       var rawUrl, urlObject, outputUrlString;
 
