@@ -1,6 +1,9 @@
 #!/bin/bash
 set -ev; # stop on error
 
+echo "Insalling dependencies required for tests in codegens/libcurl"
+sudo apt-get install libcurl4-gnutls-dev
+
 echo "Installing dependencies required for tests in codegens/java-okhttp"
 pushd ./codegens/java-okhttp &>/dev/null;
   sudo add-apt-repository ppa:openjdk-r/ppa -y
