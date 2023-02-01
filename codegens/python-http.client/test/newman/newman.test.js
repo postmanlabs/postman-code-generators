@@ -13,7 +13,7 @@ describe('Convert for different types of request', function () {
     testConfig = {
       fileName: 'codesnippet.py',
       runScript: 'PYTHONIOENCODING=utf-8 python3 codesnippet.py',
-      skipCollections: ['redirectCollection', 'sameNameHeadersCollection']
+      skipCollections: ['redirectCollection', 'sameNameHeadersCollection', 'unsupportedMethods']
     };
   runNewmanTest(convert, options, testConfig);
 });
