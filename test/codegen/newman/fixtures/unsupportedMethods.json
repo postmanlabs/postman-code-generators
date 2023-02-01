@@ -1,0 +1,294 @@
+{
+	"info": {
+		"name": "Code-Gen Test PHP Guzzle",
+		"_postman_id": "43058ce7-94da-0f0f-366e-22b77d566316",
+		"description": "This collection contains requests that will be used to test validity of plugin created to convert postman request into code snippet of particular language.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "LINK request",
+			"request": {
+				"method": "LINK",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/plain"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
+				},
+				"url": {
+					"raw": "https://mockbin.org/request",
+					"protocol": "https",
+					"host": [
+						"mockbin",
+						"org"
+					],
+					"path": [
+						"request"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "UNLINK request",
+			"request": {
+				"method": "UNLINK",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/plain"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
+				},
+				"url": {
+					"raw": "https://mockbin.org/request",
+					"protocol": "https",
+					"host": [
+						"mockbin",
+						"org"
+					],
+					"path": [
+						"request"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "LOCK request",
+			"request": {
+				"method": "LOCK",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/plain"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
+				},
+				"url": {
+					"raw": "https://mockbin.org/request",
+					"protocol": "https",
+					"host": [
+						"mockbin",
+						"org"
+					],
+					"path": [
+						"request"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "UNLOCK request",
+			"request": {
+				"method": "UNLOCK",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://mockbin.org/request",
+					"protocol": "https",
+					"host": [
+						"mockbin",
+						"org"
+					],
+					"path": [
+						"request"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "PROFIND request",
+			"request": {
+				"method": "PROPFIND",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/plain"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
+				},
+				"url": {
+					"raw": "https://mockbin.org/request",
+					"protocol": "https",
+					"host": [
+						"mockbin",
+						"org"
+					],
+					"path": [
+						"request"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "PURGE Request",
+			"request": {
+				"method": "PURGE",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io",
+					"protocol": "https",
+					"host": [
+						"9c76407d-5b8d-4b22-99fb-8c47a85d9848",
+						"mock",
+						"pstmn",
+						"io"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "COPY Request",
+			"request": {
+				"method": "COPY",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io",
+					"protocol": "https",
+					"host": [
+						"9c76407d-5b8d-4b22-99fb-8c47a85d9848",
+						"mock",
+						"pstmn",
+						"io"
+					]
+				},
+				"description": ""
+			},
+			"response": [
+				{
+					"id": "47494bfb-6d21-4f1f-ace0-f88e5e1ac05d",
+					"name": "COPY Request",
+					"originalRequest": {
+						"method": "COPY",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io",
+							"protocol": "https",
+							"host": [
+								"9c76407d-5b8d-4b22-99fb-8c47a85d9848",
+								"mock",
+								"pstmn",
+								"io"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"_postman_previewtype": "text",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "",
+							"name": "Access-Control-Allow-Credentials",
+							"description": "Indicates whether or not the response to the request can be exposed when the credentials flag is true. When used as part of a response to a preflight request, this indicates whether or not the actual request can be made using credentials."
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "",
+							"name": "Access-Control-Allow-Headers",
+							"description": "Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request."
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "",
+							"name": "Access-Control-Allow-Methods",
+							"description": "Specifies the method or methods allowed when accessing the resource. This is used in response to a preflight request."
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"name": "Access-Control-Allow-Origin",
+							"description": "Specifies a URI that may access the resource. For requests without credentials, the server may specify '*' as a wildcard, thereby allowing any origin to access the resource."
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "",
+							"name": "Access-Control-Expose-Headers",
+							"description": "Lets a server whitelist headers that browsers are allowed to access."
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive",
+							"name": "Connection",
+							"description": "Options that are desired for the connection"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "gzip",
+							"name": "Content-Encoding",
+							"description": "The type of encoding used on the data."
+						},
+						{
+							"key": "Content-Length",
+							"value": "59",
+							"name": "Content-Length",
+							"description": "The length of the response body in octets (8-bit bytes)"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8",
+							"name": "Content-Type",
+							"description": "The mime type of this content"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 05 Feb 2018 07:48:41 GMT",
+							"name": "Date",
+							"description": "The date and time that the message was sent"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"af-MmpVeTvfnSW88c4riXD0uw\"",
+							"name": "ETag",
+							"description": "An identifier for a specific version of a resource, often a message digest"
+						},
+						{
+							"key": "Server",
+							"value": "nginx",
+							"name": "Server",
+							"description": "A name for the server"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding",
+							"name": "Vary",
+							"description": "Tells downstream proxies how to match future request headers to decide whether the cached response can be used rather than requesting a fresh one from the origin server."
+						}
+					],
+					"cookie": [],
+					"responseTime": 378,
+					"body": "{\n    \"status\": 200,\n    \"method\": \"COPY\"\n}"
+				}
+			]
+		}
+	]
+}
