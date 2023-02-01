@@ -9,7 +9,7 @@ describe('Convert for different types of request', function () {
       headerSnippet: '',
       // http uses Map<String, String> to store headers, so there is no way to
       // keep multiple headers with the same key
-      skipCollections: ['sameNameHeadersCollection']
+      skipCollections: ['sameNameHeadersCollection', 'unsupportedMethods']
     };
 
   runNewmanTest(convert, options, testConfig);
