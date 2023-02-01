@@ -285,11 +285,12 @@ self = module.exports = {
     else if (!_.isFunction(callback)) {
       throw new Error('Swift-Converter: callback is not valid function');
     }
-    options = sanitizeOptions(options, self.getOptions());
-    var codeSnippet, indent, trim, timeout, finalUrl, // followRedirect,
+    var isTest = options.isTest,
+      codeSnippet, indent, trim, timeout, finalUrl, // followRedirect,
       bodySnippet = '',
       headerSnippet = '',
       requestBody;
+    options = sanitizeOptions(options, self.getOptions());
 
     indent = options.indentType === 'Tab' ? '\t' : ' ';
     indent = indent.repeat(options.indentCount);
@@ -344,6 +345,7 @@ self = module.exports = {
 
     codeSnippet = 'import Foundation\n';
     codeSnippet += '#if canImport(FoundationNetworking)\nimport FoundationNetworking\n#endif\n\n';
+    codeSnippet += isTest ? 'var semaphore = DispatchSemaphore (value: 0)\n\n' : '';
     if (bodySnippet !== '') {
       codeSnippet += `${bodySnippet}\n\n`;
     }
@@ -374,10 +376,18 @@ self = module.exports = {
     codeSnippet += '\nlet task = URLSession.shared.dataTask(with: request) { data, response, error in \n';
     codeSnippet += `${indent}guard let data = data else {\n`;
     codeSnippet += `${indent.repeat(2)}print(String(describing: error))\n`;
+    codeSnippet += isTest ? `${indent.repeat(2)}semaphore.signal()\n` : '';
     codeSnippet += `${indent.repeat(2)}return\n`;
     codeSnippet += `${indent}}\n`;
-    codeSnippet += `${indent}print(String(data: data, encoding: .utf8)!)\n}\n\n`;
+    if (isTest) {
+      codeSnippet += `${indent}print(String(data: data, encoding: .utf8)!)\n`;
+      codeSnippet += `${indent}semaphore.signal()\n}\n\n`;
+    }
+    else {
+      codeSnippet += `${indent}print(String(data: data, encoding: .utf8)!)\n}\n\n`;
+    }
     codeSnippet += 'task.resume()\n';
+    codeSnippet += isTest ? 'semaphore.wait()\n' : '';
 
     return callback(null, codeSnippet);
   }
