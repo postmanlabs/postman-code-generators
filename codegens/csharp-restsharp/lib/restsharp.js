@@ -4,32 +4,100 @@ var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
   addFormParam = require('./util').addFormParam,
+  { URL } = require('url'),
   self;
+
+/**
+* Takes in a string and returns a new string with only the first character capitalized
+*
+* @param  {string} string - string to change
+* @returns {String} - the same string with the first litter as capital letter
+*/
+function capitalizeFirstLetter (string) {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
+
+/**
+ * Generates snippet for the RestClientOptions object
+ *
+ * @param {string} urlOrigin - String representing the origin of the url
+ * @param {Object} options - Options to tweak code snippet
+ * @param {string} indentString - String representing value of indentation required
+ * @param {Array} headers - request headers
+ * @returns {String} csharp-restsharp RestClientOptions object snippet
+ */
+function makeOptionsSnippet (urlOrigin, options, indentString, headers) {
+  let userAgentHeader,
+    snippet = `var options = new RestClientOptions("${sanitize(urlOrigin)}")\n{\n`;
+  if (Array.isArray(headers)) {
+    userAgentHeader = headers.find((header) => {
+      return (!header.disabled && sanitize(header.key, true).toLowerCase() === 'user-agent');
+
+    });
+  }
+  if (options.requestTimeout) {
+    snippet += `${indentString}MaxTimeout = ${options.requestTimeout},\n`;
+  }
+  else {
+    snippet += `${indentString}MaxTimeout = -1,\n`;
+  }
+  if (!options.followRedirect) {
+    snippet += `${indentString}FollowRedirects = false,\n`;
+  }
+  if (userAgentHeader) {
+    snippet += `${indentString}UserAgent = "${userAgentHeader.value}",\n`;
+  }
+  snippet += '};\n';
+  return snippet;
+}
+
+/**
+ * Generates an URL object from the string
+ *
+ * @param {string} stringToParse - url in string representation
+ * @returns {object} the URL object
+ */
+function parseURL (stringToParse) {
+  try {
+    let objectURL = new URL(stringToParse);
+    return objectURL;
+  }
+  catch (err) {
+    try {
+      var url = require('url');
+      let urlObj = url.parse(stringToParse);
+      if (urlObj.hostname === null) {
+        return false;
+      }
+      return urlObj;
+    }
+    catch (parseErr) {
+      return false;
+    }
+  }
+}
 
 /**
  * Generates snippet in csharp-restsharp by parsing data from Postman-SDK request object
  *
  * @param {Object} request - Postman SDK request object
  * @param {Object} options - Options to tweak code snippet
- * @returns {String} csharp-restsharp code snippet for given request object
+ * @param {string} indentString - String representing value of indentation required
+ * @returns {string} csharp-restsharp code snippet for given request object
  */
-function makeSnippet (request, options) {
+function makeSnippet (request, options, indentString) {
   const UNSUPPORTED_METHODS_LIKE_POST = ['LINK', 'UNLINK', 'LOCK', 'PROPFIND'],
-    UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW', 'COPY'];
-
-  var snippet = `var client = new RestClient("${sanitize(request.url.toString())}");\n`,
+    UNSUPPORTED_METHODS_LIKE_GET = ['PURGE', 'UNLOCK', 'VIEW'],
     isUnSupportedMethod = UNSUPPORTED_METHODS_LIKE_GET.includes(request.method) ||
-            UNSUPPORTED_METHODS_LIKE_POST.includes(request.method);
-  if (options.requestTimeout) {
-    snippet += `client.Timeout = ${options.requestTimeout};\n`;
-  }
-  else {
-    snippet += 'client.Timeout = -1;\n';
-  }
-  if (!options.followRedirect) {
-    snippet += 'client.FollowRedirects = false;\n';
-  }
-  snippet += `var request = new RestRequest(${isUnSupportedMethod ? '' : ('Method.' + request.method)});\n`;
+    UNSUPPORTED_METHODS_LIKE_POST.includes(request.method),
+    url = parseURL(request.url.toString()),
+    urlOrigin = url ? parseURL(request.url.toString()).origin : request.url.toString(),
+    urlPathAndHash = url ? request.url.toString().replace(urlOrigin, '') : '';
+
+  let snippet = makeOptionsSnippet(urlOrigin, options, indentString, request.toJSON().header);
+  snippet += 'var client = new RestClient(options);\n';
+  snippet += `var request = new RestRequest("${sanitize(urlPathAndHash)}", ` +
+  `${isUnSupportedMethod ? 'Method.Get' : ('Method.' + capitalizeFirstLetter(request.method))});\n`;
   if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
     request.addHeader({
       key: 'Content-Type',
@@ -38,17 +106,11 @@ function makeSnippet (request, options) {
   }
   snippet += parseRequest.parseHeader(request.toJSON(), options.trimRequestBody);
   if (request.body && request.body.mode === 'formdata') {
-    let isFile = false,
-      formdata = request.body.formdata,
+    let formdata = request.body.formdata,
       formdataArray = [];
-    request.body.toJSON().formdata.forEach((data) => {
-      if (!data.disabled && data.type === 'file') {
-        isFile = true;
-      }
-    });
     // The following statement needs to be added else the multipart/form-data request where there is no file
     // is being sent as x-www-form-urlencoded by default
-    if (!isFile) {
+    if (formdata.members.length > 0) {
       snippet += 'request.AlwaysMultipartFormData = true;\n';
     }
 
@@ -92,14 +154,14 @@ function makeSnippet (request, options) {
   }
   snippet += parseRequest.parseBody(request, options.trimRequestBody);
   if (isUnSupportedMethod) {
-    (UNSUPPORTED_METHODS_LIKE_GET.includes(request.method)) &&
-            (snippet += `IRestResponse response = client.ExecuteAsGet(request, "${request.method}");\n`);
-    (UNSUPPORTED_METHODS_LIKE_POST.includes(request.method)) &&
-            (snippet += `IRestResponse response = client.ExecuteAsPost(request, "${request.method}");\n`);
+    snippet += 'request.OnBeforeRequest = (request) =>\n';
+    snippet += '{\n';
+    snippet += `${indentString}request.Method = new HttpMethod("${request.method}");\n`;
+    snippet += `${indentString}return default;\n`;
+    snippet += '};\n';
   }
-  else {
-    snippet += 'IRestResponse response = client.Execute(request);\n';
-  }
+
+  snippet += 'RestResponse response = await client.ExecuteAsync(request);\n';
   snippet += 'Console.WriteLine(response.Content);';
 
   return snippet;
@@ -192,7 +254,8 @@ self = module.exports = {
       //  snippets to include C# class definition according to options
       headerSnippet = '',
       footerSnippet = '',
-
+      mainMethodSnippet = '',
+      importTask = '',
       //  snippet to create request in csharp-restsharp
       snippet = '';
 
@@ -202,15 +265,20 @@ self = module.exports = {
     indentString = indentString.repeat(options.indentCount);
 
     if (options.includeBoilerplate) {
+
+      mainMethodSnippet = indentString.repeat(2) + 'static async Task Main(string[] args) {\n';
+      importTask = 'using System.Threading;\nusing System.Threading.Tasks;\n';
+
       headerSnippet = 'using System;\n' +
                             'using RestSharp;\n' +
+                            importTask +
                             'namespace HelloWorldApplication {\n' +
                             indentString + 'class HelloWorld {\n' +
-                            indentString.repeat(2) + 'static void Main(string[] args) {\n';
+                            mainMethodSnippet;
       footerSnippet = indentString.repeat(2) + '}\n' + indentString + '}\n}\n';
     }
 
-    snippet = makeSnippet(request, options);
+    snippet = makeSnippet(request, options, indentString);
 
     //  if boilerplate is included then two more indentString needs to be added in snippet
     (options.includeBoilerplate) &&
