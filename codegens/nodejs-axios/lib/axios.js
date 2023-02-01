@@ -89,6 +89,7 @@ function makeSnippet (request, indentString, options) {
   snippet += dataSnippet + '\n';
 
   configArray.push(indentString + `method: '${request.method.toLowerCase()}'`);
+  configArray.push('maxBodyLength: Infinity');
   configArray.push(indentString + `url: '${sanitize(request.url.toString())}'`);
 
   headers = parseRequest.parseHeader(request, indentString);
