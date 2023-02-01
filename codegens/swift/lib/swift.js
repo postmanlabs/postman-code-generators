@@ -250,11 +250,11 @@ self = module.exports = {
         description: 'Remove white space and additional lines that may affect the server\'s response'
       },
       {
-        name: 'Follow redirects',
-        id: 'followRedirect',
+        name: 'Include boilerplate',
+        id: 'includeBoilerplate',
         type: 'boolean',
-        default: true,
-        description: 'Automatically follow HTTP redirects'
+        default: false,
+        description: 'Include class definition and import statements in snippet'
       }
     ];
   },
@@ -285,17 +285,16 @@ self = module.exports = {
     else if (!_.isFunction(callback)) {
       throw new Error('Swift-Converter: callback is not valid function');
     }
-    var isTest = options.isTest,
-      codeSnippet, indent, trim, timeout, finalUrl, // followRedirect,
+    options = sanitizeOptions(options, self.getOptions());
+    var indent, trim, timeout, finalUrl,
+      codeSnippet = '',
       bodySnippet = '',
       headerSnippet = '',
       requestBody;
-    options = sanitizeOptions(options, self.getOptions());
 
     indent = options.indentType === 'Tab' ? '\t' : ' ';
     indent = indent.repeat(options.indentCount);
     timeout = options.requestTimeout;
-    // followRedirect = options.followRedirect;
     trim = options.trimRequestBody;
     finalUrl = getUrlStringfromUrlObject(request.url);
 
@@ -343,9 +342,10 @@ self = module.exports = {
     requestBody = (request.body ? request.body.toJSON() : {});
     bodySnippet = parseBody(requestBody, trim, indent);
 
-    codeSnippet = 'import Foundation\n';
-    codeSnippet += '#if canImport(FoundationNetworking)\nimport FoundationNetworking\n#endif\n\n';
-    codeSnippet += isTest ? 'var semaphore = DispatchSemaphore (value: 0)\n\n' : '';
+    if (options.includeBoilerplate) {
+      codeSnippet += 'import Foundation\n';
+      codeSnippet += '#if canImport(FoundationNetworking)\nimport FoundationNetworking\n#endif\n\n';
+    }
     if (bodySnippet !== '') {
       codeSnippet += `${bodySnippet}\n\n`;
     }
@@ -376,18 +376,14 @@ self = module.exports = {
     codeSnippet += '\nlet task = URLSession.shared.dataTask(with: request) { data, response, error in \n';
     codeSnippet += `${indent}guard let data = data else {\n`;
     codeSnippet += `${indent.repeat(2)}print(String(describing: error))\n`;
-    codeSnippet += isTest ? `${indent.repeat(2)}semaphore.signal()\n` : '';
-    codeSnippet += `${indent.repeat(2)}return\n`;
+    codeSnippet += `${indent.repeat(2)}`;
+    codeSnippet += options.includeBoilerplate ? 'exit(EXIT_SUCCESS)\n' : 'return\n';
     codeSnippet += `${indent}}\n`;
-    if (isTest) {
-      codeSnippet += `${indent}print(String(data: data, encoding: .utf8)!)\n`;
-      codeSnippet += `${indent}semaphore.signal()\n}\n\n`;
-    }
-    else {
-      codeSnippet += `${indent}print(String(data: data, encoding: .utf8)!)\n}\n\n`;
-    }
+    codeSnippet += `${indent}print(String(data: data, encoding: .utf8)!)\n`;
+    codeSnippet += options.includeBoilerplate ? `${indent}exit(EXIT_SUCCESS)\n` : '';
+    codeSnippet += '}\n\n';
     codeSnippet += 'task.resume()\n';
-    codeSnippet += isTest ? 'semaphore.wait()\n' : '';
+    codeSnippet += options.includeBoilerplate ? 'dispatchMain()\n' : '';
 
     return callback(null, codeSnippet);
   }

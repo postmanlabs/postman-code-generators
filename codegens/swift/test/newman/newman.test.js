@@ -3,7 +3,7 @@ var runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').ru
 
 describe('Convert for different types of request', function () {
   var options = {
-      isTest: true,
+      includeBoilerplate: true,
       indentType: 'Space',
       indentCount: 4
     },
