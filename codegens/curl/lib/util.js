@@ -244,12 +244,13 @@ var self = module.exports = {
    * @returns {Boolean}
    */
   shouldAddHttpMethod: function (request, options) {
-    const followOriginalHttpMethod =
-      options.followOriginalHttpMethod || _.get(request, 'protocolProfileBehavior.followOriginalHttpMethod', false),
+    const followRedirect = _.get(request, 'protocolProfileBehavior.followRedirects', options.followRedirect),
+      followOriginalHttpMethod =
+      _.get(request, 'protocolProfileBehavior.followOriginalHttpMethod', options.followOriginalHttpMethod),
       disableBodyPruning = _.get(request, 'protocolProfileBehavior.disableBodyPruning', true),
       isBodyEmpty = self.isBodyEmpty(request.body);
 
-    if (options.followRedirect && followOriginalHttpMethod) {
+    if (followRedirect && followOriginalHttpMethod) {
       return true;
     }
 

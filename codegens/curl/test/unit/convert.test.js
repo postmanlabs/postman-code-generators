@@ -767,16 +767,15 @@ describe('curl convert function', function () {
       });
     });
 
-    it('should add --request parameter when options ' +
-      'followRedirect and followOriginalHttpMethod are true', function () {
-      const methods = ['GET', 'HEAD', 'DELETE', 'PUT', 'POST', 'PATCH'],
-        request = new sdk.Request({
+    describe('followRedirect and followOriginalHttpMethod', function () {
+      it('should add --request parameter when passed true via options', function () {
+        const request = new sdk.Request({
           'method': 'POST',
           'header': [],
           'body': {
             'mode': 'graphql',
             'graphql': {
-              'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+                'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
               'variables': '{\n\t"variable_key": "variable_value"\n}'
             }
           },
@@ -793,21 +792,125 @@ describe('curl convert function', function () {
           }
         });
 
-      // this needs to be done here because protocolProfileBehavior is not in collections SDK
-      request.protocolProfileBehavior = {
-        followOriginalHttpMethod: true
-      };
-
-      for (let method of methods) {
-        request.method = method;
-        convert(request, { followRedirect: true }, function (error, snippet) {
+        convert(request, { followRedirect: true, followOriginalHttpMethod: true }, function (error, snippet) {
           if (error) {
             expect.fail(null, null, error);
           }
           expect(snippet).to.be.a('string');
-          expect(snippet).to.include(`--request ${method}`);
+          expect(snippet).to.include('--request POST');
         });
-      }
+      });
+
+      it('should not add --request parameter when passed false via options', function () {
+        const request = new sdk.Request({
+          'method': 'POST',
+          'header': [],
+          'body': {
+            'mode': 'graphql',
+            'graphql': {
+                'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+              'variables': '{\n\t"variable_key": "variable_value"\n}'
+            }
+          },
+          'url': {
+            'raw': 'https://postman-echo.com/post',
+            'protocol': 'https',
+            'host': [
+              'postman-echo',
+              'com'
+            ],
+            'path': [
+              'post'
+            ]
+          }
+        });
+
+        convert(request, { followRedirect: false, followOriginalHttpMethod: false }, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.not.include('--request POST');
+        });
+      });
+
+      it('should add --request parameter when passed false via options but true in request settings', function () {
+        const request = new sdk.Request({
+          'method': 'POST',
+          'header': [],
+          'body': {
+            'mode': 'graphql',
+            'graphql': {
+                'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+              'variables': '{\n\t"variable_key": "variable_value"\n}'
+            }
+          },
+          'url': {
+            'raw': 'https://postman-echo.com/post',
+            'protocol': 'https',
+            'host': [
+              'postman-echo',
+              'com'
+            ],
+            'path': [
+              'post'
+            ]
+          }
+        });
+
+        // this needs to be done here because protocolProfileBehavior is not in collections SDK
+        request.protocolProfileBehavior = {
+          followRedirects: true,
+          followOriginalHttpMethod: true
+        };
+
+        convert(request, { followRedirect: false, followOriginalHttpMethod: false }, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.include('--request POST');
+        });
+      });
+
+      it('should not add --request parameter when passed true via options but false in request settings', function () {
+        const request = new sdk.Request({
+          'method': 'POST',
+          'header': [],
+          'body': {
+            'mode': 'graphql',
+            'graphql': {
+                'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+              'variables': '{\n\t"variable_key": "variable_value"\n}'
+            }
+          },
+          'url': {
+            'raw': 'https://postman-echo.com/post',
+            'protocol': 'https',
+            'host': [
+              'postman-echo',
+              'com'
+            ],
+            'path': [
+              'post'
+            ]
+          }
+        });
+
+        // this needs to be done here because protocolProfileBehavior is not in collections SDK
+        request.protocolProfileBehavior = {
+          followRedirects: false,
+          followOriginalHttpMethod: false
+        };
+
+        convert(request, { followRedirect: true, followOriginalHttpMethod: true }, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.not.include('--request POST');
+        });
+      });
     });
   });
 });
