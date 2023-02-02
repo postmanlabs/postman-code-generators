@@ -57,6 +57,12 @@ const expectedOptions = {
       default: true,
       description: 'Automatically follow HTTP redirects'
     },
+    followOriginalHttpMethod: {
+      name: 'Follow original HTTP method',
+      type: 'boolean',
+      default: false,
+      description: 'Use the original HTTP method when following redirects'
+    },
     trimRequestBody: {
       name: 'Trim request body fields',
       type: 'boolean',
@@ -95,6 +101,7 @@ const expectedOptions = {
     'silent',
     'includeBoilerplate',
     'followRedirect',
+    'followOriginalHttpMethod',
     'lineContinuationCharacter',
     'protocol',
     'useMimeType',

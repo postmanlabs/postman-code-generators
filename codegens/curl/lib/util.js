@@ -1,3 +1,5 @@
+const _ = require('./lodash');
+
 var self = module.exports = {
   /**
      * sanitizes input string by handling escape characters eg: converts '''' to '\'\'', (" to \"  and \ to \\ )
@@ -198,6 +200,78 @@ var self = module.exports = {
         disabled: disabled,
         contentType: contentType
       });
+    }
+  },
+
+  /**
+   * @param {Object} body
+   * @returns {boolean}
+   *
+   * Determines if a request body is actually empty.
+   * This is needed because body.isEmpty() returns false for formdata
+   * and urlencoded when they contain only disabled params which will not
+   * be a part of the curl request.
+   */
+  isBodyEmpty (body) {
+    if (!body) {
+      return true;
+    }
+
+    if (body.isEmpty()) {
+      return true;
+    }
+
+    if (body.mode === 'formdata' || body.mode === 'urlencoded') {
+      let memberCount = 0;
+      body[body.mode].members && body[body.mode].members.forEach((param) => {
+        if (!param.disabled) {
+          memberCount += 1;
+        }
+      });
+
+      return memberCount === 0;
+    }
+
+    return false;
+  },
+
+  /**
+   * Decide whether we should add the HTTP method explicitly to the cURL command.
+   *
+   * @param {Object} request
+   * @param {Object} options
+   *
+   * @returns {Boolean}
+   */
+  shouldAddHttpMethod: function (request, options) {
+    const followOriginalHttpMethod =
+      _.get(request, 'protocolProfileBehavior.followOriginalHttpMethod', options.followOriginalHttpMethod),
+      disableBodyPruning = _.get(request, 'protocolProfileBehavior.disableBodyPruning', true),
+      isBodyEmpty = self.isBodyEmpty(request.body);
+
+    if (options.followRedirect && followOriginalHttpMethod) {
+      return true;
+    }
+
+    switch (request.method) {
+      case 'HEAD':
+        return false;
+      case 'GET':
+        // disableBodyPruning will generally not be present in the request
+        // the only time it will be present, its value will be _false_
+        // i.e. the user wants to prune the request body despite it being present
+        if (!isBodyEmpty && disableBodyPruning) {
+          return true;
+        }
+
+        return false;
+      case 'POST':
+        return isBodyEmpty;
+      case 'DELETE':
+      case 'PUT':
+      case 'PATCH':
+      default:
+        return true;
     }
   }
 };
