@@ -3,6 +3,7 @@ var sanitize = require('./util').sanitize,
   getUrlStringfromUrlObject = require('./util').getUrlStringfromUrlObject,
   addFormParam = require('./util').addFormParam,
   form = require('./util').form,
+  shouldAddHttpMethod = require('./util').shouldAddHttpMethod,
   _ = require('./lodash'),
   self;
 
@@ -44,12 +45,14 @@ self = module.exports = {
     else {
       indent = ' ';
     }
+
     if (request.method === 'HEAD') {
-      snippet += ` ${form('-I', format)} ${quoteType + url + quoteType}`;
+      snippet += ` ${form('-I', format)}`;
     }
-    else {
-      snippet += ` ${form('-X', format)} ${request.method} ${quoteType + url + quoteType}`;
+    if (shouldAddHttpMethod(request, options)) {
+      snippet += ` ${form('-X', format)} ${request.method}`;
     }
+    snippet += ` ${quoteType + url + quoteType}`;
 
     if (request.body && !request.headers.has('Content-Type')) {
       if (request.body.mode === 'file') {
@@ -235,6 +238,13 @@ self = module.exports = {
         type: 'boolean',
         default: true,
         description: 'Automatically follow HTTP redirects'
+      },
+      {
+        name: 'Follow original HTTP method',
+        id: 'followOriginalHttpMethod',
+        type: 'boolean',
+        default: false,
+        description: 'Redirect with the original HTTP method instead of the default behavior of redirecting with GET'
       },
       {
         name: 'Trim request body fields',
