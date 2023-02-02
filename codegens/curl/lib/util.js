@@ -223,7 +223,7 @@ var self = module.exports = {
 
     if (body.mode === 'formdata' || body.mode === 'urlencoded') {
       let memberCount = 0;
-      body[body.mode].members && body[body.mode].members.forEach((param) => {
+      body[body.mode] && body[body.mode].members && body[body.mode].members.forEach((param) => {
         if (!param.disabled) {
           memberCount += 1;
         }
@@ -245,7 +245,7 @@ var self = module.exports = {
    */
   shouldAddHttpMethod: function (request, options) {
     const followOriginalHttpMethod =
-      _.get(request, 'protocolProfileBehavior.followOriginalHttpMethod', options.followOriginalHttpMethod),
+      options.followOriginalHttpMethod || _.get(request, 'protocolProfileBehavior.followOriginalHttpMethod', false),
       disableBodyPruning = _.get(request, 'protocolProfileBehavior.disableBodyPruning', true),
       isBodyEmpty = self.isBodyEmpty(request.body);
 

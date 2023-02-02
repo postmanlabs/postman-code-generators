@@ -244,7 +244,7 @@ self = module.exports = {
         id: 'followOriginalHttpMethod',
         type: 'boolean',
         default: false,
-        description: 'Use the original HTTP method when following redirects'
+        description: 'Redirect with the original HTTP method instead of the default behavior of redirecting with GET'
       },
       {
         name: 'Trim request body fields',

@@ -61,7 +61,7 @@ const expectedOptions = {
       name: 'Follow original HTTP method',
       type: 'boolean',
       default: false,
-      description: 'Use the original HTTP method when following redirects'
+      description: 'Redirect with the original HTTP method instead of the default behavior of redirecting with GET'
     },
     trimRequestBody: {
       name: 'Trim request body fields',
