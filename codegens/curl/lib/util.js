@@ -10,7 +10,7 @@ var self = module.exports = {
      * @param {Boolean} [urlEncode] - indicates whether to url-encode inputString
      * @returns {String}
      */
-  sanitize: function (inputString, trim, quoteType, backSlash, urlEncode) {
+  sanitize: function (inputString, trim, quoteType, backSlash = false, urlEncode = false) {
     if (typeof inputString !== 'string') {
       return '';
     }
