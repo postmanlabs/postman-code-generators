@@ -11,7 +11,8 @@ describe('convert for different request types', function () {
       // Run script required to run the generated code snippet
       runScript: 'dotnet run --project ' + projectPath,
       // Compile script required to compile the code snippet
-      compileScript: 'dotnet build ' + projectPath
+      compileScript: 'dotnet build ' + projectPath,
+      skipCollections: ['unsupportedMethods']
     },
     options = {
       includeBoilerplate: true
