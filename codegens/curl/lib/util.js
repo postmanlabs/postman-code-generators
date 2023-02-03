@@ -9,11 +9,16 @@ var self = module.exports = {
      * @param {Boolean} [trim] - indicates whether to trim string or not
      * @param {String} [quoteType] - indicates which quoteType has to be escaped
      * @param {Boolean} [backSlash] - indicates whether to escape backslash(\\)
+     * @param {Boolean} [urlEncode] - indicates whether to url-encode inputString
      * @returns {String}
      */
-  sanitize: function (inputString, trim, quoteType, backSlash) {
+  sanitize: function (inputString, trim, quoteType, backSlash = false, urlEncode = false) {
     if (typeof inputString !== 'string') {
       return '';
+    }
+
+    if (urlEncode) {
+      inputString = encodeURIComponent(inputString);
     }
 
     if (backSlash) {

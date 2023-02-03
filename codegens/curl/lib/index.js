@@ -130,33 +130,43 @@ self = module.exports = {
           case 'urlencoded':
             _.forEach(body.urlencoded, function (data) {
               if (!data.disabled) {
-                // Using the long form below without considering the longFormat option,
-                // to generate more accurate and correct snippet
-                snippet += indent + '--data-urlencode';
-                snippet += ` ${quoteType}${sanitize(data.key, trim, quoteType)}=` +
-                  `${sanitize(data.value, trim, quoteType)}${quoteType}`;
+                snippet += indent + (format ? '--data-urlencode' : '-d');
+                snippet += ` ${quoteType}${sanitize(data.key, trim, quoteType, false, true)}=` +
+                  `${sanitize(data.value, trim, quoteType, false, !format)}${quoteType}`;
               }
             });
             break;
-          case 'raw':
-            snippet += indent + `--data-raw ${quoteType}${sanitize(body.raw.toString(), trim, quoteType)}${quoteType}`;
+          case 'raw': {
+            let rawBody = body.raw.toString(),
+              isAsperandPresent = _.includes(rawBody, '@'),
+              // Use the long option if `@` is present in the request body otherwise follow user setting
+              optionName = isAsperandPresent ? '--data-raw' : form('-d', format);
+            snippet += indent + `${optionName} ${quoteType}${sanitize(rawBody, trim, quoteType)}${quoteType}`;
             break;
+          }
 
-          case 'graphql':
+          case 'graphql': {
             // eslint-disable-next-line no-case-declarations
             let query = body.graphql ? body.graphql.query : '',
-              graphqlVariables;
+              graphqlVariables, requestBody, isAsperandPresent, optionName;
             try {
               graphqlVariables = JSON.parse(body.graphql.variables);
             }
             catch (e) {
               graphqlVariables = {};
             }
-            snippet += indent + `--data-raw ${quoteType}${sanitize(JSON.stringify({
+
+            requestBody = JSON.stringify({
               query: query,
               variables: graphqlVariables
-            }), trim, quoteType)}${quoteType}`;
+            });
+
+            isAsperandPresent = _.includes(requestBody, '@');
+            // Use the long option if `@` is present in the request body otherwise follow user setting
+            optionName = isAsperandPresent ? '--data-raw' : form('-d', format);
+            snippet += indent + `${optionName} ${quoteType}${sanitize(requestBody, trim, quoteType)}${quoteType}`;
             break;
+          }
           case 'formdata':
             _.forEach(body.formdata, function (data) {
               if (!(data.disabled)) {
@@ -179,7 +189,7 @@ self = module.exports = {
             });
             break;
           case 'file':
-            snippet += indent + '--data-binary';
+            snippet += indent + form('-d', format);
             snippet += ` ${quoteType}@${sanitize(body[body.mode].src, trim)}${quoteType}`;
             break;
           default:
