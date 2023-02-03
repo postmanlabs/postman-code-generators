@@ -16,7 +16,6 @@ var self = module.exports = {
     }
 
     if (urlEncode) {
-      console.log('Percent encoding...');
       inputString = encodeURIComponent(inputString);
     }
 
