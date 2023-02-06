@@ -446,11 +446,10 @@ describe('csharp httpclient function', function () {
     });
 
     it('should return all the valid options', function () {
-      expect(getOptions()[0]).to.have.property('id', 'includeBoilerplate');
-      expect(getOptions()[1]).to.have.property('id', 'indentCount');
-      expect(getOptions()[2]).to.have.property('id', 'indentType');
-      expect(getOptions()[3]).to.have.property('id', 'requestTimeout');
-      expect(getOptions()[4]).to.have.property('id', 'followRedirect');
+      expect(getOptions()[0]).to.have.property('id', 'indentCount');
+      expect(getOptions()[1]).to.have.property('id', 'indentType');
+      expect(getOptions()[2]).to.have.property('id', 'requestTimeout');
+      expect(getOptions()[3]).to.have.property('id', 'followRedirect');
     });
   });
 
@@ -495,7 +494,6 @@ describe('csharp httpclient function', function () {
       testOptions.indentType = 'tabSpace';
       sanitizedOptions = sanitizeOptions(testOptions, getOptions());
       expect(sanitizedOptions.indentCount).to.equal(defaultOptions.indentCount.default);
-      expect(sanitizedOptions.includeBoilerplate).to.equal(defaultOptions.includeBoilerplate.default);
       expect(sanitizedOptions.indentType).to.equal(defaultOptions.indentType.default);
     });
 
@@ -526,7 +524,6 @@ describe('csharp httpclient function', function () {
       testOptions.indentCount = 3;
       testOptions.requestTimeout = 3000;
       testOptions.followRedirect = false;
-      testOptions.includeBoilerplate = true;
       sanitizedOptions = sanitizeOptions(testOptions, getOptions());
       expect(sanitizedOptions).to.deep.equal(testOptions);
     });
