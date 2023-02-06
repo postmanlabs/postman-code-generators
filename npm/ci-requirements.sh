@@ -1,6 +1,9 @@
 #!/bin/bash
 set -ev; # stop on error
 
+echo "Insalling dependencies required for tests in codegens/libcurl"
+sudo apt-get install libcurl4-gnutls-dev
+
 echo "Installing dependencies required for tests in codegens/java-okhttp"
 pushd ./codegens/java-okhttp &>/dev/null;
   sudo add-apt-repository ppa:openjdk-r/ppa -y
@@ -17,17 +20,28 @@ popd &>/dev/null;
 
 echo "Installing dependencies required for tests in codegens/csharp-restsharp"
 pushd ./codegens/csharp-restsharp &>/dev/null;
-  wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+  wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
   sudo dpkg -i packages-microsoft-prod.deb
   sudo apt-get install apt-transport-https
   sudo apt-get update
   sudo apt-get install dotnet-sdk-6.0
-  dotnet new console -o testProject
+  dotnet new console -o testProject -f net6.0
   pushd ./testProject &>/dev/null;
   dotnet add package RestSharp
   popd &>/dev/null;
 popd &>/dev/null;
 
+echo "Installing dependencies required for tests in codegens/csharp-httpclient"
+# Install latest .net6.0 sdk
+pushd ./codegens/csharp-httpclient &>/dev/null;
+  wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+  sudo dpkg -i packages-microsoft-prod.deb
+  sudo apt-get install apt-transport-https
+  sudo apt-get update
+  sudo apt-get install dotnet-sdk-6.0
+  dotnet new console -o testProject -f net6.0
+  # no extra packages needed
+popd &>/dev/null;
 
 echo "Installing Powershell"
   sudo apt-get install powershell -y
@@ -39,27 +53,17 @@ echo "Installing dependencies required for tests in codegens/swift"
 pushd ./codegens/swift &>/dev/null;
   sudo apt-get update
   sudo apt-get install clang-3.6 libicu-dev libpython2.7 -y
-  sudo apt-get install libcurl3 libpython2.7-dev -y
-  sudo wget https://swift.org/builds/swift-5.3-release/ubuntu1604/swift-5.3-RELEASE/swift-5.3-RELEASE-ubuntu16.04.tar.gz
-  sudo tar xzf swift-5.3-RELEASE-ubuntu16.04.tar.gz
-  sudo chmod 777 swift-5.3-RELEASE-ubuntu16.04/usr/lib/swift/CoreFoundation/module.map
+  sudo apt-get install libcurl4 libpython2.7-dev -y
+  sudo wget https://download.swift.org/swift-5.7.3-release/ubuntu2004/swift-5.7.3-RELEASE/swift-5.7.3-RELEASE-ubuntu20.04.tar.gz
+  sudo tar xzf swift-5.7.3-RELEASE-ubuntu20.04.tar.gz
+  sudo chmod 777 swift-5.7.3-RELEASE-ubuntu20.04/usr/lib/swift/CoreFoundation/module.map
 popd &>/dev/null;
 
 echo "Installing dependencies required for tests in codegens/csharp-restsharp"
 sudo apt-get install -y mono-complete
 
-echo "Installing curl v7.68"
-  sudo apt-get install -y libssl-dev autoconf libtool make
-  wget https://curl.haxx.se/download/curl-7.68.0.zip
-  unzip curl-7.68.0.zip
-  pushd ./curl-7.68.0 &>/dev/null
-  ./buildconf
-  ./configure --with-ssl
-  make
-  sudo make install
-  sudo cp /usr/local/bin/curl /usr/bin/curl
-  sudo ldconfig
-  popd &>/dev/null
+echo "Installing curl"
+  sudo apt-get install -y curl
 
 echo "Installing dependencies required for tests in codegens/shell-httpie"
 sudo apt-get install httpie

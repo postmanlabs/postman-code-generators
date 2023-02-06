@@ -1,4 +1,12 @@
-.DS_Store
+### NPM Specific: Disregard recursive project files
+### ===============================================
+/.editorconfig
+/.gitmodules
+/test
+
+### Borrowed from .gitignore
+### ========================
+
 # Logs
 logs
 *.log
@@ -66,4 +74,3 @@ typings/
 snippet.swift
 
 out/
-swift-5.7.3-RELEASE-ubuntu20.04/
