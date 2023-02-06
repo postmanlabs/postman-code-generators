@@ -7,7 +7,9 @@ describe('R-Rcurl Converter', function () {
     var testConfig = {
         runScript: 'Rscript codesnippet.r',
         fileName: 'codesnippet.r',
-        compileScript: null
+        compileScript: null,
+        skipCollections: ['unsupportedMethods']
+
       },
       options = {
         indentType: 'Space',

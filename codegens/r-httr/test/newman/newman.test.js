@@ -13,7 +13,7 @@ describe('r-httr Converter', function () {
         fileName: 'snippet.r',
         // Run script required to run the generated code snippet
         runScript: 'Rscript snippet.r',
-        skipCollections: ['redirectCollection']
+        skipCollections: ['redirectCollection', 'unsupportedMethods']
       };
     runNewmanTest(convert, options, testConfig);
   });
