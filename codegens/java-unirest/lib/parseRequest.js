@@ -3,6 +3,49 @@ var _ = require('./lodash'),
   sanitize = require('./util').sanitize;
 
 /**
+ * Encode param except the following characters- [,{,},]
+ *
+ * @param {String} param
+ * @returns {String}
+ */
+function encodeParam (param) {
+  return encodeURIComponent(param)
+    .replace(/%5B/g, '[')
+    .replace(/%7B/g, '{')
+    .replace(/%5D/g, ']')
+    .replace(/%7D/g, '}')
+    .replace(/'/g, '%27');
+}
+
+/**
+ * @param {Object} urlObject
+ * @returns {String}
+ */
+function getQueryString (urlObject) {
+  let isFirstParam = true,
+    params = _.get(urlObject, 'query.members'),
+    result = '';
+  if (Array.isArray(params)) {
+    result = _.reduce(params, function (result, param) {
+      if (param.disabled === true) {
+        return result;
+      }
+
+      if (isFirstParam) {
+        isFirstParam = false;
+      }
+      else {
+        result += '&';
+      }
+
+      return result + encodeParam(param.key) + '=' + encodeParam(param.value);
+    }, result);
+  }
+
+  return result;
+}
+
+/**
  *
  * @param {*} urlObject The request sdk request.url object
  * @returns {String} The final string after parsing all the parameters of the url including
@@ -33,7 +76,7 @@ function getUrlStringfromUrlObject (urlObject) {
     url += urlObject.getPath();
   }
   if (urlObject.query && urlObject.query.count()) {
-    let queryString = urlObject.getQueryString({ ignoreDisabled: true, encode: true });
+    let queryString = getQueryString(urlObject);
     queryString && (url += '?' + queryString);
   }
   if (urlObject.hash) {

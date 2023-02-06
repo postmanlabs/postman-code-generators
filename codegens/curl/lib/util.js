@@ -166,7 +166,7 @@ var self = module.exports = {
       url += urlObject.getPath();
     }
     if (urlObject.query && urlObject.query.count()) {
-      let queryString = urlObject.getQueryString({ ignoreDisabled: true, encode: true });
+      let queryString = self.getQueryString(urlObject);
       queryString && (url += '?' + queryString);
     }
     if (urlObject.hash) {
@@ -174,6 +174,49 @@ var self = module.exports = {
     }
 
     return self.sanitize(url, false, quoteType);
+  },
+
+  /**
+   * @param {Object} urlObject
+   * @returns {String}
+   */
+  getQueryString: function (urlObject) {
+    let isFirstParam = true,
+      params = _.get(urlObject, 'query.members'),
+      result = '';
+    if (Array.isArray(params)) {
+      result = _.reduce(params, function (result, param) {
+        if (param.disabled === true) {
+          return result;
+        }
+
+        if (isFirstParam) {
+          isFirstParam = false;
+        }
+        else {
+          result += '&';
+        }
+
+        return result + self.encodeParam(param.key) + '=' + self.encodeParam(param.value);
+      }, result);
+    }
+
+    return result;
+  },
+
+  /**
+   * Encode param except the following characters- [,{,},]
+   *
+   * @param {String} param
+   * @returns {String}
+   */
+  encodeParam: function (param) {
+    return encodeURIComponent(param)
+      .replace(/%5B/g, '[')
+      .replace(/%7B/g, '{')
+      .replace(/%5D/g, ']')
+      .replace(/%7D/g, '}')
+      .replace(/'/g, '%27');
   },
 
   /**
