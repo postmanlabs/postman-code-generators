@@ -1,3 +1,9 @@
+v1.4.0 (February 6, 2023)
+* Add support for C# HttpClient Codegen
+* Use short options in CURL as long as possible (9511)[https://github.com/postmanlabs/postman-app-support/issues/9511]
+* Do not add HTTP method explicitly in CURL when not required (10581)[https://github.com/postmanlabs/postman-app-support/issues/10581]
+* Remove usage of semaphore from Swift Codegen (10053)[https://github.com/postmanlabs/postman-app-support/issues/10053]
+
 v1.3.0 (December 16, 2022)
 * Update C# restsharp codegen to support (107)[https://restsharp.dev/v107/]
 * Fixes an issue where HTTP code snippet was generating wrong boundaries (11084)[https://github.com/postmanlabs/postman-app-support/issues/11084]
