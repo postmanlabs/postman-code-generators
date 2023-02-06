@@ -16,7 +16,7 @@ describe('Powershell Restmethod Converter', function () {
         // Poweshell does not support headers with duplicate keys
         // If a Post request has no body then powershell will still send
         // an empty string as body, which is not what is expected in newman tests
-        skipCollections: ['sameNameHeadersCollection', 'emptyFormdataCollection']
+        skipCollections: ['sameNameHeadersCollection', 'emptyFormdataCollection', 'unsupportedMethods']
       };
     runNewmanTest(convert, options, testConfig);
   });

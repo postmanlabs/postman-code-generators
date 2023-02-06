@@ -1,3 +1,8 @@
+v1.3.0 (December 16, 2022)
+* Update C# restsharp codegen to support (107)[https://restsharp.dev/v107/]
+* Fixes an issue where HTTP code snippet was generating wrong boundaries (11084)[https://github.com/postmanlabs/postman-app-support/issues/11084]
+* Fixes an issue with Axios code snippets not including maxBodyLength param
+
 v1.2.1 (April 26, 2022)
 * Add label for 'R' language
 

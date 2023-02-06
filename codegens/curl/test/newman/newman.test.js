@@ -3,7 +3,7 @@ var runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').ru
 
 describe('Convert for different types of request', function () {
   var testConfig = {compileScript: null, runScript: null, fileName: null},
-    options = {
+    options1 = {
       indentCount: 3,
       indentType: 'Space',
       requestTimeout: 200,
@@ -13,7 +13,19 @@ describe('Convert for different types of request', function () {
       silent: true,
       lineContinuationCharacter: '\\',
       quoteType: 'single'
+    },
+    options2 = {
+      indentCount: 3,
+      indentType: 'Space',
+      requestTimeout: 200,
+      multiLine: true,
+      followRedirect: true,
+      longFormat: false,
+      silent: true,
+      lineContinuationCharacter: '\\',
+      quoteType: 'single'
     };
 
-  runNewmanTest(convert, options, testConfig);
+  runNewmanTest(convert, options1, testConfig);
+  runNewmanTest(convert, options2, testConfig);
 });
