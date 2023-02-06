@@ -73,13 +73,6 @@ self = module.exports = {
   getOptions: function () {
     return [
       {
-        name: 'Include boilerplate',
-        id: 'includeBoilerplate',
-        type: 'boolean',
-        default: false,
-        description: 'Include class definition and import statements in snippet'
-      },
-      {
         name: 'Set indentation count',
         id: 'indentCount',
         type: 'positiveInteger',
@@ -147,13 +140,8 @@ self = module.exports = {
 
     codeBuilder = new CodeBuilder(options.indentCount, indentString);
 
-    if (options.includeBoilerplate) {
-      codeBuilder.appendLine('// No more boilerplate needed with top level statements ' +
-        '(https://docs.microsoft.com/en-us/dotnet/core/tutorials/top-level-templates)');
-    }
-
     makeSnippet(codeBuilder, request, options);
 
-    return callback(null, codeBuilder.build(options.includeBoilerplate));
+    return callback(null, codeBuilder.build());
   }
 };
