@@ -57,7 +57,12 @@ function generateMultipartFormData (requestbody) {
         else {
           // eslint-disable-next-line no-useless-escape
           const value = dataArrayElement.value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-          accumalator.push(`name=\\"${key}\\"\\r\\n\\r\\n${value}\\r\\n`);
+          let field = `name=\\"${key}\\"\\r\\n`;
+          if (dataArrayElement.contentType) {
+            field += `Content-Type: ${dataArrayElement.contentType}\\r\\n`;
+          }
+          field += `\\r\\n${value}\\r\\n`;
+          accumalator.push(field);
         }
       }
       return accumalator;
@@ -66,6 +71,25 @@ function generateMultipartFormData (requestbody) {
   }
 
   return postData;
+}
+
+/** generate graphql code snippet
+ *
+ * @param body GraphQL body
+ * @param indentString string defining indentation
+ */
+function parseGraphql (body, indentString) {
+  let query = body ? body.query : '',
+    graphqlVariables = body ? body.variables : '{}';
+  try {
+    graphqlVariables = JSON.parse(graphqlVariables || '{}');
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  return 'JSON.stringify({\n' +
+  `${indentString}query: \`${query ? query.trim() : ''}\`,\n` +
+  `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n})`;
 }
 
 /**
@@ -80,29 +104,21 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
   if (requestbody) {
     switch (requestbody.mode) {
       case 'raw':
-        if (contentType === 'application/json') {
+        // Match any application type whose underlying structure is json
+        // For example application/vnd.api+json
+        // All of them have +json as suffix
+        if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
           try {
             let jsonBody = JSON.parse(requestbody[requestbody.mode]);
-            return `JSON.stringify(${JSON.stringify(jsonBody)})`;
+            return `JSON.stringify(${JSON.stringify(jsonBody, null, indentString.length)})`;
           }
           catch (error) {
             return ` ${JSON.stringify(requestbody[requestbody.mode])}`;
           }
         }
         return ` ${JSON.stringify(requestbody[requestbody.mode])}`;
-      // eslint-disable-next-line no-case-declarations
       case 'graphql':
-        let query = requestbody[requestbody.mode].query,
-          graphqlVariables;
-        try {
-          graphqlVariables = JSON.parse(requestbody[requestbody.mode].variables);
-        }
-        catch (e) {
-          graphqlVariables = {};
-        }
-        return 'JSON.stringify({\n' +
-        `${indentString}query: "${sanitize(query, trimBody)}",\n` +
-        `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n})`;
+        return parseGraphql(requestbody[requestbody.mode], indentString);
       case 'formdata':
         return generateMultipartFormData(requestbody);
       case 'urlencoded':
@@ -156,128 +172,8 @@ function parseHeader (request, indentString) {
   return headerSnippet;
 }
 
-/**
- * parses host of request object and returns code snippet of nodejs native to add hostname
- *
- * @param {Object} request - Postman SDK request object
- * @param {String} indentString - indentation required in code snippet
- * @returns {String} - code snippet of nodejs native to add hostname
- */
-function parseHost (request, indentString) {
-  var hostArray = _.get(request, 'url.host', []),
-    hostSnippet = indentString + '\'hostname\': \'';
-
-  if (hostArray.length) {
-    hostSnippet += _.reduce(hostArray, function (accumalator, key) {
-      accumalator.push(`${sanitize(key)}`);
-      return accumalator;
-    }, []).join('.');
-  }
-
-  hostSnippet += '\'';
-
-  return hostSnippet;
-}
-
-/**
- * parses port of request object and returns code snippet of nodejs native to add port
- *
- * @param {Object} request - Postman SDK request object
- * @param {String} indentString - indentation required in code snippet
- * @returns {String} - code snippet of nodejs native to add port
- */
-function parsePort (request, indentString) {
-  var port = _.get(request, 'url.port', ''),
-    portSnippet = '';
-  if (port) {
-    portSnippet += `${indentString}'port': ${port}`;
-  }
-  return portSnippet;
-}
-
-/**
- * parses path of request object and returns code snippet of nodejs native to add path
- *
- * @param {Object} request - Postman SDK request object
- * @param {String} indentString - indentation required in code snippet
- * @returns {String} - code snippet of nodejs native to add path
- */
-function parsePath (request, indentString) {
-  var pathArray = _.get(request, 'url.path'),
-    queryArray = _.get(request.toJSON(), 'url.query'),
-    pathSnippet = indentString + '\'path\': \'/',
-    querySnippet = '';
-
-  if (pathArray && pathArray.length) {
-    pathSnippet += (_.reduce(pathArray, function (accumalator, key) {
-      if (key.length) {
-        accumalator.push(`${sanitize(key)}`);
-      }
-      else {
-        accumalator.push('');
-      }
-      return accumalator;
-    }, []).join('/'));
-  }
-
-  if (queryArray && queryArray.length) {
-    const queryExists = !(_.every(queryArray, function (element) {
-      return element.disabled && element.disabled === false;
-    }));
-
-    if (queryExists) {
-      querySnippet += '?' + _.reduce(queryArray, function (accumalator, queryElement) {
-        if (!queryElement.disabled || _.get(queryElement, 'disabled') === false) {
-          accumalator.push(`${queryElement.key}=${sanitize(encodeURIComponent(queryElement.value))}`);
-        }
-        return accumalator;
-      }, []).join('&');
-    }
-  }
-  pathSnippet += querySnippet + '\'';
-  return pathSnippet;
-}
-
-/**
- * parses variable of request url object and sets hostname, path and query in request object
- *
- * @param {Object} request - Postman SDK request object
- */
-function parseURLVariable (request) {
-  const variableArray = _.get(request.toJSON(), 'url.variable', []);
-
-  if (!variableArray.length) {
-    return;
-  }
-
-  variableArray.forEach(function (variableArrayElement) {
-    if (variableArrayElement.value) {
-      request.url.host.forEach(function (hostArrayElement, hostArrayElementIndex) {
-        if (hostArrayElement === ':' + variableArrayElement.key) {
-          request.url.host[hostArrayElementIndex] = variableArrayElement.value;
-        }
-      });
-
-      request.url.path.forEach(function (pathArrayElement, pathArrayElementIndex) {
-        if (pathArrayElement === ':' + variableArrayElement.key) {
-          request.url.path[pathArrayElementIndex] = variableArrayElement.value;
-        }
-      });
-
-      request.toJSON().url.query.forEach(function (queryArrayElement, queryArrayElementIndex) {
-        if (queryArrayElement === ':' + variableArrayElement.key) {
-          request.url.query[queryArrayElementIndex] = variableArrayElement.value;
-        }
-      });
-    }
-  });
-}
 
 module.exports = {
   parseBody: parseBody,
-  parseHeader: parseHeader,
-  parseHost: parseHost,
-  parsePort: parsePort,
-  parsePath: parsePath,
-  parseURLVariable: parseURLVariable
+  parseHeader: parseHeader
 };

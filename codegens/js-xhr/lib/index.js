@@ -14,7 +14,7 @@ function parseURLEncodedBody (body) {
     bodySnippet;
   _.forEach(body, function (data) {
     if (!data.disabled) {
-      payload.push(`${escape(data.key)}=${escape(data.value)}`);
+      payload.push(`${encodeURIComponent(data.key)}=${encodeURIComponent(data.value)}`);
     }
   });
   bodySnippet = `var data = "${payload.join('&')}";\n`;
@@ -27,13 +27,17 @@ function parseURLEncodedBody (body) {
  * @param {*} body Raw body data
  * @param {*} trim trim body option
  * @param {String} contentType Content type of the body being sent
+ * @param {String} indentString Indentation string
  */
-function parseRawBody (body, trim, contentType) {
+function parseRawBody (body, trim, contentType, indentString) {
   var bodySnippet = 'var data = ';
-  if (contentType === 'application/json') {
+  // Match any application type whose underlying structure is json
+  // For example application/vnd.api+json
+  // All of them have +json as suffix
+  if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
     try {
       let jsonBody = JSON.parse(body);
-      bodySnippet += `JSON.stringify(${JSON.stringify(jsonBody)});\n`;
+      bodySnippet += `JSON.stringify(${JSON.stringify(jsonBody, null, indentString.length)});\n`;
     }
     catch (error) {
       bodySnippet += `"${sanitize(body.toString(), trim)}";\n`;
@@ -122,7 +126,7 @@ function parseBody (body, trim, indentString, contentType) {
       case 'urlencoded':
         return parseURLEncodedBody(body.urlencoded, trim);
       case 'raw':
-        return parseRawBody(body.raw, trim, contentType);
+        return parseRawBody(body.raw, trim, contentType, indentString);
       case 'graphql':
         return parseGraphQL(body.graphql, trim, indentString);
       case 'formdata':
@@ -146,6 +150,9 @@ function parseHeaders (headers) {
   if (!_.isEmpty(headers)) {
     headers = _.reject(headers, 'disabled');
     _.forEach(headers, function (header) {
+      if (_.capitalize(header.key) === 'Cookie') {
+        headerSnippet += '// WARNING: Cookies will be stripped away by the browser before sending the request.\n';
+      }
       headerSnippet += `xhr.setRequestHeader("${sanitize(header.key, true)}", "${sanitize(header.value)}");\n`;
     });
   }
@@ -259,6 +266,9 @@ function convert (request, options, callback) {
   bodySnippet = request.body && !_.isEmpty(request.body.toJSON()) ? parseBody(request.body.toJSON(), trim,
     indent, request.headers.get('Content-Type')) : '';
 
+  if (_.includes(['Get', 'Post'], _.capitalize(request.method))) {
+    codeSnippet += `// WARNING: For ${request.method} requests, body is set to null by browsers.\n`;
+  }
   codeSnippet += bodySnippet + '\n';
 
   codeSnippet += 'var xhr = new XMLHttpRequest();\nxhr.withCredentials = true;\n\n';

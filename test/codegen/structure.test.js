@@ -44,11 +44,24 @@ const expectedOptions = {
       description: 'Set number of milliseconds the request should wait' +
       ' for a response before timing out (use 0 for infinity)'
     },
+    requestTimeoutInSeconds: {
+      name: 'Set request timeout (in seconds)',
+      type: 'positiveInteger',
+      default: 0,
+      description: 'Set number of seconds the request should wait' +
+      ' for a response before timing out (use 0 for infinity)'
+    },
     followRedirect: {
       name: 'Follow redirects',
       type: 'boolean',
       default: true,
       description: 'Automatically follow HTTP redirects'
+    },
+    followOriginalHttpMethod: {
+      name: 'Follow original HTTP method',
+      type: 'boolean',
+      default: false,
+      description: 'Redirect with the original HTTP method instead of the default behavior of redirecting with GET'
     },
     trimRequestBody: {
       name: 'Trim request body fields',
@@ -67,6 +80,13 @@ const expectedOptions = {
       type: 'boolean',
       default: false,
       description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
+    },
+    quoteType: {
+      name: 'Quote Type',
+      type: 'enum',
+      default: 'single',
+      description: 'String denoting the quote type to use (single or double) for URL ' +
+          '(Use double quotes when running curl in cmd.exe and single quotes for the rest)'
     }
   },
   // Standard array of ids that should be used for options ids. Any new option should be updated here.
@@ -77,13 +97,18 @@ const expectedOptions = {
     'indentCount',
     'trimRequestBody',
     'requestTimeout',
+    'requestTimeoutInSeconds',
     'silent',
     'includeBoilerplate',
     'followRedirect',
+    'followOriginalHttpMethod',
     'lineContinuationCharacter',
     'protocol',
     'useMimeType',
-    'ES6_enabled'
+    'ES6_enabled',
+    'quoteType',
+    'asyncType',
+    'ignoreWarnings'
   ],
   CODEGEN_ABS_PATH = `./codegens/${codegen}`;
 describe('Code-gen repository ' + codegen, function () {

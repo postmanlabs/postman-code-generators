@@ -1,6 +1,6 @@
 # codegen-http
 
-> Converts Postman-SDK Request into code snippet for cURL.
+> Converts Postman-SDK Request into code snippet for RAW HTTP request.
 
 #### Prerequisites
 To run Code-Gen, ensure that you have NodeJS >= v8. A copy of the NodeJS installable can be downloaded from 

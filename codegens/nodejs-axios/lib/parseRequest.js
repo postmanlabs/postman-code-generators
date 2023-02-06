@@ -7,8 +7,9 @@ var _ = require('./lodash'),
  * @param {Object} body URLEncoded Body
  * @param {boolean} trim trim body option
  * @param {boolean} ES6_enabled ES6 syntax option
+ * @param {string} indentString The indentation string
  */
-function parseURLEncodedBody (body, trim, ES6_enabled) {
+function parseURLEncodedBody (body, trim, ES6_enabled, indentString) {
   var varDeclare = ES6_enabled ? 'const' : 'var',
     bodySnippet = varDeclare + ' qs = require(\'qs\');\n',
     dataArray = [];
@@ -24,7 +25,7 @@ function parseURLEncodedBody (body, trim, ES6_enabled) {
   else {
     bodySnippet += 'var';
   }
-  bodySnippet += ` data = qs.stringify({\n ${dataArray.join(',\n')} \n});`;
+  bodySnippet += ` data = qs.stringify({\n${indentString}${dataArray.join(',\n' + indentString)} \n});`;
   return bodySnippet;
 }
 
@@ -58,7 +59,11 @@ function parseFormData (body, trim, ES6_enabled) {
         bodySnippet += `data.append('${sanitize(data.key, trim)}', ${fileContent});\n`;
       }
       else {
-        bodySnippet += `data.append('${sanitize(data.key, trim)}', '${sanitize(data.value, trim)}');\n`;
+        bodySnippet += `data.append('${sanitize(data.key, trim)}', '${sanitize(data.value, trim)}'`;
+        if (data.contentType) {
+          bodySnippet += `, {contentType: '${sanitize(data.contentType, trim)}'}`;
+        }
+        bodySnippet += ');\n';
       }
     }
   });
@@ -72,14 +77,18 @@ function parseFormData (body, trim, ES6_enabled) {
  * @param {boolean} trim trim body option
  * @param {String} contentType Content type of the body being sent
  * @param {boolean} ES6_enabled ES6 syntax option
+ * @param {String} indentString Indentation string
  */
-function parseRawBody (body, trim, contentType, ES6_enabled) {
+function parseRawBody (body, trim, contentType, ES6_enabled, indentString) {
   var varDeclare = ES6_enabled ? 'let' : 'var',
     bodySnippet = varDeclare + ' data = ';
-  if (contentType === 'application/json') {
+  // Match any application type whose underlying structure is json
+  // For example application/vnd.api+json
+  // All of them have +json as suffix
+  if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
     try {
       let jsonBody = JSON.parse(body);
-      bodySnippet += `JSON.stringify(${JSON.stringify(jsonBody)});\n`;
+      bodySnippet += `JSON.stringify(${JSON.stringify(jsonBody, null, indentString.length)});\n`;
     }
     catch (error) {
       bodySnippet += `'${sanitize(body.toString(), trim)}';\n`;
@@ -101,17 +110,17 @@ function parseRawBody (body, trim, contentType, ES6_enabled) {
  */
 function parseGraphQL (body, trim, indentString, ES6_enabled) {
   var varDeclare = ES6_enabled ? 'let' : 'var';
-  let query = body.query,
-    graphqlVariables,
+  let query = body ? body.query : '',
+    graphqlVariables = body ? body.variables : '{}',
     bodySnippet;
   try {
-    graphqlVariables = JSON.parse(body.variables);
+    graphqlVariables = JSON.parse(graphqlVariables || '{}');
   }
   catch (e) {
     graphqlVariables = {};
   }
   bodySnippet = varDeclare + ' data = JSON.stringify({\n';
-  bodySnippet += `${indentString}query: '${sanitize(query, trim)}',\n`;
+  bodySnippet += `${indentString}query: \`${query ? query.trim() : ''}\`,\n`;
   bodySnippet += `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n});\n`;
   return bodySnippet;
 }
@@ -139,12 +148,12 @@ function parseFileData (ES6_enabled) {
  * @param {boolean} ES6_enabled ES6 syntax option
  */
 function parseBody (body, trim, indentString, contentType, ES6_enabled) {
-  if (!_.isEmpty(body)) {
+  if (body && !_.isEmpty(body)) {
     switch (body.mode) {
       case 'urlencoded':
-        return parseURLEncodedBody(body.urlencoded, trim, ES6_enabled);
+        return parseURLEncodedBody(body.urlencoded, trim, ES6_enabled, indentString);
       case 'raw':
-        return parseRawBody(body.raw, trim, contentType, ES6_enabled);
+        return parseRawBody(body.raw, trim, contentType, ES6_enabled, indentString);
       case 'graphql':
         return parseGraphQL(body.graphql, trim, indentString, ES6_enabled);
       case 'formdata':

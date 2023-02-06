@@ -48,6 +48,40 @@ describe('nodejs unirest convert function', function () {
       });
     });
 
+    it('should use JSON.parse if the content-type is application/vnd.api+json', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [
+          {
+            'key': 'Content-Type',
+            'value': 'application/vnd.api+json'
+          }
+        ],
+        'body': {
+          'mode': 'raw',
+          'raw': '{"data": {"hello": "world"} }'
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/get',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'get'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('JSON.stringify({\n    "data": {\n      "hello": "world"\n    }\n  })');
+      });
+    });
+
     it('should return snippet with ES6 features', function () {
       request = new sdk.Request(mainCollection.item[0].request);
       options = {
@@ -159,7 +193,7 @@ describe('nodejs unirest convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('.send(JSON.stringify({"json":"Test-Test"}))');
+        expect(snippet).to.include('.send(JSON.stringify({\n    "json": "Test-Test"\n  }))');
       });
     });
 

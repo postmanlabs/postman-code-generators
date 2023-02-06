@@ -1,3 +1,71 @@
+v1.4.0 (February 6, 2023)
+* Add support for C# HttpClient Codegen
+* Use short options in CURL as long as possible (9511)[https://github.com/postmanlabs/postman-app-support/issues/9511]
+* Do not add HTTP method explicitly in CURL when not required (10581)[https://github.com/postmanlabs/postman-app-support/issues/10581]
+* Remove usage of semaphore from Swift Codegen (10053)[https://github.com/postmanlabs/postman-app-support/issues/10053]
+
+v1.3.0 (December 16, 2022)
+* Update C# restsharp codegen to support (107)[https://restsharp.dev/v107/]
+* Fixes an issue where HTTP code snippet was generating wrong boundaries (11084)[https://github.com/postmanlabs/postman-app-support/issues/11084]
+* Fixes an issue with Axios code snippets not including maxBodyLength param
+
+v1.2.1 (April 26, 2022)
+* Add label for 'R' language
+
+v1.2.0 (April 22, 2022)
+* Add new codegens - php-guzzle, R-httr, R-rcurl
+* Fix issue with pipeline failing due to updated version of RestSharp
+* Fix for - [502](https://github.com/postmanlabs/postman-code-generators/issues/502) Allow GET method to have a body in java-okhttp if present in input request
+* Fix for - [476](https://github.com/postmanlabs/postman-code-generators/pull/476) Properly escape already escaped double quotes in curl body
+
+v1.1.5 (May 10, 2021)
+* Fixed an issue with how JSON bodies are shown in code snippets for Ruby, C#, and Dart.
+
+v1.1.4 (May 6, 2021)
+* Fix an issue with empty GraphQL body
+
+v1.1.3 (Mar 2, 2021)
+* Use proper indentation for JSON bodies in Javascript and Nodejs codegens
+* Fix for - [445](https://github.com/postmanlabs/postman-code-generators/issues/445) Add proper indentation in nodejs-axios when bodytype is urlencoded
+* Fix for - [248](https://github.com/postmanlabs/postman-code-generators/issues/248) Use quoteType everywhere in curl, not just in the url
+* Fix for - [454](https://github.com/postmanlabs/postman-code-generators/issues/454) Fix encoding when generating HTTP code snippets
+* Fix for - [426](https://github.com/postmanlabs/postman-code-generators/issues/426) Use json.dumps in Python codegens if Content-Type is JSON
+
+v1.1.2 (Dec 15, 2020)
+* Fix for - [8736](https://github.com/postmanlabs/postman-app-support/issues/8736) Add content type support for individual form-data fields
+* Fix for - [8635](https://github.com/postmanlabs/postman-app-support/issues/8635) Use Json.parse for all json like application types
+* Fix for - [9212](https://github.com/postmanlabs/postman-app-support/issues/9212) Add semicolon after header key in curl codegen if the value is empty string. 
+* Add Newman test for powershell
+
+v1.1.1 (Nov 10, 2020)
+* Change string to enum in cURL quoteType option.
+* Fix new line issue in dart-http and HTTP codegen
+* Fix an issue where deepinstall was failing when folder name had spaces.
+
+v1.1.0 (Nov 2, 2020)
+* Added support for Dart http
+* Fix for - [315](https://github.com/postmanlabs/postman-code-generators/issues/315): Manually parse url provided in the request.
+* Fix for - [253](https://github.com/postmanlabs/postman-code-generators/issues/253): Add -g flag to curl if braces ({}) or brackets ([]) are present in the url.
+* Fix for - [257](https://github.com/postmanlabs/postman-code-generators/issues/257): Use double quotes to escape semicolon in curl requests
+* Fix for - [247](https://github.com/postmanlabs/postman-code-generators/issues/247): Add ContentType to python snippets for multipart/formdata
+* Fix for - [186](https://github.com/postmanlabs/postman-code-generators/issues/186): Add ` as line continuation delimiter for curl codegen
+* Fix for - [248](https://github.com/postmanlabs/postman-code-generators/issues/248): Add quoteType as an additional option in curl codegen
+* Fix deadlock in error case in Swift and Objective-C codegens.
+* Fix for - [325](https://github.com/postmanlabs/postman-code-generators/issues/325): Use encodeURIComponent instead of escape for urlencoded request body.
+* Fix for - [350](https://github.com/postmanlabs/postman-code-generators/issues/350): Sanitize \r in request body.
+* Fix for - [366](https://github.com/postmanlabs/postman-code-generators/issues/366): Add support for uploading binary files for multipart/form-data bodies in python-http.client.
+* Fix for - [353](https://github.com/postmanlabs/postman-code-generators/issues/353): Add optional import of FoundationNetworking in swift codegen
+* Fix for - [284](https://github.com/postmanlabs/postman-code-generators/issues/284): Replace double-quotes by single-quotes in codegen/php-curl
+* Fix for - [330](https://github.com/postmanlabs/postman-code-generators/issues/330): Use url.toString method for converting url in shell-httpie codegen
+
+v1.0.2 (Oct 15, 2020)
+* Fixed spaces around variables and arguments in Python codgen to comply with PEP 8.
+* Added Content-Length header to generated HTTP snippets.
+* Switched to multiline strings for Raw bodies in Go.
+* Stopped manually encoding response bodes in `utf8` for Python-requests.
+* Removed unnecessary semicolons at the end of statements in Ruby.
+* Fixed wrong name of HTTP codegen in README
+
 v1.0.1 (Jun 29, 2020)
 - Fix for - [8674](https://github.com/postmanlabs/postman-app-support/issues/8674): Add URL sanitization for quotes in cURL, Java Unirest, NodeJS Native, Python http.client, and Swift. 
 
