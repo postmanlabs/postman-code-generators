@@ -65,7 +65,6 @@ describe('curl convert function', function () {
           expect.fail(null, null, error);
         }
 
-        console.log(snippet);
         expect(snippet).to.contain('{ "foo": "\\\\" }');
       });
     });
