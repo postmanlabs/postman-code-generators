@@ -297,7 +297,8 @@ var self = module.exports = {
       disableBodyPruning = true,
       isBodyEmpty = self.isBodyEmpty(request.body);
 
-    if (_.has(request, 'protocolProfileBehavior') && request.protocolProfileBehavior !== null) {
+    // eslint-disable-next-line lodash/prefer-is-nil
+    if (request.protocolProfileBehavior !== null && request.protocolProfileBehavior !== undefined) {
       followRedirect = _.get(request, 'protocolProfileBehavior.followRedirects', followRedirect);
       followOriginalHttpMethod =
         _.get(request, 'protocolProfileBehavior.followOriginalHttpMethod', followOriginalHttpMethod);
