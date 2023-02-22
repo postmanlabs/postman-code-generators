@@ -976,6 +976,42 @@ describe('curl convert function', function () {
           expect(snippet).to.not.include('--request POST');
         });
       });
+
+      it('should work when protocolProfileBehavior is null in request settings', function () {
+        const request = new sdk.Request({
+          'method': 'POST',
+          'header': [],
+          'body': {
+            'mode': 'graphql',
+            'graphql': {
+                'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+              'variables': '{\n\t"variable_key": "variable_value"\n}'
+            }
+          },
+          'url': {
+            'raw': 'https://postman-echo.com/post',
+            'protocol': 'https',
+            'host': [
+              'postman-echo',
+              'com'
+            ],
+            'path': [
+              'post'
+            ]
+          }
+        });
+
+        // this needs to be done here because protocolProfileBehavior is not in collections SDK
+        request.protocolProfileBehavior = null;
+
+        convert(request, { followRedirect: true, followOriginalHttpMethod: true }, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.include('--request POST');
+        });
+      });
     });
   });
 });
