@@ -1,3 +1,6 @@
+v1.4.1 (February 22, 2023)
+* cURL codegen should work when request has a protocolProfileBehavior with null value
+
 v1.4.0 (February 6, 2023)
 * Add support for C# HttpClient Codegen
 * Use short options in CURL as long as possible (9511)[https://github.com/postmanlabs/postman-app-support/issues/9511]
