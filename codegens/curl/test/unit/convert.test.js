@@ -265,7 +265,7 @@ describe('curl convert function', function () {
         ']world',
         'world}'
       ].forEach(function (value) {
-        request = new sdk.Request({
+        const request = new sdk.Request({
           'method': 'GET',
           'url': {
             'raw': `http://example.com?hello=${value}`,
@@ -287,6 +287,12 @@ describe('curl convert function', function () {
             expect.fail(null, null, error);
           }
           expect(snippet).to.include('-g');
+        });
+        convert(request, { longFormat: true }, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.include('--globoff');
         });
       });
     });
