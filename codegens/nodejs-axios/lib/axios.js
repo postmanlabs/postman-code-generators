@@ -112,7 +112,7 @@ function makeSnippet (request, indentString, options) {
   if (options.requestTimeout) {
     configArray.push(indentString + `timeout: ${options.requestTimeout}`);
   }
-  if (options.followRedirect === false) {
+  if (_.get(request, 'protocolProfileBehavior.followRedirects', options.followRedirect) === false) {
     // setting the maxRedirects to 0 will disable any redirects.
     // by default, maxRedirects are set to 5
     configArray.push(indentString + 'maxRedirects: 0');
@@ -126,7 +126,7 @@ function makeSnippet (request, indentString, options) {
   snippet += configArray.join(',\n') + '\n';
   snippet += '};\n\n';
 
-  if (options.async_await_enabled) {
+  if (options.asyncAwaitEnabled) {
     snippet += 'async function makeRequest() {\n';
     snippet += indentString + 'try {\n';
     snippet += indentString.repeat(2) + 'const response = await axios.request(config);\n';
@@ -197,7 +197,7 @@ function getOptions () {
     },
     {
       name: 'Use async/await',
-      id: 'async_await_enabled',
+      id: 'asyncAwaitEnabled',
       type: 'boolean',
       default: false,
       description: 'Modifies code snippet to use async/await'

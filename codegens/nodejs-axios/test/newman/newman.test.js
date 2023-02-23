@@ -14,7 +14,7 @@ describe('Convert for different types of request', function () {
   runNewmanTest(convert, options, testConfig);
 
   describe('Convert for request incorporating async/await features', function () {
-    const options = {indentCount: 2, indentType: 'Space', async_await_enabled: true},
+    const options = {indentCount: 2, indentType: 'Space', asyncAwaitEnabled: true},
       testConfig = {
         compileScript: null,
         runScript: 'node run.js',

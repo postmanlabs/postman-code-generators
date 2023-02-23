@@ -81,9 +81,9 @@ const expectedOptions = {
       default: false,
       description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
     },
-    async_await_enabled: {
+    asyncAwaitEnabled: {
       name: 'Use async/await',
-      id: 'async_await_enabled',
+      id: 'asyncAwaitEnabled',
       type: 'boolean',
       default: false,
       description: 'Modifies code snippet to use async/await'
@@ -113,7 +113,7 @@ const expectedOptions = {
     'protocol',
     'useMimeType',
     'ES6_enabled',
-    'async_await_enabled',
+    'asyncAwaitEnabled',
     'quoteType',
     'asyncType',
     'ignoreWarnings'

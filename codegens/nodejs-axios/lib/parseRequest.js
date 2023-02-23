@@ -17,7 +17,7 @@ function parseURLEncodedBody (body, trim, indentString) {
       dataArray.push(`'${sanitize(data.key, trim)}': '${sanitize(data.value, trim)}'`);
     }
   });
-  bodySnippet += `let data = qs.stringify({\n${indentString}${dataArray.join(',\n' + indentString)} \n});`;
+  bodySnippet += `let data = qs.stringify({\n${indentString}${dataArray.join(',\n' + indentString)} \n});\n`;
   return bodySnippet;
 }
 
