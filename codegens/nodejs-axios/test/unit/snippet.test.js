@@ -8,7 +8,7 @@ var expect = require('chai').expect,
 
 describe('nodejs-axios convert function', function () {
   describe('Convert function', function () {
-    var request,
+    let request,
       reqObject,
       options = {},
       snippetArray,
@@ -23,13 +23,12 @@ describe('nodejs-axios convert function', function () {
       convert(request, options, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
-          return;
         }
 
         expect(snippet).to.be.a('string');
         snippetArray = snippet.split('\n');
         for (var i = 0; i < snippetArray.length; i++) {
-          if (snippetArray[i] === 'var config = {') { line_no = i + 1; }
+          if (snippetArray[i] === 'let config = {') { line_no = i + 1; }
         }
         expect(snippetArray[line_no].charAt(0)).to.equal('\t');
       });
@@ -228,7 +227,7 @@ describe('nodejs-axios convert function', function () {
           }
         });
         // -2 because last one is a newline
-        const lastLine = snippetArray[snippetArray.length - 2]
+        const lastLine = snippetArray[snippetArray.length - 2];
         expect(lastLine.charAt(lastLine.length - 1)).to.equal(';');
       });
     });
@@ -310,7 +309,7 @@ describe('nodejs-axios convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('var data = new FormData()');
+        expect(snippet).to.include('let data = new FormData()');
       });
     });
 
