@@ -8,7 +8,7 @@ var expect = require('chai').expect,
 
 describe('nodejs-axios convert function', function () {
   describe('Convert function', function () {
-    var request,
+    let request,
       reqObject,
       options = {},
       snippetArray,
@@ -23,13 +23,12 @@ describe('nodejs-axios convert function', function () {
       convert(request, options, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
-          return;
         }
 
         expect(snippet).to.be.a('string');
         snippetArray = snippet.split('\n');
         for (var i = 0; i < snippetArray.length; i++) {
-          if (snippetArray[i] === 'var config = {') { line_no = i + 1; }
+          if (snippetArray[i] === 'let config = {') { line_no = i + 1; }
         }
         expect(snippetArray[line_no].charAt(0)).to.equal('\t');
       });
@@ -84,20 +83,59 @@ describe('nodejs-axios convert function', function () {
       });
     });
 
-    it('should return snippet with maxRedirects property set to ' +
-        '0 for no follow redirect', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
-      options = {
-        followRedirect: false
-      };
-      convert(request, options, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-          return;
-        }
+    describe('maxRedirects property', function () {
+      it('should return snippet with maxRedirects property set to ' +
+      '0 for no follow redirect', function () {
+        const request = new sdk.Request(mainCollection.item[0].request);
+        options = {
+          followRedirect: false
+        };
+        convert(request, options, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
 
-        expect(snippet).to.be.a('string');
-        expect(snippet).to.include('maxRedirects: 0');
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.include('maxRedirects: 0');
+        });
+      });
+
+      it('should return snippet with maxRedirects property set to ' +
+      '0 for no follow redirect from request settings', function () {
+        const request = new sdk.Request(mainCollection.item[0].request),
+          options = {};
+
+        request.protocolProfileBehavior = {
+          followRedirects: false
+        };
+
+        convert(request, options, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.include('maxRedirects: 0');
+        });
+      });
+
+      it('should return snippet with no maxRedirects property when ' +
+        'follow redirect is true from request settings', function () {
+        const request = new sdk.Request(mainCollection.item[0].request),
+          options = {};
+
+        request.protocolProfileBehavior = {
+          followRedirects: true
+        };
+
+        convert(request, options, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.not.include('maxRedirects');
+        });
       });
     });
 
@@ -228,7 +266,7 @@ describe('nodejs-axios convert function', function () {
           }
         });
         // -2 because last one is a newline
-        const lastLine = snippetArray[snippetArray.length - 2]
+        const lastLine = snippetArray[snippetArray.length - 2];
         expect(lastLine.charAt(lastLine.length - 1)).to.equal(';');
       });
     });
@@ -310,7 +348,7 @@ describe('nodejs-axios convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('var data = new FormData()');
+        expect(snippet).to.include('let data = new FormData()');
       });
     });
 
@@ -439,6 +477,35 @@ describe('nodejs-axios convert function', function () {
       });
     });
 
+    it('should return snippet with promise based code when async_await is disabled', function () {
+      const request = new sdk.Request(mainCollection.item[0].request);
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('axios.request(config)');
+        expect(snippet).to.include('.then((response) => {');
+        expect(snippet).to.include('.catch((error) => {');
+      });
+    });
+
+    it('should return snippet with async/await based code when option is enabled', function () {
+      const request = new sdk.Request(mainCollection.item[0].request);
+
+      convert(request, { asyncAwaitEnabled: true }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('async function makeRequest() {');
+        expect(snippet).to.include('const response = await axios.request(config);');
+        expect(snippet).to.include('catch (error) {');
+        expect(snippet).to.include('makeRequest();');
+      });
+    });
+
     describe('getOptions function', function () {
 
       it('should return an array of specific options', function () {
@@ -451,7 +518,7 @@ describe('nodejs-axios convert function', function () {
         expect(getOptions()[2]).to.have.property('id', 'requestTimeout');
         expect(getOptions()[3]).to.have.property('id', 'followRedirect');
         expect(getOptions()[4]).to.have.property('id', 'trimRequestBody');
-        // expect(getOptions()[5]).to.have.property('id', 'AsyncAwait_enabled');
+        expect(getOptions()[5]).to.have.property('id', 'asyncAwaitEnabled');
       });
     });
 
