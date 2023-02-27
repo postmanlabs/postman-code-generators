@@ -127,7 +127,7 @@ function parseFormData (body, mode, trim, indent) {
   bodySnippet += `${indent.repeat(2)}body += "\\r\\n\\r\\n\\(paramValue)\\r\\n"\n`;
   bodySnippet += `${indent}} else {\n`;
   bodySnippet += `${indent.repeat(2)}let paramSrc = param["src"] as! String\n`;
-  bodySnippet += `${indent.repeat(2)}let fileData = try NSData(contentsOfFile:paramSrc, options:[]) as Data\n`;
+  bodySnippet += `${indent.repeat(2)}let fileData = try NSData(contentsOfFile: paramSrc, options: []) as Data\n`;
   bodySnippet += `${indent.repeat(2)}let fileContent = String(data: fileData, encoding: .utf8)!\n`;
   bodySnippet += `${indent.repeat(2)}body += "; filename=\\"\\(paramSrc)\\"\\r\\n"\n`;
   bodySnippet += `${indent.repeat(2)}  + "Content-Type: \\"content-type header\\"\\r\\n\\r\\n`;
@@ -147,7 +147,7 @@ function parseFile () {
   // var bodySnippet = 'let filename = "{Insert_File_Name}", postData = Data()\n';
   // bodySnippet += 'if let path = Bundle.main.path(forResource: filename, ofType: nil) {\n';
   // bodySnippet += `${indent}do {\n${indent.repeat(2)}postData =
-  // try NSData(contentsOfFile:path, options:[]) as Data\n`;
+  // try NSData(contentsOfFile: path, options: []) as Data\n`;
   // bodySnippet += `${indent}} catch {\n`;
   // bodySnippet += `${indent.repeat(2)}print("Failed to read from \\(String(describing: filename))")\n`;
   // bodySnippet += `${indent}}\n} else {\n`;
