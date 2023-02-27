@@ -36,7 +36,7 @@ self = module.exports = {
       snippet += ` ${form('-m', format)} ${timeout}`;
     }
     if ((url.match(/[{[}\]]/g) || []).length > 0) {
-      snippet += ' -g';
+      snippet += ` ${form('-g', format)}`;
     }
     if (multiLine) {
       indent = options.indentType === 'Tab' ? '\t' : ' ';

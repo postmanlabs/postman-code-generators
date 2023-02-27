@@ -57,6 +57,8 @@ var self = module.exports = {
           return '--data';
         case '-F':
           return '--form';
+        case '-g':
+          return '--globoff';
         default:
           return '';
       }
