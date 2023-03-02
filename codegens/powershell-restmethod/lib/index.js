@@ -82,7 +82,7 @@ function parseFormData (body, trim) {
  * @param {boolean} trim trim body option
  */
 function parseRawBody (body, trim) {
-  return `$body = @"${sanitize(body.toString(), trim)}\n"@\n`;
+  return `$body = @"${sanitize(body.toString(), trim, false)}\n"@\n`;
 }
 
 /**
