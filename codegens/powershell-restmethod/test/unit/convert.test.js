@@ -181,7 +181,6 @@ describe('Powershell-restmethod converter', function () {
           return;
         }
 
-        console.log(snippet);
         const lines = snippet.split('\n');
         expect(lines[0]).to
           .eql('$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"');
