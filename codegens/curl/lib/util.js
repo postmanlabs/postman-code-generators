@@ -57,6 +57,8 @@ var self = module.exports = {
           return '--data';
         case '-F':
           return '--form';
+        case '-g':
+          return '--globoff';
         default:
           return '';
       }
@@ -292,11 +294,18 @@ var self = module.exports = {
    * @returns {Boolean}
    */
   shouldAddHttpMethod: function (request, options) {
-    const followRedirect = _.get(request, 'protocolProfileBehavior.followRedirects', options.followRedirect),
-      followOriginalHttpMethod =
-      _.get(request, 'protocolProfileBehavior.followOriginalHttpMethod', options.followOriginalHttpMethod),
-      disableBodyPruning = _.get(request, 'protocolProfileBehavior.disableBodyPruning', true),
+    let followRedirect = options.followRedirect,
+      followOriginalHttpMethod = options.followOriginalHttpMethod,
+      disableBodyPruning = true,
       isBodyEmpty = self.isBodyEmpty(request.body);
+
+    // eslint-disable-next-line lodash/prefer-is-nil
+    if (request.protocolProfileBehavior !== null && request.protocolProfileBehavior !== undefined) {
+      followRedirect = _.get(request, 'protocolProfileBehavior.followRedirects', followRedirect);
+      followOriginalHttpMethod =
+        _.get(request, 'protocolProfileBehavior.followOriginalHttpMethod', followOriginalHttpMethod);
+      disableBodyPruning = _.get(request, 'protocolProfileBehavior.disableBodyPruning', true);
+    }
 
     if (followRedirect && followOriginalHttpMethod) {
       return true;

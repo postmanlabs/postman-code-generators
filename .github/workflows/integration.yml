@@ -11,7 +11,7 @@ jobs:
       - name: Setup Node JS
         uses: actions/setup-node@v1
         with:
-          node-version: '8.x'
+          node-version: '12.x'
       - name: Install system dependencies
         run: npm run cirequirements
       - name: Install package dependencies

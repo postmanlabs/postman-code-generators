@@ -81,6 +81,13 @@ const expectedOptions = {
       default: false,
       description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
     },
+    asyncAwaitEnabled: {
+      name: 'Use async/await',
+      id: 'asyncAwaitEnabled',
+      type: 'boolean',
+      default: false,
+      description: 'Modifies code snippet to use async/await'
+    },
     quoteType: {
       name: 'Quote Type',
       type: 'enum',
@@ -106,6 +113,7 @@ const expectedOptions = {
     'protocol',
     'useMimeType',
     'ES6_enabled',
+    'asyncAwaitEnabled',
     'quoteType',
     'asyncType',
     'ignoreWarnings'
@@ -143,8 +151,8 @@ describe('Code-gen repository ' + codegen, function () {
         expect(json.com_postman_plugin).to.have.property('variant');
         expect(json.com_postman_plugin).to.have.property('syntax_mode');
         expect(json).to.have.property('engines');
-        expect(json.engines).to.eql({
-          node: '>=8'
+        expect(json.engines).to.satisfy(function (engines) {
+          return engines.hasOwnProperty('node') && (engines.node === '>=8' || engines.node === '>=12');
         });
       });
 

@@ -34,6 +34,41 @@ describe('curl convert function', function () {
       });
     });
 
+    it('should escape backslash in raw bodies', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'header': [
+          {
+            'key': 'Content-Type',
+            'value': 'application/json'
+          }
+        ],
+        'body': {
+          'mode': 'raw',
+          'raw': '{ "foo": "\\" }'
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        expect(snippet).to.contain('{ "foo": "\\\\" }');
+      });
+    });
+
     it('should return snippet with url in single quote(\')', function () {
       request = new sdk.Request({
         'method': 'POST',
@@ -230,7 +265,7 @@ describe('curl convert function', function () {
         ']world',
         'world}'
       ].forEach(function (value) {
-        request = new sdk.Request({
+        const request = new sdk.Request({
           'method': 'GET',
           'url': {
             'raw': `http://example.com?hello=${value}`,
@@ -252,6 +287,12 @@ describe('curl convert function', function () {
             expect.fail(null, null, error);
           }
           expect(snippet).to.include('-g');
+        });
+        convert(request, { longFormat: true }, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.include('--globoff');
         });
       });
     });
@@ -939,6 +980,42 @@ describe('curl convert function', function () {
           }
           expect(snippet).to.be.a('string');
           expect(snippet).to.not.include('--request POST');
+        });
+      });
+
+      it('should work when protocolProfileBehavior is null in request settings', function () {
+        const request = new sdk.Request({
+          'method': 'POST',
+          'header': [],
+          'body': {
+            'mode': 'graphql',
+            'graphql': {
+                'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+              'variables': '{\n\t"variable_key": "variable_value"\n}'
+            }
+          },
+          'url': {
+            'raw': 'https://postman-echo.com/post',
+            'protocol': 'https',
+            'host': [
+              'postman-echo',
+              'com'
+            ],
+            'path': [
+              'post'
+            ]
+          }
+        });
+
+        // this needs to be done here because protocolProfileBehavior is not in collections SDK
+        request.protocolProfileBehavior = null;
+
+        convert(request, { followRedirect: true, followOriginalHttpMethod: true }, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.include('--request POST');
         });
       });
     });

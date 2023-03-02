@@ -36,7 +36,7 @@ self = module.exports = {
       snippet += ` ${form('-m', format)} ${timeout}`;
     }
     if ((url.match(/[{[}\]]/g) || []).length > 0) {
-      snippet += ' -g';
+      snippet += ` ${form('-g', format)}`;
     }
     if (multiLine) {
       indent = options.indentType === 'Tab' ? '\t' : ' ';
@@ -141,7 +141,7 @@ self = module.exports = {
               isAsperandPresent = _.includes(rawBody, '@'),
               // Use the long option if `@` is present in the request body otherwise follow user setting
               optionName = isAsperandPresent ? '--data-raw' : form('-d', format);
-            snippet += indent + `${optionName} ${quoteType}${sanitize(rawBody, trim, quoteType)}${quoteType}`;
+            snippet += indent + `${optionName} ${quoteType}${sanitize(rawBody, trim, quoteType, true)}${quoteType}`;
             break;
           }
 
