@@ -57,6 +57,12 @@ const expectedOptions = {
       default: true,
       description: 'Automatically follow HTTP redirects'
     },
+    followOriginalHttpMethod: {
+      name: 'Follow original HTTP method',
+      type: 'boolean',
+      default: false,
+      description: 'Redirect with the original HTTP method instead of the default behavior of redirecting with GET'
+    },
     trimRequestBody: {
       name: 'Trim request body fields',
       type: 'boolean',
@@ -74,6 +80,13 @@ const expectedOptions = {
       type: 'boolean',
       default: false,
       description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
+    },
+    asyncAwaitEnabled: {
+      name: 'Use async/await',
+      id: 'asyncAwaitEnabled',
+      type: 'boolean',
+      default: false,
+      description: 'Modifies code snippet to use async/await'
     },
     quoteType: {
       name: 'Quote Type',
@@ -95,11 +108,15 @@ const expectedOptions = {
     'silent',
     'includeBoilerplate',
     'followRedirect',
+    'followOriginalHttpMethod',
     'lineContinuationCharacter',
     'protocol',
     'useMimeType',
     'ES6_enabled',
-    'quoteType'
+    'asyncAwaitEnabled',
+    'quoteType',
+    'asyncType',
+    'ignoreWarnings'
   ],
   CODEGEN_ABS_PATH = `./codegens/${codegen}`;
 describe('Code-gen repository ' + codegen, function () {
@@ -134,8 +151,8 @@ describe('Code-gen repository ' + codegen, function () {
         expect(json.com_postman_plugin).to.have.property('variant');
         expect(json.com_postman_plugin).to.have.property('syntax_mode');
         expect(json).to.have.property('engines');
-        expect(json.engines).to.eql({
-          node: '>=8'
+        expect(json.engines).to.satisfy(function (engines) {
+          return engines.hasOwnProperty('node') && (engines.node === '>=8' || engines.node === '>=12');
         });
       });
 

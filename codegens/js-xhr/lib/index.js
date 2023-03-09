@@ -150,6 +150,9 @@ function parseHeaders (headers) {
   if (!_.isEmpty(headers)) {
     headers = _.reject(headers, 'disabled');
     _.forEach(headers, function (header) {
+      if (_.capitalize(header.key) === 'Cookie') {
+        headerSnippet += '// WARNING: Cookies will be stripped away by the browser before sending the request.\n';
+      }
       headerSnippet += `xhr.setRequestHeader("${sanitize(header.key, true)}", "${sanitize(header.value)}");\n`;
     });
   }
@@ -263,6 +266,9 @@ function convert (request, options, callback) {
   bodySnippet = request.body && !_.isEmpty(request.body.toJSON()) ? parseBody(request.body.toJSON(), trim,
     indent, request.headers.get('Content-Type')) : '';
 
+  if (_.includes(['Get', 'Post'], _.capitalize(request.method))) {
+    codeSnippet += `// WARNING: For ${request.method} requests, body is set to null by browsers.\n`;
+  }
   codeSnippet += bodySnippet + '\n';
 
   codeSnippet += 'var xhr = new XMLHttpRequest();\nxhr.withCredentials = true;\n\n';

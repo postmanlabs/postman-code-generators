@@ -109,30 +109,30 @@ function parseFormData (body, mode, trim, indent) {
     }
   });
   parameters = '[\n' + _.join(parameters, ',\n') + ']';
-  bodySnippet = `let parameters = ${parameters} as [[String : Any]]\n\n`;
+  bodySnippet = `let parameters = ${parameters} as [[String: Any]]\n\n`;
   bodySnippet += 'let boundary = "Boundary-\\(UUID().uuidString)"\n';
   bodySnippet += 'var body = ""\nvar error: Error? = nil\n';
   bodySnippet += 'for param in parameters {\n';
-  bodySnippet += `${indent}if param["disabled"] == nil {\n`;
-  bodySnippet += `${indent.repeat(2)}let paramName = param["key"]!\n`;
-  bodySnippet += `${indent.repeat(2)}body += "--\\(boundary)\\r\\n"\n`;
+  bodySnippet += `${indent}if param["disabled"] != nil { continue }\n`;
+  bodySnippet += `${indent}let paramName = param["key"]!\n`;
+  bodySnippet += `${indent}body += "--\\(boundary)\\r\\n"\n`;
   // eslint-disable-next-line no-useless-escape
-  bodySnippet += `${indent.repeat(2)}body += "Content-Disposition:form-data; name=\\"\\(paramName)\\"\"\n`;
-  bodySnippet += `${indent.repeat(2)}if param["contentType"] != nil {\n`;
-  bodySnippet += `${indent.repeat(3)}body += "\\r\\nContent-Type: \\(param["contentType"] as! String)"\n`;
-  bodySnippet += `${indent.repeat(2)}}\n`;
-  bodySnippet += `${indent.repeat(2)}let paramType = param["type"] as! String\n`;
-  bodySnippet += `${indent.repeat(2)}if paramType == "text" {\n`;
-  bodySnippet += `${indent.repeat(3)}let paramValue = param["value"] as! String\n`;
-  bodySnippet += `${indent.repeat(3)}body += "\\r\\n\\r\\n\\(paramValue)\\r\\n"\n`;
-  bodySnippet += `${indent.repeat(2)}} else {\n`;
-  bodySnippet += `${indent.repeat(3)}let paramSrc = param["src"] as! String\n`;
-  bodySnippet += `${indent.repeat(3)}let fileData = try NSData(contentsOfFile:paramSrc, options:[]) as Data\n`;
-  bodySnippet += `${indent.repeat(3)}let fileContent = String(data: fileData, encoding: .utf8)!\n`;
-  bodySnippet += `${indent.repeat(3)}body += "; filename=\\"\\(paramSrc)\\"\\r\\n"\n`;
-  bodySnippet += `${indent.repeat(3)}  + "Content-Type: \\"content-type header\\"\\r\\n\\r\\n`;
+  bodySnippet += `${indent}body += "Content-Disposition:form-data; name=\\"\\(paramName)\\"\"\n`;
+  bodySnippet += `${indent}if param["contentType"] != nil {\n`;
+  bodySnippet += `${indent.repeat(2)}body += "\\r\\nContent-Type: \\(param["contentType"] as! String)"\n`;
+  bodySnippet += `${indent}}\n`;
+  bodySnippet += `${indent}let paramType = param["type"] as! String\n`;
+  bodySnippet += `${indent}if paramType == "text" {\n`;
+  bodySnippet += `${indent.repeat(2)}let paramValue = param["value"] as! String\n`;
+  bodySnippet += `${indent.repeat(2)}body += "\\r\\n\\r\\n\\(paramValue)\\r\\n"\n`;
+  bodySnippet += `${indent}} else {\n`;
+  bodySnippet += `${indent.repeat(2)}let paramSrc = param["src"] as! String\n`;
+  bodySnippet += `${indent.repeat(2)}let fileData = try NSData(contentsOfFile: paramSrc, options: []) as Data\n`;
+  bodySnippet += `${indent.repeat(2)}let fileContent = String(data: fileData, encoding: .utf8)!\n`;
+  bodySnippet += `${indent.repeat(2)}body += "; filename=\\"\\(paramSrc)\\"\\r\\n"\n`;
+  bodySnippet += `${indent.repeat(2)}  + "Content-Type: \\"content-type header\\"\\r\\n\\r\\n`;
   bodySnippet += '\\(fileContent)\\r\\n"\n';
-  bodySnippet += `${indent.repeat(2)}}\n${indent}}\n}\nbody += "--\\(boundary)--\\r\\n";\n`;
+  bodySnippet += `${indent}}\n}\nbody += "--\\(boundary)--\\r\\n";\n`;
   bodySnippet += 'let postData = body.data(using: .utf8)';
   return bodySnippet;
 }
@@ -147,7 +147,7 @@ function parseFile () {
   // var bodySnippet = 'let filename = "{Insert_File_Name}", postData = Data()\n';
   // bodySnippet += 'if let path = Bundle.main.path(forResource: filename, ofType: nil) {\n';
   // bodySnippet += `${indent}do {\n${indent.repeat(2)}postData =
-  // try NSData(contentsOfFile:path, options:[]) as Data\n`;
+  // try NSData(contentsOfFile: path, options: []) as Data\n`;
   // bodySnippet += `${indent}} catch {\n`;
   // bodySnippet += `${indent.repeat(2)}print("Failed to read from \\(String(describing: filename))")\n`;
   // bodySnippet += `${indent}}\n} else {\n`;
@@ -250,11 +250,11 @@ self = module.exports = {
         description: 'Remove white space and additional lines that may affect the server\'s response'
       },
       {
-        name: 'Follow redirects',
-        id: 'followRedirect',
+        name: 'Include boilerplate',
+        id: 'includeBoilerplate',
         type: 'boolean',
-        default: true,
-        description: 'Automatically follow HTTP redirects'
+        default: false,
+        description: 'Include class definition and import statements in snippet'
       }
     ];
   },
@@ -286,7 +286,8 @@ self = module.exports = {
       throw new Error('Swift-Converter: callback is not valid function');
     }
     options = sanitizeOptions(options, self.getOptions());
-    var codeSnippet, indent, trim, timeout, finalUrl, // followRedirect,
+    var indent, trim, timeout, finalUrl,
+      codeSnippet = '',
       bodySnippet = '',
       headerSnippet = '',
       requestBody;
@@ -294,7 +295,6 @@ self = module.exports = {
     indent = options.indentType === 'Tab' ? '\t' : ' ';
     indent = indent.repeat(options.indentCount);
     timeout = options.requestTimeout;
-    // followRedirect = options.followRedirect;
     trim = options.trimRequestBody;
     finalUrl = getUrlStringfromUrlObject(request.url);
 
@@ -342,9 +342,10 @@ self = module.exports = {
     requestBody = (request.body ? request.body.toJSON() : {});
     bodySnippet = parseBody(requestBody, trim, indent);
 
-    codeSnippet = 'import Foundation\n';
-    codeSnippet += '#if canImport(FoundationNetworking)\nimport FoundationNetworking\n#endif\n\n';
-    codeSnippet += 'var semaphore = DispatchSemaphore (value: 0)\n\n';
+    if (options.includeBoilerplate) {
+      codeSnippet += 'import Foundation\n';
+      codeSnippet += '#if canImport(FoundationNetworking)\nimport FoundationNetworking\n#endif\n\n';
+    }
     if (bodySnippet !== '') {
       codeSnippet += `${bodySnippet}\n\n`;
     }
@@ -375,13 +376,14 @@ self = module.exports = {
     codeSnippet += '\nlet task = URLSession.shared.dataTask(with: request) { data, response, error in \n';
     codeSnippet += `${indent}guard let data = data else {\n`;
     codeSnippet += `${indent.repeat(2)}print(String(describing: error))\n`;
-    codeSnippet += `${indent.repeat(2)}semaphore.signal()\n`;
-    codeSnippet += `${indent.repeat(2)}return\n`;
+    codeSnippet += `${indent.repeat(2)}`;
+    codeSnippet += options.includeBoilerplate ? 'exit(EXIT_SUCCESS)\n' : 'return\n';
     codeSnippet += `${indent}}\n`;
     codeSnippet += `${indent}print(String(data: data, encoding: .utf8)!)\n`;
-    codeSnippet += `${indent}semaphore.signal()\n}\n\n`;
+    codeSnippet += options.includeBoilerplate ? `${indent}exit(EXIT_SUCCESS)\n` : '';
+    codeSnippet += '}\n\n';
     codeSnippet += 'task.resume()\n';
-    codeSnippet += 'semaphore.wait()\n';
+    codeSnippet += options.includeBoilerplate ? 'dispatchMain()\n' : '';
 
     return callback(null, codeSnippet);
   }

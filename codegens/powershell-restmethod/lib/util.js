@@ -5,9 +5,10 @@
  *
  * @param {String} inputString
  * @param {Boolean} [trim] - indicates whether to trim string or not
+ * @param {Boolean} shouldEscapeNewLine - indicates whether to escape newline
  * @returns {String}
  */
-function sanitize (inputString, trim) {
+function sanitize (inputString, trim, shouldEscapeNewLine = true) {
   if (typeof inputString !== 'string') {
     return '';
   }
@@ -15,8 +16,11 @@ function sanitize (inputString, trim) {
     .replace(/`/g, '``')
     .replace(/\$/g, '`$')
     .replace(/\\/g, '\`\\')
-    .replace(/\"/g, '\`\"')
-    .replace(/\n/g, '\`n');
+    .replace(/\"/g, '\`\"');
+
+  if (shouldEscapeNewLine) {
+    inputString = inputString.replace(/\n/g, '\`n');
+  }
   return trim ? inputString.trim() : inputString;
 }
 
