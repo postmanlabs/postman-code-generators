@@ -29,6 +29,6 @@
   "dependencies": {},
   "devDependencies": {},
   "engines": {
-    "node": ">=8"
+    "node": ">=12"
   }
 }

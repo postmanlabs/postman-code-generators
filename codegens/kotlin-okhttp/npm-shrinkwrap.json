@@ -10,7 +10,7 @@
       "license": "Apache-2.0",
       "devDependencies": {},
       "engines": {
-        "node": ">=8"
+        "node": ">=12"
       }
     }
   }
