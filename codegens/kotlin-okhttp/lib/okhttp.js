@@ -1,4 +1,4 @@
-var _ = require('./lodash'),
+var _ = require('lodash'),
   parseRequest = require('./parseRequest'),
   sanitize = require('./util').sanitize,
   addFormParam = require('./util').addFormParam,

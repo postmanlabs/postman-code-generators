@@ -1,5 +1,5 @@
 
-var _ = require('./lodash'),
+var _ = require('lodash'),
   sanitize = require('./util').sanitize,
   path = require('path');
 
