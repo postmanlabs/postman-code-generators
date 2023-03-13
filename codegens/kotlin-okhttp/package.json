@@ -27,8 +27,9 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/kotlin-okhttp",
   "dependencies": {
-    "lodash": "^4.17.21"
+    "lodash": "4.17.21"
   },
+  "devDependencies": {},
   "engines": {
     "node": ">=12"
   }
