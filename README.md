@@ -7,7 +7,7 @@ _Manage all of your organization's APIs in Postman, with the industry's most com
 
 # postman-code-generators [![Build Status](https://travis-ci.com/postmanlabs/postman-code-generators.svg?branch=master)](https://travis-ci.com/postmanlabs/postman-code-generators)
 
-This module converts a [Postman SDK](https://github.com/postmanlabs/postman-collection) Request Object into a code snippet of chosen language.
+This module converts a [Postman SDK](https://github.com/postmanlabs/postman-collection) Request [Object](https://www.postmanlabs.com/postman-collection/Request.html) into a code snippet of chosen language.
 
 Every code generator has two identifiers: `language` and `variant`.
 * `language` of a code generator is the programming language in which the code snippet is generated.
@@ -170,7 +170,7 @@ var codegen = require('postman-code-generators'), // require postman-code-genera
 This function takes in five parameters and returns a callback with error and generated code snippet
 * `language` - lang key from the language list returned from getLanguageList function
 * `variant` - variant key provided by getLanguageList function
-* `request` - [Postman-SDK](https://github.com/postmanlabs/postman-collection) Request Object
+* `request` - [Postman-SDK](https://github.com/postmanlabs/postman-collection) Request [Object](https://www.postmanlabs.com/postman-collection/Request.html)
 * `options` - Options that can be used to configure generated code snippet. Defaults will be used for the unspecified attributes  
 * `callback` - callback function with first parameter as error and second parameter as string for code snippet
 
