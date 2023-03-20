@@ -1,12 +1,12 @@
 {
   "name": "@postman/codegen-kotlin-okhttp",
   "version": "0.0.1",
-  "description": "Converts postman request into kotlin ktor code snippet",
+  "description": "Converts postman request into kotlin okhttp code snippet",
   "com_postman_plugin": {
     "type": "code_generator",
-    "lang": "kotlin",
-    "variant": "Ktor",
-    "syntax_mode": "java"
+    "lang": "Kotlin",
+    "variant": "Okhttp",
+    "syntax_mode": "kotlin"
   },
   "main": "index.js",
   "directories": {

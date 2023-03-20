@@ -11,7 +11,13 @@ module.exports = {
     if (typeof inputString !== 'string') {
       return '';
     }
-    inputString = inputString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    inputString = inputString
+      .replace(/\\/g, '\\\\')
+      .replace(/"/g, '\\"')
+      .replace(/\$/g, '\\$')
+      .replace(/\n/g, '\\n')
+      .replace(/\r/g, '\\r')
+      .replace(/\t/g, '\\t');
     return trim ? inputString.trim() : inputString;
 
   },
