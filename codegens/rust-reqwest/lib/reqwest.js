@@ -1,7 +1,8 @@
 const _ = require('lodash'),
   sanitizeOptions = require('./util/sanitize').sanitizeOptions,
   { parseHeader, parseBody } = require('./util/parseRequest'),
-  { addDefaultContentType, formatFormData } = require('./util/formatRequest');
+  { addDefaultContentType, formatFormData } = require('./util/formatRequest'),
+  ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'CONNECT', 'PATH', 'TRACE'];
 
 /**
  * Returns snippet for Rust reqwest by parsing data from Postman-SDK request object
@@ -36,9 +37,17 @@ function makeSnippet (request, indentation, options) {
   snippet += headerSnippet;
   snippet += bodySnippet;
 
-  // Create the request and add headers and body
-  let requestSnippet = `${indentation}let method = "${request.method}";\n`;
-  requestSnippet += `${indentation}let request = client.request(reqwest::Method::from_bytes(method.as_bytes())?, `;
+  // Use short method name if possible
+  let requestSnippet = '';
+  if (ALLOWED_METHODS.includes(request.method)) {
+    requestSnippet += `${indentation}let request = client.request(reqwest::Method::${request.method}, `;
+  }
+  else {
+    requestSnippet += `${indentation}let method = "${request.method}";\n`;
+    requestSnippet += `${indentation}let request = client.request(reqwest::Method::from_bytes(method.as_bytes())?, `;
+  }
+
+  // Add headers and body
   requestSnippet += `"${request.url.toString()}")\n`;
   requestSnippet += requestHeaderSnippet;
   requestSnippet += requestBodySnippet;

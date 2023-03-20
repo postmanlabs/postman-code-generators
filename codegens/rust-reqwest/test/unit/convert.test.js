@@ -16,8 +16,11 @@ describe('Rust reqwest converter', function () {
           'raw': 'http://postman-echo.com/get',
           'protocol': 'http',
           'host': [
-            'google',
+            'postman-echo',
             'com'
+          ],
+          'path': [
+            'get'
           ]
         }
       }),
@@ -39,8 +42,11 @@ describe('Rust reqwest converter', function () {
           'raw': 'http://postman-echo.com/get',
           'protocol': 'http',
           'host': [
-            'google',
+            'postman-echo',
             'com'
+          ],
+          'path': [
+            'get'
           ]
         }
       }),
@@ -51,6 +57,63 @@ describe('Rust reqwest converter', function () {
       }
       expect(snippet).to.be.a('string');
       expect(snippet).to.include('timeout(std::time::Duration::from_millis(3000))');
+    });
+  });
+
+  it('should use the method name directly if it is part of allowed methods', function () {
+    ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'CONNECT', 'PATH', 'TRACE'].forEach(function (method) {
+      const request = new sdk.Request({
+          'method': method,
+          'header': [],
+          'url': {
+            'raw': 'http://postman-echo.com/get',
+            'protocol': 'http',
+            'host': [
+              'postman-echo',
+              'com'
+            ],
+            'path': [
+              'get'
+            ]
+          }
+        }),
+        options = {};
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include(`let request = client.request(reqwest::Method::${method}`);
+      });
+    });
+  });
+
+  it('should use the method name using bytes if it not part of the allowed list', function () {
+    ['PROPFIND', 'PURGE', 'LOCK', 'UNLOCK', 'LINK', 'UNLINK', 'COPY'].forEach(function (method) {
+      const request = new sdk.Request({
+          'method': method,
+          'header': [],
+          'url': {
+            'raw': 'http://postman-echo.com/get',
+            'protocol': 'http',
+            'host': [
+              'postman-echo',
+              'com'
+            ],
+            'path': [
+              'get'
+            ]
+          }
+        }),
+        options = {};
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include(`let method = "${method}"`);
+        expect(snippet).to.include('let request = client.request(reqwest::Method::from_bytes(method.as_bytes())?');
+      });
     });
   });
 
