@@ -1,3 +1,8 @@
+v1.6.0 (March 17, 2023)
+* PEP8 improvements in python-requests code
+* Fix for - [#491](https://github.com/postmanlabs/postman-code-generators/issues/491) Added support for kotlin okhttp code snippets.
+* Refactored code for nodejs-axios util.js.
+
 v1.5.0 (March 2, 2023)
 * Change minimum supported NodeJS version to 12
 * Fix for - [#11049](https://github.com/postmanlabs/postman-app-support/issues/11049) Escape backslash character in raw bodies for curl codegen
