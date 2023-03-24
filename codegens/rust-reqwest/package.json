@@ -1,12 +1,12 @@
 {
-  "name": "@postman/codegen-kotlin-okhttp",
+  "name": "@postman/codegen-rust-reqwest",
   "version": "0.0.1",
-  "description": "Converts postman request into kotlin okhttp code snippet",
+  "description": "Generates code snippets for a postman collection using Rust's reqwest library",
   "com_postman_plugin": {
     "type": "code_generator",
-    "lang": "Kotlin",
-    "variant": "Okhttp",
-    "syntax_mode": "kotlin"
+    "lang": "Rust",
+    "variant": "reqwest",
+    "syntax_mode": "rust"
   },
   "main": "index.js",
   "directories": {
@@ -16,8 +16,8 @@
   "scripts": {
     "test": "node npm/test.js",
     "test-lint": "node npm/test-lint.js",
-    "test-unit": "node npm/test-unit.js",
-    "test-newman": "node npm/test-newman.js"
+    "test-newman": "node npm/test-newman.js",
+    "test-unit": "node npm/test-unit.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
   },
   "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/kotlin-okhttp",
+  "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/rust-reqwest",
   "dependencies": {
     "lodash": "4.17.21"
   },
