@@ -430,46 +430,6 @@
 			"response": []
 		},
 		{
-			"name": "POST raw with quoted text",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "48da0505-470f-4cf3-bb77-30665415af60",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"Hello\": \"{\\\"hello_world\\\": true}\"\n}"
-				},
-				"url": {
-					"raw": "https://postman-echo.com/post",
-					"protocol": "https",
-					"host": [
-						"postman-echo",
-						"com"
-					],
-					"path": [
-						"post"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "POST urlencoded data",
 			"event": [
 				{
