@@ -18,8 +18,7 @@ const METHODS_WITHOUT_BODY = ['GET', 'HEAD', 'COPY', 'UNLOCK', 'UNLINK', 'PURGE'
 function makeSnippet (request, indentString, options) {
   let isBodyRequired = !(_.includes(METHODS_WITHOUT_BODY, request.method)),
     snippet = 'val client = OkHttpClient',
-    hasNoOptions = !(options.requestTimeout || options.followRedirects),
-    requestBody;
+    hasNoOptions = !(options.requestTimeout || options.followRedirects);
 
   if (hasNoOptions) {
     snippet += '()\n';
@@ -30,7 +29,7 @@ function makeSnippet (request, indentString, options) {
       snippet += indentString + `.connectTimeout(${options.requestTimeout}, TimeUnit.SECONDS)\n`;
     }
 
-    if (!options.followRedirect) {
+    if (_.get(request, 'protocolProfileBehavior.followRedirects', options.followRedirect) === false) {
       snippet += indentString + '.followRedirects(false)\n';
     }
 
@@ -73,10 +72,12 @@ function makeSnippet (request, indentString, options) {
         formdata: formdataArray
       });
     }
-    requestBody = (request.body ? request.body.toJSON() : {});
+
+    const contentType = parseRequest.parseContentType(request),
+      requestBody = (request.body ? request.body.toJSON() : {});
     //  snippet for creating mediatype object in java based on content-type of request
-    snippet += `val mediaType = "${parseRequest.parseContentType(request)}".toMediaType()\n`;
-    snippet += parseRequest.parseBody(requestBody, indentString, options.trimRequestBody);
+    snippet += `val mediaType = "${contentType}".toMediaType()\n`;
+    snippet += parseRequest.parseBody(requestBody, indentString, options.trimRequestBody, contentType);
   }
 
   snippet += 'val request = Request.Builder()\n';

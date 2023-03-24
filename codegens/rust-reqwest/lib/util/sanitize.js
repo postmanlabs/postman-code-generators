@@ -1,25 +1,24 @@
 module.exports = {
   /**
-     * sanitizes input string by handling escape characters eg: converts '''' to '\'\''
-     * and trim input if required
-     *
-     * @param {String} inputString - Input string being sanitized
-     * @param {Boolean} [trim] - indicates whether to trim string or not
-     * @returns {String}
-     */
+   * sanitizes input string by handling escape characters eg: converts '''' to '\'\''
+   * and trim input if required
+   *
+   * @param {String} inputString
+   * @param {Boolean} [trim] - indicates whether to trim string or not
+   * @returns {String}
+   */
   sanitize: function (inputString, trim) {
     if (typeof inputString !== 'string') {
       return '';
     }
-    inputString = inputString
+
+    (trim) && (inputString = inputString.trim());
+    return inputString
       .replace(/\\/g, '\\\\')
       .replace(/"/g, '\\"')
-      .replace(/\$/g, '\\$')
       .replace(/\n/g, '\\n')
       .replace(/\r/g, '\\r')
       .replace(/\t/g, '\\t');
-    return trim ? inputString.trim() : inputString;
-
   },
 
   /**
@@ -88,37 +87,5 @@ module.exports = {
       }
     }
     return result;
-  },
-
-  /**
- *
- * @param {Array} array - form data array
- * @param {String} key - key of form data param
- * @param {String} type - type of form data param(file/text)
- * @param {String} val - value/src property of form data param
- * @param {String} disabled - Boolean denoting whether the param is disabled or not
- * @param {String} contentType - content type header of the param
- *
- * Appends a single param to form data array
- */
-  addFormParam: function (array, key, type, val, disabled, contentType) {
-    if (type === 'file') {
-      array.push({
-        key: key,
-        type: type,
-        src: val,
-        disabled: disabled,
-        contentType: contentType
-      });
-    }
-    else {
-      array.push({
-        key: key,
-        type: type,
-        value: val,
-        disabled: disabled,
-        contentType: contentType
-      });
-    }
   }
 };

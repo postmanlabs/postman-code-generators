@@ -59,20 +59,37 @@ function parseFormData (requestBody, indentString, trimFields) {
 }
 
 /**
+ * Parses request object and returns kotlin okhttp code snippet for raw body
+ *
+ * @param {Object} requestBody - JSON object representing body of request
+ * @param {Boolean} trimFields - indicates whether to trim fields of body
+ * @param {String} contentType - content type of request body
+ */
+function parseRawBody (requestBody, trimFields, contentType) {
+  if (contentType && contentType.startsWith('application/json')) {
+    return `val body = ${JSON.stringify(requestBody[requestBody.mode])}.toRequestBody(mediaType)\n`;
+  }
+
+  return `val body = "${sanitize(requestBody[requestBody.mode], trimFields)}".toRequestBody(mediaType)\n`;
+}
+
+/**
  * parses request object and returns java okhttp code snippet for adding request body
  *
  * @param {Object} requestBody - JSON object representing body of request
  * @param {String} indentString - string for indentation
  * @param {Boolean} trimFields - indicates whether to trim fields of body
+ * @param {String} contentType - content type of request body
+ *
  * @returns {String} - code snippet of java okhttp parsed from request object
  */
-function parseBody (requestBody, indentString, trimFields) {
+function parseBody (requestBody, indentString, trimFields, contentType) {
   if (!_.isEmpty(requestBody)) {
     switch (requestBody.mode) {
       case 'urlencoded':
         return `val body = "${parseUrlencode(requestBody, trimFields)}".toRequestBody(mediaType)\n`;
       case 'raw':
-        return `val body = ${JSON.stringify(requestBody[requestBody.mode])}.toRequestBody(mediaType)\n`;
+        return parseRawBody(requestBody, trimFields, contentType);
       case 'graphql':
         // eslint-disable-next-line no-case-declarations
         let query = requestBody[requestBody.mode].query,

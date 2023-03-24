@@ -36,15 +36,16 @@ List of supported code generators:
 | NodeJs | Unirest |
 | Objective-C| NSURLSession|
 | OCaml | Cohttp | 
-|PHP | cURL |
-|PHP | Guzzle |
-|PHP | pecl_http |
-|PHP | HTTP_Request2 |
+| PHP | cURL |
+| PHP | Guzzle |
+| PHP | pecl_http |
+| PHP | HTTP_Request2 |
 | PowerShell | RestMethod | 
 | Python | http.client |
 | Python | Requests |
 | R | httr |
 | R | RCurl |
+| Rust | Reqwest |
 | Ruby | Net:HTTP |
 | Shell | Httpie |
 | Shell | wget |
