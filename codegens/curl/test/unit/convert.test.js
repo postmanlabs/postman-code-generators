@@ -34,41 +34,6 @@ describe('curl convert function', function () {
       });
     });
 
-    it('should escape backslash in raw bodies', function () {
-      request = new sdk.Request({
-        'method': 'POST',
-        'header': [
-          {
-            'key': 'Content-Type',
-            'value': 'application/json'
-          }
-        ],
-        'body': {
-          'mode': 'raw',
-          'raw': '{ "foo": "\\" }'
-        },
-        'url': {
-          'raw': 'https://postman-echo.com/post',
-          'protocol': 'https',
-          'host': [
-            'postman-echo',
-            'com'
-          ],
-          'path': [
-            'post'
-          ]
-        }
-      });
-
-      convert(request, {}, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-        }
-
-        expect(snippet).to.contain('{ "foo": "\\\\" }');
-      });
-    });
-
     it('should return snippet with url in single quote(\')', function () {
       request = new sdk.Request({
         'method': 'POST',

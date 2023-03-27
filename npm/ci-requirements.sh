@@ -66,7 +66,7 @@ pushd ./codegens/swift &>/dev/null;
   sudo apt-get update
   sudo apt-get install clang-3.6 libicu-dev libpython2.7 -y
   sudo apt-get install libcurl4 libpython2.7-dev -y
-  sudo wget https://download.swift.org/swift-5.7.3-release/ubuntu2004/swift-5.7.3-RELEASE/swift-5.7.3-RELEASE-ubuntu20.04.tar.gz
+  sudo wget -q https://download.swift.org/swift-5.7.3-release/ubuntu2004/swift-5.7.3-RELEASE/swift-5.7.3-RELEASE-ubuntu20.04.tar.gz
   sudo tar xzf swift-5.7.3-RELEASE-ubuntu20.04.tar.gz
   sudo chmod 777 swift-5.7.3-RELEASE-ubuntu20.04/usr/lib/swift/CoreFoundation/module.map
 popd &>/dev/null;
@@ -82,7 +82,7 @@ sudo apt-get install httpie
 
 echo "Installing dependencies required for tests in codegens/dart"
 pushd ./codegens/dart-http &>/dev/null;
-  wget https://storage.googleapis.com/dart-archive/channels/stable/release/2.10.2/linux_packages/dart_2.10.2-1_amd64.deb
+  wget -q https://storage.googleapis.com/dart-archive/channels/stable/release/2.10.2/linux_packages/dart_2.10.2-1_amd64.deb
   sudo dpkg -i dart_2.10.2-1_amd64.deb
   echo '''name: test
 dependencies:
@@ -100,7 +100,7 @@ echo "Installing dependencies required for tests in codegens/php-guzzle"
 
 echo "Installing dependencies required for tests in codegens/r-rCurl and r-httr Installing R"
   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
-  sudo add-apt-repository 'deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial-cran40/'
+  sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
   sudo apt-get update
   sudo apt-get install r-base
 
