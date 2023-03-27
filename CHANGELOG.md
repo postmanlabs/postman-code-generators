@@ -1,3 +1,6 @@
+v1.6.1 (March 27, 2023)
+* Fix backlashes being unescaped unnecessarily in cURL codegen
+
 v1.6.0 (March 17, 2023)
 * PEP8 improvements in python-requests code
 * Fix for - [#491](https://github.com/postmanlabs/postman-code-generators/issues/491) Added support for kotlin okhttp code snippets.
