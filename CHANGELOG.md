@@ -1,3 +1,7 @@
+v1.7.0 (March 27, 2023)
+* Add support for Rust - Reqwest codegen
+* Fix backlashes being escaped in Raw request bodies unnecessarily
+
 v1.6.0 (March 17, 2023)
 * PEP8 improvements in python-requests code
 * Fix for - [#491](https://github.com/postmanlabs/postman-code-generators/issues/491) Added support for kotlin okhttp code snippets.
