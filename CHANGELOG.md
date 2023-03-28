@@ -1,7 +1,16 @@
+v1.7.0 (March 28, 2023)
+* Fix for - [#192](https://github.com/postmanlabs/postman-code-generators/issues/192) Added support for Rust reqwest code snippets.
+
+v1.6.1 (March 28, 2023)
+* Fix backlashes being escaped unnecessarily in cURL codegen
+
 v1.6.0 (March 17, 2023)
 * PEP8 improvements in python-requests code
 * Fix for - [#491](https://github.com/postmanlabs/postman-code-generators/issues/491) Added support for kotlin okhttp code snippets.
 * Refactored code for nodejs-axios util.js.
+
+v1.5.1 (March 28, 2023)
+* Fix backlashes being escaped unnecessarily in cURL codegen
 
 v1.5.0 (March 2, 2023)
 * Change minimum supported NodeJS version to 12
