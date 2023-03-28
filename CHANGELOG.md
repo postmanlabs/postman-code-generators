@@ -1,8 +1,8 @@
 v1.7.0 (March 28, 2023)
 * Fix for - [#192](https://github.com/postmanlabs/postman-code-generators/issues/192) Added support for Rust reqwest code snippets.
 
-v1.6.1 (March 28, 2023)
-* Fix backlashes being escaped unnecessarily in cURL codegen
+v1.6.1 (March 27, 2023)
+* Fix backlashes being unescaped unnecessarily in cURL codegen
 
 v1.6.0 (March 17, 2023)
 * PEP8 improvements in python-requests code
