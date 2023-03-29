@@ -59,6 +59,9 @@ else
     # check for .gitignore, license.md, readme.md, .eslintrc and package.json
     mocha ./test/system/repository.test.js;
 
+    # runs test to see if the codegen interface is implemented correctly
+    mocha ./test/unit/lib.test.js;
+
     # Common structure and npm test for each codegen.
     echo -e "Running codegen-structure tests on all the codegens";
     for directory in codegens/*; do
