@@ -1,3 +1,6 @@
+v1.7.1 (March 29, 2023)
+* Minor fix - Add language labels for Rust and Kotlin
+
 v1.7.0 (March 28, 2023)
 * Fix for - [#192](https://github.com/postmanlabs/postman-code-generators/issues/192) Added support for Rust reqwest code snippets.
 
