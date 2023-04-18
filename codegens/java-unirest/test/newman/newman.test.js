@@ -3,9 +3,9 @@ var runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').ru
 
 describe('Convert for different types of request', function () {
   var testConfig = {
-      runScript: 'java -cp *: main',
-      compileScript: 'javac -cp *: main.java',
-      fileName: 'main.java',
+      runScript: 'java -cp *: Main',
+      compileScript: 'javac -cp *: Main.java',
+      fileName: 'Main.java',
       skipCollections: ['formdataCollection', 'emptyFormdataCollection', 'unsupportedMethods']
     },
     options = {includeBoilerplate: true};

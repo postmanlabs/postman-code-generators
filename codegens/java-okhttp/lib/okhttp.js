@@ -189,7 +189,7 @@ function convert (request, options, callback) {
   if (options.includeBoilerplate) {
     headerSnippet = 'import java.io.*;\n' +
                         'import okhttp3.*;\n' +
-                        'public class main {\n' +
+                        'public class Main {\n' +
                         indentString + 'public static void main(String []args) throws IOException{\n';
     footerSnippet = indentString.repeat(2) + 'System.out.println(response.body().string());\n' +
                         indentString + '}\n}\n';

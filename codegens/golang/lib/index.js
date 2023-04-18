@@ -3,6 +3,7 @@ var _ = require('./lodash'),
   sanitizeMultiline = require('./util').sanitizeMultiline,
   sanitizeOptions = require('./util').sanitizeOptions,
   addFormParam = require('./util').addFormParam,
+  getUrlStringfromUrlObject = require('./util').getUrlStringfromUrlObject,
   isFile = false,
   self;
 
@@ -243,7 +244,7 @@ self = module.exports = {
     }
     codeSnippet += `${indent}"net/http"\n${indent}"io/ioutil"\n)\n\n`;
 
-    codeSnippet += `func main() {\n\n${indent}url := "${encodeURI(request.url.toString())}"\n`;
+    codeSnippet += `func main() {\n\n${indent}url := "${getUrlStringfromUrlObject(request.url)}"\n`;
     codeSnippet += `${indent}method := "${request.method}"\n\n`;
 
     if (bodySnippet !== '') {
