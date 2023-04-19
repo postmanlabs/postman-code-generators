@@ -8,7 +8,8 @@ describe.skip('Convert for different types of request', function () {
       compileScript: 'clang -framework Foundation snippet.m -o prog',
       runScript: './prog',
       fileName: 'snippet.m',
-      headerSnippet: ''
+      headerSnippet: '',
+      skipCollections: ['queryParamsCollection']
     };
 
   runNewmanTest(convert, options, testConfig);

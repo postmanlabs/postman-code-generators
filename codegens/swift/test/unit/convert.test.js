@@ -332,6 +332,13 @@ describe('Swift Converter', function () {
         expect(outputUrlString).to.equal('https://postman-echo.com/get?key1={{value}}&key2=%27a%20b%20c%27');
       });
 
+      it('should not encode query params that are already encoded', function () {
+        rawUrl = 'https://postman-echo.com/get?query=urn%3Ali%3Afoo%3A62324';
+        urlObject = new sdk.Url(rawUrl);
+        outputUrlString = getUrlStringfromUrlObject(urlObject);
+        expect(outputUrlString).to.equal('https://postman-echo.com/get?query=urn%3Ali%3Afoo%3A62324');
+      });
+
       it('should discard disabled query params', function () {
         urlObject = new sdk.Url({
           protocol: 'https',
