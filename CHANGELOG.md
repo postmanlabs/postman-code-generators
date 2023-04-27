@@ -1,5 +1,18 @@
-v1.7.1 (March 29, 2023)
-* Minor fix - Add language labels for Rust and Kotlin
+# Postman Code Generators Changelog
+
+## [Unreleased]
+
+### Fixed
+
+-   Fix for - [#11934](https://github.com/postmanlabs/postman-app-support/issues/11934) Prevent `%` double encoding in query params
+
+## [v1.7.1] - 2023-03-29
+
+-   Minor fix - Add language labels for Rust and Kotlin
+
+## Previous Releases
+
+Newer releases follow the [Keep a Changelog](https://keepachangelog.com) format.
 
 v1.7.0 (March 28, 2023)
 * Fix for - [#192](https://github.com/postmanlabs/postman-code-generators/issues/192) Added support for Rust reqwest code snippets.
@@ -101,3 +114,7 @@ v1.0.0 (May 29, 2020)
 - Add axios framework support
 - Add ES6 syntax support for NodeJS Request, NodeJS Native and NodeJS Unirest
 - Fix snippet generation for powershell and jquery, where form data params had no type field
+
+[Unreleased]: https://github.com/postmanlabs/postman-code-generators/compare/v1.7.1...HEAD
+
+[v1.7.1]: https://github.com/postmanlabs/postman-code-generators/compare/v1.7.0...v1.7.1

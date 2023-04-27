@@ -3,7 +3,8 @@ var _ = require('./lodash'),
   sanitize = require('./util').sanitize;
 
 /**
- * Encode param except the following characters- [,{,},],%
+ * Encode param except the following characters- [,],%
+ * Characters { and } are kept encoded because unirest does not support them
  *
  * @param {String} param
  * @returns {String}
