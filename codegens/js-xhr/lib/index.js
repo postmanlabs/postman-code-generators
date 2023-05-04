@@ -2,6 +2,7 @@ var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
   addFormParam = require('./util').addFormParam,
+  getUrlStringfromUrlObject = require('./util').getUrlStringfromUrlObject,
   path = require('path');
 
 /**
@@ -278,7 +279,7 @@ function convert (request, options, callback) {
   codeSnippet += `${indent.repeat(2)}console.log(this.responseText);\n`;
   codeSnippet += `${indent}}\n});\n\n`;
 
-  codeSnippet += `xhr.open("${request.method}", "${encodeURI(request.url.toString())}");\n`;
+  codeSnippet += `xhr.open("${request.method}", "${getUrlStringfromUrlObject(request.url)}");\n`;
   if (options.requestTimeout) {
     codeSnippet += `xhr.timeout = ${options.requestTimeout};\n`;
     codeSnippet += 'xhr.addEventListener("ontimeout", function(e) {\n';

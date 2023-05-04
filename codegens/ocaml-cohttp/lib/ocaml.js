@@ -2,6 +2,7 @@ var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
   addFormParam = require('./util').addFormParam,
+  getUrlStringfromUrlObject = require('./util').getUrlStringfromUrlObject,
   self;
 
 /**
@@ -313,7 +314,7 @@ self = module.exports = {
     // timeout = options.requestTimeout;
     // followRedirect = options.followRedirect;
     trim = options.trimRequestBody;
-    finalUrl = encodeURI(request.url.toString());
+    finalUrl = getUrlStringfromUrlObject(request.url);
     methodArg = getMethodArg(request.method);
     if (request.body && !request.headers.has('Content-Type')) {
       if (request.body.mode === 'file') {

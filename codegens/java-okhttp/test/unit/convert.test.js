@@ -25,7 +25,7 @@ describe('okhttp convert function', function () {
         }
         snippetArray = snippet.split('\n');
         for (var i = 0; i < snippetArray.length; i++) {
-          if (snippetArray[i].startsWith('public class main {')) {
+          if (snippetArray[i].startsWith('public class Main {')) {
             expect(snippetArray[i + 1].substr(0, 4)).to.equal(SINGLE_SPACE.repeat(4));
             expect(snippetArray[i + 1].charAt(4)).to.not.equal(SINGLE_SPACE);
           }
@@ -39,7 +39,7 @@ describe('okhttp convert function', function () {
           expect.fail(null, null, error);
           return;
         }
-        expect(snippet).to.include('import java.io.*;\nimport okhttp3.*;\npublic class main {\n');
+        expect(snippet).to.include('import java.io.*;\nimport okhttp3.*;\npublic class Main {\n');
       });
     });
 
