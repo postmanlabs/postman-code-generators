@@ -1,0 +1,74 @@
+{
+  "configVersion": 2,
+  "packages": [
+    {
+      "name": "async",
+      "rootUri": "file:///Users/amansingh/.pub-cache/hosted/pub.dev/async-2.11.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "collection",
+      "rootUri": "file:///Users/amansingh/.pub-cache/hosted/pub.dev/collection-1.17.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "dio",
+      "rootUri": "file:///Users/amansingh/.pub-cache/hosted/pub.dev/dio-5.2.0+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.15"
+    },
+    {
+      "name": "http_parser",
+      "rootUri": "file:///Users/amansingh/.pub-cache/hosted/pub.dev/http_parser-4.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "meta",
+      "rootUri": "file:///Users/amansingh/.pub-cache/hosted/pub.dev/meta-1.9.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "path",
+      "rootUri": "file:///Users/amansingh/.pub-cache/hosted/pub.dev/path-1.8.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "source_span",
+      "rootUri": "file:///Users/amansingh/.pub-cache/hosted/pub.dev/source_span-1.10.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "string_scanner",
+      "rootUri": "file:///Users/amansingh/.pub-cache/hosted/pub.dev/string_scanner-1.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "term_glyph",
+      "rootUri": "file:///Users/amansingh/.pub-cache/hosted/pub.dev/term_glyph-1.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "typed_data",
+      "rootUri": "file:///Users/amansingh/.pub-cache/hosted/pub.dev/typed_data-1.3.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "dart_dio_codegen",
+      "rootUri": "../",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    }
+  ],
+  "generated": "2023-06-08T18:51:41.573569Z",
+  "generator": "pub",
+  "generatorVersion": "3.0.3"
+}
