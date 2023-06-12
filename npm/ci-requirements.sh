@@ -85,11 +85,12 @@ pushd ./codegens/dart-http &>/dev/null;
   wget -q https://storage.googleapis.com/dart-archive/channels/stable/release/latest/linux_packages/dart_3.0.4-1_amd64.deb
   sudo dpkg -i dart_3.0.4-1_amd64.deb
   echo '''name: test
+version: 1.0.0
 environment:
   sdk: ^3.0.3
 dependencies:
+  dio: ^5.2.0
   http: ^1.0.0
-  dio: ^5.2.0+1
 ''' > pubspec.yaml
   dart pub get
 popd &>/dev/null;
