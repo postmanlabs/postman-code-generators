@@ -88,7 +88,7 @@ pushd ./codegens/dart-http &>/dev/null;
 environment:
   sdk: ^3.0.3
 dependencies:
-  http: ^0.12.2
+  http: ^1.0.0
   dio: ^5.2.0+1
 ''' > pubspec.yaml
   dart pub get
