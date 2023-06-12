@@ -82,8 +82,8 @@ sudo apt-get install httpie
 
 echo "Installing dependencies required for tests in codegens/dart"
 pushd ./codegens/dart-http &>/dev/null;
-  wget -q https://storage.googleapis.com/dart-archive/channels/stable/release/2.10.2/linux_packages/dart_2.10.2-1_amd64.deb
-  sudo dpkg -i dart_2.10.2-1_amd64.deb
+  wget -q https://storage.googleapis.com/dart-archive/channels/stable/release/latest/linux_packages/dart_3.0.4-1_amd64.deb
+  sudo dpkg -i dart_3.0.4-1_amd64.deb
   echo '''name: test
 dependencies:
   http: ^0.12.2
