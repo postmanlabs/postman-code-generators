@@ -1,4 +1,7 @@
 .DS_Store
+
+#Obj-c files
+*.m
 # Logs
 logs
 *.log
@@ -39,3 +42,9 @@ typings/
 .env
 
 out/
+/.idea/
+pubspec.lock
+pubspec.yaml
+.packages
+snippet.dart
+.dart_tool/

@@ -87,6 +87,7 @@ pushd ./codegens/dart-http &>/dev/null;
   echo '''name: test
 dependencies:
   http: ^0.12.2
+  dio: ^5.2.0+1
 ''' > pubspec.yaml
   dart pub get
 popd &>/dev/null;
