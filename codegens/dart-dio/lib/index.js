@@ -13,7 +13,7 @@ var _ = require('lodash'),
  * @param {Boolean} trim indicates whether to trim string or not
  */
 function parseUrlEncoded (body, indent, trim) {
-  var bodySnippet = 'var data = FormData.fromMap({',
+  var bodySnippet = 'var data = {',
     enabledBodyList = _.reject(body, 'disabled'),
     bodyDataMap;
   if (!_.isEmpty(enabledBodyList)) {
@@ -22,7 +22,7 @@ function parseUrlEncoded (body, indent, trim) {
     });
     bodySnippet += '\n' + bodyDataMap.join(',\n') + '\n';
   }
-  bodySnippet += '});';
+  bodySnippet += '};';
   return bodySnippet;
 }
 
@@ -109,8 +109,8 @@ function parseFormData (body, indent, trim) {
   if (formDataArray.length > 0 || formDataFileArray.length > 0) {
     bodySnippet += 'var data = FormData.fromMap({\n';
     if (formDataFileArray.length > 0) {
-      bodySnippet += `${indent}'files': [\n`;
-      bodySnippet += formDataFileArray.join(`,\n${indent}`);
+      bodySnippet += `${indent}'files': [\n${indent}${indent}`;
+      bodySnippet += formDataFileArray.join(`,\n${indent}${indent}`);
       bodySnippet += `\n${indent}],\n`;
     }
     bodySnippet += formDataArray.join(',\n');
@@ -271,25 +271,24 @@ self = module.exports = {
       codeSnippet += body + '\n';
     }
 
-    codeSnippet += `
-    var dio = Dio();
-    var response = await dio.request(\n
-      '${request.url.toString()}',
-      options: Options(
-        method: '${request.method.toUpperCase()}',\n
-        ${headers !== '' ? 'headers: headers,\n' : ''}
-        ${followRedirect ? 'followRedirects: true,\n' : 'followRedirects: false,\n'}
-        ${timeout ? `receiveTimeout: ${timeout},\n` : ''}
-      ),\n
-      ${body !== '' ? 'data: data,\n' : ''}
-    );`;
+    codeSnippet += 'var dio = Dio();\n';
+    codeSnippet += 'var response = await dio.request(\n';
+    codeSnippet += `${indent}'${request.url.toString()}',\n`;
+    codeSnippet += `${indent}options: Options(\n`;
+    codeSnippet += `${indent}${indent}method: '${request.method.toUpperCase()}',\n`;
+    codeSnippet += `${headers !== '' ? `${indent}${indent}headers: headers,\n` : ''}`;
+    codeSnippet += `${followRedirect ? '' : `${indent}${indent}followRedirects: false,\n`}`;
+    codeSnippet += `${timeout ? `${indent}${indent}receiveTimeout: ${timeout},\n` : ''}`;
+    codeSnippet += `${indent}),\n`;
+    codeSnippet += `${body !== '' ? `${indent}data: data,\n` : ''}`;
+    codeSnippet += ');';
 
-    codeSnippet += ';\n\n';
+    codeSnippet += '\n\n';
     codeSnippet += 'if (response.statusCode == 200) {\n';
     codeSnippet += `${indent}print(json.encode(response.data));\n`;
     codeSnippet += '}\nelse {\n';
     codeSnippet += `${indent}print(response.statusMessage);\n`;
-    codeSnippet += '}\n';
+    codeSnippet += '}';
 
     (options.includeBoilerplate) &&
     (codeSnippet = indent + codeSnippet.split('\n').join('\n' + indent) + '\n');
