@@ -96,6 +96,8 @@ popd &>/dev/null;
 
 echo "Installing dependencies required for tests in codegens/dart-dio"
 pushd ./codegens/dart-dio &>/dev/null;
+  wget -q https://storage.googleapis.com/dart-archive/channels/stable/release/latest/linux_packages/dart_3.0.4-1_amd64.deb
+  sudo dpkg -i dart_3.0.4-1_amd64.deb
   echo '''name: test
 version: 1.0.0
 environment:
