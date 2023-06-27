@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [v1.8.0] - 2023-06-27
+
+-   Fix for - [#10521](https://github.com/postmanlabs/postman-app-support/issues/10521) Add support for Dart Dio snippet generation
+
 ## [v1.7.2] - 2023-05-04
 
 ### Fixed
@@ -136,7 +140,9 @@ v1.0.0 (May 29, 2020)
 -   Add ES6 syntax support for NodeJS Request, NodeJS Native and NodeJS Unirest
 -   Fix snippet generation for powershell and jquery, where form data params had no type field
 
-[Unreleased]: https://github.com/postmanlabs/postman-code-generators/compare/v1.7.2...HEAD
+[Unreleased]: https://github.com/postmanlabs/postman-code-generators/compare/v1.8.0...HEAD
+
+[v1.8.0]: https://github.com/postmanlabs/postman-code-generators/compare/v1.7.2...v1.8.0
 
 [v1.7.2]: https://github.com/postmanlabs/postman-code-generators/compare/v1.7.1...v1.7.2
 
