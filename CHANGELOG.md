@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+-  Fix for - [#10521](https://github.com/postmanlabs/postman-app-support/issues/10521) Add support for Dart Dio snippet generation
+
 ## [v1.7.2] - 2023-05-04
 
 ### Fixed
