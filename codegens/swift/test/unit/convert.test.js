@@ -62,7 +62,7 @@ describe('Swift Converter', function () {
         }
         expect(snippet).to.be.a('string');
         expect(snippet).to.contain('if param["contentType"] != nil {');
-        expect(snippet).to.contain('body += "\\r\\nContent-Type: \\(param["contentType"] as! String)"');
+        expect(snippet).to.contain('body += Data("\\r\\nContent-Type: \\(param["contentType"] as! String)".utf8)');
       });
     });
 
