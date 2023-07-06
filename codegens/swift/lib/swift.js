@@ -128,8 +128,8 @@ function parseFormData (body, mode, trim, indent) {
   bodySnippet += `${indent}} else {\n`;
   bodySnippet += `${indent.repeat(2)}let paramSrc = param["src"] as! String\n`;
   bodySnippet += `${indent.repeat(2)}let fileURL = URL(fileURLWithPath: paramSrc)\n`;
-  bodySnippet += `${indent.repeat(2)}if let fileContent = try? Data(contentsOf: fileURL) {`;
-  bodySnippet += `${indent.repeat(3)}body += ("; filename=\\"\\(paramSrc)\\"\\r\\n".utf8)\n`;
+  bodySnippet += `${indent.repeat(2)}if let fileContent = try? Data(contentsOf: fileURL) {\n`;
+  bodySnippet += `${indent.repeat(3)}body += Data("; filename=\\"\\(paramSrc)\\"\\r\\n".utf8)\n`;
   bodySnippet += `${indent.repeat(3)}body += Data("Content-Type: \\"content-type header\\"\\r\\n".utf8)\n`;
   bodySnippet += `${indent.repeat(3)}body += Data("\\r\\n".utf8)\n`;
   bodySnippet += `${indent.repeat(3)}body += fileContent\n`;
