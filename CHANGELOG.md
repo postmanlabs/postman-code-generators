@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+-   Fix for - [#10139](https://github.com/postmanlabs/postman-app-support/issues/10139) Modify Swift codegen to work with multipart/form-data format, used for video file upload
+
 ## [v1.8.0] - 2023-06-27
 
 -   Fix for - [#10521](https://github.com/postmanlabs/postman-app-support/issues/10521) Add support for Dart Dio snippet generation
