@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 
-- Fix for - [#10139](https://github.com/postmanlabs/postman-app-support/issues/10139) Modify Swift codegen to work with multipart/form-data format, used for video file upload
+### Fixed
+
+-   Fix for - [#10139](https://github.com/postmanlabs/postman-app-support/issues/10139) Modify Swift codegen to work with multipart/form-data format, used for video file upload
 
 ## [v1.8.0] - 2023-06-27
 
