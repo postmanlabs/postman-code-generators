@@ -305,7 +305,7 @@ function convert (request, options, callback) {
     codeSnippet += `const timerId = setTimeout(() => controller.abort(), ${options.requestTimeout});\n`;
   }
   optionsSnippet = `const requestOptions = {\n${indent}`;
-  optionsSnippet += `method: '${request.method}',\n${indent}`;
+  optionsSnippet += `method: "${request.method}",\n${indent}`;
   if (headerSnippet !== '') {
     optionsSnippet += `headers: myHeaders,\n${indent}`;
     codeSnippet += headerSnippet + '\n';
@@ -318,7 +318,7 @@ function convert (request, options, callback) {
   if (options.requestTimeout > 0) {
     optionsSnippet += `signal: controller.signal,\n${indent}`;
   }
-  optionsSnippet += `redirect: '${redirectMode(options.followRedirect)}'\n};\n`;
+  optionsSnippet += `redirect: "${redirectMode(options.followRedirect)}"\n};\n`;
 
   codeSnippet += optionsSnippet + '\n';
 

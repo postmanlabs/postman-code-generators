@@ -94,7 +94,7 @@ describe('js-fetch convert function for test collection', function () {
           return;
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('redirect: \'manual\'');
+        expect(snippet).to.include('redirect: "manual"');
       });
     });
 
@@ -110,7 +110,7 @@ describe('js-fetch convert function for test collection', function () {
           return;
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('redirect: \'follow\'');
+        expect(snippet).to.include('redirect: "follow"');
       });
     });
 
