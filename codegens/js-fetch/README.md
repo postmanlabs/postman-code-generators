@@ -19,6 +19,7 @@ Convert function takes three parameters
     * `trimRequestBody` - Trim request body fields
     * `followRedirect` - Boolean denoting whether to redirect a request
     * `requestTimeout` - Integer denoting time after which the request will bail out in milli-seconds
+    * `asyncAwaitEnabled` : Boolean denoting whether to use async/await syntax
 
 * `callback` - callback function with first parameter as error and second parameter as string for code snippet
 
