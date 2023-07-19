@@ -89,6 +89,41 @@ describe('java unirest convert function for test collection', function () {
       });
     });
 
+    it('should add content type if formdata field contains a content-type', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'json',
+              'value': '{"hello": "world"}',
+              'contentType': 'application/json',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('.field("json", "{\\"hello\\": \\"world\\"}", "application/json")');
+      });
+    });
+
     it('should include import statements, main class and print statements ' +
             'when includeBoilerplate is set to true', function () {
       request = new sdk.Request(mainCollection.item[0].request);
@@ -99,7 +134,7 @@ describe('java unirest convert function for test collection', function () {
       };
       headerSnippet = 'import com.mashape.unirest.http.*;\n' +
                         'import java.io.*;\n' +
-                        'public class main {\n' +
+                        'public class Main {\n' +
                         indentString + 'public static void main(String []args) throws Exception{\n';
       footerSnippet = indentString.repeat(2) + 'System.out.println(response.getBody());\n' +
                         indentString + '}\n}\n';
@@ -183,8 +218,8 @@ describe('java unirest convert function for test collection', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('http://postman-echo.com/post?a={{xyz}}');
-        expect(snippet).to.not.include('http://postman-echo.com/post?a=%7B%7Bxyz%7D%7D');
+        expect(snippet).to.not.include('http://postman-echo.com/post?a={{xyz}}');
+        expect(snippet).to.include('http://postman-echo.com/post?a=%7B%7Bxyz%7D%7D');
       });
     });
 
@@ -444,8 +479,8 @@ describe('java unirest convert function for test collection', function () {
         rawUrl = 'https://postman-echo.com/get?key={{value}}';
         urlObject = new sdk.Url(rawUrl);
         outputUrlString = getUrlStringfromUrlObject(urlObject);
-        expect(outputUrlString).to.not.include('key=%7B%7Bvalue%7B%7B');
-        expect(outputUrlString).to.equal(rawUrl);
+        expect(outputUrlString).to.include('key=%7B%7Bvalue%7D%7D');
+        expect(outputUrlString).to.equal('https://postman-echo.com/get?key=%7B%7Bvalue%7D%7D');
       });
 
       it('should encode query params other than unresolved variables', function () {
@@ -456,14 +491,21 @@ describe('java unirest convert function for test collection', function () {
         expect(outputUrlString).to.equal('https://postman-echo.com/get?key=%27a%20b%20c%27');
       });
 
+      it('should not encode query params that are already encoded', function () {
+        rawUrl = 'https://postman-echo.com/get?query=urn%3Ali%3Afoo%3A62324';
+        urlObject = new sdk.Url(rawUrl);
+        outputUrlString = getUrlStringfromUrlObject(urlObject);
+        expect(outputUrlString).to.equal('https://postman-echo.com/get?query=urn%3Ali%3Afoo%3A62324');
+      });
+
       it('should not encode unresolved query params and ' +
       'encode every other query param, both present together', function () {
         rawUrl = 'https://postman-echo.com/get?key1={{value}}&key2=\'a b c\'';
         urlObject = new sdk.Url(rawUrl);
         outputUrlString = getUrlStringfromUrlObject(urlObject);
-        expect(outputUrlString).to.not.include('key1=%7B%7Bvalue%7B%7B');
+        expect(outputUrlString).to.include('key1=%7B%7Bvalue%7D%7D');
         expect(outputUrlString).to.not.include('key2=\'a b c\'');
-        expect(outputUrlString).to.equal('https://postman-echo.com/get?key1={{value}}&key2=%27a%20b%20c%27');
+        expect(outputUrlString).to.equal('https://postman-echo.com/get?key1=%7B%7Bvalue%7D%7D&key2=%27a%20b%20c%27');
       });
 
       it('should discard disabled query params', function () {

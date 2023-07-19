@@ -96,7 +96,8 @@ self = module.exports = {
       identity = '',
       headerSnippet = '',
       methods = ['GET', 'POST', 'HEAD', 'DELETE', 'PATCH', 'PROPFIND',
-        'PROPPATCH', 'PUT', 'OPTIONS', 'COPY', 'LOCK', 'UNLOCK', 'MOVE', 'TRACE'];
+        'PROPPATCH', 'PUT', 'OPTIONS', 'COPY', 'LOCK', 'UNLOCK', 'MOVE', 'TRACE'],
+      contentType;
 
     if (_.isFunction(options)) {
       callback = options;
@@ -111,6 +112,13 @@ self = module.exports = {
     indentation = identity.repeat(options.indentCount);
     // concatenation and making up the final string
     snippet = 'require "uri"\n';
+
+    contentType = request.headers.get('Content-Type');
+    // If contentType is json then include the json module for later use
+    if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
+      snippet += 'require "json"\n';
+    }
+
     snippet += 'require "net/http"\n\n';
     if (!_.includes(methods, request.method)) {
       snippet += `class Net::HTTP::${_.capitalize(request.method)} < Net::HTTPRequest\n`;
@@ -121,7 +129,7 @@ self = module.exports = {
     }
     snippet += `url = URI("${sanitize(request.url.toString(), 'url')}")\n\n`;
     if (sanitize(request.url.toString(), 'url').startsWith('https')) {
-      snippet += 'https = Net::HTTP.new(url.host, url.port);\n';
+      snippet += 'https = Net::HTTP.new(url.host, url.port)\n';
       snippet += 'https.use_ssl = true\n\n';
       if (options.requestTimeout) {
         snippet += `https.read_timeout = ${Math.ceil(options.requestTimeout / 1000)}\n`;
@@ -187,7 +195,7 @@ self = module.exports = {
           formdata: formdataArray
         });
       }
-      snippet += `${parseBody(request.toJSON(), options.trimRequestBody)}\n`;
+      snippet += `${parseBody(request.toJSON(), options.trimRequestBody, contentType, options.indentCount)}\n`;
       snippet += 'response = https.request(request)\n';
       snippet += 'puts response.read_body\n';
     }
@@ -216,7 +224,7 @@ self = module.exports = {
       if (headerSnippet !== '') {
         snippet += headerSnippet;
       }
-      snippet += `${parseBody(request.toJSON(), options.trimRequestBody)}\n`;
+      snippet += `${parseBody(request.toJSON(), options.trimRequestBody, contentType, options.indentCount)}\n`;
       snippet += 'response = http.request(request)\n';
       snippet += 'puts response.read_body\n';
     }

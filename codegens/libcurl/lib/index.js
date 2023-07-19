@@ -1,6 +1,7 @@
 var sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
   addFormParam = require('./util').addFormParam,
+  getUrlStringfromUrlObject = require('./util').getUrlStringfromUrlObject,
   _ = require('./lodash'),
   self;
 
@@ -39,7 +40,7 @@ self = module.exports = {
     snippet += 'if(curl) {\n';
     snippet += indentString + `curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "${request.method}");\n`;
     snippet += indentString +
-    `curl_easy_setopt(curl, CURLOPT_URL, "${encodeURI(request.url.toString())}");\n`;
+    `curl_easy_setopt(curl, CURLOPT_URL, "${getUrlStringfromUrlObject(request.url)}");\n`;
     if (timeout) {
       snippet += indentString + `curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, ${timeout}L);\n`;
     }
@@ -123,7 +124,7 @@ self = module.exports = {
           text = [];
           _.forEach(body.urlencoded, function (data) {
             if (!data.disabled) {
-              text.push(`${escape(data.key)}=${escape(data.value)}`);
+              text.push(`${encodeURIComponent(data.key)}=${encodeURIComponent(data.value)}`);
             }
           });
           snippet += indentString + `const char *data = "${text.join('&')}";\n`;
@@ -133,8 +134,8 @@ self = module.exports = {
           snippet += indentString + `const char *data = "${sanitize(body.raw.toString(), trim)}";\n`;
           snippet += indentString + 'curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);\n';
           break;
-        // eslint-disable-next-line no-case-declarations
         case 'graphql':
+          // eslint-disable-next-line no-case-declarations
           let query = body.graphql.query,
             graphqlVariables;
           try {
@@ -171,6 +172,9 @@ self = module.exports = {
                 }
                 else {
                   snippet += indentString + `curl_mime_name(part, "${sanitize(data.key, trim)}");\n`;
+                  if (data.contentType) {
+                    snippet += indentString + `curl_mime_type(part, "${sanitize(data.contentType, trim)}");\n`;
+                  }
                   snippet += indentString +
                   `curl_mime_data(part, "${sanitize(data.value, trim)}", CURL_ZERO_TERMINATED);\n`;
                 }

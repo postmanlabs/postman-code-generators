@@ -89,6 +89,45 @@ describe('Ocaml unit tests', function () {
       });
     });
 
+    it('should add content type if formdata field contains a content-type', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'json',
+              'value': '{"hello": "world"}',
+              'contentType': 'application/json',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('[| ("name", "json"); ("value", "{\\"hello\\": \\"world\\"}"); ("contentType", "application/json") |]'); // eslint-disable-line max-len
+        expect(snippet).to.contain('postData := if Array.length parameters.(x) == 3 then (');
+        expect(snippet).to.contain('let (_, contentType) = parameters.(x).(2) in');
+        expect(snippet).to.contain('!postData ^ accum ^ "\\r\\n" ^ "Content-Type: " ^ contentType');
+      });
+    });
+
+
     it('should include graphql body in the snippet', function () {
       var request = new sdk.Request({
         'method': 'POST',

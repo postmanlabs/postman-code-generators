@@ -180,13 +180,16 @@ describe('Powershell-restmethod converter', function () {
           expect.fail(null, null, error);
           return;
         }
+
         const lines = snippet.split('\n');
         expect(lines[0]).to
           .eql('$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"');
         expect(lines[1]).to.eql('$headers.Add("Content-Type", "text/plain")');
-        expect(lines[3]).to.eql('$body = "Hello world"');
-        expect(lines[5]).to.eql('$response = Invoke-RestMethod \'https://mockbin.org/request\' -Method \'POST\' -Headers $headers -Body $body -TimeoutSec 10'); // eslint-disable-line max-len
-        expect(lines[6]).to.eql('$response | ConvertTo-Json');
+        expect(lines[3]).to.eql('$body = @"');
+        expect(lines[4]).to.eql('Hello world');
+        expect(lines[5]).to.eql('"@');
+        expect(lines[7]).to.eql('$response = Invoke-RestMethod \'https://mockbin.org/request\' -Method \'POST\' -Headers $headers -Body $body -TimeoutSec 10'); // eslint-disable-line max-len
+        expect(lines[8]).to.eql('$response | ConvertTo-Json');
       });
     });
   });
@@ -422,6 +425,42 @@ describe('Powershell-restmethod converter', function () {
       });
     });
 
+    it('should add content type if formdata field contains a content-type', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'json',
+              'value': '{"hello": "world"}',
+              'contentType': 'application/json',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('$contentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::new("application/json")'); // eslint-disable-line max-len
+        expect(snippet).to.contain('$stringContent.Headers.ContentType = $contentType');
+      });
+    });
+
     it('should generate valid snippet for single/double quotes in url', function () {
       var request = new sdk.Request({
         'method': 'GET',
@@ -490,7 +529,7 @@ describe('Powershell-restmethod converter', function () {
         expect(snippet).to.include('$stringHeader = [System.Net.Http.Headers.ContentDispositionHeaderValue]' +
         '::new("form-data")');
         expect(snippet).to.include('$stringHeader.Name = "sample_key"');
-        expect(snippet).to.include('$StringContent = [System.Net.Http.StringContent]::new("sample_value")');
+        expect(snippet).to.include('$stringContent = [System.Net.Http.StringContent]::new("sample_value")');
       });
     });
   });

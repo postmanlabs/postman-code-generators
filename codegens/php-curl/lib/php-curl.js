@@ -3,6 +3,7 @@ var _ = require('./lodash'),
   sanitize = require('./util/sanitize').sanitize,
   sanitizeOptions = require('./util/sanitize').sanitizeOptions,
   addFormParam = require('./util/sanitize').addFormParam,
+  getUrlStringfromUrlObject = require('./util/sanitize').getUrlStringfromUrlObject,
   self;
 
 /**
@@ -19,8 +20,8 @@ function getHeaders (request, indentation) {
   if (!_.isEmpty(headerArray)) {
     headerArray = _.reject(headerArray, 'disabled');
     headerMap = _.map(headerArray, function (header) {
-      return `${indentation.repeat(2)}"${sanitize(header.key, 'header', true)}: ` +
-            `${sanitize(header.value, 'header')}"`;
+      return `${indentation.repeat(2)}'${sanitize(header.key, 'header', true)}: ` +
+            `${sanitize(header.value, 'header')}'`;
     });
     return `${indentation}CURLOPT_HTTPHEADER => array(\n${headerMap.join(',\n')}\n${indentation}),\n`;
   }
@@ -105,21 +106,17 @@ self = module.exports = {
     identity = options.indentType === 'Tab' ? '\t' : ' ';
     indentation = identity.repeat(options.indentCount);
     // concatenation and making up the final string
-    finalUrl = request.url.toString();
-    if (finalUrl !== encodeURI(finalUrl)) {
-      // needs to be encoded
-      finalUrl = encodeURI(finalUrl);
-    }
+    finalUrl = getUrlStringfromUrlObject(request.url);
     snippet = '<?php\n\n$curl = curl_init();\n\n';
     snippet += 'curl_setopt_array($curl, array(\n';
-    snippet += `${indentation}CURLOPT_URL => "${sanitize(finalUrl, 'url')}",\n`;
+    snippet += `${indentation}CURLOPT_URL => '${sanitize(finalUrl, 'url')}',\n`;
     snippet += `${indentation}CURLOPT_RETURNTRANSFER => true,\n`;
-    snippet += `${indentation}CURLOPT_ENCODING => "",\n`;
+    snippet += `${indentation}CURLOPT_ENCODING => '',\n`;
     snippet += `${indentation}CURLOPT_MAXREDIRS => 10,\n`;
     snippet += `${indentation}CURLOPT_TIMEOUT => ${options.requestTimeout},\n`;
     snippet += `${indentation}CURLOPT_FOLLOWLOCATION => ${options.followRedirect},\n`;
     snippet += `${indentation}CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,\n`;
-    snippet += `${indentation}CURLOPT_CUSTOMREQUEST => "${request.method}",\n`;
+    snippet += `${indentation}CURLOPT_CUSTOMREQUEST => '${request.method}',\n`;
 
     // The following code handles multiple files in the same formdata param.
     // It removes the form data params where the src property is an array of filepath strings

@@ -26,9 +26,11 @@
   "author": "Postman Labs <help@getpostman.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/nodejs-native",
-  "dependencies": {},
+  "dependencies": {
+    "postman-collection": "3.6.11"
+  },
   "devDependencies": {
-    "follow-redirects": "1.4.1"
+    "follow-redirects": "1.15.2"
   },
   "engines": {
     "node": ">=8"

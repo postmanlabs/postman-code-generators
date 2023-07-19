@@ -42,22 +42,65 @@ function parseContentType (request) {
 }
 
 /**
+ * Generates a parameter using AddStringBody method
+ *
+ * @param {Object} requestBody - JSON object representing body of request
+ * @param {string} dataFormat - the data format to use "DataFormat.Json" or "DataFormat.Xml"
+ * @returns {String} snippet of the parameter generation
+ */
+function getAddStringBodyParam (requestBody, dataFormat) {
+  return `var body = ${requestBody[requestBody.mode]
+    .split('\n')
+    .map((line) => { return '@"' + line.replace(/"/g, '""') + '"'; })
+    .join(' + "\\n" +\n')};\n` +
+    `request.AddStringBody(body, ${dataFormat});\n`;
+}
+
+/**
+ * Parses Raw data
+ *
+ * @param {Object} request - JSON object representing body of request
+ * @param {Object} requestBody - JSON object representing body of request
+ * @returns {String} snippet of the body generation
+ */
+function parseRawBody (request, requestBody) {
+  let bodySnippet = '',
+    contentType = parseContentType(request);
+  if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
+    bodySnippet = getAddStringBodyParam(requestBody, 'DataFormat.Json');
+  }
+  else if (contentType && (contentType === 'text/xml' || contentType.match(/\+xml$/))) {
+    bodySnippet = getAddStringBodyParam(requestBody, 'DataFormat.Xml');
+  }
+  else {
+    bodySnippet = `var body = ${requestBody[requestBody.mode]
+      .split('\n')
+      .map((line) => { return '@"' + line.replace(/"/g, '""') + '"'; })
+      .join(' + "\\n" +\n')};\n` +
+      `request.AddParameter("${contentType}", ` +
+      'body,  ParameterType.RequestBody);\n';
+  }
+
+  return bodySnippet;
+}
+
+/**
  *
  * @param {Object} requestBody - JSON object representing body of request
  * @param {boolean} trimFields - Boolean denoting whether to trim body fields
  * @returns {String} code snippet for graphql body
  */
 function parseGraphQL (requestBody, trimFields) {
-  let query = requestBody.graphql.query,
-    graphqlVariables;
+  let query = requestBody.graphql ? requestBody.graphql.query : '',
+    graphqlVariables = requestBody.graphql ? requestBody.graphql.variables : '{}';
   try {
-    graphqlVariables = JSON.parse(requestBody.graphql.variables);
+    graphqlVariables = JSON.parse(graphqlVariables || '{}');
   }
   catch (e) {
     graphqlVariables = {};
   }
   return 'request.AddParameter("application/json", ' +
-          `"${sanitize(JSON.stringify({query: query, variables: graphqlVariables}), trimFields)}",
+          `"${sanitize(JSON.stringify({query: query || '', variables: graphqlVariables}), trimFields)}",
            ParameterType.RequestBody);\n`;
 
 }
@@ -78,8 +121,7 @@ function parseBody (request, trimFields) {
       case 'formdata':
         return parseFormData(requestBody, trimFields);
       case 'raw':
-        return `request.AddParameter("${parseContentType(request)}", ` +
-                    `${JSON.stringify(requestBody[requestBody.mode])},  ParameterType.RequestBody);\n`;
+        return parseRawBody(request, requestBody);
       case 'graphql':
         return parseGraphQL(requestBody, trimFields);
         /* istanbul ignore next */
@@ -106,10 +148,7 @@ function parseHeader (requestJson) {
 
   return requestJson.header.reduce((headerSnippet, header) => {
     if (!header.disabled) {
-      if (sanitize(header.key, true).toLowerCase() === 'user-agent') {
-        headerSnippet += `client.UserAgent = "${sanitize(header.value)}";\n`;
-      }
-      else {
+      if (sanitize(header.key, true).toLowerCase() !== 'user-agent') {
         headerSnippet += `request.AddHeader("${sanitize(header.key, true)}", "${sanitize(header.value)}");\n`;
       }
     }

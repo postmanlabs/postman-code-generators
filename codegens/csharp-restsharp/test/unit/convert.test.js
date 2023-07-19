@@ -4,14 +4,15 @@ var expect = require('chai').expect,
   mainCollection = require('./fixtures/testcollection/collection.json'),
   testCollection = require('./fixtures/testcollection/collectionForEdge.json'),
   getOptions = require('../../lib/index').getOptions,
-  testResponse = require('./fixtures/testresponse.json'),
+  testResponseAsync = require('./fixtures/testResponseAsync.json'),
+  testResponseJsonParams = require('./fixtures/testResponseJsonParams.json'),
   sanitize = require('../../lib/util').sanitize,
   sanitizeOptions = require('../../lib/util').sanitizeOptions;
 
 describe('csharp restsharp function', function () {
 
   describe('csharp-restsharp convert function', function () {
-    it('should return expected snippet', function () {
+    it('should return expected snippet - Async', function () {
       var request = new sdk.Request(mainCollection.item[4].request),
         options = {
           indentCount: 1,
@@ -25,7 +26,25 @@ describe('csharp restsharp function', function () {
           expect.fail(null, null, error);
           return;
         }
-        expect(snippet).deep.equal(testResponse.result);
+        expect(snippet).deep.equal(testResponseAsync.result);
+      });
+    });
+
+    it('should return expected snippet json params', function () {
+      var request = new sdk.Request(mainCollection.item[5].request),
+        options = {
+          indentCount: 1,
+          indentType: 'Tab',
+          followRedirect: true,
+          trimRequestBody: true
+        };
+
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+          return;
+        }
+        expect(snippet).deep.equal(testResponseJsonParams.result);
       });
     });
   });
@@ -45,7 +64,9 @@ describe('csharp restsharp function', function () {
           expect.fail(null, null, error);
           return;
         }
-        expect(snippet).to.include('using System;\nusing RestSharp;\nnamespace HelloWorldApplication {\n');
+        expect(snippet).to.include('using System;\nusing RestSharp;\nusing System.Threading;\nusing' +
+        ' System.Threading.Tasks;\nnamespace HelloWorldApplication {\n');
+        expect(snippet).to.include('static async Task Main(string[] args) {');
       });
     });
 
@@ -72,7 +93,7 @@ describe('csharp restsharp function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('client.Timeout = 5');
+        expect(snippet).to.include('MaxTimeout = 5');
       });
     });
 
@@ -82,7 +103,7 @@ describe('csharp restsharp function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('client.FollowRedirects = false');
+        expect(snippet).to.include('FollowRedirects = false');
       });
     });
 
@@ -165,7 +186,7 @@ describe('csharp restsharp function', function () {
 
     it('should use client.UserAgent instead of AddHeader function', function () {
       const sampleUA = 'Safari/605.1.15',
-        expectValue = `client.UserAgent = "${sampleUA}";`;
+        expectValue = `UserAgent = "${sampleUA}",`;
 
       var request = new sdk.Request({
         'method': 'GET',
@@ -192,6 +213,7 @@ describe('csharp restsharp function', function () {
         expect(snippet).to.include(expectValue);
       });
     });
+
   });
 
   describe('getOptions function', function () {

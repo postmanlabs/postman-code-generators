@@ -1,14 +1,30 @@
 var _ = require('../lodash'),
-  sanitize = require('./sanitize').sanitize;
+  sanitize = require('./sanitize').sanitize,
+  nullToken = '__RUBY#%0NULL__';
+
+/**
+ * Convert null to Ruby equivalent nil
+ *
+ * @param {String} key
+ * @param {Object} value
+ */
+function replacer (key, value) {
+  if (value === null) {
+    return nullToken;
+  }
+  return value;
+}
 
 /**
  * Used to parse the body of the postman SDK-request and return in the desired format
  *
  * @param  {Object} request - postman SDK-request object
  * @param  {Boolean} trimRequestBody - whether to trim request body fields
+ * @param  {string} contentType - the content type of request body
+ * @param  {Integer} indentCount - the count of indentation characters to use
  * @returns {String} - request body
  */
-module.exports = function (request, trimRequestBody) {
+module.exports = function (request, trimRequestBody, contentType, indentCount) {
   // used to check whether body is present in the request and return accordingly
   if (request.body) {
     var requestBody = '',
@@ -17,13 +33,30 @@ module.exports = function (request, trimRequestBody) {
 
     switch (request.body.mode) {
       case 'raw':
-        if (!_.isEmpty(request.body[request.body.mode])) {
-          requestBody += 'request.body = ' +
-                        `${sanitize(request.body[request.body.mode], request.body.mode, trimRequestBody)}\n`;
+        if (_.isEmpty(request.body[request.body.mode])) {
+          return '';
         }
+
+        // Match any application type whose underlying structure is json
+        // For example application/vnd.api+json
+        // All of them have +json as suffix
+        if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
+          try {
+            let jsonBody = JSON.parse(request.body[request.body.mode]);
+            jsonBody = JSON.stringify(jsonBody, replacer, indentCount)
+              .replace(new RegExp(`"${nullToken}"`, 'g'), 'nil');
+            return `request.body = JSON.dump(${jsonBody})\n`;
+          }
+          catch (error) {
+            // Do nothing
+          }
+        }
+
+        requestBody += 'request.body = ' +
+          `${sanitize(request.body[request.body.mode], request.body.mode, trimRequestBody)}\n`;
         return requestBody;
-      // eslint-disable-next-line no-case-declarations
       case 'graphql':
+        // eslint-disable-next-line no-case-declarations
         let query = request.body[request.body.mode].query,
           graphqlVariables;
         try {

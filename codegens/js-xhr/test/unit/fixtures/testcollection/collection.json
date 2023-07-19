@@ -1055,7 +1055,7 @@
 			"response": []
 		},
 		{
-			"name": "PROFIND request",
+			"name": "PROPFIND request",
 			"request": {
 				"method": "PROPFIND",
 				"header": [

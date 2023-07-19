@@ -12,7 +12,7 @@ describe('Shell-Httpie convert function', function () {
       },
       testConfig = {
         headerSnippet: 'printf \'\' | ',
-        skipCollections: ['formdataCollection', 'sameNameHeadersCollection']
+        skipCollections: ['formdataCollection', 'sameNameHeadersCollection', 'emptyFormdataCollection']
       };
     runNewmanTest(convert, options, testConfig);
   });
@@ -64,7 +64,7 @@ describe('Shell-Httpie convert function', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('GET https://localhost:3000/getSelfBody');
+      expect(snippet).to.include('GET \'https://localhost:3000/getSelfBody\'');
     });
   });
 
