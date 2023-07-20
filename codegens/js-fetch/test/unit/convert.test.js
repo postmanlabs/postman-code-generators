@@ -23,11 +23,10 @@ describe('js-fetch convert function for test collection', function () {
           expect.fail(null, null, error);
           return;
         }
-
         expect(snippet).to.be.a('string');
         snippetArray = snippet.split('\n');
         for (var i = 0; i < snippetArray.length; i++) {
-          if (snippetArray[i] === 'var requestOptions = {') { line_no = i + 1; }
+          if (snippetArray[i] === 'const requestOptions = {') { line_no = i + 1; }
         }
         expect(snippetArray[line_no].charAt(0)).to.equal(' ');
         expect(snippetArray[line_no].charAt(1)).to.equal(' ');
@@ -95,7 +94,7 @@ describe('js-fetch convert function for test collection', function () {
           return;
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('redirect: \'manual\'');
+        expect(snippet).to.include('redirect: "manual"');
       });
     });
 
@@ -111,7 +110,7 @@ describe('js-fetch convert function for test collection', function () {
           return;
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('redirect: \'follow\'');
+        expect(snippet).to.include('redirect: "follow"');
       });
     });
 
@@ -298,6 +297,62 @@ describe('js-fetch convert function for test collection', function () {
         expect(snippet).to.include('fetch("https://postman-echo.com/get?query1=b\'b&query2=c\\"c"');
       });
     });
+
+    it('should return snippet with promise based code when async_await is disabled', function () {
+      const request = new sdk.Request(mainCollection.item[0].request);
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('fetch(');
+        expect(snippet).to.include('.then((response) => ');
+        expect(snippet).to.include('.catch((error) => ');
+      });
+    });
+
+    it('should return snippet with async/await based code when option is enabled', function () {
+      const request = new sdk.Request(mainCollection.item[0].request);
+
+      convert(request, { asyncAwaitEnabled: true }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('const response = await fetch(');
+        expect(snippet).to.include('const result = await response.text()');
+        expect(snippet).to.include('catch (error) {');
+      });
+    });
+
+    it('should return timeout snippet with promise based code when async_await is disabled', function () {
+      const request = new sdk.Request(mainCollection.item[0].request);
+
+      convert(request, { requestTimeout: 3000 }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('const controller');
+        expect(snippet).to.include('const timerId');
+        expect(snippet).to.include('.finally(() => clearTimeout(timerId))');
+      });
+    });
+
+    it('should return timeout snippet with promise based code when async_await is enabled', function () {
+      const request = new sdk.Request(mainCollection.item[0].request);
+
+      convert(request, { requestTimeout: 3000, asyncAwaitEnabled: true }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('const controller');
+        expect(snippet).to.include('const timerId');
+        expect(snippet).to.include('} finally {');
+      });
+    });
   });
 
   describe('getOptions function', function () {
@@ -312,6 +367,7 @@ describe('js-fetch convert function for test collection', function () {
       expect(getOptions()[2]).to.have.property('id', 'requestTimeout');
       expect(getOptions()[3]).to.have.property('id', 'followRedirect');
       expect(getOptions()[4]).to.have.property('id', 'trimRequestBody');
+      expect(getOptions()[5]).to.have.property('id', 'asyncAwaitEnabled');
     });
   });
 
