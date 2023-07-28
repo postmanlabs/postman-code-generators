@@ -38,5 +38,3 @@ describe('Convert for different types of request', function () {
   });
 
 });
-
-

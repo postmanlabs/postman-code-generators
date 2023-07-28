@@ -208,5 +208,4 @@ module.exports = function (request, indentation, bodyTrim, contentType) {
     }
   }
   return 'payload = {}\n';
-}
-;
+};
