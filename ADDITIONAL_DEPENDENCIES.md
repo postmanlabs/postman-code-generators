@@ -37,7 +37,7 @@
   1. [wget](https://www.gnu.org/software/wget)
 
 ### swift 
-  1. [swift-5.0.1](https://swift.org/builds/swift-5.0.1-release/ubuntu1604/swift-5.0.1-RELEASE)
+  1. [swift-5.5](https://download.swift.org/swift-5.5-release/ubuntu1604/swift-5.5-RELEASE)
   2. clang-3.6
   3. libicu-dev
   4. libpython2.7

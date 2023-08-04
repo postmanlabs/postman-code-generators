@@ -260,6 +260,13 @@ self = module.exports = {
         type: 'boolean',
         default: false,
         description: 'Include class definition and import statements in snippet'
+      },
+      {
+        name: 'Use async/await',
+        id: 'asyncAwaitEnabled',
+        type: 'boolean',
+        default: false,
+        description: 'Modifies code snippet to use async/await'
       }
     ];
   },
@@ -278,6 +285,7 @@ self = module.exports = {
                                                  (default: 0 -> never bail out)
      * @param {Boolean} options.trimRequestBody - whether to trim request body fields (default: false)
      * @param {Boolean} options.followRedirect - whether to allow redirects of a request
+     * @param {Boolean} options.asyncAwaitEnabled - whether to show async/await methods for handling async tasks
      * @param  {Function} callback - Callback function with parameters (error, snippet)
      * @returns {String} Generated swift snippet via callback
      */
@@ -378,18 +386,29 @@ self = module.exports = {
     if (bodySnippet !== '') {
       codeSnippet += 'request.httpBody = postData\n';
     }
-    codeSnippet += '\nlet task = URLSession.shared.dataTask(with: request) { data, response, error in \n';
-    codeSnippet += `${indent}guard let data = data else {\n`;
-    codeSnippet += `${indent.repeat(2)}print(String(describing: error))\n`;
-    codeSnippet += `${indent.repeat(2)}`;
-    codeSnippet += options.includeBoilerplate ? 'exit(EXIT_SUCCESS)\n' : 'return\n';
-    codeSnippet += `${indent}}\n`;
-    codeSnippet += `${indent}print(String(data: data, encoding: .utf8)!)\n`;
-    codeSnippet += options.includeBoilerplate ? `${indent}exit(EXIT_SUCCESS)\n` : '';
-    codeSnippet += '}\n\n';
-    codeSnippet += 'task.resume()\n';
-    codeSnippet += options.includeBoilerplate ? 'dispatchMain()\n' : '';
-
+    if (options.asyncAwaitEnabled) {
+      codeSnippet += '\ndo {\n';
+      codeSnippet += `${indent}let (data, _) = try await URLSession.shared.data(for: request)\n`;
+      codeSnippet += `${indent}print(String(data: data, encoding: .utf8)!)\n`;
+      codeSnippet += options.includeBoilerplate ? `${indent}exit(EXIT_SUCCESS)\n` : '';
+      codeSnippet += '} catch {\n';
+      codeSnippet += `${indent}print("A URL error occurred: \\(error)")\n`;
+      codeSnippet += options.includeBoilerplate ? `${indent}exit(EXIT_FAILURE)\n` : '';
+      codeSnippet += '}\n';
+    }
+    else {
+      codeSnippet += '\nlet task = URLSession.shared.dataTask(with: request) { data, response, error in \n';
+      codeSnippet += `${indent}guard let data = data else {\n`;
+      codeSnippet += `${indent.repeat(2)}print(String(describing: error))\n`;
+      codeSnippet += `${indent.repeat(2)}`;
+      codeSnippet += options.includeBoilerplate ? 'exit(EXIT_FAILURE)\n' : 'return\n';
+      codeSnippet += `${indent}}\n`;
+      codeSnippet += `${indent}print(String(data: data, encoding: .utf8)!)\n`;
+      codeSnippet += options.includeBoilerplate ? `${indent}exit(EXIT_SUCCESS)\n` : '';
+      codeSnippet += '}\n\n';
+      codeSnippet += 'task.resume()\n';
+      codeSnippet += options.includeBoilerplate ? 'dispatchMain()\n' : '';
+    }
     return callback(null, codeSnippet);
   }
 };
