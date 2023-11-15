@@ -11,6 +11,7 @@ function sanitize (inputString, trim) {
   if (typeof inputString !== 'string') {
     return '';
   }
+
   (trim) && (inputString = inputString.trim());
   return inputString.replace(/\\/g, '\\\\').replace(/'/g, '\\\'')
     .replace(/\n/g, '\\n')
@@ -30,49 +31,46 @@ function sanitizeOptions (options, optionsArray) {
   var result = {},
     defaultOptions = {},
     id;
+
   optionsArray.forEach((option) => {
-    defaultOptions[option.id] = {
-      default: option.default,
-      type: option.type
-    };
-    if (option.type === 'enum') {
-      defaultOptions[option.id].availableOptions = option.availableOptions;
+    const { id, default: defaultValue, type, availableOptions } = option;
+    defaultOptions[id] = { default: defaultValue, type };
+
+    if (type === 'enum') {
+      defaultOptions[id].availableOptions = availableOptions;
     }
   });
 
-  for (id in options) {
-    if (options.hasOwnProperty(id)) {
-      if (defaultOptions[id] === undefined) {
-        continue;
-      }
-      switch (defaultOptions[id].type) {
-        case 'boolean':
-          if (typeof options[id] !== 'boolean') {
-            result[id] = defaultOptions[id].default;
-          }
-          else {
-            result[id] = options[id];
-          }
-          break;
-        case 'positiveInteger':
-          if (typeof options[id] !== 'number' || options[id] < 0) {
-            result[id] = defaultOptions[id].default;
-          }
-          else {
-            result[id] = options[id];
-          }
-          break;
-        case 'enum':
-          if (!defaultOptions[id].availableOptions.includes(options[id])) {
-            result[id] = defaultOptions[id].default;
-          }
-          else {
-            result[id] = options[id];
-          }
-          break;
-        default:
-          result[id] = options[id];
-      }
+  /**
+   * A type checker object that checks the type of an option value
+   *
+   * @typedef {Object} typeCheckers
+   *
+   * @property {function(Object, string): boolean} boolean - checks if the option value is a boolean
+   * @property {function(Object, string): number} positiveInteger - checks if the option value is a positive integer
+   * @property {function(Object, string): string} enum - checks if the option value is one of the available options
+   * @property {function(Object, string): *} default - returns the option value without any type checking
+   *
+   */
+  const typeCheckers = {
+    boolean: (options, id) => {
+      return typeof options[id] === 'boolean' ? options[id] : defaultOptions[id].default;
+    },
+    positiveInteger: (options, id) => {
+      return typeof options[id] === 'number' && options[id] >= 0 ? options[id] : defaultOptions[id].default;
+    },
+    enum: (options, id) => {
+      return defaultOptions[id].availableOptions.includes(options[id]) ? options[id] : defaultOptions[id].default;
+    },
+    default: (options, id) => {
+      return options[id];
+    }
+  };
+
+  for (const id in options) {
+    if (options.hasOwnProperty(id) && defaultOptions[id] !== undefined) {
+      const typeChecker = typeCheckers[defaultOptions[id].type] || typeCheckers.default;
+      result[id] = typeChecker(options, id);
     }
   }
 
@@ -98,24 +96,21 @@ function sanitizeOptions (options, optionsArray) {
  * Appends a single param to form data array
  */
 function addFormParam (array, key, type, val, disabled, contentType) {
+  const formParam = {
+    key,
+    type,
+    disabled,
+    contentType
+  };
+
   if (type === 'file') {
-    array.push({
-      key: key,
-      type: type,
-      src: val,
-      disabled: disabled,
-      contentType: contentType
-    });
+    formParam.src = val;
   }
   else {
-    array.push({
-      key: key,
-      type: type,
-      value: val,
-      disabled: disabled,
-      contentType: contentType
-    });
+    formParam.value = val;
   }
+
+  array.push(formParam);
 }
 
 module.exports = {

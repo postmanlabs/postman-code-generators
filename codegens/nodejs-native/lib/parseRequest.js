@@ -57,7 +57,12 @@ function generateMultipartFormData (requestbody) {
         else {
           // eslint-disable-next-line no-useless-escape
           const value = dataArrayElement.value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-          accumalator.push(`name=\\"${key}\\"\\r\\n\\r\\n${value}\\r\\n`);
+          let field = `name=\\"${key}\\"\\r\\n`;
+          if (dataArrayElement.contentType) {
+            field += `Content-Type: ${dataArrayElement.contentType}\\r\\n`;
+          }
+          field += `\\r\\n${value}\\r\\n`;
+          accumalator.push(field);
         }
       }
       return accumalator;
@@ -66,6 +71,25 @@ function generateMultipartFormData (requestbody) {
   }
 
   return postData;
+}
+
+/** generate graphql code snippet
+ *
+ * @param body GraphQL body
+ * @param indentString string defining indentation
+ */
+function parseGraphql (body, indentString) {
+  let query = body ? body.query : '',
+    graphqlVariables = body ? body.variables : '{}';
+  try {
+    graphqlVariables = JSON.parse(graphqlVariables || '{}');
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  return 'JSON.stringify({\n' +
+  `${indentString}query: \`${query ? query.trim() : ''}\`,\n` +
+  `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n})`;
 }
 
 /**
@@ -80,10 +104,13 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
   if (requestbody) {
     switch (requestbody.mode) {
       case 'raw':
-        if (contentType === 'application/json') {
+        // Match any application type whose underlying structure is json
+        // For example application/vnd.api+json
+        // All of them have +json as suffix
+        if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
           try {
             let jsonBody = JSON.parse(requestbody[requestbody.mode]);
-            return `JSON.stringify(${JSON.stringify(jsonBody)})`;
+            return `JSON.stringify(${JSON.stringify(jsonBody, null, indentString.length)})`;
           }
           catch (error) {
             return ` ${JSON.stringify(requestbody[requestbody.mode])}`;
@@ -91,18 +118,7 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
         }
         return ` ${JSON.stringify(requestbody[requestbody.mode])}`;
       case 'graphql':
-        // eslint-disable-next-line no-case-declarations
-        let query = requestbody[requestbody.mode].query,
-          graphqlVariables;
-        try {
-          graphqlVariables = JSON.parse(requestbody[requestbody.mode].variables);
-        }
-        catch (e) {
-          graphqlVariables = {};
-        }
-        return 'JSON.stringify({\n' +
-        `${indentString}query: \`${query.trim()}\`,\n` +
-        `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n})`;
+        return parseGraphql(requestbody[requestbody.mode], indentString);
       case 'formdata':
         return generateMultipartFormData(requestbody);
       case 'urlencoded':

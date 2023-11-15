@@ -278,6 +278,41 @@ describe('Converter test', function () {
     });
   });
 
+  it('should add content type if formdata field contains a content-type', function () {
+    var request = new Request({
+      'method': 'POST',
+      'body': {
+        'mode': 'formdata',
+        'formdata': [
+          {
+            'key': 'json',
+            'value': '{"hello": "world"}',
+            'contentType': 'application/json',
+            'type': 'text'
+          }
+        ]
+      },
+      'url': {
+        'raw': 'http://postman-echo.com/post',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'post'
+        ]
+      }
+    });
+
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.contain('Content-Type: application/json');
+    });
+  });
+
   it('should not add extra newlines if there is no body or header present', function () {
     var request = new Request({
       'method': 'GET',

@@ -3,6 +3,7 @@ var sanitize = require('./util').sanitize,
   getUrlStringfromUrlObject = require('./util').getUrlStringfromUrlObject,
   addFormParam = require('./util').addFormParam,
   form = require('./util').form,
+  shouldAddHttpMethod = require('./util').shouldAddHttpMethod,
   _ = require('./lodash'),
   self;
 
@@ -18,13 +19,13 @@ self = module.exports = {
       format, snippet, silent, url, quoteType;
 
     redirect = options.followRedirect;
-    timeout = options.requestTimeout;
+    timeout = options.requestTimeoutInSeconds;
     multiLine = options.multiLine;
     format = options.longFormat;
     trim = options.trimRequestBody;
     silent = options.silent;
-    url = getUrlStringfromUrlObject(request.url);
     quoteType = options.quoteType === 'single' ? '\'' : '"';
+    url = getUrlStringfromUrlObject(request.url, quoteType);
 
     snippet = silent ? `curl ${form('-s', format)}` : 'curl';
 
@@ -35,7 +36,7 @@ self = module.exports = {
       snippet += ` ${form('-m', format)} ${timeout}`;
     }
     if ((url.match(/[{[}\]]/g) || []).length > 0) {
-      snippet += ' -g';
+      snippet += ` ${form('-g', format)}`;
     }
     if (multiLine) {
       indent = options.indentType === 'Tab' ? '\t' : ' ';
@@ -44,12 +45,14 @@ self = module.exports = {
     else {
       indent = ' ';
     }
+
     if (request.method === 'HEAD') {
-      snippet += ` ${form('-I', format)} ${quoteType + url + quoteType}`;
+      snippet += ` ${form('-I', format)}`;
     }
-    else {
-      snippet += ` ${form('-X', format)} ${request.method} ${quoteType + url + quoteType}`;
+    if (shouldAddHttpMethod(request, options)) {
+      snippet += ` ${form('-X', format)} ${request.method}`;
     }
+    snippet += ` ${quoteType + url + quoteType}`;
 
     if (request.body && !request.headers.has('Content-Type')) {
       if (request.body.mode === 'file') {
@@ -69,7 +72,18 @@ self = module.exports = {
     if (headersData) {
       headersData = _.reject(headersData, 'disabled');
       _.forEach(headersData, (header) => {
-        snippet += indent + `${form('-H', format)} '${sanitize(header.key, true)}: ${sanitize(header.value)}'`;
+        if (!header.key) {
+          return;
+        }
+        snippet += indent + `${form('-H', format)} ${quoteType}${sanitize(header.key, true, quoteType)}`;
+        // If the header value is an empty string then add a semicolon after key
+        // otherwise the header would be ignored by curl
+        if (header.value) {
+          snippet += `: ${sanitize(header.value, false, quoteType)}${quoteType}`;
+        }
+        else {
+          snippet += ';' + quoteType;
+        }
       });
     }
 
@@ -116,51 +130,71 @@ self = module.exports = {
           case 'urlencoded':
             _.forEach(body.urlencoded, function (data) {
               if (!data.disabled) {
-                // Using the long form below without considering the longFormat option,
-                // to generate more accurate and correct snippet
-                snippet += indent + '--data-urlencode';
-                snippet += ` '${sanitize(data.key, trim)}=${sanitize(data.value, trim)}'`;
+                snippet += indent + (format ? '--data-urlencode' : '-d');
+                snippet += ` ${quoteType}${sanitize(data.key, trim, quoteType, false, true)}=` +
+                  `${sanitize(data.value, trim, quoteType, false, !format)}${quoteType}`;
               }
             });
             break;
-          case 'raw':
-            snippet += indent + `--data-raw '${sanitize(body.raw.toString(), trim)}'`;
+          case 'raw': {
+            let rawBody = body.raw.toString(),
+              isAsperandPresent = _.includes(rawBody, '@'),
+              // Use the long option if `@` is present in the request body otherwise follow user setting
+              optionName = isAsperandPresent ? '--data-raw' : form('-d', format);
+            // eslint-disable-next-line max-len
+            snippet += indent + `${optionName} ${quoteType}${sanitize(rawBody, trim, quoteType)}${quoteType}`;
             break;
-          case 'graphql':
+          }
+
+          case 'graphql': {
             // eslint-disable-next-line no-case-declarations
-            let query = body.graphql.query,
-              graphqlVariables;
+            let query = body.graphql ? body.graphql.query : '',
+              graphqlVariables, requestBody, isAsperandPresent, optionName;
             try {
               graphqlVariables = JSON.parse(body.graphql.variables);
             }
             catch (e) {
               graphqlVariables = {};
             }
-            snippet += indent + `--data-raw '${sanitize(JSON.stringify({
+
+            requestBody = JSON.stringify({
               query: query,
               variables: graphqlVariables
-            }), trim)}'`;
+            });
+
+            isAsperandPresent = _.includes(requestBody, '@');
+            // Use the long option if `@` is present in the request body otherwise follow user setting
+            optionName = isAsperandPresent ? '--data-raw' : form('-d', format);
+            snippet += indent + `${optionName} ${quoteType}${sanitize(requestBody, trim, quoteType)}${quoteType}`;
             break;
+          }
           case 'formdata':
             _.forEach(body.formdata, function (data) {
               if (!(data.disabled)) {
                 if (data.type === 'file') {
                   snippet += indent + `${form('-F', format)}`;
-                  snippet += ` '${sanitize(data.key, trim)}=@"${sanitize(data.src, trim, true, true)}"'`;
+                  snippet += ` ${quoteType}${sanitize(data.key, trim, quoteType)}=` +
+                    `${sanitize(`@"${sanitize(data.src, trim, '"', true)}"`, trim, quoteType, quoteType === '"')}`;
+                  snippet += quoteType;
                 }
                 else {
                   snippet += indent + `${form('-F', format)}`;
-                  snippet += ` '${sanitize(data.key, trim)}="${sanitize(data.value, trim, true, true)}"'`;
+                  snippet += ` ${quoteType}${sanitize(data.key, trim, quoteType)}=` +
+                    sanitize(`"${sanitize(data.value, trim, '"', true)}"`, trim, quoteType, quoteType === '"');
+                  if (data.contentType) {
+                    snippet += `;type=${data.contentType}`;
+                  }
+                  snippet += quoteType;
                 }
               }
             });
             break;
           case 'file':
-            snippet += indent + '--data-binary';
-            snippet += ` '@${sanitize(body[body.mode].src, trim)}'`;
+            snippet += indent + form('-d', format);
+            snippet += ` ${quoteType}@${sanitize(body[body.mode].src, trim)}${quoteType}`;
             break;
           default:
-            snippet += `${form('-d', format)} ''`;
+            snippet += `${form('-d', format)} ${quoteType}${quoteType}`;
         }
       }
     }
@@ -196,17 +230,17 @@ self = module.exports = {
         name: 'Quote Type',
         id: 'quoteType',
         availableOptions: ['single', 'double'],
-        type: 'string',
+        type: 'enum',
         default: 'single',
         description: 'String denoting the quote type to use (single or double) for URL ' +
           '(Use double quotes when running curl in cmd.exe and single quotes for the rest)'
       },
       {
-        name: 'Set request timeout',
-        id: 'requestTimeout',
+        name: 'Set request timeout (in seconds)',
+        id: 'requestTimeoutInSeconds',
         type: 'positiveInteger',
         default: 0,
-        description: 'Set number of milliseconds the request should wait for a response before ' +
+        description: 'Set number of seconds the request should wait for a response before ' +
           'timing out (use 0 for infinity)'
       },
       {
@@ -215,6 +249,13 @@ self = module.exports = {
         type: 'boolean',
         default: true,
         description: 'Automatically follow HTTP redirects'
+      },
+      {
+        name: 'Follow original HTTP method',
+        id: 'followOriginalHttpMethod',
+        type: 'boolean',
+        default: false,
+        description: 'Redirect with the original HTTP method instead of the default behavior of redirecting with GET'
       },
       {
         name: 'Trim request body fields',

@@ -97,6 +97,40 @@ describe('nodejs-native convert function', function () {
     });
   });
 
+  it('should use JSON.parse if the content-type is application/vnd.api+json', function () {
+    let request = new sdk.Request({
+      'method': 'POST',
+      'header': [
+        {
+          'key': 'Content-Type',
+          'value': 'application/vnd.api+json'
+        }
+      ],
+      'body': {
+        'mode': 'raw',
+        'raw': '{"data": {"hello": "world"} }'
+      },
+      'url': {
+        'raw': 'https://postman-echo.com/get',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'get'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.contain('JSON.stringify({\n  "data": {\n    "hello": "world"\n  }\n})');
+    });
+  });
+
   it('should trim header keys and not trim header values', function () {
     var request = new sdk.Request({
       'method': 'GET',
@@ -121,6 +155,41 @@ describe('nodejs-native convert function', function () {
       }
       expect(snippet).to.be.a('string');
       expect(snippet).to.include('\'key_containing_whitespaces\': \'  value_containing_whitespaces  \'');
+    });
+  });
+
+  it('should add content type if formdata field contains a content-type', function () {
+    var request = new sdk.Request({
+      'method': 'POST',
+      'body': {
+        'mode': 'formdata',
+        'formdata': [
+          {
+            'key': 'json',
+            'value': '{"hello": "world"}',
+            'contentType': 'application/json',
+            'type': 'text'
+          }
+        ]
+      },
+      'url': {
+        'raw': 'http://postman-echo.com/post',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'post'
+        ]
+      }
+    });
+
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.contain('Content-Type: application/json');
     });
   });
 
@@ -198,7 +267,7 @@ describe('nodejs-native convert function', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('var postData = JSON.stringify({"json":"Test-Test"})');
+      expect(snippet).to.include('var postData = JSON.stringify({\n  "json": "Test-Test"\n})');
     });
   });
   it('should generate snippets for no files in form data', function () {

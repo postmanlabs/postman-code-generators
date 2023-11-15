@@ -33,6 +33,7 @@ describe('curl convert function', function () {
         }
       });
     });
+
     it('should return snippet with url in single quote(\')', function () {
       request = new sdk.Request({
         'method': 'POST',
@@ -54,6 +55,7 @@ describe('curl convert function', function () {
         expect(snippetArray[4][0]).to.equal('\'');
       });
     });
+
     it('should return snippet with url in double quote(")', function () {
       request = new sdk.Request({
         'method': 'POST',
@@ -73,6 +75,36 @@ describe('curl convert function', function () {
 
         snippetArray = snippet.split(' ');
         expect(snippetArray[4][0]).to.equal('"');
+      });
+    });
+
+    it('should add semicolon after header key, if the value is empty string', function () {
+      request = new sdk.Request({
+        'method': 'GET',
+        'header': [
+          {
+            'key': 'hello',
+            'value': ''
+          }
+        ],
+        'url': {
+          'raw': 'https://postman-echo.com/get',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'get'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('--header \'hello;\'');
       });
     });
 
@@ -129,6 +161,42 @@ describe('curl convert function', function () {
       });
     });
 
+    it('should add content type if formdata field contains a content-type', function () {
+      request = new sdk.Request({
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'json',
+              'value': '{"hello": "world"}',
+              'contentType': 'application/json',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('--form \'json="{\\"hello\\": \\"world\\"}";type=application/json\'');
+
+      });
+    });
+
     it('should parse header with string value properly', function () {
       request = new sdk.Request({
         'method': 'POST',
@@ -162,7 +230,7 @@ describe('curl convert function', function () {
         ']world',
         'world}'
       ].forEach(function (value) {
-        request = new sdk.Request({
+        const request = new sdk.Request({
           'method': 'GET',
           'url': {
             'raw': `http://example.com?hello=${value}`,
@@ -184,6 +252,12 @@ describe('curl convert function', function () {
             expect.fail(null, null, error);
           }
           expect(snippet).to.include('-g');
+        });
+        convert(request, { longFormat: true }, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.include('--globoff');
         });
       });
     });
@@ -209,7 +283,7 @@ describe('curl convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include("GET 'https://google.com'"); // eslint-disable-line quotes
+        expect(snippet).to.include("'https://google.com'"); // eslint-disable-line quotes
       });
     });
 
@@ -398,6 +472,101 @@ describe('curl convert function', function () {
       });
     });
 
+    it('should generate valid snippets when quoteType is "double"', function () {
+      // url = https://a"b'c.com/'d/"e
+      var request = new sdk.Request({
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'json',
+              'value': '{"hello": "world"}',
+              'contentType': 'application/json',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': "https://a\"b'c.com/'d/\"e", // eslint-disable-line quotes
+          'host': [
+            'a"b\'c',
+            'com'
+          ]
+        }
+      });
+      convert(request, {quoteType: 'double'}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        expect(snippet).to.include('"a\\"b\'c.com"');
+        expect(snippet).to.include('"json=\\"{\\\\\\"hello\\\\\\": \\\\\\"world\\\\\\"}\\";type=application/json"');
+      });
+    });
+
+    it('should not add appropriate escaping characters when quote type is "double"', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'graphql',
+          'graphql': {
+            'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+            'variables': '{\n\t"variable_key": "variable_value"\n}'
+          }
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+      convert(request, { quoteType: 'double', lineContinuationCharacter: '^' }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        expect(snippet).to.include('{\\"query\\":\\"{\\n  findScenes(\\n    filter: {per_page: 0}\\n    scene_filter: {is_missing: \\\\\\"performers\\\\\\"})'); // eslint-disable-line
+      });
+    });
+
+    it('should longer option for body even if longFormat is disabled if @ character is present', function () {
+      let request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': '@hello'
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, { longFormat: false }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        expect(snippet).include('--data-raw');
+      });
+    });
+
     describe('getUrlStringfromUrlObject function', function () {
       var rawUrl, urlObject, outputUrlString;
 
@@ -481,6 +650,13 @@ describe('curl convert function', function () {
           expect(outputUrlString).to.equal('https://postman-echo.com/get?key1={{value}}&key2=%27a%20b%20c%27');
         });
 
+        it('should not encode query params that are already encoded', function () {
+          rawUrl = 'https://postman-echo.com/get?query=urn%3Ali%3Afoo%3A62324';
+          urlObject = new sdk.Url(rawUrl);
+          outputUrlString = getUrlStringfromUrlObject(urlObject);
+          expect(outputUrlString).to.equal('https://postman-echo.com/get?query=urn%3Ali%3Afoo%3A62324');
+        });
+
         it('should discard disabled query params', function () {
           urlObject = new sdk.Url({
             protocol: 'https',
@@ -500,6 +676,319 @@ describe('curl convert function', function () {
         urlObject = new sdk.Url(rawUrl);
         outputUrlString = getUrlStringfromUrlObject(urlObject);
         expect(outputUrlString).to.equal(rawUrl);
+      });
+    });
+
+    it('should not add --request parameter in POST request if body is present', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'graphql',
+          'graphql': {
+            'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+            'variables': '{\n\t"variable_key": "variable_value"\n}'
+          }
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, { followRedirect: true }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.not.include('--request POST');
+      });
+    });
+
+    it('should add --request parameter in POST request if body is not present', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, { followRedirect: true }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('--request POST');
+      });
+    });
+
+    it('should add --request parameter in GET request if body is present', function () {
+      var request = new sdk.Request({
+        'method': 'GET',
+        'header': [],
+        'body': {
+          'mode': 'graphql',
+          'graphql': {
+            'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+            'variables': '{\n\t"variable_key": "variable_value"\n}'
+          }
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/get',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'get'
+          ]
+        }
+      });
+
+      convert(request, { followRedirect: true }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('--request GET');
+      });
+    });
+
+    it('should not add --request parameter in GET request if body is present ' +
+      'but disableBodyPruning is false', function () {
+      const request = new sdk.Request({
+        'method': 'GET',
+        'header': [],
+        'body': {
+          'mode': 'graphql',
+          'graphql': {
+            'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+            'variables': '{\n\t"variable_key": "variable_value"\n}'
+          }
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/get',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'get'
+          ]
+        }
+      });
+
+      // this needs to be done here because protocolProfileBehavior is not in collections SDK
+      request.protocolProfileBehavior = {
+        disableBodyPruning: false
+      };
+
+      convert(request, { followRedirect: true }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.not.include('--request GET');
+      });
+    });
+
+    describe('followRedirect and followOriginalHttpMethod', function () {
+      it('should add --request parameter when passed true via options', function () {
+        const request = new sdk.Request({
+          'method': 'POST',
+          'header': [],
+          'body': {
+            'mode': 'graphql',
+            'graphql': {
+                'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+              'variables': '{\n\t"variable_key": "variable_value"\n}'
+            }
+          },
+          'url': {
+            'raw': 'https://postman-echo.com/post',
+            'protocol': 'https',
+            'host': [
+              'postman-echo',
+              'com'
+            ],
+            'path': [
+              'post'
+            ]
+          }
+        });
+
+        convert(request, { followRedirect: true, followOriginalHttpMethod: true }, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.include('--request POST');
+        });
+      });
+
+      it('should not add --request parameter when passed false via options', function () {
+        const request = new sdk.Request({
+          'method': 'POST',
+          'header': [],
+          'body': {
+            'mode': 'graphql',
+            'graphql': {
+                'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+              'variables': '{\n\t"variable_key": "variable_value"\n}'
+            }
+          },
+          'url': {
+            'raw': 'https://postman-echo.com/post',
+            'protocol': 'https',
+            'host': [
+              'postman-echo',
+              'com'
+            ],
+            'path': [
+              'post'
+            ]
+          }
+        });
+
+        convert(request, { followRedirect: false, followOriginalHttpMethod: false }, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.not.include('--request POST');
+        });
+      });
+
+      it('should add --request parameter when passed false via options but true in request settings', function () {
+        const request = new sdk.Request({
+          'method': 'POST',
+          'header': [],
+          'body': {
+            'mode': 'graphql',
+            'graphql': {
+                'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+              'variables': '{\n\t"variable_key": "variable_value"\n}'
+            }
+          },
+          'url': {
+            'raw': 'https://postman-echo.com/post',
+            'protocol': 'https',
+            'host': [
+              'postman-echo',
+              'com'
+            ],
+            'path': [
+              'post'
+            ]
+          }
+        });
+
+        // this needs to be done here because protocolProfileBehavior is not in collections SDK
+        request.protocolProfileBehavior = {
+          followRedirects: true,
+          followOriginalHttpMethod: true
+        };
+
+        convert(request, { followRedirect: false, followOriginalHttpMethod: false }, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.include('--request POST');
+        });
+      });
+
+      it('should not add --request parameter when passed true via options but false in request settings', function () {
+        const request = new sdk.Request({
+          'method': 'POST',
+          'header': [],
+          'body': {
+            'mode': 'graphql',
+            'graphql': {
+                'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+              'variables': '{\n\t"variable_key": "variable_value"\n}'
+            }
+          },
+          'url': {
+            'raw': 'https://postman-echo.com/post',
+            'protocol': 'https',
+            'host': [
+              'postman-echo',
+              'com'
+            ],
+            'path': [
+              'post'
+            ]
+          }
+        });
+
+        // this needs to be done here because protocolProfileBehavior is not in collections SDK
+        request.protocolProfileBehavior = {
+          followRedirects: false,
+          followOriginalHttpMethod: false
+        };
+
+        convert(request, { followRedirect: true, followOriginalHttpMethod: true }, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.not.include('--request POST');
+        });
+      });
+
+      it('should work when protocolProfileBehavior is null in request settings', function () {
+        const request = new sdk.Request({
+          'method': 'POST',
+          'header': [],
+          'body': {
+            'mode': 'graphql',
+            'graphql': {
+                'query': '{\n  findScenes(\n    filter: {per_page: 0}\n    scene_filter: {is_missing: "performers"}){\n    count\n    scenes {\n      id\n      title\n      path\n    }\n  }\n}', // eslint-disable-line
+              'variables': '{\n\t"variable_key": "variable_value"\n}'
+            }
+          },
+          'url': {
+            'raw': 'https://postman-echo.com/post',
+            'protocol': 'https',
+            'host': [
+              'postman-echo',
+              'com'
+            ],
+            'path': [
+              'post'
+            ]
+          }
+        });
+
+        // this needs to be done here because protocolProfileBehavior is not in collections SDK
+        request.protocolProfileBehavior = null;
+
+        convert(request, { followRedirect: true, followOriginalHttpMethod: true }, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.include('--request POST');
+        });
       });
     });
   });

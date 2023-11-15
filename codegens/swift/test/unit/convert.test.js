@@ -30,6 +30,42 @@ describe('Swift Converter', function () {
       });
     });
 
+    it('should add content type if formdata field contains a content-type', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'json',
+              'value': '{"hello": "world"}',
+              'contentType': 'application/json',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('if param["contentType"] != nil {');
+        expect(snippet).to.contain('body += Data("\\r\\nContent-Type: \\(param["contentType"] as! String)".utf8)');
+      });
+    });
+
     it('should generate snippet with Space as an indent type with default indent count', function () {
       convert(request, { indentType: 'Space' }, function (error, snippet) {
         if (error) {
@@ -296,6 +332,13 @@ describe('Swift Converter', function () {
         expect(outputUrlString).to.equal('https://postman-echo.com/get?key1={{value}}&key2=%27a%20b%20c%27');
       });
 
+      it('should not encode query params that are already encoded', function () {
+        rawUrl = 'https://postman-echo.com/get?query=urn%3Ali%3Afoo%3A62324';
+        urlObject = new sdk.Url(rawUrl);
+        outputUrlString = getUrlStringfromUrlObject(urlObject);
+        expect(outputUrlString).to.equal('https://postman-echo.com/get?query=urn%3Ali%3Afoo%3A62324');
+      });
+
       it('should discard disabled query params', function () {
         urlObject = new sdk.Url({
           protocol: 'https',
@@ -328,6 +371,7 @@ describe('Swift Converter', function () {
       expect(getOptions()[1]).to.have.property('id', 'indentType');
       expect(getOptions()[2]).to.have.property('id', 'requestTimeout');
       expect(getOptions()[3]).to.have.property('id', 'trimRequestBody');
+      expect(getOptions()[4]).to.have.property('id', 'includeBoilerplate');
     });
   });
 

@@ -3,6 +3,7 @@ var _ = require('./lodash'),
   sanitize = require('./util/sanitize').sanitize,
   sanitizeOptions = require('./util/sanitize').sanitizeOptions,
   addFormParam = require('./util/sanitize').addFormParam,
+  getUrlStringfromUrlObject = require('./util/sanitize').getUrlStringfromUrlObject,
   self;
 
 /**
@@ -105,11 +106,7 @@ self = module.exports = {
     identity = options.indentType === 'Tab' ? '\t' : ' ';
     indentation = identity.repeat(options.indentCount);
     // concatenation and making up the final string
-    finalUrl = request.url.toString();
-    if (finalUrl !== encodeURI(finalUrl)) {
-      // needs to be encoded
-      finalUrl = encodeURI(finalUrl);
-    }
+    finalUrl = getUrlStringfromUrlObject(request.url);
     snippet = '<?php\n\n$curl = curl_init();\n\n';
     snippet += 'curl_setopt_array($curl, array(\n';
     snippet += `${indentation}CURLOPT_URL => '${sanitize(finalUrl, 'url')}',\n`;

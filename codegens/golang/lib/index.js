@@ -3,6 +3,7 @@ var _ = require('./lodash'),
   sanitizeMultiline = require('./util').sanitizeMultiline,
   sanitizeOptions = require('./util').sanitizeOptions,
   addFormParam = require('./util').addFormParam,
+  getUrlStringfromUrlObject = require('./util').getUrlStringfromUrlObject,
   isFile = false,
   self;
 
@@ -25,7 +26,7 @@ function parseRawBody (body, trim) {
  * @param {boolean} trim trim body option
  */
 function parseGraphQL (body, trim) {
-  let query = body.query,
+  let query = body ? body.query : '',
     graphqlVariables,
     bodySnippet;
   try {
@@ -35,7 +36,7 @@ function parseGraphQL (body, trim) {
     graphqlVariables = {};
   }
   bodySnippet = `payload := strings.NewReader("${sanitize(JSON.stringify({
-    query: query,
+    query: query || '',
     variables: graphqlVariables
   }), trim)}")`;
   return bodySnippet;
@@ -77,11 +78,21 @@ function parseFormData (body, trim, indent) {
         bodySnippet += `${indent}defer file.Close()\n`;
         bodySnippet += `${indent}part${index + 1},
          errFile${index + 1} := writer.CreateFormFile("${sanitize(data.key, trim)}",` +
-                        `filepath.Base("${data.src}"))\n`;
+          `filepath.Base("${data.src}"))\n`;
         bodySnippet += `${indent}_, errFile${index + 1} = io.Copy(part${index + 1}, file)\n`;
         bodySnippet += `${indent}if errFile${index + 1} != nil {` +
           `\n${indent.repeat(2)}fmt.Println(errFile${index + 1})\n` +
           `${indent.repeat(2)}return\n${indent}}\n`;
+      }
+      else if (data.contentType) {
+        bodySnippet += `\n${indent}mimeHeader${index + 1} := make(map[string][]string)\n`;
+        bodySnippet += `${indent}mimeHeader${index + 1}["Content-Disposition"] = `;
+        bodySnippet += `append(mimeHeader${index + 1}["Content-Disposition"], "form-data; `;
+        bodySnippet += `name=\\"${sanitize(data.key, trim)}\\"")\n`;
+        bodySnippet += `${indent}mimeHeader${index + 1}["Content-Type"] = append(`;
+        bodySnippet += `mimeHeader${index + 1}["Content-Type"], "${data.contentType}")\n`;
+        bodySnippet += `${indent}fieldWriter${index + 1}, _ := writer.CreatePart(mimeHeader${index + 1})\n`;
+        bodySnippet += `${indent}fieldWriter${index + 1}.Write([]byte("${sanitize(data.value, trim)}"))\n\n`;
       }
       else {
         bodySnippet += `${indent}_ = writer.WriteField("${sanitize(data.key, trim)}",`;
@@ -233,7 +244,7 @@ self = module.exports = {
     }
     codeSnippet += `${indent}"net/http"\n${indent}"io/ioutil"\n)\n\n`;
 
-    codeSnippet += `func main() {\n\n${indent}url := "${encodeURI(request.url.toString())}"\n`;
+    codeSnippet += `func main() {\n\n${indent}url := "${getUrlStringfromUrlObject(request.url)}"\n`;
     codeSnippet += `${indent}method := "${request.method}"\n\n`;
 
     if (bodySnippet !== '') {

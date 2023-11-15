@@ -63,6 +63,44 @@ describe('Python- Requests converter', function () {
     });
   });
 
+  it('should convert JSON tokens into appropriate python tokens', function () {
+    var request = new sdk.Request({
+      'method': 'POST',
+      'header': [
+        {
+          'key': 'Content-Type',
+          'value': 'application/json',
+          'type': 'text'
+        }
+      ],
+      'body': {
+        'mode': 'raw',
+        'raw': `{
+          "true": true,
+          "false": false,
+          "null": null
+        }`
+      },
+      'url': {
+        'raw': 'https://example.com',
+        'protocol': 'https',
+        'host': [
+          'example',
+          'com'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('"true": True');
+      expect(snippet).to.include('"false": False');
+      expect(snippet).to.include('"null": None');
+    });
+  });
+
   it('should generate snippets for no files in form data', function () {
     var request = new sdk.Request({
       'method': 'POST',

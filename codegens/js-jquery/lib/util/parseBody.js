@@ -20,11 +20,15 @@ module.exports = function (request, trimRequestBody, indentation, contentType) {
     switch (request.body.mode) {
       case 'raw':
         if (!_.isEmpty(request.body[request.body.mode])) {
-          if (contentType === 'application/json') {
+          // Match any application type whose underlying structure is json
+          // For example application/vnd.api+json
+          // All of them have +json as suffix
+          if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
             // eslint-disable-next-line max-depth
             try {
               let jsonBody = JSON.parse(request.body[request.body.mode]);
-              requestBody += `${indentation}"data": JSON.stringify(${JSON.stringify(jsonBody)}),\n`;
+              requestBody += `${indentation}"data": JSON.stringify(${JSON.stringify(jsonBody,
+                null, indentation.length).replace(/\n/g, `\n${indentation}`)}),\n`;
             }
             catch (error) {
               requestBody += `${indentation}"data": ` +

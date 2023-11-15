@@ -1,6 +1,7 @@
 var sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
   addFormParam = require('./util').addFormParam,
+  getUrlStringfromUrlObject = require('./util').getUrlStringfromUrlObject,
   _ = require('./lodash'),
   self;
 
@@ -39,7 +40,7 @@ self = module.exports = {
     snippet += 'if(curl) {\n';
     snippet += indentString + `curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "${request.method}");\n`;
     snippet += indentString +
-    `curl_easy_setopt(curl, CURLOPT_URL, "${encodeURI(request.url.toString())}");\n`;
+    `curl_easy_setopt(curl, CURLOPT_URL, "${getUrlStringfromUrlObject(request.url)}");\n`;
     if (timeout) {
       snippet += indentString + `curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, ${timeout}L);\n`;
     }
@@ -171,6 +172,9 @@ self = module.exports = {
                 }
                 else {
                   snippet += indentString + `curl_mime_name(part, "${sanitize(data.key, trim)}");\n`;
+                  if (data.contentType) {
+                    snippet += indentString + `curl_mime_type(part, "${sanitize(data.contentType, trim)}");\n`;
+                  }
                   snippet += indentString +
                   `curl_mime_data(part, "${sanitize(data.value, trim)}", CURL_ZERO_TERMINATED);\n`;
                 }
