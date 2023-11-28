@@ -187,7 +187,9 @@ self = module.exports = {
     snippet += `${indentString.repeat(2)}$response->getReasonPhrase();\n`;
     snippet += `${indentString}}\n`;
     snippet += '}\ncatch(HTTP_Request2_Exception $e) {\n';
-    snippet += `${indentString}echo 'Error: ' . $e->getMessage();\n}`;
+    snippet += `${indentString}echo 'Error: ' . $e->getMessage();\n}\n\n`;
+    snippet += `?>`;
+    
     return callback(null, snippet);
   }
 };

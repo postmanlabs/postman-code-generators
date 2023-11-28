@@ -175,7 +175,8 @@ self = module.exports = {
     snippet += `${getHeaders(request, indentation)}\n`;
     snippet += '$client->enqueue($request)->send();\n';
     snippet += '$response = $client->getResponse();\n';
-    snippet += 'echo $response->getBody();\n';
+    snippet += 'echo $response->getBody();\n\n';
+    snippet += '?>';
 
     return callback(null, snippet);
   }
