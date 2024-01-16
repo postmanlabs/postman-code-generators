@@ -145,6 +145,38 @@ describe('libcurl convert function', function () {
         expect(snippet).to.include('curl_mime_name(part, "invalid src");');
       });
     });
+
+    it('should free up headers list after request is sent', function () {
+      var request = new sdk.Request({
+        'method': 'GET',
+        'header': [
+          {
+            'key': 'Accept',
+            'value': 'application/json'
+          },
+          {
+            'key': 'Content-Type',
+            'value': 'application/json'
+          }
+        ],
+        'url': {
+          'raw': 'https://google.com',
+          'protocol': 'https',
+          'host': [
+            'google',
+            'com'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('curl_slist_free_all(headers)');
+      });
+    });
+
   });
 
   describe('getOptions function', function () {
