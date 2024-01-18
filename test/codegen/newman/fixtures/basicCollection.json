@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f52ee07d-6345-4220-89af-e6696b3c0122",
+		"_postman_id": "b303fb8b-9b21-4429-b00f-33b6a7efa186",
 		"name": "Basic Collection",
 		"description": "This collection contains requests that will be used to test validity of plugin created to convert postman request into code snippet of particular language.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -12,7 +12,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "34edbfa7-7d32-42d6-8397-af2378c3aaa4",
 						"exec": [
 							""
 						],
@@ -53,7 +52,6 @@
 		},
 		{
 			"name": "Request Headers",
-			"event": [],
 			"request": {
 				"method": "GET",
 				"header": [
@@ -95,7 +93,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "e150d55b-0273-430a-9e1d-11969b433734",
 						"exec": [
 							""
 						],
@@ -141,7 +138,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "1bfe1fc3-c244-4a42-83c5-1a0d94d56ffd",
 						"exec": [
 							""
 						],
@@ -188,7 +184,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "a3ddecd1-e89d-426d-995c-0d6a678caa91",
 						"exec": [
 							"var responseJSON;",
 							"",
@@ -216,8 +211,7 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "text/plain",
-						"disabled": false
+						"value": "text/plain"
 					}
 				],
 				"body": {
@@ -245,7 +239,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "e926912d-1c99-4c54-9b53-91c8f63acef0",
 						"exec": [
 							""
 						],
@@ -312,7 +305,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "d211bdad-60b3-4cd6-869f-853377bf03ef",
 						"exec": [
 							""
 						],
@@ -353,7 +345,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "532fef57-48fd-4ffe-ac7e-f5a7e32facc2",
 						"exec": [
 							""
 						],
@@ -394,7 +385,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "8bbbbc5b-2983-4979-8347-3ced95a69f7e",
 						"exec": [
 							""
 						],
@@ -435,7 +425,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "48da0505-470f-4cf3-bb77-30665415af60",
 						"exec": [
 							""
 						],
@@ -618,7 +607,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"type": "text/javascript",
 						"exec": [
 							"var responseJSON;",
 							"",
@@ -634,28 +622,23 @@
 							"",
 							"tests['response has PUT data'] = _.has(responseJSON, 'data');",
 							"tests['response matches the data sent in request'] = (responseJSON.data && responseJSON.data.length === 256);"
-						]
+						],
+						"type": "text/javascript"
 					}
 				}
 			],
 			"request": {
 				"method": "DELETE",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "text/plain"
-					}
-				],
-				"body": {},
+				"header": [],
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://postman-echo.com/delete",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
+						"postman-echo",
+						"com"
 					],
 					"path": [
-						"request"
+						"delete"
 					]
 				},
 				"description": "The HTTP `DELETE` method is used to delete resources on a server. The exact\nuse of `DELETE` requests depends on the server implementation. In general, \n`DELETE` requests support both, Query String parameters as well as a Request \nBody.\n\nThis endpoint accepts an HTTP `DELETE` request and provides debug information\nsuch as the HTTP headers, Query String arguments, and the Request Body."
@@ -667,7 +650,6 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "e80b6162-6c90-4150-bfa1-7f42f11c8f64",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -677,7 +659,6 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "538efa04-97ce-456c-a5a1-772c466591d5",
 				"type": "text/javascript",
 				"exec": [
 					""

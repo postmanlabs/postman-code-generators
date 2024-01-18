@@ -24,7 +24,7 @@ function redirectMode (redirect) {
  * @param {boolean} trim trim body option
  */
 function parseURLEncodedBody (body, trim) {
-  var bodySnippet = 'var urlencoded = new URLSearchParams();\n';
+  var bodySnippet = 'const urlencoded = new URLSearchParams();\n';
   _.forEach(body, function (data) {
     if (!data.disabled) {
       bodySnippet += `urlencoded.append("${sanitize(data.key, trim)}", "${sanitize(data.value, trim)}");\n`;
@@ -40,7 +40,7 @@ function parseURLEncodedBody (body, trim) {
  * @param {boolean} trim trim body option
  */
 function parseFormData (body, trim) {
-  var bodySnippet = 'var formdata = new FormData();\n';
+  var bodySnippet = 'const formdata = new FormData();\n';
   _.forEach(body, function (data) {
     if (!data.disabled) {
       if (data.type === 'file') {
@@ -65,7 +65,7 @@ function parseFormData (body, trim) {
  * @param {String} indentString Indentation string
  */
 function parseRawBody (body, trim, contentType, indentString) {
-  var bodySnippet = 'var raw = ';
+  var bodySnippet = 'const raw = ';
   // Match any application type whose underlying structure is json
   // For example application/vnd.api+json
   // All of them have +json as suffix
@@ -101,7 +101,7 @@ function parseGraphQL (body, trim, indentString) {
   catch (e) {
     graphqlVariables = {};
   }
-  bodySnippet = 'var graphql = JSON.stringify({\n';
+  bodySnippet = 'const graphql = JSON.stringify({\n';
   bodySnippet += `${indentString}query: "${sanitize(query, trim)}",\n`;
   bodySnippet += `${indentString}variables: ${JSON.stringify(graphqlVariables)}\n})`;
   return bodySnippet;
@@ -113,7 +113,7 @@ function parseGraphQL (body, trim, indentString) {
  * parses binamry file data
  */
 function parseFileData () {
-  var bodySnippet = 'var file = "<file contents here>";\n';
+  var bodySnippet = 'const file = "<file contents here>";\n';
   return bodySnippet;
 }
 
@@ -154,7 +154,7 @@ function parseBody (body, trim, indentString, contentType) {
 function parseHeaders (headers) {
   var headerSnippet = '';
   if (!_.isEmpty(headers)) {
-    headerSnippet = 'var myHeaders = new Headers();\n';
+    headerSnippet = 'const myHeaders = new Headers();\n';
     headers = _.reject(headers, 'disabled');
     _.forEach(headers, function (header) {
       headerSnippet += `myHeaders.append("${sanitize(header.key, true)}", "${sanitize(header.value)}");\n`;
@@ -209,6 +209,13 @@ function getOptions () {
       type: 'boolean',
       default: false,
       description: 'Remove white space and additional lines that may affect the server\'s response'
+    },
+    {
+      name: 'Use async/await',
+      id: 'asyncAwaitEnabled',
+      type: 'boolean',
+      default: false,
+      description: 'Modifies code snippet to use async/await'
     }
   ];
 }
@@ -238,7 +245,6 @@ function convert (request, options, callback) {
     headerSnippet = '',
     bodySnippet = '',
     optionsSnippet = '',
-    timeoutSnippet = '',
     fetchSnippet = '';
   indent = indent.repeat(options.indentCount);
   if (request.body && request.body.mode === 'graphql' && !request.headers.has('Content-Type')) {
@@ -294,8 +300,12 @@ function convert (request, options, callback) {
   body = request.body && request.body.toJSON();
   bodySnippet = parseBody(body, trim, indent, request.headers.get('Content-Type'));
 
-  optionsSnippet = `var requestOptions = {\n${indent}`;
-  optionsSnippet += `method: '${request.method}',\n${indent}`;
+  if (options.requestTimeout > 0) {
+    codeSnippet += 'const controller = new AbortController();\n';
+    codeSnippet += `const timerId = setTimeout(() => controller.abort(), ${options.requestTimeout});\n`;
+  }
+  optionsSnippet = `const requestOptions = {\n${indent}`;
+  optionsSnippet += `method: "${request.method}",\n${indent}`;
   if (headerSnippet !== '') {
     optionsSnippet += `headers: myHeaders,\n${indent}`;
     codeSnippet += headerSnippet + '\n';
@@ -305,29 +315,38 @@ function convert (request, options, callback) {
     optionsSnippet += `body: ${body.mode},\n${indent}`;
     codeSnippet += bodySnippet + '\n';
   }
-  optionsSnippet += `redirect: '${redirectMode(options.followRedirect)}'\n};\n`;
+  if (options.requestTimeout > 0) {
+    optionsSnippet += `signal: controller.signal,\n${indent}`;
+  }
+  optionsSnippet += `redirect: "${redirectMode(options.followRedirect)}"\n};\n`;
 
   codeSnippet += optionsSnippet + '\n';
 
-  fetchSnippet = `fetch("${sanitize(request.url.toString())}", requestOptions)\n${indent}`;
-  fetchSnippet += `.then(response => response.text())\n${indent}`;
-  fetchSnippet += `.then(result => console.log(result))\n${indent}`;
-  fetchSnippet += '.catch(error => console.log(\'error\', error));';
-
-  if (options.requestTimeout > 0) {
-    timeoutSnippet = `var promise = Promise.race([\n${indent}`;
-    timeoutSnippet += `fetch('${request.url.toString()}', requestOptions)\n${indent}${indent}`;
-    timeoutSnippet += `.then(response => response.text()),\n${indent}`;
-    timeoutSnippet += `new Promise((resolve, reject) =>\n${indent}${indent}`;
-    timeoutSnippet += `setTimeout(() => reject(new Error('Timeout')), ${options.requestTimeout})\n${indent}`;
-    timeoutSnippet += ')\n]);\n\n';
-    timeoutSnippet += 'promise.then(result => console.log(result)),\n';
-    timeoutSnippet += 'promise.catch(error => console.log(error));';
-    codeSnippet += timeoutSnippet;
+  if (options.asyncAwaitEnabled) {
+    fetchSnippet += `try {\n${indent}`;
+    fetchSnippet += `const response = await fetch("${sanitize(request.url.toString())}", requestOptions);\n${indent}`;
+    fetchSnippet += `const result = await response.text();\n${indent}`;
+    fetchSnippet += 'console.log(result)\n';
+    fetchSnippet += `} catch (error) {\n${indent}`;
+    fetchSnippet += 'console.error(error);\n';
+    if (options.requestTimeout > 0) {
+      fetchSnippet += `} finally {\n${indent}`;
+      fetchSnippet += 'clearTimeout(timerId);\n';
+    }
+    fetchSnippet += '};';
   }
   else {
-    codeSnippet += fetchSnippet;
+    fetchSnippet = `fetch("${sanitize(request.url.toString())}", requestOptions)\n${indent}`;
+    fetchSnippet += `.then((response) => response.text())\n${indent}`;
+    fetchSnippet += `.then((result) => console.log(result))\n${indent}`;
+    fetchSnippet += '.catch((error) => console.error(error))';
+    if (options.requestTimeout > 0) {
+      fetchSnippet += `\n${indent}.finally(() => clearTimeout(timerId))`;
+    }
+    fetchSnippet += ';';
   }
+
+  codeSnippet += fetchSnippet;
 
   callback(null, codeSnippet);
 }
