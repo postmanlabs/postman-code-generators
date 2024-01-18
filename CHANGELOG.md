@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [v1.9.0] - 2024-01-18
+
 ### Fixed
 
 -   Fix for - [#10139](https://github.com/postmanlabs/postman-app-support/issues/10139) Modify Swift codegen to work with multipart/form-data format, used for video file upload
@@ -144,7 +146,9 @@ v1.0.0 (May 29, 2020)
 -   Add ES6 syntax support for NodeJS Request, NodeJS Native and NodeJS Unirest
 -   Fix snippet generation for powershell and jquery, where form data params had no type field
 
-[Unreleased]: https://github.com/postmanlabs/postman-code-generators/compare/v1.8.0...HEAD
+[Unreleased]: https://github.com/postmanlabs/postman-code-generators/compare/v1.9.0...HEAD
+
+[v1.9.0]: https://github.com/postmanlabs/postman-code-generators/compare/v1.8.0...v1.9.0
 
 [v1.8.0]: https://github.com/postmanlabs/postman-code-generators/compare/v1.7.2...v1.8.0
 
