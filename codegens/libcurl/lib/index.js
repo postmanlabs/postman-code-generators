@@ -214,6 +214,9 @@ self = module.exports = {
     if (body.mode === 'formdata' && options.useMimeType) {
       snippet += indentString + 'curl_mime_free(mime);\n';
     }
+    if (headersData) {
+      snippet += indentString + 'curl_slist_free_all(headers);\n';
+    }
     snippet += '}\n';
     snippet += 'curl_easy_cleanup(curl);\n';
     (options.includeBoilerplate) &&
