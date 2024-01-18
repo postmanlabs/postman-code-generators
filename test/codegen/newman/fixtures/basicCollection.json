@@ -629,12 +629,7 @@
 			],
 			"request": {
 				"method": "DELETE",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "text/plain"
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "https://postman-echo.com/delete",
 					"protocol": "https",

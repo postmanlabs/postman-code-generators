@@ -7,24 +7,31 @@
 	"item": [
 		{
 			"name": "Follow Redirects",
+			"protocolProfileBehavior": {
+				"followRedirects": true
+			},
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://httpbin.org/redirect/1",
+					"raw": "https://httpbin.org/redirect-to?url=https://postman-echo.com/get",
 					"protocol": "https",
 					"host": [
 						"httpbin",
 						"org"
 					],
 					"path": [
-						"redirect",
-						"1"
+						"redirect-to"
+					],
+					"query": [
+						{
+							"key": "url",
+							"value": "https://postman-echo.com/get"
+						}
 					]
 				}
 			},
 			"response": []
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }
