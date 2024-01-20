@@ -373,5 +373,3 @@ module.exports = {
   groupHeadersSameKey,
   getIncludeBoilerplate
 };
-
-
