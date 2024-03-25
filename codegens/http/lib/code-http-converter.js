@@ -1,6 +1,5 @@
 let utils = require('./util'),
-  _ = require('./lodash'),
-  sdk = require('postman-collection');
+  _ = require('./lodash');
 
 /**
  * Used in order to get additional options for generation of C# code snippet (i.e. Include Boilerplate code)
@@ -33,14 +32,15 @@ function convert (request, options, callback) {
     url, host, path, query, body, headers;
   options = utils.sanitizeOptions(options, getOptions());
 
-  url = sdk.Url.parse(request.url.toString());
-  host = url.host ? url.host.join('.') : '';
+  url = request.url;
+  host = url.host ? utils.getHost(url) : '';
   host += url.port ? ':' + url.port : '';
-  path = url.path ? '/' + url.path.join('/') : '/';
-  query = url.query ? _.reduce(url.query, (accum, q) => {
-    accum.push(`${q.key}=${q.value}`);
-    return accum;
-  }, []) : [];
+  path = utils.getPath(url);
+  query = url.query ? _.filter(url.query, (query) => { return !query.disabled; })
+    .reduce((accum, q) => {
+      accum.push(`${q.key}=${q.value}`);
+      return accum;
+    }, []) : [];
 
   if (query.length > 0) {
     query = '?' + query.join('&');

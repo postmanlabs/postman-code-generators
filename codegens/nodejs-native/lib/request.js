@@ -1,9 +1,9 @@
 const _ = require('./lodash'),
-  sdk = require('postman-collection'),
   sanitizeOptions = require('./util').sanitizeOptions,
   sanitize = require('./util').sanitize,
   addFormParam = require('./util').addFormParam,
-
+  getHost = require('./util').getHost,
+  getPath = require('./util').getPath,
   parseRequest = require('./parseRequest');
 var self;
 
@@ -132,13 +132,14 @@ function makeSnippet (request, indentString, options) {
   }
 
 
-  url = sdk.Url.parse(request.url.toString());
-  host = url.host ? url.host.join('.') : '';
-  path = url.path ? '/' + url.path.join('/') : '/';
-  query = url.query ? _.reduce(url.query, (accum, q) => {
-    accum.push(`${q.key}=${q.value}`);
-    return accum;
-  }, []) : [];
+  url = request.url;
+  host = url.host ? getHost(url) : '';
+  path = getPath(url);
+  query = url.query ? _.filter(url.query, (query) => { return !query.disabled; })
+    .reduce((accum, q) => {
+      accum.push(`${q.key}=${q.value}`);
+      return accum;
+    }, []) : [];
 
   if (query.length > 0) {
     query = '?' + query.join('&');
