@@ -537,6 +537,40 @@ describe('curl convert function', function () {
       });
     });
 
+    it('should escape special characters when quoteType is "double"', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': '{\r\n    "hello": "$(whoami)"\r\n}',
+          'options': {
+            'raw': {
+              'language': 'json'
+            }
+          }
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+      convert(request, { quoteType: 'double', lineContinuationCharacter: '^' }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        expect(snippet.includes('\\"hello\\": \\"\\$(whoami)\\"')).to.be.true; // eslint-disable-line
+      });
+    });
+
     it('should longer option for body even if longFormat is disabled if @ character is present', function () {
       let request = new sdk.Request({
         'method': 'POST',
