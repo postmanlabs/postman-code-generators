@@ -31,9 +31,11 @@ var self = module.exports = {
       inputString = inputString.replace(/(?<!\\)\\\\"/g, '\\\\\\"');
 
       // Escape special characters to preserve their literal meaning within double quotes
-      inputString = inputString.replace(/`/g, '\\`');
-      inputString = inputString.replace(/\$/g, '\\$');
-      inputString = inputString.replace(/!/g, '\\!');
+      inputString = inputString
+        .replace(/`/g, '\\`')
+        .replace(/#/g, '\\#')
+        .replace(/\$/g, '\\$')
+        .replace(/!/g, '\\!');
     }
     else if (quoteType === '\'') {
       // for curl escaping of single quotes inside single quotes involves changing of ' to '\''

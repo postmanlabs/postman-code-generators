@@ -293,8 +293,8 @@ function convert (request, options, callback) {
                         `${request.method}' -Headers $headers`;
   }
   else {
-    codeSnippet += `$response = Invoke-RestMethod '${request.url.toString()}' -CustomMethod ` +
-                        `'${request.method}' -Headers $headers`;
+    codeSnippet += `$response = Invoke-RestMethod '${request.url.toString().replace(/'/g, '\'\'')}' -CustomMethod ` +
+                        `'${request.method.replace(/'/g, '\'\'')}' -Headers $headers`;
   }
   if (bodySnippet !== '') {
     codeSnippet += ' -Body $body';
