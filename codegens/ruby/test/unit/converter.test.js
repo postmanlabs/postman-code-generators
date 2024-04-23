@@ -58,6 +58,39 @@ describe('Ruby converter', function () {
     });
   });
 
+  it('should escape special characters inside double quotes', function () {
+    var request = new sdk.Request({
+      'method': 'POST',
+      'header': [
+        'Content-Type: application/json'
+      ],
+      'body': {
+        'mode': 'raw',
+        'raw': '{\r\n    "hi": "#{`curl https://postman-echo.com`}",\r\n    "message": "This is a ruby Code"\r\n}',
+        'options': {
+          'raw': {
+            'language': 'json'
+          }
+        }
+      },
+      'url': {
+        'raw': 'https://google.com',
+        'protocol': 'https',
+        'host': [
+          'google',
+          'com'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('\\#{\\`curl https://postman-echo.com\\`}');
+    });
+  });
+
   it('should generate snippets for no files in form data', function () {
     var request = new sdk.Request({
       'method': 'POST',
