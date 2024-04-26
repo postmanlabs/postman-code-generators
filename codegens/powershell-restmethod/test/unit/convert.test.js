@@ -498,6 +498,45 @@ describe('Powershell-restmethod converter', function () {
       });
     });
 
+    it('should generate valid snippet when single quotes in custom request method', function () {
+      var request = new sdk.Request({
+        // eslint-disable-next-line quotes
+        'method': "TEST';DIR;#'",
+        'header': [],
+        'url': {
+          'raw': 'https://postman-echo.com/get?query1=b\'b&query2=c"c',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'get'
+          ],
+          'query': [
+            {
+              'key': 'query1',
+              'value': "b'b" // eslint-disable-line quotes
+            },
+            {
+              'key': 'query2',
+              'value': 'c"c'
+            }
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        // An extra single quote is placed before a single quote to escape a single quote inside a single quoted string
+        // eslint-disable-next-line quotes
+        expect(snippet).to.include("-CustomMethod 'TEST'';DIR;#'''");
+      });
+    });
+
+
     it('should generate snippet for form data params with no type key present', function () {
       var request = new sdk.Request({
         method: 'POST',
