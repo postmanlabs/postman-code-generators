@@ -214,7 +214,7 @@ var self = module.exports = {
   },
 
   /**
-   * Encode param except the following characters- [,{,},],%
+   * Encode param except the following characters- [,{,},],%,+
    *
    * @param {String} param
    * @returns {String}
@@ -226,7 +226,8 @@ var self = module.exports = {
       .replace(/%5D/g, ']')
       .replace(/%7D/g, '}')
       .replace(/%25/g, '%')
-      .replace(/'/g, '%27');
+      .replace(/'/g, '%27')
+      .replace(/%2B/g, '+');
   },
 
   /**
