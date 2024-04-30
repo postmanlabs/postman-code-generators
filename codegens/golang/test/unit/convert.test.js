@@ -1,6 +1,7 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
-  convert = require('../../index').convert;
+  convert = require('../../index').convert,
+  getUrlStringfromUrlObject = require('../../lib/util').getUrlStringfromUrlObject;
 
 describe('Golang convert function', function () {
   describe('Convert function', function () {
@@ -252,6 +253,16 @@ describe('Golang convert function', function () {
           expect(snippet.match('err := ').length).to.be.equal(snippet.match('if err != nil {').length);
         });
       });
+    });
+
+    it('should not encode unresolved query params and ' +
+    'encode every other query param, both present together', function () {
+      let rawUrl = 'https://postman-echo.com/get?key1={{value}}&key2=\'a b+c\'',
+        urlObject = new sdk.Url(rawUrl),
+        outputUrlString = getUrlStringfromUrlObject(urlObject);
+      expect(outputUrlString).to.not.include('key1=%7B%7Bvalue%7B%7B');
+      expect(outputUrlString).to.not.include('key2=\'a b+c\'');
+      expect(outputUrlString).to.equal('https://postman-echo.com/get?key1={{value}}&key2=%27a%20b+c%27');
     });
   });
 });

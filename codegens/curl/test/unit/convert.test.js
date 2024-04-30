@@ -680,7 +680,7 @@ describe('curl convert function', function () {
           urlObject = new sdk.Url(rawUrl);
           outputUrlString = getUrlStringfromUrlObject(urlObject);
           expect(outputUrlString).to.not.include('key1=%7B%7Bvalue%7B%7B');
-          expect(outputUrlString).to.not.include('key2=\'a b c\'');
+          expect(outputUrlString).to.not.include('key2=\'a b+c\'');
           expect(outputUrlString).to.equal('https://postman-echo.com/get?key1={{value}}&key2=%27a%20b+c%27');
         });
 
