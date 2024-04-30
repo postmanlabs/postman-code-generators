@@ -28,7 +28,7 @@
     "lodash": "4.17.21",
     "async": "3.2.2",
     "path": "0.12.7",
-    "postman-collection": "4.0.0",
+    "postman-collection": "4.4.0",
     "shelljs": "0.8.5"
   },
   "devDependencies": {
