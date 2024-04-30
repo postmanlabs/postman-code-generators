@@ -159,8 +159,8 @@ describe('Powershell-restmethod converter', function () {
             'raw': 'https://postman-echo.com/request',
             'protocol': 'https',
             'host': [
-              'mockbin',
-              'org'
+              'postman-echo',
+              'com'
             ],
             'path': [
               'request'
