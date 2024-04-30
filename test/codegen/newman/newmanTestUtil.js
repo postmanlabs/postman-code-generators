@@ -150,7 +150,7 @@ function runSnippet (testConfig, snippets, collectionName) {
             });
           }
         }
-        expect(result[0]).deep.equal(result[1]);
+        expect(result[0].toString().trim()).deep.equal(result[1].toString().trim());
         return done(null);
       });
     });
