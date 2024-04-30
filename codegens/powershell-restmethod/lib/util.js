@@ -25,6 +25,22 @@ function sanitize (inputString, trim, shouldEscapeNewLine = true) {
 }
 
 /**
+ *
+ * @param {String} inputString - input string
+ * @returns {String} - sanitized string
+ */
+function sanitizeSingleQuotes (inputString) {
+  if (typeof inputString !== 'string') {
+    return '';
+  }
+  inputString = inputString
+    .replace(/'/g, '\'\'');
+
+  return inputString;
+
+}
+
+/**
  * sanitizes input options
  *
  * @param {Object} options - Options provided by the user
@@ -126,6 +142,7 @@ function addFormParam (array, key, type, val, disabled, contentType) {
 
 module.exports = {
   sanitize: sanitize,
+  sanitizeSingleQuotes: sanitizeSingleQuotes,
   sanitizeOptions: sanitizeOptions,
   addFormParam: addFormParam
 };
