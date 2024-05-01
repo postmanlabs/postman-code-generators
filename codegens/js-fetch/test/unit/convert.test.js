@@ -133,11 +133,11 @@ describe('js-fetch convert function for test collection', function () {
       request = new sdk.Request({
         'method': 'GET',
         'url': {
-          'raw': 'https://mockbin.org/request',
+          'raw': 'https://postman-echo.com/request',
           'protocol': 'https',
           'host': [
-            'mockbin',
-            'org'
+            'postman-echo',
+            'com'
           ],
           'path': [
             'request'

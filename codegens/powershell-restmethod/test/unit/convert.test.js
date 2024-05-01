@@ -156,11 +156,11 @@ describe('Powershell-restmethod converter', function () {
             'raw': 'Hello world'
           },
           'url': {
-            'raw': 'https://mockbin.org/request',
+            'raw': 'https://postman-echo.com/request',
             'protocol': 'https',
             'host': [
-              'mockbin',
-              'org'
+              'postman-echo',
+              'com'
             ],
             'path': [
               'request'
@@ -188,7 +188,7 @@ describe('Powershell-restmethod converter', function () {
         expect(lines[3]).to.eql('$body = @"');
         expect(lines[4]).to.eql('Hello world');
         expect(lines[5]).to.eql('"@');
-        expect(lines[7]).to.eql('$response = Invoke-RestMethod \'https://mockbin.org/request\' -Method \'POST\' -Headers $headers -Body $body -TimeoutSec 10'); // eslint-disable-line max-len
+        expect(lines[7]).to.eql('$response = Invoke-RestMethod \'https://postman-echo.com/request\' -Method \'POST\' -Headers $headers -Body $body -TimeoutSec 10'); // eslint-disable-line max-len
         expect(lines[8]).to.eql('$response | ConvertTo-Json');
       });
     });

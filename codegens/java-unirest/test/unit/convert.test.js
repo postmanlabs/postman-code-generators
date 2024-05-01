@@ -174,7 +174,7 @@ describe('java unirest convert function for test collection', function () {
         'six HTTP methods', function () {
       reqObject = {
         'description': 'This is a sample PROPFIND request',
-        'url': 'https://mockbin.org/request',
+        'url': 'https://postman-echo.com/request',
         'method': 'PROPFIND'
       };
       request = new sdk.Request(reqObject);
@@ -302,10 +302,10 @@ describe('java unirest convert function for test collection', function () {
           ]
         },
         'url': {
-          'raw': 'https://postman-echo/',
+          'raw': 'https://postman-echo.com/',
           'protocol': 'https',
           'host': [
-            'google',
+            'postman-echo',
             'com'
           ]
         }
@@ -341,10 +341,10 @@ describe('java unirest convert function for test collection', function () {
           ]
         },
         'url': {
-          'raw': 'https://postman-echo/',
+          'raw': 'https://postman-echo.com/',
           'protocol': 'https',
           'host': [
-            'google',
+            'postman-echo',
             'com'
           ]
         }
