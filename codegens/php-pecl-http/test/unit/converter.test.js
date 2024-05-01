@@ -505,11 +505,11 @@ describe('Request Snippet', function () {
           'raw': {}
         },
         'url': {
-          'raw': 'https://mockbin.org/request',
+          'raw': 'https://postman-echo.com/request',
           'protocol': 'https',
           'host': [
-            'mockbin',
-            'org'
+            'postman-echo',
+            'com'
           ],
           'path': [
             'request'
@@ -526,11 +526,11 @@ describe('Request Snippet', function () {
         'header': [],
         'body': {},
         'url': {
-          'raw': 'https://mockbin.org/request',
+          'raw': 'https://postman-echo.com/request',
           'protocol': 'https',
           'host': [
-            'mockbin',
-            'org'
+            'postman-echo',
+            'com'
           ],
           'path': [
             'request'
@@ -549,11 +549,11 @@ describe('Request Snippet', function () {
           'mode': 'lorem'
         },
         'url': {
-          'raw': 'https://mockbin.org/request',
+          'raw': 'https://postman-echo.com/request',
           'protocol': 'https',
           'host': [
-            'mockbin',
-            'org'
+            'postman-echo',
+            'com'
           ],
           'path': [
             'request'
@@ -569,11 +569,11 @@ describe('Request Snippet', function () {
         'method': 'POST',
         'header': [],
         'url': {
-          'raw': 'https://mockbin.org/request',
+          'raw': 'https://postman-echo.com/request',
           'protocol': 'https',
           'host': [
-            'mockbin',
-            'org'
+            'postman-echo',
+            'com'
           ],
           'path': [
             'request'
