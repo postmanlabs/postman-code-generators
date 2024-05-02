@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed
+
+-   Fix `+` char being encoded in query params of multiple languages.
+-   Fix special characters not being escaped in multiple languages.
+
 ## [v1.9.0] - 2024-01-18
 
 ### Fixed
