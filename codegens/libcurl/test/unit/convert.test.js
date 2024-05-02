@@ -2,6 +2,7 @@ var expect = require('chai').expect,
   sdk = require('postman-collection'),
   convert = require('../../index').convert,
   getOptions = require('../../index').getOptions,
+  getUrlStringfromUrlObject = require('../../lib/util').getUrlStringfromUrlObject,
   sanitize = require('../../lib/util').sanitize,
   mainCollection = require('../../../../test/codegen/newman/fixtures/basicCollection.json');
 
@@ -207,5 +208,14 @@ describe('libcurl convert function', function () {
       expect(sanitize('inputString     ', true)).to.equal('inputString');
     });
 
+    it('should not encode unresolved query params and ' +
+    'encode every other query param, both present together', function () {
+      let rawUrl = 'https://postman-echo.com/get?key1={{value}}&key2=\'a b+c\'',
+        urlObject = new sdk.Url(rawUrl),
+        outputUrlString = getUrlStringfromUrlObject(urlObject);
+      expect(outputUrlString).to.not.include('key1=%7B%7Bvalue%7B%7B');
+      expect(outputUrlString).to.not.include('key2=\'a b+c\'');
+      expect(outputUrlString).to.equal('https://postman-echo.com/get?key1={{value}}&key2=%27a%20b+c%27');
+    });
   });
 });

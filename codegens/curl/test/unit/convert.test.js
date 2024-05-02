@@ -676,12 +676,12 @@ describe('curl convert function', function () {
 
         it('should not encode unresolved query params and ' +
         'encode every other query param, both present together', function () {
-          rawUrl = 'https://postman-echo.com/get?key1={{value}}&key2=\'a b c\'';
+          rawUrl = 'https://postman-echo.com/get?key1={{value}}&key2=\'a b+c\'';
           urlObject = new sdk.Url(rawUrl);
           outputUrlString = getUrlStringfromUrlObject(urlObject);
           expect(outputUrlString).to.not.include('key1=%7B%7Bvalue%7B%7B');
-          expect(outputUrlString).to.not.include('key2=\'a b c\'');
-          expect(outputUrlString).to.equal('https://postman-echo.com/get?key1={{value}}&key2=%27a%20b%20c%27');
+          expect(outputUrlString).to.not.include('key2=\'a b+c\'');
+          expect(outputUrlString).to.equal('https://postman-echo.com/get?key1={{value}}&key2=%27a%20b+c%27');
         });
 
         it('should not encode query params that are already encoded', function () {
