@@ -1,7 +1,7 @@
 var expect = require('chai').expect,
   sdk = require('postman-collection'),
   sanitize = require('../../lib/util.js').sanitize,
-
+  getUrlStringfromUrlObject = require('../../lib/util').getUrlStringfromUrlObject,
   convert = require('../../index').convert,
   getOptions = require('../../index').getOptions;
 
@@ -161,6 +161,15 @@ describe('js-xhr convert function', function () {
     });
     it('should trim input string when needed', function () {
       expect(sanitize('inputString     ', true)).to.equal('inputString');
+    });
+    it('should not encode unresolved query params and ' +
+    'encode every other query param, both present together', function () {
+      let rawUrl = 'https://postman-echo.com/get?key1={{value}}&key2=\'a b+c\'',
+        urlObject = new sdk.Url(rawUrl),
+        outputUrlString = getUrlStringfromUrlObject(urlObject);
+      expect(outputUrlString).to.not.include('key1=%7B%7Bvalue%7B%7B');
+      expect(outputUrlString).to.not.include('key2=\'a b+c\'');
+      expect(outputUrlString).to.equal('https://postman-echo.com/get?key1={{value}}&key2=%27a%20b+c%27');
     });
   });
 

@@ -29,6 +29,13 @@ var self = module.exports = {
       inputString = inputString.replace(/"/g, '\\"');
       // Escape backslash if double quote was already escaped before call to sanitize
       inputString = inputString.replace(/(?<!\\)\\\\"/g, '\\\\\\"');
+
+      // Escape special characters to preserve their literal meaning within double quotes
+      inputString = inputString
+        .replace(/`/g, '\\`')
+        .replace(/#/g, '\\#')
+        .replace(/\$/g, '\\$')
+        .replace(/!/g, '\\!');
     }
     else if (quoteType === '\'') {
       // for curl escaping of single quotes inside single quotes involves changing of ' to '\''
@@ -207,7 +214,7 @@ var self = module.exports = {
   },
 
   /**
-   * Encode param except the following characters- [,{,},],%
+   * Encode param except the following characters- [,{,},],%,+
    *
    * @param {String} param
    * @returns {String}
@@ -218,6 +225,7 @@ var self = module.exports = {
       .replace(/%7B/g, '{')
       .replace(/%5D/g, ']')
       .replace(/%7D/g, '}')
+      .replace(/%2B/g, '+')
       .replace(/%25/g, '%')
       .replace(/'/g, '%27');
   },

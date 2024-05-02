@@ -978,11 +978,11 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://postman-echo.com/request",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
+						"postman-echo",
+						"com"
 					],
 					"path": [
 						"request"
@@ -1006,11 +1006,11 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://postman-echo.com/request",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
+						"postman-echo",
+						"com"
 					],
 					"path": [
 						"request"
@@ -1034,11 +1034,11 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://postman-echo.com/request",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
+						"postman-echo",
+						"com"
 					],
 					"path": [
 						"request"
@@ -1054,11 +1054,11 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://postman-echo.com/request",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
+						"postman-echo",
+						"com"
 					],
 					"path": [
 						"request"
@@ -1082,11 +1082,11 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://postman-echo.com/request",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
+						"postman-echo",
+						"com"
 					],
 					"path": [
 						"request"
@@ -1101,11 +1101,11 @@
 				"method": "PURGE",
 				"header": [],
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://postman-echo.com/request",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
+						"postman-echo",
+						"com"
 					],
 					"path": [
 						"request"
@@ -1121,11 +1121,11 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://postman-echo.com/request",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
+						"postman-echo",
+						"com"
 					],
 					"path": [
 						"request"
@@ -1141,11 +1141,11 @@
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "https://mockbin.org/request",
+							"raw": "https://postman-echo.com/request",
 							"protocol": "https",
 							"host": [
-								"mockbin",
-								"org"
+								"postman-echo",
+								"com"
 							],
 							"path": [
 								"request"
@@ -1257,14 +1257,14 @@
 						{
 							"expires": "Thu Mar 14 2019 13:12:10 GMT+0530 (IST)",
 							"httpOnly": true,
-							"domain": "mockbin.org",
+							"domain": "postman-echo.com",
 							"path": "/",
 							"secure": false,
 							"value": "dfb94a3e1f3f8a9956138e4896847caf21521013330",
 							"key": "__cfduid"
 						}
 					],
-					"body": "{\n  \"startedDateTime\": \"2018-03-14T09:06:37.443Z\",\n  \"clientIPAddress\": \"106.51.70.154\",\n  \"method\": \"COPY\",\n  \"url\": \"https://mockbin.org/request\",\n  \"httpVersion\": \"HTTP/1.1\",\n  \"cookies\": {\n    \"__cfduid\": \"dfb94a3e1f3f8a9956138e4896847caf21521013330\"\n  },\n  \"headers\": {\n    \"host\": \"mockbin.org\",\n    \"connection\": \"close\",\n    \"accept-encoding\": \"gzip\",\n    \"x-forwarded-for\": \"106.51.70.154, 172.68.255.127\",\n    \"cf-ray\": \"3fb595d5facaa302-HKG\",\n    \"x-forwarded-proto\": \"http\",\n    \"cf-visitor\": \"{\\\"scheme\\\":\\\"https\\\"}\",\n    \"cache-control\": \"no-cache\",\n    \"postman-token\": \"8d5b9832-75df-432f-90a3-284dacef0478\",\n    \"user-agent\": \"PostmanRuntime/7.1.1\",\n    \"accept\": \"*/*\",\n    \"cookie\": \"__cfduid=dfb94a3e1f3f8a9956138e4896847caf21521013330\",\n    \"cf-connecting-ip\": \"106.51.70.154\",\n    \"x-request-id\": \"0e41473d-5130-4a6e-968d-b2a16cda3364\",\n    \"x-forwarded-port\": \"80\",\n    \"via\": \"1.1 vegur\",\n    \"connect-time\": \"2\",\n    \"x-request-start\": \"1521018397437\",\n    \"total-route-time\": \"0\",\n    \"content-length\": \"0\"\n  },\n  \"queryString\": {},\n  \"postData\": {\n    \"mimeType\": \"application/octet-stream\",\n    \"text\": \"\",\n    \"params\": []\n  },\n  \"headersSize\": 637,\n  \"bodySize\": 0\n}"
+					"body": "{\n  \"startedDateTime\": \"2018-03-14T09:06:37.443Z\",\n  \"clientIPAddress\": \"106.51.70.154\",\n  \"method\": \"COPY\",\n  \"url\": \"https://postman-echo.com/request\",\n  \"httpVersion\": \"HTTP/1.1\",\n  \"cookies\": {\n    \"__cfduid\": \"dfb94a3e1f3f8a9956138e4896847caf21521013330\"\n  },\n  \"headers\": {\n    \"host\": \"postman-echo.com\",\n    \"connection\": \"close\",\n    \"accept-encoding\": \"gzip\",\n    \"x-forwarded-for\": \"106.51.70.154, 172.68.255.127\",\n    \"cf-ray\": \"3fb595d5facaa302-HKG\",\n    \"x-forwarded-proto\": \"http\",\n    \"cf-visitor\": \"{\\\"scheme\\\":\\\"https\\\"}\",\n    \"cache-control\": \"no-cache\",\n    \"postman-token\": \"8d5b9832-75df-432f-90a3-284dacef0478\",\n    \"user-agent\": \"PostmanRuntime/7.1.1\",\n    \"accept\": \"*/*\",\n    \"cookie\": \"__cfduid=dfb94a3e1f3f8a9956138e4896847caf21521013330\",\n    \"cf-connecting-ip\": \"106.51.70.154\",\n    \"x-request-id\": \"0e41473d-5130-4a6e-968d-b2a16cda3364\",\n    \"x-forwarded-port\": \"80\",\n    \"via\": \"1.1 vegur\",\n    \"connect-time\": \"2\",\n    \"x-request-start\": \"1521018397437\",\n    \"total-route-time\": \"0\",\n    \"content-length\": \"0\"\n  },\n  \"queryString\": {},\n  \"postData\": {\n    \"mimeType\": \"application/octet-stream\",\n    \"text\": \"\",\n    \"params\": []\n  },\n  \"headersSize\": 637,\n  \"bodySize\": 0\n}"
 				}
 			]
 		}
