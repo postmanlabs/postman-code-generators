@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-## [v1.10.0] - 2024-05-02
+## [v1.10.1] - 2024-05-06
 
 ### Fixed
 
@@ -155,7 +155,7 @@ v1.0.0 (May 29, 2020)
 
 [Unreleased]: https://github.com/postmanlabs/postman-code-generators/compare/v1.10.0...HEAD
 
-[v1.10.0]: https://github.com/postmanlabs/postman-code-generators/compare/v1.9.0...v1.10.0
+[v1.10.1]: https://github.com/postmanlabs/postman-code-generators/compare/v1.9.0...v1.10.0
 
 [v1.9.0]: https://github.com/postmanlabs/postman-code-generators/compare/v1.8.0...v1.9.0
 
