@@ -153,7 +153,6 @@ v1.0.0 (May 29, 2020)
 -   Add ES6 syntax support for NodeJS Request, NodeJS Native and NodeJS Unirest
 -   Fix snippet generation for powershell and jquery, where form data params had no type field
 
-=======
 [Unreleased]: https://github.com/postmanlabs/postman-code-generators/compare/v1.10.0...HEAD
 
 [v1.10.1]: https://github.com/postmanlabs/postman-code-generators/compare/v1.9.0...v1.10.0
