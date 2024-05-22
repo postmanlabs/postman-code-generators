@@ -25,8 +25,9 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/postmanlabs/code-generators",
   "dependencies": {
-    "lodash": "4.17.21",
     "async": "3.2.2",
+    "detect-package-manager": "^3.0.2",
+    "lodash": "4.17.21",
     "path": "0.12.7",
     "postman-collection": "4.0.0",
     "shelljs": "0.8.5"
@@ -36,7 +37,6 @@
     "chai": "4.3.7",
     "chalk": "2.4.2",
     "dependency-check": "3.0.0",
-    "detect-package-manager": "3.0.2",
     "editorconfig": "0.15.3",
     "eslint": "5.16.0",
     "eslint-plugin-jsdoc": "3.15.1",
