@@ -36,10 +36,10 @@ pushd ./codegens/csharp-restsharp &>/dev/null;
   sudo dpkg -i packages-microsoft-prod.deb
   sudo apt-get install apt-transport-https
   sudo apt-get update
-  sudo apt-get install dotnet-sdk-6.0
-  dotnet new console -o testProject -f net6.0
+  sudo apt-get install dotnet-sdk-8.0
+  dotnet new console -o testProject -f net8.0
   pushd ./testProject &>/dev/null;
-  dotnet add package RestSharp
+  dotnet add package RestSharp --version 111.0.0
   popd &>/dev/null;
 popd &>/dev/null;
 
