@@ -39,7 +39,7 @@ pushd ./codegens/csharp-restsharp &>/dev/null;
   sudo apt-get install dotnet-sdk-6.0
   dotnet new console -o testProject -f net6.0
   pushd ./testProject &>/dev/null;
-  dotnet add package RestSharp
+  dotnet add package RestSharp --version 110.0.0
   popd &>/dev/null;
 popd &>/dev/null;
 
