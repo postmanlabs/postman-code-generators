@@ -36,7 +36,10 @@ function makeOptionsSnippet (urlOrigin, options, indentString, headers) {
     });
   }
   if (options.requestTimeout) {
-    snippet += `${indentString}Timeout = new TimeSpan(0, 0, 0, ${options.requestTimeout}),\n`;
+    snippet += `${indentString}MaxTimeout = ${options.requestTimeout},\n`;
+  }
+  else {
+    snippet += `${indentString}MaxTimeout = -1,\n`;
   }
   if (!options.followRedirect) {
     snippet += `${indentString}FollowRedirects = false,\n`;

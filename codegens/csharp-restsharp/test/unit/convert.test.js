@@ -93,7 +93,7 @@ describe('csharp restsharp function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('Timeout = new TimeSpan(0, 0, 0, 5)');
+        expect(snippet).to.include('MaxTimeout = 5');
       });
     });
 
