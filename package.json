@@ -30,7 +30,8 @@
     "lodash": "4.17.21",
     "path": "0.12.7",
     "postman-collection": "4.0.0",
-    "shelljs": "0.8.5"
+    "shelljs": "0.8.5",
+    "typescript": "4.0.3"
   },
   "devDependencies": {
     "browserify": "14.5.0",
