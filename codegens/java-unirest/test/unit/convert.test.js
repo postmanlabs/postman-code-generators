@@ -174,7 +174,7 @@ describe('java unirest convert function for test collection', function () {
         'six HTTP methods', function () {
       reqObject = {
         'description': 'This is a sample PROPFIND request',
-        'url': 'https://mockbin.org/request',
+        'url': 'https://postman-echo.com/request',
         'method': 'PROPFIND'
       };
       request = new sdk.Request(reqObject);
@@ -302,10 +302,10 @@ describe('java unirest convert function for test collection', function () {
           ]
         },
         'url': {
-          'raw': 'https://postman-echo/',
+          'raw': 'https://postman-echo.com/',
           'protocol': 'https',
           'host': [
-            'google',
+            'postman-echo',
             'com'
           ]
         }
@@ -341,10 +341,10 @@ describe('java unirest convert function for test collection', function () {
           ]
         },
         'url': {
-          'raw': 'https://postman-echo/',
+          'raw': 'https://postman-echo.com/',
           'protocol': 'https',
           'host': [
-            'google',
+            'postman-echo',
             'com'
           ]
         }
@@ -500,12 +500,12 @@ describe('java unirest convert function for test collection', function () {
 
       it('should not encode unresolved query params and ' +
       'encode every other query param, both present together', function () {
-        rawUrl = 'https://postman-echo.com/get?key1={{value}}&key2=\'a b c\'';
+        rawUrl = 'https://postman-echo.com/get?key1={{value}}&key2=\'a b+c\'';
         urlObject = new sdk.Url(rawUrl);
         outputUrlString = getUrlStringfromUrlObject(urlObject);
         expect(outputUrlString).to.include('key1=%7B%7Bvalue%7D%7D');
-        expect(outputUrlString).to.not.include('key2=\'a b c\'');
-        expect(outputUrlString).to.equal('https://postman-echo.com/get?key1=%7B%7Bvalue%7D%7D&key2=%27a%20b%20c%27');
+        expect(outputUrlString).to.not.include('key2=\'a b+c\'');
+        expect(outputUrlString).to.equal('https://postman-echo.com/get?key1=%7B%7Bvalue%7D%7D&key2=%27a%20b+c%27');
       });
 
       it('should discard disabled query params', function () {

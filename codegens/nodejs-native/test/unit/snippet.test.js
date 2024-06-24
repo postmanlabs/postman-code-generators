@@ -9,13 +9,11 @@ describe('nodejs-native convert function', function () {
         'header': [],
         'body': {},
         'url': {
-          'raw': 'https://89c918b1-f4f8-4812-8e6c-69ecbeeb8409.mock.pstmn.io?query1=1&query2=2',
+          'raw': 'https://postman-echo.com?query1=1&query2=2',
           'protocol': 'https',
           'host': [
-            '89c918b1-f4f8-4812-8e6c-69ecbeeb8409',
-            'mock',
-            'pstmn',
-            'io'
+            'postman-echo',
+            'com'
           ],
           'path': [],
           'query': [

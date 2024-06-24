@@ -43,8 +43,8 @@ module.exports = function (request, trimRequestBody, contentType, indentCount) {
         if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
           try {
             let jsonBody = JSON.parse(request.body[request.body.mode]);
-            jsonBody = JSON.stringify(jsonBody, replacer, indentCount)
-              .replace(new RegExp(`"${nullToken}"`, 'g'), 'nil');
+            jsonBody = sanitize(JSON.stringify(jsonBody, replacer, indentCount));
+            jsonBody = jsonBody.replace(new RegExp(`"${nullToken}"`, 'g'), 'nil');
             return `request.body = JSON.dump(${jsonBody})\n`;
           }
           catch (error) {

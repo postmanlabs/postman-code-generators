@@ -537,6 +537,40 @@ describe('curl convert function', function () {
       });
     });
 
+    it('should escape special characters when quoteType is "double"', function () {
+      var request = new sdk.Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': '{\r\n    "hello": "$(whoami)"\r\n}',
+          'options': {
+            'raw': {
+              'language': 'json'
+            }
+          }
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+      convert(request, { quoteType: 'double', lineContinuationCharacter: '^' }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        expect(snippet.includes('\\"hello\\": \\"\\$(whoami)\\"')).to.be.true; // eslint-disable-line
+      });
+    });
+
     it('should longer option for body even if longFormat is disabled if @ character is present', function () {
       let request = new sdk.Request({
         'method': 'POST',
@@ -642,12 +676,12 @@ describe('curl convert function', function () {
 
         it('should not encode unresolved query params and ' +
         'encode every other query param, both present together', function () {
-          rawUrl = 'https://postman-echo.com/get?key1={{value}}&key2=\'a b c\'';
+          rawUrl = 'https://postman-echo.com/get?key1={{value}}&key2=\'a b+c\'';
           urlObject = new sdk.Url(rawUrl);
           outputUrlString = getUrlStringfromUrlObject(urlObject);
           expect(outputUrlString).to.not.include('key1=%7B%7Bvalue%7B%7B');
-          expect(outputUrlString).to.not.include('key2=\'a b c\'');
-          expect(outputUrlString).to.equal('https://postman-echo.com/get?key1={{value}}&key2=%27a%20b%20c%27');
+          expect(outputUrlString).to.not.include('key2=\'a b+c\'');
+          expect(outputUrlString).to.equal('https://postman-echo.com/get?key1={{value}}&key2=%27a%20b+c%27');
         });
 
         it('should not encode query params that are already encoded', function () {

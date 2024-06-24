@@ -1,5 +1,6 @@
 var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
+  sanitizeSingleQuotes = require('./util').sanitizeSingleQuotes,
   sanitizeOptions = require('./util').sanitizeOptions,
   addFormParam = require('./util').addFormParam,
   path = require('path');
@@ -289,12 +290,12 @@ function convert (request, options, callback) {
   }
 
   if (_.includes(VALID_METHODS, request.method)) {
-    codeSnippet += `$response = Invoke-RestMethod '${request.url.toString().replace(/'/g, '\'\'')}' -Method '` +
+    codeSnippet += `$response = Invoke-RestMethod '${sanitizeSingleQuotes(request.url.toString())}' -Method '` +
                         `${request.method}' -Headers $headers`;
   }
   else {
-    codeSnippet += `$response = Invoke-RestMethod '${request.url.toString()}' -CustomMethod ` +
-                        `'${request.method}' -Headers $headers`;
+    codeSnippet += `$response = Invoke-RestMethod '${sanitizeSingleQuotes(request.url.toString())}' -CustomMethod ` +
+                        `'${sanitizeSingleQuotes(request.method)}' -Headers $headers`;
   }
   if (bodySnippet !== '') {
     codeSnippet += ' -Body $body';

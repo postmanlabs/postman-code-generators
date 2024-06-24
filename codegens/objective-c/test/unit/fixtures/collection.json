@@ -37,11 +37,11 @@
 					}
 				],
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://postman-echo.com/request",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
+						"postman-echo",
+						"com"
 					],
 					"path": [
 						"request"
@@ -848,11 +848,11 @@
 				"method": "LINK",
 				"header": [],
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://postman-echo.com/request",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
+						"postman-echo",
+						"com"
 					],
 					"path": [
 						"request"
@@ -876,11 +876,11 @@
 					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
 				},
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://postman-echo.com/request",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
+						"postman-echo",
+						"com"
 					],
 					"path": [
 						"request"
@@ -904,11 +904,11 @@
 					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
 				},
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://postman-echo.com/request",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
+						"postman-echo",
+						"com"
 					],
 					"path": [
 						"request"
@@ -923,11 +923,11 @@
 				"method": "UNLOCK",
 				"header": [],
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://postman-echo.com/request",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
+						"postman-echo",
+						"com"
 					],
 					"path": [
 						"request"
@@ -951,11 +951,11 @@
 					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
 				},
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://postman-echo.com/request",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
+						"postman-echo",
+						"com"
 					],
 					"path": [
 						"request"
@@ -970,11 +970,11 @@
 				"method": "PURGE",
 				"header": [],
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://postman-echo.com/request",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
+						"postman-echo",
+						"com"
 					],
 					"path": [
 						"request"
@@ -989,11 +989,11 @@
 				"method": "COPY",
 				"header": [],
 				"url": {
-					"raw": "https://mockbin.org/request",
+					"raw": "https://postman-echo.com/request",
 					"protocol": "https",
 					"host": [
-						"mockbin",
-						"org"
+						"postman-echo",
+						"com"
 					],
 					"path": [
 						"request"
@@ -1007,13 +1007,11 @@
 						"method": "COPY",
 						"header": [],
 						"url": {
-							"raw": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io",
+							"raw": "https://postman-echo.com",
 							"protocol": "https",
 							"host": [
-								"9c76407d-5b8d-4b22-99fb-8c47a85d9848",
-								"mock",
-								"pstmn",
-								"io"
+								"postman-echo",
+								"com"
 							]
 						}
 					},
