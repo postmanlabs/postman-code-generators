@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Collection } = require('postman-collection/lib/collection/collection'),
   fs = require('fs'),
   path = require('path'),
   {
@@ -14,7 +14,7 @@ var expect = require('chai').expect,
 
 describe('parseURLEncodedBody method', function () {
   it('should return form-url-encoded params', function () {
-    const collection = new sdk.Collection(JSON.parse(
+    const collection = new Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[7].request.body.urlencoded,
       indentation = '  ',
@@ -41,7 +41,7 @@ describe('parseURLEncodedBody method', function () {
 
 describe('parseFormData method', function () {
   it('should return form data params', function () {
-    const collection = new sdk.Collection(JSON.parse(
+    const collection = new Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[4].request.body.formdata,
       indentation = '  ',
@@ -67,7 +67,7 @@ describe('parseFormData method', function () {
   });
 
   it('should return form data params file', function () {
-    const collection = new sdk.Collection(JSON.parse(
+    const collection = new Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[26].request.body.formdata,
       indentation = '  ',
@@ -80,7 +80,7 @@ describe('parseFormData method', function () {
 
 describe('parseRawBody method', function () {
   it('should return formData json params', function () {
-    const collection = new sdk.Collection(JSON.parse(
+    const collection = new Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[8].request.body.raw,
       indentation = '  ',
@@ -95,7 +95,7 @@ describe('parseRawBody method', function () {
 
 describe('parseGraphQL method', function () {
   it('should return graphql json params', function () {
-    const collection = new sdk.Collection(JSON.parse(
+    const collection = new Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[27].request.body.graphql,
       bodyTrim = false,
@@ -110,7 +110,7 @@ describe('parseGraphQL method', function () {
 
 describe('parseBody method', function () {
   it('should return form-url-encoded params', function () {
-    const collection = new sdk.Collection(JSON.parse(
+    const collection = new Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[7].request.body,
       indentation = '  ',
@@ -128,7 +128,7 @@ describe('parseBody method', function () {
   });
 
   it('should return form data params', function () {
-    const collection = new sdk.Collection(JSON.parse(
+    const collection = new Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[4].request.body,
       indentation = '  ',
@@ -146,7 +146,7 @@ describe('parseBody method', function () {
   });
 
   it('should return raw json params', function () {
-    const collection = new sdk.Collection(JSON.parse(
+    const collection = new Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[8].request.body,
       indentation = '  ',
@@ -159,7 +159,7 @@ describe('parseBody method', function () {
   });
 
   it('should return raw string params', function () {
-    const collection = new sdk.Collection(JSON.parse(
+    const collection = new Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[6].request.body,
       indentation = '  ',
@@ -172,7 +172,7 @@ describe('parseBody method', function () {
   });
 
   it('should return graphql params', function () {
-    const collection = new sdk.Collection(JSON.parse(
+    const collection = new Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[27].request.body,
       indentation = '  ',

@@ -1,5 +1,5 @@
 const expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   convert = require('../../lib/index').convert;
 
 describe('Rust reqwest converter', function () {
@@ -9,7 +9,7 @@ describe('Rust reqwest converter', function () {
   });
 
   it('should set no redirect policy when followRedirect is set to false', function () {
-    const request = new sdk.Request({
+    const request = new Request({
         'method': 'GET',
         'header': [],
         'url': {
@@ -35,7 +35,7 @@ describe('Rust reqwest converter', function () {
   });
 
   it('should set read timeout when requestTimeout is set to non zero value', function () {
-    const request = new sdk.Request({
+    const request = new Request({
         'method': 'GET',
         'header': [],
         'url': {
@@ -62,7 +62,7 @@ describe('Rust reqwest converter', function () {
 
   it('should use the method name directly if it is part of allowed methods', function () {
     ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'CONNECT', 'PATH', 'TRACE'].forEach(function (method) {
-      const request = new sdk.Request({
+      const request = new Request({
           'method': method,
           'header': [],
           'url': {
@@ -90,7 +90,7 @@ describe('Rust reqwest converter', function () {
 
   it('should use the method name using bytes if it not part of the allowed list', function () {
     ['PROPFIND', 'PURGE', 'LOCK', 'UNLOCK', 'LINK', 'UNLINK', 'COPY'].forEach(function (method) {
-      const request = new sdk.Request({
+      const request = new Request({
           'method': method,
           'header': [],
           'url': {

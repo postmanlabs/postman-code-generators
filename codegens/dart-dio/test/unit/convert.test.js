@@ -5,7 +5,7 @@ var convert = require('../../index').convert,
 // Disable check with expected snippets as we now have proper newman tests
 describe('Dart Converter', function () {
   it('should add timeout if requestTimeout options is used', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [
         {
@@ -40,7 +40,7 @@ describe('Dart Converter', function () {
   });
 
   it('should add code for followRedirects if given in the option', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'GET',
       'header': [],
       'url': {
@@ -62,7 +62,7 @@ describe('Dart Converter', function () {
   });
 
   it('should add boilerplate if given in the option', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'GET',
       'header': [],
       'url': {
@@ -85,7 +85,7 @@ describe('Dart Converter', function () {
   });
 
   it('should add correct indentation', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [],
       'body': {

@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   convert = require('../../lib/index').convert,
   sanitize = require('../../lib/util/sanitize').sanitize,
   mainCollection = require('../unit/fixtures/sample_collection.json'),
@@ -15,7 +15,7 @@ describe('PHP HTTP_Request2 converter', function () {
 
   mainCollection.item.forEach(function (item) {
     it(item.name, function (done) {
-      var request = new sdk.Request(item.request);
+      var request = new Request(item.request);
       convert(request, {
         indentType: 'Space',
         indentCount: 2,
@@ -32,7 +32,7 @@ describe('PHP HTTP_Request2 converter', function () {
   });
 
   it('should indent snippet with type and count specified', function () {
-    var request = new sdk.Request(mainCollection.item[0].request);
+    var request = new Request(mainCollection.item[0].request);
     convert(request, {
       indentType: 'Tab',
       indentCount: 2
@@ -55,7 +55,7 @@ describe('PHP HTTP_Request2 converter', function () {
 
   it('should add code for followRedirect option when set and vice versa' +
     '(HTTP_Request2 doesn\'t follow redirect by default)', function () {
-    var request = new sdk.Request(mainCollection.item[0].request);
+    var request = new Request(mainCollection.item[0].request);
     convert(request, {
       followRedirect: true
     }, function (error, snippet) {
@@ -78,7 +78,7 @@ describe('PHP HTTP_Request2 converter', function () {
   });
 
   it('should add code for requestTimeout option', function () {
-    var request = new sdk.Request(mainCollection.item[0].request);
+    var request = new Request(mainCollection.item[0].request);
     convert(request, {
       requestTimeout: 5000
     }, function (error, snippet) {
@@ -91,7 +91,7 @@ describe('PHP HTTP_Request2 converter', function () {
   });
 
   it('should trim request body when trimRequestBody is set to true', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [],
       'body': {
@@ -125,7 +125,7 @@ describe('PHP HTTP_Request2 converter', function () {
   });
 
   it('should generate snippets for no files in form data', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [],
       'body': {

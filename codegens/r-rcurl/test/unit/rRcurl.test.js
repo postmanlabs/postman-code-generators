@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Collection } = require('postman-collection/lib/collection/collection'),
   fs = require('fs'),
   path = require('path'),
   {
@@ -21,7 +21,7 @@ var expect = require('chai').expect,
 describe('convert function', function () {
 
   it('should convert a simple get request', function (done) {
-    const collection = new sdk.Collection(JSON.parse(
+    const collection = new Collection(JSON.parse(
       fs.readFileSync(path.resolve(__dirname, './fixtures/sample_collection.json').toString())));
     collection.items.members.forEach((item) => {
       convert(item.request, { }, function (err, snippet) {
@@ -329,7 +329,7 @@ describe('getSnippetPostFormInOptions method', function () {
 
 describe('addContentTypeHeader method', function () {
   it('should add content type header when is graphql', function () {
-    const request = new sdk.Request({
+    const request = new Request({
       'method': 'POST',
       'header': [
       ],
@@ -350,7 +350,7 @@ describe('addContentTypeHeader method', function () {
   });
 
   it('should not add content type header when is not graphql', function () {
-    const request = new sdk.Request({
+    const request = new Request({
       'method': 'POST',
       'header': [
       ],

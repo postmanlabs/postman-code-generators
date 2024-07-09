@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   convert = require('../../lib/index').convert,
   mainCollection = require('./fixtures/testcollection/collection.json'),
   testCollection = require('./fixtures/testcollection/collectionForEdge.json'),
@@ -13,7 +13,7 @@ describe('csharp restsharp function', function () {
 
   describe('csharp-restsharp convert function', function () {
     it('should return expected snippet - Async', function () {
-      var request = new sdk.Request(mainCollection.item[4].request),
+      var request = new Request(mainCollection.item[4].request),
         options = {
           indentCount: 1,
           indentType: 'Tab',
@@ -31,7 +31,7 @@ describe('csharp restsharp function', function () {
     });
 
     it('should return expected snippet json params', function () {
-      var request = new sdk.Request(mainCollection.item[5].request),
+      var request = new Request(mainCollection.item[5].request),
         options = {
           indentCount: 1,
           indentType: 'Tab',
@@ -50,7 +50,7 @@ describe('csharp restsharp function', function () {
   });
 
   describe('convert function', function () {
-    var request = new sdk.Request(testCollection.item[0].request),
+    var request = new Request(testCollection.item[0].request),
       snippetArray,
       options = {
         includeBoilerplate: true,
@@ -108,7 +108,7 @@ describe('csharp restsharp function', function () {
     });
 
     it('should trim header keys and not trim header values', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [
           {
@@ -136,7 +136,7 @@ describe('csharp restsharp function', function () {
     });
 
     it('should generate snippets for no files in form data', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -188,7 +188,7 @@ describe('csharp restsharp function', function () {
       const sampleUA = 'Safari/605.1.15',
         expectValue = `UserAgent = "${sampleUA}",`;
 
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [
           {
