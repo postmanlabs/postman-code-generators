@@ -1,5 +1,6 @@
 var expect = require('chai').expect,
   { Collection } = require('postman-collection/lib/collection/collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   fs = require('fs'),
   path = require('path'),
   {
