@@ -1,19 +1,14 @@
 var shell = require('shelljs'),
   path = require('path'),
   async = require('async'),
+  { detect } = require('detect-package-manager'),
+  pm,
   PRODUCTION_FLAG = '',
   getSubfolders,
   fs = require('fs'),
   pwd = shell.pwd();
 const args = process.argv,
   PATH_TO_CODEGENS_FOLDER = path.resolve(__dirname, '../codegens');
-
-if (args[2] && args[2] === 'dev') {
-  console.log('Dev flag detected running npm install');
-}
-else {
-  PRODUCTION_FLAG = '--no-audit --production';
-}
 
 getSubfolders = (folder) => {
   return fs.readdirSync(folder)
@@ -23,6 +18,20 @@ getSubfolders = (folder) => {
 
 async.series([
   function (next) {
+    detect().then((res) => {
+      pm = res;
+      console.log('Detected package manager: ' + pm);
+      return next();
+    });
+  },
+  function (next) {
+    if (args[2] && args[2] === 'dev') {
+      console.log('Dev flag detected running ' + pm + ' install');
+    }
+    else {
+      PRODUCTION_FLAG = '--no-audit --production';
+    }
+
     console.log('Running pre-package script');
     var prepackagePath = path.resolve(__dirname, 'pre-package.js'),
       commandOutput = shell.exec(`node "${prepackagePath}"`);
@@ -42,11 +51,11 @@ async.series([
 
       var commandOut;
 
-      console.log(codegen.name + ': npm install ' + PRODUCTION_FLAG);
-      commandOut = shell.exec('npm install ' + PRODUCTION_FLAG, { silent: true });
+      console.log(codegen.name + ': ' + pm + ' install ' + PRODUCTION_FLAG);
+      commandOut = shell.exec(pm + ' install ' + PRODUCTION_FLAG, { silent: true });
 
       if (commandOut.code !== 0) {
-        console.error('Failed to run npm install on codegen ' + codegen.name + ', here is the error:');
+        console.error('Failed to run ' + pm + ' install on codegen ' + codegen.name + ', here is the error:');
         return next(commandOut.stderr);
       }
       console.log(commandOut.stdout);

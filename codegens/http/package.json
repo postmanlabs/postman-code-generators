@@ -21,7 +21,7 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/http",
   "dependencies": {
-    "postman-collection": "3.6.8"
+    "postman-collection": "^4.4.0"
   },
   "scripts": {
     "test": "node npm/test.js",

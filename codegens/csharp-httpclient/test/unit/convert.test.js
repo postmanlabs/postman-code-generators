@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   convert = require('../../lib/index').convert,
   mainCollection = require('./fixtures/testcollection/collection.json'),
   testCollection = require('./fixtures/testcollection/collectionForEdge.json'),
@@ -13,7 +13,7 @@ describe('csharp httpclient function', function () {
 
   describe('csharp-httpclient convert function', function () {
     it('should return expected snippet', function () {
-      var request = new sdk.Request(mainCollection.item[10].request),
+      var request = new Request(mainCollection.item[10].request),
         options = {
           indentCount: 1,
           indentType: 'Tab'
@@ -30,7 +30,7 @@ describe('csharp httpclient function', function () {
   });
 
   describe('convert function', function () {
-    var request = new sdk.Request(testCollection.item[0].request),
+    var request = new Request(testCollection.item[0].request),
       snippetArray,
       options = {
         includeBoilerplate: true,
@@ -89,7 +89,7 @@ describe('csharp httpclient function', function () {
     });
 
     it('should create custom HttpMethod when method is non-standard', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'NOTNORMAL',
         'header': [],
         'url': {
@@ -116,7 +116,7 @@ describe('csharp httpclient function', function () {
     });
 
     it('should add fake body when content type header added to empty body', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'DELETE',
         'body': {},
         'header': [
@@ -137,7 +137,7 @@ describe('csharp httpclient function', function () {
     });
 
     // it('should only include one System.IO using with multiple files', function () {
-    //   var request = new sdk.Request({
+    //   var request = new Request({
     //     'method': 'POST',
     //     'header': [],
     //     'body': {
@@ -171,7 +171,7 @@ describe('csharp httpclient function', function () {
     // });
 
     it('should include multiple form content when file has multiple sources', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -201,7 +201,7 @@ describe('csharp httpclient function', function () {
     });
 
     it('should include graphql body in the snippet', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -236,7 +236,7 @@ describe('csharp httpclient function', function () {
     });
 
     it('should add blank graphql variables when invalid', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -271,7 +271,7 @@ describe('csharp httpclient function', function () {
     });
 
     it('should not add multiport form content when disabled', function () {
-      var request = new sdk.Request(mainCollection.item[15].request);
+      var request = new Request(mainCollection.item[15].request);
       convert(request, {}, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
@@ -288,7 +288,7 @@ describe('csharp httpclient function', function () {
     });
 
     it('should run add content as string on raw request', function () {
-      var request = new sdk.Request(mainCollection.item[12].request);
+      var request = new Request(mainCollection.item[12].request);
       convert(request, {}, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
@@ -303,7 +303,7 @@ describe('csharp httpclient function', function () {
     });
 
     it('should add a file on file request', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'url': 'https://google.com',
         'header': [],
@@ -324,7 +324,7 @@ describe('csharp httpclient function', function () {
     });
 
     it('should add all enabled headers to request', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'url': 'https://postman-echo.com/post',
         'header': [
@@ -360,7 +360,7 @@ describe('csharp httpclient function', function () {
     });
 
     it('should skip disabled form url encoded values', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'url': 'https://postman-echo.com/post',
@@ -390,7 +390,7 @@ describe('csharp httpclient function', function () {
     });
 
     it('should skip collection initialization when no urlencoded values are enabled', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'url': 'https://postman-echo.com/post',
@@ -415,7 +415,7 @@ describe('csharp httpclient function', function () {
     });
 
     it('should skip creating multipart form data content when all values are disabled', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'url': 'https://postman-echo.com/post',
