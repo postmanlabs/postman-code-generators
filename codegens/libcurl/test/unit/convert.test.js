@@ -1,5 +1,6 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
+  { Url } = require('postman-collection/lib/collection/url'),
   convert = require('../../index').convert,
   getOptions = require('../../index').getOptions,
   getUrlStringfromUrlObject = require('../../lib/util').getUrlStringfromUrlObject,
@@ -22,7 +23,7 @@ describe('libcurl convert function', function () {
     });
 
     it('should set CURLOPT_TIMEOUT_MS parameter when requestTimeout is set to non zero value', function () {
-      var request = new sdk.Request(mainCollection.item[0].request),
+      var request = new Request(mainCollection.item[0].request),
         options = { requestTimeout: 3000 };
 
       convert(request, options, function (error, snippet) {
@@ -35,7 +36,7 @@ describe('libcurl convert function', function () {
     });
 
     it('should trim header keys and not trim header values', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [
           {
@@ -63,7 +64,7 @@ describe('libcurl convert function', function () {
     });
 
     it('should add content type if formdata field contains a content-type', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'body': {
           'mode': 'formdata',
@@ -98,7 +99,7 @@ describe('libcurl convert function', function () {
     });
 
     it('should generate snippets for no files in form data', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -148,7 +149,7 @@ describe('libcurl convert function', function () {
     });
 
     it('should free up headers list after request is sent', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [
           {
@@ -211,7 +212,7 @@ describe('libcurl convert function', function () {
     it('should not encode unresolved query params and ' +
     'encode every other query param, both present together', function () {
       let rawUrl = 'https://postman-echo.com/get?key1={{value}}&key2=\'a b+c\'',
-        urlObject = new sdk.Url(rawUrl),
+        urlObject = new Url(rawUrl),
         outputUrlString = getUrlStringfromUrlObject(urlObject);
       expect(outputUrlString).to.not.include('key1=%7B%7Bvalue%7B%7B');
       expect(outputUrlString).to.not.include('key2=\'a b+c\'');

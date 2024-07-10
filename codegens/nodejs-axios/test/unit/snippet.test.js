@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   sanitize = require('../../lib/util').sanitize,
   parseBody = require('../../lib/parseRequest').parseBody,
   getOptions = require('../../lib/index').getOptions,
@@ -15,7 +15,7 @@ describe('nodejs-axios convert function', function () {
       line_no;
 
     it('should return a Tab indented snippet ', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         indentType: 'Tab',
         indentCount: 1
@@ -35,7 +35,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should return snippet with timeout property when timeout is set to non zero', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         requestTimeout: 1000
       };
@@ -50,7 +50,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should use JSON.parse if the content-type is application/vnd.api+json', function () {
-      request = new sdk.Request({
+      request = new Request({
         'method': 'POST',
         'header': [
           {
@@ -86,7 +86,7 @@ describe('nodejs-axios convert function', function () {
     describe('maxRedirects property', function () {
       it('should return snippet with maxRedirects property set to ' +
       '0 for no follow redirect', function () {
-        const request = new sdk.Request(mainCollection.item[0].request);
+        const request = new Request(mainCollection.item[0].request);
         options = {
           followRedirect: false
         };
@@ -102,7 +102,7 @@ describe('nodejs-axios convert function', function () {
 
       it('should return snippet with maxRedirects property set to ' +
       '0 for no follow redirect from request settings', function () {
-        const request = new sdk.Request(mainCollection.item[0].request),
+        const request = new Request(mainCollection.item[0].request),
           options = {};
 
         request.protocolProfileBehavior = {
@@ -121,7 +121,7 @@ describe('nodejs-axios convert function', function () {
 
       it('should return snippet with no maxRedirects property when ' +
         'follow redirect is true from request settings', function () {
-        const request = new sdk.Request(mainCollection.item[0].request),
+        const request = new Request(mainCollection.item[0].request),
           options = {};
 
         request.protocolProfileBehavior = {
@@ -145,7 +145,7 @@ describe('nodejs-axios convert function', function () {
         'url': 'https://echo.getpostman.com/post',
         'method': 'POST'
       };
-      request = new sdk.Request(reqObject);
+      request = new Request(reqObject);
       convert(request, options, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
@@ -157,7 +157,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should not fail for a random body mode', function () {
-      request = new sdk.Request(mainCollection.item[2].request);
+      request = new Request(mainCollection.item[2].request);
       request.body.mode = 'random';
       request.body[request.body.mode] = {};
 
@@ -173,7 +173,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should generate snippet for file body mode', function () {
-      request = new sdk.Request({
+      request = new Request({
         'url': 'https://echo.getpostman.com/post',
         'method': 'POST',
         'body': {
@@ -198,7 +198,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should add content type if formdata field contains a content-type', function () {
-      request = new sdk.Request({
+      request = new Request({
         'method': 'POST',
         'body': {
           'mode': 'formdata',
@@ -252,7 +252,7 @@ describe('nodejs-axios convert function', function () {
           console.log(error);
         });
         */
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {};
       convert(request, options, function (error, snippet) {
         if (error) {
@@ -273,7 +273,7 @@ describe('nodejs-axios convert function', function () {
 
     it('should return snippet with no trailing comma when requestTimeout ' +
       'is set to non zero', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         requestTimeout: 1000
       };
@@ -291,7 +291,7 @@ describe('nodejs-axios convert function', function () {
 
     it('should return snippet with just a single comma when requestTimeout ' +
       'is set to non zero and followRedirect as false', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         requestTimeout: 1000,
         followRedirect: false,
@@ -311,7 +311,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should not require unused fs', function () {
-      request = new sdk.Request({
+      request = new Request({
         'url': 'https://postman-echo.com/get',
         'method': 'GET',
         'body': {
@@ -329,7 +329,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should add fs for form-data file upload', function () {
-      request = new sdk.Request({
+      request = new Request({
         'url': 'https://postman-echo.com/post',
         'method': 'POST',
         'body': {
@@ -353,7 +353,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should trim header keys and not trim header values', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [
           {
@@ -380,7 +380,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should include JSON.stringify in the snippet for raw json bodies', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [
           {
@@ -414,7 +414,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should generate snippets for no files in form data', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -463,7 +463,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should return snippet with maxBodyLength property as "Infinity"', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         requestTimeout: 1000
       };
@@ -478,7 +478,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should return snippet with promise based code when async_await is disabled', function () {
-      const request = new sdk.Request(mainCollection.item[0].request);
+      const request = new Request(mainCollection.item[0].request);
 
       convert(request, {}, function (error, snippet) {
         if (error) {
@@ -492,7 +492,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should return snippet with async/await based code when option is enabled', function () {
-      const request = new sdk.Request(mainCollection.item[0].request);
+      const request = new Request(mainCollection.item[0].request);
 
       convert(request, { asyncAwaitEnabled: true }, function (error, snippet) {
         if (error) {

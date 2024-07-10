@@ -1,5 +1,5 @@
 const _ = require('./lodash'),
-  sdk = require('postman-collection'),
+  { Url } = require('postman-collection/lib/collection/url'),
   sanitizeOptions = require('./util').sanitizeOptions,
   sanitize = require('./util').sanitize,
   addFormParam = require('./util').addFormParam,
@@ -132,7 +132,7 @@ function makeSnippet (request, indentString, options) {
   }
 
 
-  url = sdk.Url.parse(request.url.toString());
+  url = Url.parse(request.url.toString());
   host = url.host ? url.host.join('.') : '';
   path = url.path ? '/' + url.path.join('/') : '/';
   query = url.query ? _.reduce(url.query, (accum, q) => {

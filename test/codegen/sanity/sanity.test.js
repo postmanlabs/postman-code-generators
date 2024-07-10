@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   path = require('path'),
   fs = require('fs'),
   args = process.argv.splice(2),
@@ -15,7 +15,7 @@ describe('Sanity tests for ' + codegen, function () {
     collection = JSON.parse(collection);
 
     collection.item.forEach((item) => {
-      var request = new sdk.Request(item.request);
+      var request = new Request(item.request);
       it('should generate snippet for ' + collectionName.split('.')[0] + ' request: ' + item.name, function (done) {
         converter.convert(request, {}, function (error, snippet) {
           if (error) {

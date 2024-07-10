@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   sanitize = require('../../lib/util').sanitize,
   getOptions = require('../../index').getOptions,
   convert = require('../../index').convert,
@@ -13,7 +13,7 @@ describe('js-fetch convert function for test collection', function () {
       line_no;
 
     it('should return a Space indented snippet ', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         indentType: 'Space',
         indentCount: 2
@@ -34,7 +34,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should return snippet with no setTimeout function when timeout is set to zero', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         requestTimeout: 0
       };
@@ -49,7 +49,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should use JSON.parse if the content-type is application/vnd.api+json', function () {
-      request = new sdk.Request({
+      request = new Request({
         'method': 'POST',
         'header': [
           {
@@ -84,7 +84,7 @@ describe('js-fetch convert function for test collection', function () {
 
     it('should return snippet with redirect property set to manual for ' +
                 'no follow redirect', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         followRedirect: false
       };
@@ -100,7 +100,7 @@ describe('js-fetch convert function for test collection', function () {
 
     it('should return snippet with redirect property set to follow for ' +
                 ' follow redirect', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         followRedirect: true
       };
@@ -115,7 +115,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should default to mode raw body mode is some random value', function () {
-      request = new sdk.Request(mainCollection.item[2].request);
+      request = new Request(mainCollection.item[2].request);
       request.body.mode = 'random';
       request.body[request.body.mode] = {};
       options = {};
@@ -130,7 +130,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should generate snippet for no body provided', function () {
-      request = new sdk.Request({
+      request = new Request({
         'method': 'GET',
         'url': {
           'raw': 'https://postman-echo.com/request',
@@ -153,7 +153,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should trim header keys and not trim header values', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [
           {
@@ -181,7 +181,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should include JSON.stringify in the snippet for raw json bodies', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [
           {
@@ -215,7 +215,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should generate snippets for no files in form data', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -264,7 +264,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should generate valid snippet for single/double quotes in url', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [],
         'url': {
@@ -299,7 +299,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should return snippet with promise based code when async_await is disabled', function () {
-      const request = new sdk.Request(mainCollection.item[0].request);
+      const request = new Request(mainCollection.item[0].request);
 
       convert(request, {}, function (error, snippet) {
         if (error) {
@@ -313,7 +313,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should return snippet with async/await based code when option is enabled', function () {
-      const request = new sdk.Request(mainCollection.item[0].request);
+      const request = new Request(mainCollection.item[0].request);
 
       convert(request, { asyncAwaitEnabled: true }, function (error, snippet) {
         if (error) {
@@ -327,7 +327,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should return timeout snippet with promise based code when async_await is disabled', function () {
-      const request = new sdk.Request(mainCollection.item[0].request);
+      const request = new Request(mainCollection.item[0].request);
 
       convert(request, { requestTimeout: 3000 }, function (error, snippet) {
         if (error) {
@@ -341,7 +341,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should return timeout snippet with promise based code when async_await is enabled', function () {
-      const request = new sdk.Request(mainCollection.item[0].request);
+      const request = new Request(mainCollection.item[0].request);
 
       convert(request, { requestTimeout: 3000, asyncAwaitEnabled: true }, function (error, snippet) {
         if (error) {
