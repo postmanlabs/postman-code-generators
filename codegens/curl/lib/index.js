@@ -1,11 +1,15 @@
-var sanitize = require('./util').sanitize,
-  sanitizeOptions = require('./util').sanitizeOptions,
-  getUrlStringfromUrlObject = require('./util').getUrlStringfromUrlObject,
-  addFormParam = require('./util').addFormParam,
-  form = require('./util').form,
-  shouldAddHttpMethod = require('./util').shouldAddHttpMethod,
-  _ = require('./lodash'),
-  self;
+const {
+    sanitize,
+    sanitizeOptions,
+    getUrlStringfromUrlObject,
+    getNtlmAuthInfo,
+    addFormParam,
+    form,
+    shouldAddHttpMethod
+  } = require('./util'),
+  _ = require('./lodash');
+
+var self;
 
 self = module.exports = {
   convert: function (request, options, callback) {
@@ -16,7 +20,7 @@ self = module.exports = {
     options = sanitizeOptions(options, self.getOptions());
 
     var indent, trim, headersData, body, redirect, timeout, multiLine,
-      format, snippet, silent, url, quoteType;
+      format, snippet, silent, url, quoteType, ntlmAuth;
 
     redirect = options.followRedirect;
     timeout = options.requestTimeoutInSeconds;
@@ -26,9 +30,16 @@ self = module.exports = {
     silent = options.silent;
     quoteType = options.quoteType === 'single' ? '\'' : '"';
     url = getUrlStringfromUrlObject(request.url, quoteType);
+    ntlmAuth = getNtlmAuthInfo(request.auth, quoteType, format);
 
-    snippet = silent ? `curl ${form('-s', format)}` : 'curl';
+    snippet = 'curl';
 
+    if (ntlmAuth) {
+      snippet += ntlmAuth;
+    }
+    if (silent) {
+      snippet += ` ${form('-s', format)}`;
+    }
     if (redirect) {
       snippet += ` ${form('-L', format)}`;
     }
