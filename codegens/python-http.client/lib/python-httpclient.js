@@ -1,5 +1,5 @@
 var _ = require('./lodash'),
-  { Url } = require('postman-collection/lib/collection/url'),
+  sdk = require('postman-collection'),
   sanitize = require('./util/sanitize').sanitize,
   sanitizeOptions = require('./util/sanitize').sanitizeOptions,
   addFormParam = require('./util/sanitize').addFormParam,
@@ -113,7 +113,7 @@ self = module.exports = {
     identity = options.indentType === 'Tab' ? '\t' : ' ';
     indentation = identity.repeat(options.indentCount);
 
-    url = Url.parse(request.url.toString());
+    url = sdk.Url.parse(request.url.toString());
     host = url.host ? url.host.join('.') : '';
     path = url.path ? '/' + url.path.join('/') : '/';
     query = url.query ? _.reduce(url.query, (accum, q) => {

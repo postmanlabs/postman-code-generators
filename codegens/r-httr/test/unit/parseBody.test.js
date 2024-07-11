@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  { Collection } = require('postman-collection/lib/collection/collection'),
+  sdk = require('postman-collection'),
   fs = require('fs'),
   path = require('path'),
   {
@@ -10,7 +10,7 @@ var expect = require('chai').expect,
 describe('parseBody function', function () {
 
   it('should parse a raw json Body', function () {
-    const collection = new Collection(JSON.parse(
+    const collection = new sdk.Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[8].request.body,
       indentation = '  ',
@@ -21,7 +21,7 @@ describe('parseBody function', function () {
   });
 
   it('should parse a raw json Body with indentation', function () {
-    const collection = new Collection(JSON.parse(
+    const collection = new sdk.Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[8].request.body,
       indentation = '   ',
@@ -32,7 +32,7 @@ describe('parseBody function', function () {
   });
 
   it('should parse a raw xml Body', function () {
-    const collection = new Collection(JSON.parse(
+    const collection = new sdk.Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[10].request.body,
       indentation = '   ',
@@ -43,7 +43,7 @@ describe('parseBody function', function () {
   });
 
   it('should return form-url-encoded params', function () {
-    const collection = new Collection(JSON.parse(
+    const collection = new sdk.Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[7].request.body,
       indentation = '  ',
@@ -60,7 +60,7 @@ describe('parseBody function', function () {
   });
 
   it('should return form-data params', function () {
-    const collection = new Collection(JSON.parse(
+    const collection = new sdk.Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[4].request.body,
       indentation = '  ',
@@ -79,7 +79,7 @@ describe('parseBody function', function () {
   });
 
   it('should return form-data params with a file', function () {
-    const collection = new Collection(JSON.parse(
+    const collection = new sdk.Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[26].request.body,
       indentation = '  ',
@@ -93,7 +93,7 @@ describe('parseBody function', function () {
   });
 
   it('should return binary data params with a file', function () {
-    const collection = new Collection(JSON.parse(
+    const collection = new sdk.Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[25].request.body,
       indentation = '  ',
@@ -105,7 +105,7 @@ describe('parseBody function', function () {
   });
 
   it('should return graphql params', function () {
-    const collection = new Collection(JSON.parse(
+    const collection = new sdk.Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[27].request.body,
       indentation = '  ',
@@ -120,7 +120,7 @@ describe('parseBody function', function () {
   });
 
   it('should return empty form data', function () {
-    const collection = new Collection(JSON.parse(
+    const collection = new sdk.Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       body = collection.items.members[28].request.body,
       indentation = '  ',

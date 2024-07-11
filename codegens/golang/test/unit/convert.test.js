@@ -1,6 +1,5 @@
 var expect = require('chai').expect,
-  { Request } = require('postman-collection/lib/collection/request'),
-  { Url } = require('postman-collection/lib/collection/url'),
+  sdk = require('postman-collection'),
   convert = require('../../index').convert,
   getUrlStringfromUrlObject = require('../../lib/util').getUrlStringfromUrlObject;
 
@@ -9,7 +8,7 @@ describe('Golang convert function', function () {
     var request, options;
 
     it('should return snippet without errors when request object has no body property', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'GET',
         'header': [],
         'url': {
@@ -35,7 +34,7 @@ describe('Golang convert function', function () {
     });
 
     it('should parse headers with string value properly', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'POST',
         'header': [
           {
@@ -68,7 +67,7 @@ describe('Golang convert function', function () {
     });
 
     it('should add content type if formdata field contains a content-type', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'POST',
         'body': {
           'mode': 'formdata',
@@ -107,7 +106,7 @@ describe('Golang convert function', function () {
     });
 
     it('should add time converted to seconds when input is taken in milliseconds ', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'GET',
         'header': [],
         'url': {
@@ -132,7 +131,7 @@ describe('Golang convert function', function () {
     });
 
     it('should trim header keys and not trim header values', function () {
-      var request = new Request({
+      var request = new sdk.Request({
         'method': 'GET',
         'header': [
           {
@@ -159,7 +158,7 @@ describe('Golang convert function', function () {
     });
 
     it('should generate snippets for no files in form data', function () {
-      var request = new Request({
+      var request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -209,7 +208,7 @@ describe('Golang convert function', function () {
 
     it('should add error handling code everytime an error is possible', function () {
       var requests = [];
-      requests.push(new Request({
+      requests.push(new sdk.Request({
         'method': 'GET',
         'header': [
           {
@@ -226,7 +225,7 @@ describe('Golang convert function', function () {
           ]
         }
       }));
-      requests.push(new Request({
+      requests.push(new sdk.Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -259,7 +258,7 @@ describe('Golang convert function', function () {
     it('should not encode unresolved query params and ' +
     'encode every other query param, both present together', function () {
       let rawUrl = 'https://postman-echo.com/get?key1={{value}}&key2=\'a b+c\'',
-        urlObject = new Url(rawUrl),
+        urlObject = new sdk.Url(rawUrl),
         outputUrlString = getUrlStringfromUrlObject(urlObject);
       expect(outputUrlString).to.not.include('key1=%7B%7Bvalue%7B%7B');
       expect(outputUrlString).to.not.include('key2=\'a b+c\'');

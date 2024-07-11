@@ -1,6 +1,5 @@
 var expect = require('chai').expect,
-  { Request } = require('postman-collection/lib/collection/request'),
-  { Url } = require('postman-collection/lib/collection/url'),
+  sdk = require('postman-collection'),
   convert = require('../../index').convert,
   getUrlStringfromUrlObject = require('../../lib/util').getUrlStringfromUrlObject;
 
@@ -10,7 +9,7 @@ describe('curl convert function', function () {
 
     it('should return snippet with carat(^) as line continuation ' +
             'character for multiline code generation', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -36,7 +35,7 @@ describe('curl convert function', function () {
     });
 
     it('should return snippet with url in single quote(\')', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -58,7 +57,7 @@ describe('curl convert function', function () {
     });
 
     it('should return snippet with url in double quote(")', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -80,7 +79,7 @@ describe('curl convert function', function () {
     });
 
     it('should add semicolon after header key, if the value is empty string', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'GET',
         'header': [
           {
@@ -111,7 +110,7 @@ describe('curl convert function', function () {
 
     it('should return snippet with backslash(\\) as line continuation ' +
             'character for multiline code generation by default', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -137,7 +136,7 @@ describe('curl convert function', function () {
 
     it('should return snippet with backtick(`) as line continuation ' +
             'character for multiline code generation', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -163,7 +162,7 @@ describe('curl convert function', function () {
     });
 
     it('should add content type if formdata field contains a content-type', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'POST',
         'body': {
           'mode': 'formdata',
@@ -199,7 +198,7 @@ describe('curl convert function', function () {
     });
 
     it('should parse header with string value properly', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'POST',
         'header': [
           {
@@ -231,7 +230,7 @@ describe('curl convert function', function () {
         ']world',
         'world}'
       ].forEach(function (value) {
-        const request = new Request({
+        const request = new sdk.Request({
           'method': 'GET',
           'url': {
             'raw': `http://example.com?hello=${value}`,
@@ -264,7 +263,7 @@ describe('curl convert function', function () {
     });
 
     it('should return snippet without errors when request object has no body property', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'GET',
         'header': [],
         'url': {
@@ -290,7 +289,7 @@ describe('curl convert function', function () {
 
     it('should return snippet with backslash(\\) character as line continuation ' +
          'character for multiline code generation', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -317,7 +316,7 @@ describe('curl convert function', function () {
 
     it('should not encode queryParam unresolved variables and ' +
     'leave it inside double parenthesis {{xyz}}', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'url': {
@@ -350,7 +349,7 @@ describe('curl convert function', function () {
     });
 
     it('should encode queryParams other than unresolved variables', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'url': {
@@ -383,7 +382,7 @@ describe('curl convert function', function () {
     });
 
     it('should trim header keys and not trim header values', function () {
-      var request = new Request({
+      var request = new sdk.Request({
         'method': 'GET',
         'header': [
           {
@@ -412,7 +411,7 @@ describe('curl convert function', function () {
     });
 
     it('should generate snippets for no files in form data', function () {
-      var request = new Request({
+      var request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -462,7 +461,7 @@ describe('curl convert function', function () {
 
     it('should generate valid snippets for single/double quotes in URL', function () {
       // url = https://a"b'c.com/'d/"e
-      var request = new Request("https://a\"b'c.com/'d/\"e"); // eslint-disable-line quotes
+      var request = new sdk.Request("https://a\"b'c.com/'d/\"e"); // eslint-disable-line quotes
       convert(request, {}, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
@@ -475,7 +474,7 @@ describe('curl convert function', function () {
 
     it('should generate valid snippets when quoteType is "double"', function () {
       // url = https://a"b'c.com/'d/"e
-      var request = new Request({
+      var request = new sdk.Request({
         'method': 'POST',
         'body': {
           'mode': 'formdata',
@@ -507,7 +506,7 @@ describe('curl convert function', function () {
     });
 
     it('should not add appropriate escaping characters when quote type is "double"', function () {
-      var request = new Request({
+      var request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -539,7 +538,7 @@ describe('curl convert function', function () {
     });
 
     it('should escape special characters when quoteType is "double"', function () {
-      var request = new Request({
+      var request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -573,7 +572,7 @@ describe('curl convert function', function () {
     });
 
     it('should longer option for body even if longFormat is disabled if @ character is present', function () {
-      let request = new Request({
+      let request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -607,7 +606,7 @@ describe('curl convert function', function () {
 
       it('should return empty string for an url object for an empty url or if no url object is passed', function () {
         rawUrl = '';
-        urlObject = new Url(rawUrl);
+        urlObject = new sdk.Url(rawUrl);
         outputUrlString = getUrlStringfromUrlObject(urlObject);
         expect(outputUrlString).to.be.empty;
         outputUrlString = getUrlStringfromUrlObject();
@@ -616,14 +615,14 @@ describe('curl convert function', function () {
 
       it('should add protocol if present in the url object', function () {
         rawUrl = 'https://postman-echo.com';
-        urlObject = new Url(rawUrl);
+        urlObject = new sdk.Url(rawUrl);
         outputUrlString = getUrlStringfromUrlObject(urlObject);
         expect(outputUrlString).to.equal(rawUrl);
       });
 
       it('should add the auth information if present in the url object', function () {
         rawUrl = 'https://user:password@postman-echo.com';
-        urlObject = new Url(rawUrl);
+        urlObject = new sdk.Url(rawUrl);
         outputUrlString = getUrlStringfromUrlObject(urlObject);
         expect(outputUrlString).to.equal(rawUrl);
       });
@@ -631,28 +630,28 @@ describe('curl convert function', function () {
       it('should not add the auth information if user isn\'t present but' +
       ' password is present in the url object', function () {
         rawUrl = 'https://:password@postman-echo.com';
-        urlObject = new Url(rawUrl);
+        urlObject = new sdk.Url(rawUrl);
         outputUrlString = getUrlStringfromUrlObject(urlObject);
         expect(outputUrlString).to.not.include(':password');
       });
 
       it('should add host if present in the url object', function () {
         rawUrl = 'https://postman-echo.com';
-        urlObject = new Url(rawUrl);
+        urlObject = new sdk.Url(rawUrl);
         outputUrlString = getUrlStringfromUrlObject(urlObject);
         expect(outputUrlString).to.equal(rawUrl);
       });
 
       it('should add port if present in the url object', function () {
         rawUrl = 'https://postman-echo.com:8080';
-        urlObject = new Url(rawUrl);
+        urlObject = new sdk.Url(rawUrl);
         outputUrlString = getUrlStringfromUrlObject(urlObject);
         expect(outputUrlString).to.equal(rawUrl);
       });
 
       it('should add path if present in the url object', function () {
         rawUrl = 'https://postman-echo.com/get';
-        urlObject = new Url(rawUrl);
+        urlObject = new sdk.Url(rawUrl);
         outputUrlString = getUrlStringfromUrlObject(urlObject);
         expect(outputUrlString).to.equal(rawUrl);
       });
@@ -661,7 +660,7 @@ describe('curl convert function', function () {
 
         it('should not encode unresolved query params', function () {
           rawUrl = 'https://postman-echo.com/get?key={{value}}';
-          urlObject = new Url(rawUrl);
+          urlObject = new sdk.Url(rawUrl);
           outputUrlString = getUrlStringfromUrlObject(urlObject);
           expect(outputUrlString).to.not.include('key=%7B%7Bvalue%7B%7B');
           expect(outputUrlString).to.equal(rawUrl);
@@ -669,7 +668,7 @@ describe('curl convert function', function () {
 
         it('should encode query params other than unresolved variables', function () {
           rawUrl = 'https://postman-echo.com/get?key=\'a b c\'';
-          urlObject = new Url(rawUrl);
+          urlObject = new sdk.Url(rawUrl);
           outputUrlString = getUrlStringfromUrlObject(urlObject);
           expect(outputUrlString).to.not.include('key=\'a b c\'');
           expect(outputUrlString).to.equal('https://postman-echo.com/get?key=%27a%20b%20c%27');
@@ -678,7 +677,7 @@ describe('curl convert function', function () {
         it('should not encode unresolved query params and ' +
         'encode every other query param, both present together', function () {
           rawUrl = 'https://postman-echo.com/get?key1={{value}}&key2=\'a b+c\'';
-          urlObject = new Url(rawUrl);
+          urlObject = new sdk.Url(rawUrl);
           outputUrlString = getUrlStringfromUrlObject(urlObject);
           expect(outputUrlString).to.not.include('key1=%7B%7Bvalue%7B%7B');
           expect(outputUrlString).to.not.include('key2=\'a b+c\'');
@@ -687,13 +686,13 @@ describe('curl convert function', function () {
 
         it('should not encode query params that are already encoded', function () {
           rawUrl = 'https://postman-echo.com/get?query=urn%3Ali%3Afoo%3A62324';
-          urlObject = new Url(rawUrl);
+          urlObject = new sdk.Url(rawUrl);
           outputUrlString = getUrlStringfromUrlObject(urlObject);
           expect(outputUrlString).to.equal('https://postman-echo.com/get?query=urn%3Ali%3Afoo%3A62324');
         });
 
         it('should discard disabled query params', function () {
-          urlObject = new Url({
+          urlObject = new sdk.Url({
             protocol: 'https',
             host: 'postman-echo.com',
             query: [
@@ -708,14 +707,14 @@ describe('curl convert function', function () {
 
       it('should add hash if present in the url object', function () {
         rawUrl = 'https://postmanm-echo.com/get#hash';
-        urlObject = new Url(rawUrl);
+        urlObject = new sdk.Url(rawUrl);
         outputUrlString = getUrlStringfromUrlObject(urlObject);
         expect(outputUrlString).to.equal(rawUrl);
       });
     });
 
     it('should not add --request parameter in POST request if body is present', function () {
-      var request = new Request({
+      var request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -748,7 +747,7 @@ describe('curl convert function', function () {
     });
 
     it('should add --request parameter in POST request if body is not present', function () {
-      var request = new Request({
+      var request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'url': {
@@ -774,7 +773,7 @@ describe('curl convert function', function () {
     });
 
     it('should add --request parameter in GET request if body is present', function () {
-      var request = new Request({
+      var request = new sdk.Request({
         'method': 'GET',
         'header': [],
         'body': {
@@ -808,7 +807,7 @@ describe('curl convert function', function () {
 
     it('should not add --request parameter in GET request if body is present ' +
       'but disableBodyPruning is false', function () {
-      const request = new Request({
+      const request = new sdk.Request({
         'method': 'GET',
         'header': [],
         'body': {
@@ -847,7 +846,7 @@ describe('curl convert function', function () {
 
     describe('followRedirect and followOriginalHttpMethod', function () {
       it('should add --request parameter when passed true via options', function () {
-        const request = new Request({
+        const request = new sdk.Request({
           'method': 'POST',
           'header': [],
           'body': {
@@ -880,7 +879,7 @@ describe('curl convert function', function () {
       });
 
       it('should not add --request parameter when passed false via options', function () {
-        const request = new Request({
+        const request = new sdk.Request({
           'method': 'POST',
           'header': [],
           'body': {
@@ -913,7 +912,7 @@ describe('curl convert function', function () {
       });
 
       it('should add --request parameter when passed false via options but true in request settings', function () {
-        const request = new Request({
+        const request = new sdk.Request({
           'method': 'POST',
           'header': [],
           'body': {
@@ -952,7 +951,7 @@ describe('curl convert function', function () {
       });
 
       it('should not add --request parameter when passed true via options but false in request settings', function () {
-        const request = new Request({
+        const request = new sdk.Request({
           'method': 'POST',
           'header': [],
           'body': {
@@ -991,7 +990,7 @@ describe('curl convert function', function () {
       });
 
       it('should work when protocolProfileBehavior is null in request settings', function () {
-        const request = new Request({
+        const request = new sdk.Request({
           'method': 'POST',
           'header': [],
           'body': {

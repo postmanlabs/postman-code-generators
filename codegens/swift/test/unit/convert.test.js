@@ -1,6 +1,5 @@
 var expect = require('chai').expect,
-  { Request } = require('postman-collection/lib/collection/request'),
-  { Url } = require('postman-collection/lib/collection/url'),
+  sdk = require('postman-collection'),
   convert = require('../../index').convert,
   sanitize = require('../../lib/util').sanitize,
   getUrlStringfromUrlObject = require('../../lib/util').getUrlStringfromUrlObject,
@@ -11,7 +10,7 @@ var expect = require('chai').expect,
 describe('Swift Converter', function () {
 
   describe('convert function', function () {
-    var request = new Request(mainCollection.item[0].request),
+    var request = new sdk.Request(mainCollection.item[0].request),
       snippetArray;
 
     const SINGLE_SPACE = ' '; // default indent type with indent count of 2
@@ -32,7 +31,7 @@ describe('Swift Converter', function () {
     });
 
     it('should add content type if formdata field contains a content-type', function () {
-      var request = new Request({
+      var request = new sdk.Request({
         'method': 'POST',
         'body': {
           'mode': 'formdata',
@@ -96,7 +95,7 @@ describe('Swift Converter', function () {
 
     it('should not encode queryParam unresolved variables and ' +
     'leave it inside double parenthesis {{xyz}}', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'url': {
@@ -128,7 +127,7 @@ describe('Swift Converter', function () {
     });
 
     it('should encode queryParams other than unresolved variables', function () {
-      request = new Request({
+      request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'url': {
@@ -160,7 +159,7 @@ describe('Swift Converter', function () {
     });
 
     it('should trim header keys and not trim header values', function () {
-      var request = new Request({
+      var request = new sdk.Request({
         'method': 'GET',
         'header': [
           {
@@ -188,7 +187,7 @@ describe('Swift Converter', function () {
     });
 
     it('should generate snippets for no files in form data', function () {
-      var request = new Request({
+      var request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -239,7 +238,7 @@ describe('Swift Converter', function () {
 
     it('should generate valid snippets for single/double quotes in URL', function () {
       // url = https://a"b'c.com/'d/"e
-      var request = new Request("https://a\"b'c.com/'d/\"e"); // eslint-disable-line quotes
+      var request = new sdk.Request("https://a\"b'c.com/'d/\"e"); // eslint-disable-line quotes
       convert(request, {}, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
@@ -255,7 +254,7 @@ describe('Swift Converter', function () {
 
     it('should return empty string for an url object for an empty url or if no url object is passed', function () {
       rawUrl = '';
-      urlObject = new Url(rawUrl);
+      urlObject = new sdk.Url(rawUrl);
       outputUrlString = getUrlStringfromUrlObject(urlObject);
       expect(outputUrlString).to.be.empty;
       outputUrlString = getUrlStringfromUrlObject();
@@ -264,14 +263,14 @@ describe('Swift Converter', function () {
 
     it('should add protocol if present in the url object', function () {
       rawUrl = 'https://postman-echo.com';
-      urlObject = new Url(rawUrl);
+      urlObject = new sdk.Url(rawUrl);
       outputUrlString = getUrlStringfromUrlObject(urlObject);
       expect(outputUrlString).to.equal(rawUrl);
     });
 
     it('should add the auth information if present in the url object', function () {
       rawUrl = 'https://user:password@postman-echo.com';
-      urlObject = new Url(rawUrl);
+      urlObject = new sdk.Url(rawUrl);
       outputUrlString = getUrlStringfromUrlObject(urlObject);
       expect(outputUrlString).to.equal(rawUrl);
     });
@@ -279,28 +278,28 @@ describe('Swift Converter', function () {
     it('should not add the auth information if user isn\'t present but' +
     ' password is present in the url object', function () {
       rawUrl = 'https://:password@postman-echo.com';
-      urlObject = new Url(rawUrl);
+      urlObject = new sdk.Url(rawUrl);
       outputUrlString = getUrlStringfromUrlObject(urlObject);
       expect(outputUrlString).to.not.include(':password');
     });
 
     it('should add host if present in the url object', function () {
       rawUrl = 'https://postman-echo.com';
-      urlObject = new Url(rawUrl);
+      urlObject = new sdk.Url(rawUrl);
       outputUrlString = getUrlStringfromUrlObject(urlObject);
       expect(outputUrlString).to.equal(rawUrl);
     });
 
     it('should add port if present in the url object', function () {
       rawUrl = 'https://postman-echo.com:8080';
-      urlObject = new Url(rawUrl);
+      urlObject = new sdk.Url(rawUrl);
       outputUrlString = getUrlStringfromUrlObject(urlObject);
       expect(outputUrlString).to.equal(rawUrl);
     });
 
     it('should add path if present in the url object', function () {
       rawUrl = 'https://postman-echo.com/get';
-      urlObject = new Url(rawUrl);
+      urlObject = new sdk.Url(rawUrl);
       outputUrlString = getUrlStringfromUrlObject(urlObject);
       expect(outputUrlString).to.equal(rawUrl);
     });
@@ -309,7 +308,7 @@ describe('Swift Converter', function () {
 
       it('should not encode unresolved query params', function () {
         rawUrl = 'https://postman-echo.com/get?key={{value}}';
-        urlObject = new Url(rawUrl);
+        urlObject = new sdk.Url(rawUrl);
         outputUrlString = getUrlStringfromUrlObject(urlObject);
         expect(outputUrlString).to.not.include('key=%7B%7Bvalue%7B%7B');
         expect(outputUrlString).to.equal(rawUrl);
@@ -317,7 +316,7 @@ describe('Swift Converter', function () {
 
       it('should encode query params other than unresolved variables', function () {
         rawUrl = 'https://postman-echo.com/get?key=\'a b c\'';
-        urlObject = new Url(rawUrl);
+        urlObject = new sdk.Url(rawUrl);
         outputUrlString = getUrlStringfromUrlObject(urlObject);
         expect(outputUrlString).to.not.include('key=\'a b c\'');
         expect(outputUrlString).to.equal('https://postman-echo.com/get?key=%27a%20b%20c%27');
@@ -326,7 +325,7 @@ describe('Swift Converter', function () {
       it('should not encode unresolved query params and ' +
       'encode every other query param, both present together', function () {
         rawUrl = 'https://postman-echo.com/get?key1={{value}}&key2=\'a b+c\'';
-        urlObject = new Url(rawUrl);
+        urlObject = new sdk.Url(rawUrl);
         outputUrlString = getUrlStringfromUrlObject(urlObject);
         expect(outputUrlString).to.not.include('key1=%7B%7Bvalue%7B%7B');
         expect(outputUrlString).to.not.include('key2=\'a b+c\'');
@@ -335,13 +334,13 @@ describe('Swift Converter', function () {
 
       it('should not encode query params that are already encoded', function () {
         rawUrl = 'https://postman-echo.com/get?query=urn%3Ali%3Afoo%3A62324';
-        urlObject = new Url(rawUrl);
+        urlObject = new sdk.Url(rawUrl);
         outputUrlString = getUrlStringfromUrlObject(urlObject);
         expect(outputUrlString).to.equal('https://postman-echo.com/get?query=urn%3Ali%3Afoo%3A62324');
       });
 
       it('should discard disabled query params', function () {
-        urlObject = new Url({
+        urlObject = new sdk.Url({
           protocol: 'https',
           host: 'postman-echo.com',
           query: [
@@ -356,7 +355,7 @@ describe('Swift Converter', function () {
 
     it('should add hash if present in the url object', function () {
       rawUrl = 'https://postmanm-echo.com/get#hash';
-      urlObject = new Url(rawUrl);
+      urlObject = new sdk.Url(rawUrl);
       outputUrlString = getUrlStringfromUrlObject(urlObject);
       expect(outputUrlString).to.equal(rawUrl);
     });

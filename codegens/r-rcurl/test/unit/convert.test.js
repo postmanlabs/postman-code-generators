@@ -1,11 +1,11 @@
 var expect = require('chai').expect,
   { convert } = require('../../index'),
-  { Collection } = require('postman-collection/lib/collection/collection'),
+  sdk = require('postman-collection'),
   fs = require('fs'),
   path = require('path');
 
 describe('convert function', function () {
-  const collection = new Collection(JSON.parse(
+  const collection = new sdk.Collection(JSON.parse(
     fs.readFileSync(path.resolve(__dirname, './fixtures/sample_collection.json').toString())));
 
   it('should convert requests with default options', function (done) {

@@ -1,7 +1,7 @@
 var fs = require('fs'),
   expect = require('chai').expect,
   exec = require('shelljs').exec,
-  { Request } = require('postman-collection/lib/collection/request'),
+  sdk = require('postman-collection'),
   path = require('path'),
   newmanResponses = require('./newmanResponses.json'),
   async = require('async');
@@ -179,7 +179,7 @@ module.exports = {
         // Convert code snippet
         var collection = require(collectionObj.path);
         async.map(collection.item, function (item, cb) {
-          var request = new Request(item.request);
+          var request = new sdk.Request(item.request);
 
           convert(request, options, function (err, snippet) {
             if (err) {

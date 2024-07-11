@@ -1,12 +1,11 @@
 var expect = require('chai').expect,
-  { Request } = require('postman-collection/lib/collection/request'),
-  { Collection } = require('postman-collection/lib/collection/collection'),
+  sdk = require('postman-collection'),
   fs = require('fs'),
   convert = require('../../lib').convert,
   getOptions = require('../../lib').getOptions,
   sanitize = require('../../lib/util/sanitize').sanitize,
   parseBody = require('../../lib/util/parseBody'),
-  collection = new Collection(JSON.parse(fs.readFileSync('test/unit/fixtures/sample_collection.json').toString()));
+  collection = new sdk.Collection(JSON.parse(fs.readFileSync('test/unit/fixtures/sample_collection.json').toString()));
 
 describe('Request Snippet', function () {
 
@@ -457,7 +456,7 @@ describe('Request Snippet', function () {
   });
 
   it('should not have script closing tag ?>', function () {
-    var collection = new Collection(JSON.parse(
+    var collection = new sdk.Collection(JSON.parse(
         fs.readFileSync('test/unit/fixtures/sample_collection.json').toString())),
       request = collection.items.members[0].request;
     convert(request, function (error, snippet) {
@@ -470,7 +469,7 @@ describe('Request Snippet', function () {
   });
 
   it('should trim header keys and not trim header values', function () {
-    var request = new Request({
+    var request = new sdk.Request({
       'method': 'GET',
       'header': [
         {
@@ -586,7 +585,7 @@ describe('Request Snippet', function () {
     });
 
     it('should include graphql body in the snippet', function () {
-      var request = new Request({
+      var request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -619,7 +618,7 @@ describe('Request Snippet', function () {
     });
 
     it('should generate snippets(not error out) for requests with multiple/no file in formdata', function () {
-      var request = new Request({
+      var request = new sdk.Request({
         'method': 'POST',
         'header': [],
         'body': {

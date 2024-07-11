@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  { Request } = require('postman-collection/lib/collection/request'),
+  sdk = require('postman-collection'),
   convert = require('../../lib/index').convert;
 
 describe('Ruby converter', function () {
@@ -9,7 +9,7 @@ describe('Ruby converter', function () {
   });
 
   it('should set read_timeout when requestTimeout is set to non zero value', function () {
-    var request = new Request({
+    var request = new sdk.Request({
         'method': 'GET',
         'header': [],
         'url': {
@@ -32,7 +32,7 @@ describe('Ruby converter', function () {
   });
 
   it('should trim header keys and not trim header values', function () {
-    var request = new Request({
+    var request = new sdk.Request({
       'method': 'GET',
       'header': [
         {
@@ -59,7 +59,7 @@ describe('Ruby converter', function () {
   });
 
   it('should escape special characters inside double quotes', function () {
-    var request = new Request({
+    var request = new sdk.Request({
       'method': 'POST',
       'header': [
         'Content-Type: application/json'
@@ -92,7 +92,7 @@ describe('Ruby converter', function () {
   });
 
   it('should generate snippets for no files in form data', function () {
-    var request = new Request({
+    var request = new sdk.Request({
       'method': 'POST',
       'header': [],
       'body': {
