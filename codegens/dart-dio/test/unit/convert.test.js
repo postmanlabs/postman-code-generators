@@ -1,6 +1,6 @@
 var convert = require('../../index').convert,
   expect = require('chai').expect,
-  { Request } = require('postman-collection/lib/collection/request');
+  sdk = require('postman-collection');
 
 // Disable check with expected snippets as we now have proper newman tests
 describe('Dart Converter', function () {
