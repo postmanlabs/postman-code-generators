@@ -27,7 +27,7 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/python-http.client",
   "dependencies": {
-    "postman-collection": "3.6.8"
+    "postman-collection": "4.4.0"
   },
   "devDependencies": {},
   "engines": {
