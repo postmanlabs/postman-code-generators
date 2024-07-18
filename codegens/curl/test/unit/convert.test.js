@@ -1,4 +1,5 @@
-var expect = require('chai').expect,
+var _ = require('lodash'),
+  expect = require('chai').expect,
   { Request } = require('postman-collection/lib/collection/request'),
   { Url } = require('postman-collection/lib/collection/url'),
   convert = require('../../index').convert,
@@ -1023,6 +1024,123 @@ describe('curl convert function', function () {
           }
           expect(snippet).to.be.a('string');
           expect(snippet).to.include('--request POST');
+        });
+      });
+    });
+
+    describe('should correctly handle NTLM auth', function () {
+      const sampleRequest = {
+        'method': 'POST',
+        'header': [],
+        'auth': {
+          'type': 'ntlm',
+          'ntlm': []
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      };
+
+      it('when no username or password is present', function () {
+        const request = new Request(sampleRequest);
+
+        convert(request, {}, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.not.include('--ntlm');
+        });
+      });
+
+      it('when empty username and password is present', function () {
+        const request = new Request(Object.assign({ auth: {
+          'type': 'ntlm',
+          'ntlm': [
+            {key: 'username', value: ''},
+            {key: 'password', value: ''}
+          ]
+        }}, sampleRequest));
+
+        convert(request, {}, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.not.include('--ntlm');
+        });
+      });
+
+      it('when correct username and password is present with single quotes as option', function () {
+        const request = new Request(_.set(sampleRequest, 'auth.ntlm', [
+          {key: 'username', value: 'joh\'n'},
+          {key: 'password', value: 'tennesse"e'}
+        ]));
+
+        convert(request, { quoteType: 'single' }, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.equal('curl --ntlm --user \'joh\'\\\'\'n:tennesse"e\' --location' +
+            ' --request POST \'https://postman-echo.com/post\'');
+        });
+      });
+
+      it('when correct username and password is present with double as option', function () {
+        const request = new Request(_.set(sampleRequest, 'auth.ntlm', [
+          {key: 'username', value: 'joh\'n'},
+          {key: 'password', value: 'tennesse"e'}
+        ]));
+
+        convert(request, { quoteType: 'double' }, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.equal('curl --ntlm --user "joh\'n:tennesse\\"e" --location' +
+            ' --request POST "https://postman-echo.com/post"');
+        });
+      });
+
+      it('when correct username and password is present with long format option disabled', function () {
+        const request = new Request(_.set(sampleRequest, 'auth.ntlm', [
+          {key: 'username', value: 'joh\'n'},
+          {key: 'password', value: 'tennesse"e'}
+        ]));
+
+        convert(request, { longFormat: false }, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.equal('curl --ntlm -u \'joh\'\\\'\'n:tennesse"e\' -L' +
+            ' -X POST \'https://postman-echo.com/post\'');
+        });
+      });
+
+      it('when username and password is present with domain as well', function () {
+        const request = new Request(_.set(sampleRequest, 'auth.ntlm', [
+          {key: 'username', value: 'joh\'n'},
+          {key: 'password', value: 'tennesse"e'},
+          {key: 'domain', value: 'radio'}
+        ]));
+
+        convert(request, {}, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.equal('curl --ntlm --user \'radio\\joh\'\\\'\'n:tennesse"e\' --location' +
+            ' --request POST \'https://postman-echo.com/post\'');
         });
       });
     });
