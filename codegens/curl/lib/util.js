@@ -144,14 +144,49 @@ var self = module.exports = {
   },
 
   /**
- *
- * @param {*} urlObject The request sdk request.url object
- * @param {boolean} quoteType The user given quoteType
- * @returns {String} The final string after parsing all the parameters of the url including
- * protocol, auth, host, port, path, query, hash
- * This will be used because the url.toString() method returned the URL with non encoded query string
- * and hence a manual call is made to getQueryString() method with encode option set as true.
- */
+   * Generates args required for NTLM authentication to happen
+   *
+   * @param {*} auth - The request sdk request.auth object
+   * @param {string} quoteType - user provided option to decide whether to use single or double quotes
+   * @param {string} format - user provided option to decide whether to use long format or not
+   * @returns {string} - The string to be added if NTLM auth is required
+   */
+  getNtlmAuthInfo: function (auth, quoteType, format) {
+    const ntlmAuth = auth && auth.ntlm;
+
+    if (!auth || auth.type !== 'ntlm' || !ntlmAuth || !ntlmAuth.count || !ntlmAuth.count()) {
+      return '';
+    }
+
+    const username = ntlmAuth.has('username') && ntlmAuth.get('username'),
+      password = ntlmAuth.has('password') && ntlmAuth.get('password'),
+      domain = ntlmAuth.has('domain') && ntlmAuth.get('domain');
+
+    if (!username && !password) {
+      return '';
+    }
+
+    var userArg = format ? '--user ' : '-u ',
+      ntlmString = ' --ntlm ' + userArg + quoteType;
+
+    if (domain) {
+      ntlmString += self.sanitize(domain, true, quoteType) + '\\';
+    }
+    ntlmString += self.sanitize(username, true, quoteType) + ':' + self.sanitize(password, true, quoteType);
+    ntlmString += quoteType;
+
+    return ntlmString;
+  },
+
+  /**
+   *
+   * @param {*} urlObject The request sdk request.url object
+   * @param {boolean} quoteType The user given quoteType
+   * @returns {String} The final string after parsing all the parameters of the url including
+   * protocol, auth, host, port, path, query, hash
+   * This will be used because the url.toString() method returned the URL with non encoded query string
+   * and hence a manual call is made to getQueryString() method with encode option set as true.
+   */
   getUrlStringfromUrlObject: function (urlObject, quoteType) {
     var url = '';
     if (!urlObject) {
