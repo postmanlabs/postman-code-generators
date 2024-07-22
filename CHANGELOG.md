@@ -4,6 +4,15 @@
 
 ## [v1.12.0] - 2024-07-22
 
+### Chore
+
+-  Updated postman-collection sdk to version 4.4.0 in missing codegens.
+
+### Fixed
+
+-  Fix typo in Content-Header for audio/midi files in codegens.
+-  Added support for NTLM auth support in cURL codegen.
+
 ## [v1.11.0] - 2024-07-10
 
 ### Chore
