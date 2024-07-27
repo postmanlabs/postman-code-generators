@@ -5,7 +5,7 @@ _Manage all of your organization's APIs in Postman, with the industry's most com
 *Supercharge your API workflow.*  
 *Modern software is built on APIs. Postman helps you develop APIs faster.*
 
-# postman-code-generators [![Build Status](https://travis-ci.com/postmanlabs/postman-code-generators.svg?branch=master)](https://travis-ci.com/postmanlabs/postman-code-generators)
+# postman-code-generators
 
 This module converts a [Postman SDK](https://github.com/postmanlabs/postman-collection) Request [Object](https://www.postmanlabs.com/postman-collection/Request.html) into a code snippet of chosen language.
 
@@ -52,7 +52,7 @@ List of supported code generators:
 | Swift | URLSession | 
 ## Table of contents 
 
-- [postman-code-generators ![Build Status](https://travis-ci.com/postmanlabs/postman-code-generators)](#postman-code-generators-)
+- [postman-code-generators
   - [Table of contents](#table-of-contents)
   - [Getting Started](#getting-started)
   - [Prerequisite](#prerequisite)
