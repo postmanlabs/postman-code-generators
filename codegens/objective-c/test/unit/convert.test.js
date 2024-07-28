@@ -1,14 +1,14 @@
 var convert = require('../../index').convert,
   expect = require('chai').expect,
   collection = require('./fixtures/collection.json'),
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   expectedSnippets = require('./fixtures/snippets.json');
 
 describe('Objective-C-NSURLSession Converter', function () {
   describe('convert for different request types', function () {
     collection.item.forEach((item) => {
       it(item.name, function (done) {
-        const request = new sdk.Request(item.request);
+        const request = new Request(item.request);
         convert(request, {}, (err, snippet) => {
           if (err) {
             expect.fail(null, null, err);
@@ -24,7 +24,7 @@ describe('Objective-C-NSURLSession Converter', function () {
 
 describe('Options Tests', function () {
   it('should indent snippet with type and count specified', function () {
-    var request = new sdk.Request(collection.item[0].request);
+    var request = new Request(collection.item[0].request);
     convert(request, {
       indentType: 'Tab',
       indentCount: 2
@@ -46,7 +46,7 @@ describe('Options Tests', function () {
   });
 
   it('should use all the default options', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [],
       'body': {
@@ -84,7 +84,7 @@ describe('Options Tests', function () {
   });
 
   it('should add code for requestTimeout option', function () {
-    var request = new sdk.Request(collection.item[0].request);
+    var request = new Request(collection.item[0].request);
     convert(request, {
       requestTimeout: 5000
     }, function (error, snippet) {
@@ -97,7 +97,7 @@ describe('Options Tests', function () {
   });
 
   it('should trim request body when trimRequestBody is set to true', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [],
       'body': {
@@ -129,7 +129,7 @@ describe('Options Tests', function () {
   });
 
   it('should include boiler plate if includeBoilerplate is set to true', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [],
       'body': {

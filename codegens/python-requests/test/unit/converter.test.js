@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   mainCollection = require('./fixtures/sample_collection.json'),
   convert = require('../../lib/index').convert;
 
@@ -11,7 +11,7 @@ describe('Python- Requests converter', function () {
 
   it('should not have allow_redirects=False twice in generated snippet when' +
   ' followRedirect option is set as false', function () {
-    var request = new sdk.Request(mainCollection.item[0].request),
+    var request = new Request(mainCollection.item[0].request),
       options = { followRedirect: false, requestTimeout: 0 };
     convert(request, options, function (err, snippet) {
       if (err) {
@@ -24,7 +24,7 @@ describe('Python- Requests converter', function () {
 
   it('should have correct boolean value for allow_redirects(False, uppercased F) in generated snippet when' +
   ' followRedirect option is set as false', function () {
-    var request = new sdk.Request(mainCollection.item[0].request),
+    var request = new Request(mainCollection.item[0].request),
       options = { followRedirect: false };
     convert(request, options, function (err, snippet) {
       if (err) {
@@ -37,7 +37,7 @@ describe('Python- Requests converter', function () {
   });
 
   it('should trim header keys and not trim header values', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'GET',
       'header': [
         {
@@ -64,7 +64,7 @@ describe('Python- Requests converter', function () {
   });
 
   it('should convert JSON tokens into appropriate python tokens', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [
         {
@@ -102,7 +102,7 @@ describe('Python- Requests converter', function () {
   });
 
   it('should generate snippets for no files in form data', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [],
       'body': {

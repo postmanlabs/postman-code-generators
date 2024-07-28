@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   sanitize = require('../../lib/util').sanitize,
   convert = require('../../lib/index').convert,
   getOptions = require('../../lib/index').getOptions,
@@ -7,7 +7,7 @@ var expect = require('chai').expect,
 
 describe('okhttp convert function', function () {
   describe('convert function', function () {
-    var request = new sdk.Request(mainCollection.item[0].request);
+    var request = new Request(mainCollection.item[0].request);
 
     it('should generate snippet with default options given no options', function () {
       convert(request, function (error, snippet) {
@@ -59,7 +59,7 @@ describe('okhttp convert function', function () {
     });
 
     it('should trim header keys and not trim header values', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [
           {
@@ -86,7 +86,7 @@ describe('okhttp convert function', function () {
     });
 
     it('should add content type if formdata field contains a content-type', function () {
-      request = new sdk.Request({
+      request = new Request({
         'method': 'POST',
         'body': {
           'mode': 'formdata',
@@ -121,7 +121,7 @@ describe('okhttp convert function', function () {
     });
 
     it('should generate snippets for no files in form data', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'body': {

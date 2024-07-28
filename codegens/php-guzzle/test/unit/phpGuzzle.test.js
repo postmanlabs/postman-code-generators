@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Collection } = require('postman-collection/lib/collection/collection'),
   fs = require('fs'),
   path = require('path'),
 
@@ -21,7 +21,7 @@ var expect = require('chai').expect,
 describe('convert function', function () {
 
   it('should convert a simple get request', function (done) {
-    const collection = new sdk.Collection(JSON.parse(
+    const collection = new Collection(JSON.parse(
       fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString())));
     convert(collection.items.members[0].request, {includeBoilerplate: true}, function (err, snippet) {
       if (err) {
@@ -38,7 +38,7 @@ describe('convert function', function () {
   });
 
   it('should convert a simple get request without boilerplate', function (done) {
-    const collection = new sdk.Collection(JSON.parse(
+    const collection = new Collection(JSON.parse(
       fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString())));
     convert(collection.items.members[0].request, {includeBoilerplate: false}, function (err, snippet) {
       if (err) {
@@ -53,14 +53,14 @@ describe('convert function', function () {
 
 describe('getHeaders function', function () {
   it('should return an array of headers', function () {
-    const collection = new sdk.Collection(JSON.parse(
+    const collection = new Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       headers = getHeaders(collection.items.members[0].request);
     expect(headers.length).to.equal(3);
   });
 
   it('should return an empty array of headers', function () {
-    const collection = new sdk.Collection(JSON.parse(
+    const collection = new Collection(JSON.parse(
         fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString()))),
       headers = getHeaders(collection.items.members[3].request);
     expect(headers.length).to.equal(0);
@@ -147,7 +147,7 @@ describe('getSnippetHeaders function', function () {
 
 describe('getURL function', function () {
   it('should return an simple string from url object', function () {
-    const collection = new sdk.Collection(JSON.parse(
+    const collection = new Collection(JSON.parse(
       fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString())));
     expect(getURL(collection.items.members[0].request)).to.equal('https://postman-echo.com/headers');
   });
@@ -155,7 +155,7 @@ describe('getURL function', function () {
 
 describe('getMethod function', function () {
   it('should return an simple string representing the method from collection', function () {
-    const collection = new sdk.Collection(JSON.parse(
+    const collection = new Collection(JSON.parse(
       fs.readFileSync(path.resolve(__dirname, collectionsPath, './sample_collection.json').toString())));
     expect(getMethod(collection.items.members[0].request)).to.equal('GET');
   });
