@@ -140,7 +140,12 @@ self = module.exports = {
       snippet += 'from codecs import encode\n';
     }
     snippet += '\n';
-    snippet += `conn = http.client.HTTPSConnection("${sanitize(host)}"`;
+    if (request.url.protocol === 'http') {
+      snippet += `conn = http.client.HTTPConnection("${sanitize(host)}"`;
+    }
+    else {
+      snippet += `conn = http.client.HTTPSConnection("${sanitize(host)}"`;
+    }
     snippet += url.port ? `, ${request.url.port}` : '';
     snippet += options.requestTimeout !== 0 ? `, timeout = ${options.requestTimeout})\n` : ')\n';
 
