@@ -4,6 +4,10 @@
 
 ## [v1.13.0] - 2024-09-11
 
+### Fixed
+
+-   Fix for - [#760](https://github.com/postmanlabs/postman-code-generators/issues/760) Fixed package installation issues with yarn (v4) and pnpm.
+
 ## [v1.12.0] - 2024-07-22
 
 ### Chore
