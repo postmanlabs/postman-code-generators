@@ -1,3 +1,5 @@
+const _ = require('./lodash');
+
 var self = module.exports = {
   /**
      * sanitizes input string by handling escape characters eg: converts '''' to '\'\'', (" to \"  and \ to \\ )
@@ -7,11 +9,16 @@ var self = module.exports = {
      * @param {Boolean} [trim] - indicates whether to trim string or not
      * @param {String} [quoteType] - indicates which quoteType has to be escaped
      * @param {Boolean} [backSlash] - indicates whether to escape backslash(\\)
+     * @param {Boolean} [urlEncode] - indicates whether to url-encode inputString
      * @returns {String}
      */
-  sanitize: function (inputString, trim, quoteType, backSlash) {
+  sanitize: function (inputString, trim, quoteType, backSlash = false, urlEncode = false) {
     if (typeof inputString !== 'string') {
       return '';
+    }
+
+    if (urlEncode) {
+      inputString = encodeURIComponent(inputString);
     }
 
     if (backSlash) {
@@ -22,6 +29,13 @@ var self = module.exports = {
       inputString = inputString.replace(/"/g, '\\"');
       // Escape backslash if double quote was already escaped before call to sanitize
       inputString = inputString.replace(/(?<!\\)\\\\"/g, '\\\\\\"');
+
+      // Escape special characters to preserve their literal meaning within double quotes
+      inputString = inputString
+        .replace(/`/g, '\\`')
+        .replace(/#/g, '\\#')
+        .replace(/\$/g, '\\$')
+        .replace(/!/g, '\\!');
     }
     else if (quoteType === '\'') {
       // for curl escaping of single quotes inside single quotes involves changing of ' to '\''
@@ -50,6 +64,8 @@ var self = module.exports = {
           return '--data';
         case '-F':
           return '--form';
+        case '-g':
+          return '--globoff';
         default:
           return '';
       }
@@ -128,14 +144,49 @@ var self = module.exports = {
   },
 
   /**
- *
- * @param {*} urlObject The request sdk request.url object
- * @param {boolean} quoteType The user given quoteType
- * @returns {String} The final string after parsing all the parameters of the url including
- * protocol, auth, host, port, path, query, hash
- * This will be used because the url.toString() method returned the URL with non encoded query string
- * and hence a manual call is made to getQueryString() method with encode option set as true.
- */
+   * Generates args required for NTLM authentication to happen
+   *
+   * @param {*} auth - The request sdk request.auth object
+   * @param {string} quoteType - user provided option to decide whether to use single or double quotes
+   * @param {string} format - user provided option to decide whether to use long format or not
+   * @returns {string} - The string to be added if NTLM auth is required
+   */
+  getNtlmAuthInfo: function (auth, quoteType, format) {
+    const ntlmAuth = auth && auth.ntlm;
+
+    if (!auth || auth.type !== 'ntlm' || !ntlmAuth || !ntlmAuth.count || !ntlmAuth.count()) {
+      return '';
+    }
+
+    const username = ntlmAuth.has('username') && ntlmAuth.get('username'),
+      password = ntlmAuth.has('password') && ntlmAuth.get('password'),
+      domain = ntlmAuth.has('domain') && ntlmAuth.get('domain');
+
+    if (!username && !password) {
+      return '';
+    }
+
+    var userArg = format ? '--user ' : '-u ',
+      ntlmString = ' --ntlm ' + userArg + quoteType;
+
+    if (domain) {
+      ntlmString += self.sanitize(domain, true, quoteType) + '\\';
+    }
+    ntlmString += self.sanitize(username, true, quoteType) + ':' + self.sanitize(password, true, quoteType);
+    ntlmString += quoteType;
+
+    return ntlmString;
+  },
+
+  /**
+   *
+   * @param {*} urlObject The request sdk request.url object
+   * @param {boolean} quoteType The user given quoteType
+   * @returns {String} The final string after parsing all the parameters of the url including
+   * protocol, auth, host, port, path, query, hash
+   * This will be used because the url.toString() method returned the URL with non encoded query string
+   * and hence a manual call is made to getQueryString() method with encode option set as true.
+   */
   getUrlStringfromUrlObject: function (urlObject, quoteType) {
     var url = '';
     if (!urlObject) {
@@ -159,7 +210,7 @@ var self = module.exports = {
       url += urlObject.getPath();
     }
     if (urlObject.query && urlObject.query.count()) {
-      let queryString = urlObject.getQueryString({ ignoreDisabled: true, encode: true });
+      let queryString = self.getQueryString(urlObject);
       queryString && (url += '?' + queryString);
     }
     if (urlObject.hash) {
@@ -167,6 +218,51 @@ var self = module.exports = {
     }
 
     return self.sanitize(url, false, quoteType);
+  },
+
+  /**
+   * @param {Object} urlObject
+   * @returns {String}
+   */
+  getQueryString: function (urlObject) {
+    let isFirstParam = true,
+      params = _.get(urlObject, 'query.members'),
+      result = '';
+    if (Array.isArray(params)) {
+      result = _.reduce(params, function (result, param) {
+        if (param.disabled === true) {
+          return result;
+        }
+
+        if (isFirstParam) {
+          isFirstParam = false;
+        }
+        else {
+          result += '&';
+        }
+
+        return result + self.encodeParam(param.key) + '=' + self.encodeParam(param.value);
+      }, result);
+    }
+
+    return result;
+  },
+
+  /**
+   * Encode param except the following characters- [,{,},],%,+
+   *
+   * @param {String} param
+   * @returns {String}
+   */
+  encodeParam: function (param) {
+    return encodeURIComponent(param)
+      .replace(/%5B/g, '[')
+      .replace(/%7B/g, '{')
+      .replace(/%5D/g, ']')
+      .replace(/%7D/g, '}')
+      .replace(/%2B/g, '+')
+      .replace(/%25/g, '%')
+      .replace(/'/g, '%27');
   },
 
   /**
@@ -198,6 +294,86 @@ var self = module.exports = {
         disabled: disabled,
         contentType: contentType
       });
+    }
+  },
+
+  /**
+   * @param {Object} body
+   * @returns {boolean}
+   *
+   * Determines if a request body is actually empty.
+   * This is needed because body.isEmpty() returns false for formdata
+   * and urlencoded when they contain only disabled params which will not
+   * be a part of the curl request.
+   */
+  isBodyEmpty (body) {
+    if (!body) {
+      return true;
+    }
+
+    if (body.isEmpty()) {
+      return true;
+    }
+
+    if (body.mode === 'formdata' || body.mode === 'urlencoded') {
+      let memberCount = 0;
+      body[body.mode] && body[body.mode].members && body[body.mode].members.forEach((param) => {
+        if (!param.disabled) {
+          memberCount += 1;
+        }
+      });
+
+      return memberCount === 0;
+    }
+
+    return false;
+  },
+
+  /**
+   * Decide whether we should add the HTTP method explicitly to the cURL command.
+   *
+   * @param {Object} request
+   * @param {Object} options
+   *
+   * @returns {Boolean}
+   */
+  shouldAddHttpMethod: function (request, options) {
+    let followRedirect = options.followRedirect,
+      followOriginalHttpMethod = options.followOriginalHttpMethod,
+      disableBodyPruning = true,
+      isBodyEmpty = self.isBodyEmpty(request.body);
+
+    // eslint-disable-next-line lodash/prefer-is-nil
+    if (request.protocolProfileBehavior !== null && request.protocolProfileBehavior !== undefined) {
+      followRedirect = _.get(request, 'protocolProfileBehavior.followRedirects', followRedirect);
+      followOriginalHttpMethod =
+        _.get(request, 'protocolProfileBehavior.followOriginalHttpMethod', followOriginalHttpMethod);
+      disableBodyPruning = _.get(request, 'protocolProfileBehavior.disableBodyPruning', true);
+    }
+
+    if (followRedirect && followOriginalHttpMethod) {
+      return true;
+    }
+
+    switch (request.method) {
+      case 'HEAD':
+        return false;
+      case 'GET':
+        // disableBodyPruning will generally not be present in the request
+        // the only time it will be present, its value will be _false_
+        // i.e. the user wants to prune the request body despite it being present
+        if (!isBodyEmpty && disableBodyPruning) {
+          return true;
+        }
+
+        return false;
+      case 'POST':
+        return isBodyEmpty;
+      case 'DELETE':
+      case 'PUT':
+      case 'PATCH':
+      default:
+        return true;
     }
   }
 };

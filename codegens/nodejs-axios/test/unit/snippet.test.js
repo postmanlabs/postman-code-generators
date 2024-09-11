@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   sanitize = require('../../lib/util').sanitize,
   parseBody = require('../../lib/parseRequest').parseBody,
   getOptions = require('../../lib/index').getOptions,
@@ -8,14 +8,14 @@ var expect = require('chai').expect,
 
 describe('nodejs-axios convert function', function () {
   describe('Convert function', function () {
-    var request,
+    let request,
       reqObject,
       options = {},
       snippetArray,
       line_no;
 
     it('should return a Tab indented snippet ', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         indentType: 'Tab',
         indentCount: 1
@@ -23,20 +23,19 @@ describe('nodejs-axios convert function', function () {
       convert(request, options, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
-          return;
         }
 
         expect(snippet).to.be.a('string');
         snippetArray = snippet.split('\n');
         for (var i = 0; i < snippetArray.length; i++) {
-          if (snippetArray[i] === 'var config = {') { line_no = i + 1; }
+          if (snippetArray[i] === 'let config = {') { line_no = i + 1; }
         }
         expect(snippetArray[line_no].charAt(0)).to.equal('\t');
       });
     });
 
     it('should return snippet with timeout property when timeout is set to non zero', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         requestTimeout: 1000
       };
@@ -51,7 +50,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should use JSON.parse if the content-type is application/vnd.api+json', function () {
-      request = new sdk.Request({
+      request = new Request({
         'method': 'POST',
         'header': [
           {
@@ -84,20 +83,59 @@ describe('nodejs-axios convert function', function () {
       });
     });
 
-    it('should return snippet with maxRedirects property set to ' +
-        '0 for no follow redirect', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
-      options = {
-        followRedirect: false
-      };
-      convert(request, options, function (error, snippet) {
-        if (error) {
-          expect.fail(null, null, error);
-          return;
-        }
+    describe('maxRedirects property', function () {
+      it('should return snippet with maxRedirects property set to ' +
+      '0 for no follow redirect', function () {
+        const request = new Request(mainCollection.item[0].request);
+        options = {
+          followRedirect: false
+        };
+        convert(request, options, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
 
-        expect(snippet).to.be.a('string');
-        expect(snippet).to.include('maxRedirects: 0');
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.include('maxRedirects: 0');
+        });
+      });
+
+      it('should return snippet with maxRedirects property set to ' +
+      '0 for no follow redirect from request settings', function () {
+        const request = new Request(mainCollection.item[0].request),
+          options = {};
+
+        request.protocolProfileBehavior = {
+          followRedirects: false
+        };
+
+        convert(request, options, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.include('maxRedirects: 0');
+        });
+      });
+
+      it('should return snippet with no maxRedirects property when ' +
+        'follow redirect is true from request settings', function () {
+        const request = new Request(mainCollection.item[0].request),
+          options = {};
+
+        request.protocolProfileBehavior = {
+          followRedirects: true
+        };
+
+        convert(request, options, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.not.include('maxRedirects');
+        });
       });
     });
 
@@ -107,7 +145,7 @@ describe('nodejs-axios convert function', function () {
         'url': 'https://echo.getpostman.com/post',
         'method': 'POST'
       };
-      request = new sdk.Request(reqObject);
+      request = new Request(reqObject);
       convert(request, options, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
@@ -119,7 +157,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should not fail for a random body mode', function () {
-      request = new sdk.Request(mainCollection.item[2].request);
+      request = new Request(mainCollection.item[2].request);
       request.body.mode = 'random';
       request.body[request.body.mode] = {};
 
@@ -135,7 +173,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should generate snippet for file body mode', function () {
-      request = new sdk.Request({
+      request = new Request({
         'url': 'https://echo.getpostman.com/post',
         'method': 'POST',
         'body': {
@@ -160,7 +198,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should add content type if formdata field contains a content-type', function () {
-      request = new sdk.Request({
+      request = new Request({
         'method': 'POST',
         'body': {
           'mode': 'formdata',
@@ -214,7 +252,7 @@ describe('nodejs-axios convert function', function () {
           console.log(error);
         });
         */
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {};
       convert(request, options, function (error, snippet) {
         if (error) {
@@ -228,14 +266,14 @@ describe('nodejs-axios convert function', function () {
           }
         });
         // -2 because last one is a newline
-        const lastLine = snippetArray[snippetArray.length - 2]
+        const lastLine = snippetArray[snippetArray.length - 2];
         expect(lastLine.charAt(lastLine.length - 1)).to.equal(';');
       });
     });
 
     it('should return snippet with no trailing comma when requestTimeout ' +
       'is set to non zero', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         requestTimeout: 1000
       };
@@ -253,7 +291,7 @@ describe('nodejs-axios convert function', function () {
 
     it('should return snippet with just a single comma when requestTimeout ' +
       'is set to non zero and followRedirect as false', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         requestTimeout: 1000,
         followRedirect: false,
@@ -273,7 +311,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should not require unused fs', function () {
-      request = new sdk.Request({
+      request = new Request({
         'url': 'https://postman-echo.com/get',
         'method': 'GET',
         'body': {
@@ -291,7 +329,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should add fs for form-data file upload', function () {
-      request = new sdk.Request({
+      request = new Request({
         'url': 'https://postman-echo.com/post',
         'method': 'POST',
         'body': {
@@ -310,12 +348,12 @@ describe('nodejs-axios convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('var data = new FormData()');
+        expect(snippet).to.include('let data = new FormData()');
       });
     });
 
     it('should trim header keys and not trim header values', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [
           {
@@ -342,7 +380,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should include JSON.stringify in the snippet for raw json bodies', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [
           {
@@ -376,7 +414,7 @@ describe('nodejs-axios convert function', function () {
     });
 
     it('should generate snippets for no files in form data', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -424,6 +462,50 @@ describe('nodejs-axios convert function', function () {
       });
     });
 
+    it('should return snippet with maxBodyLength property as "Infinity"', function () {
+      request = new Request(mainCollection.item[0].request);
+      options = {
+        requestTimeout: 1000
+      };
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+          return;
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('maxBodyLength: Infinity');
+      });
+    });
+
+    it('should return snippet with promise based code when async_await is disabled', function () {
+      const request = new Request(mainCollection.item[0].request);
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('axios.request(config)');
+        expect(snippet).to.include('.then((response) => {');
+        expect(snippet).to.include('.catch((error) => {');
+      });
+    });
+
+    it('should return snippet with async/await based code when option is enabled', function () {
+      const request = new Request(mainCollection.item[0].request);
+
+      convert(request, { asyncAwaitEnabled: true }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('async function makeRequest() {');
+        expect(snippet).to.include('const response = await axios.request(config);');
+        expect(snippet).to.include('catch (error) {');
+        expect(snippet).to.include('makeRequest();');
+      });
+    });
+
     describe('getOptions function', function () {
 
       it('should return an array of specific options', function () {
@@ -436,7 +518,7 @@ describe('nodejs-axios convert function', function () {
         expect(getOptions()[2]).to.have.property('id', 'requestTimeout');
         expect(getOptions()[3]).to.have.property('id', 'followRedirect');
         expect(getOptions()[4]).to.have.property('id', 'trimRequestBody');
-        // expect(getOptions()[5]).to.have.property('id', 'AsyncAwait_enabled');
+        expect(getOptions()[5]).to.have.property('id', 'asyncAwaitEnabled');
       });
     });
 

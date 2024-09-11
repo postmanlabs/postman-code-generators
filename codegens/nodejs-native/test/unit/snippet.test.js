@@ -1,21 +1,19 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   convert = require('../../lib/index').convert;
 
 describe('nodejs-native convert function', function () {
   it('should sustain path variables when request has no path and has query params', function () {
-    var request = new sdk.Request({
+    var request = new Request({
         'method': 'GET',
         'header': [],
         'body': {},
         'url': {
-          'raw': 'https://89c918b1-f4f8-4812-8e6c-69ecbeeb8409.mock.pstmn.io?query1=1&query2=2',
+          'raw': 'https://postman-echo.com?query1=1&query2=2',
           'protocol': 'https',
           'host': [
-            '89c918b1-f4f8-4812-8e6c-69ecbeeb8409',
-            'mock',
-            'pstmn',
-            'io'
+            'postman-echo',
+            'com'
           ],
           'path': [],
           'query': [
@@ -44,7 +42,7 @@ describe('nodejs-native convert function', function () {
 
   it('should parse the url correctly even if the host and path are wrong in the url object',
     function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'body': {
           'mode': 'raw',
@@ -72,7 +70,7 @@ describe('nodejs-native convert function', function () {
     });
 
   it('should add port in the options when host has port specified', function () {
-    var request = new sdk.Request({
+    var request = new Request({
         'method': 'GET',
         'header': [],
         'url': {
@@ -98,7 +96,7 @@ describe('nodejs-native convert function', function () {
   });
 
   it('should use JSON.parse if the content-type is application/vnd.api+json', function () {
-    let request = new sdk.Request({
+    let request = new Request({
       'method': 'POST',
       'header': [
         {
@@ -132,7 +130,7 @@ describe('nodejs-native convert function', function () {
   });
 
   it('should trim header keys and not trim header values', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'GET',
       'header': [
         {
@@ -159,7 +157,7 @@ describe('nodejs-native convert function', function () {
   });
 
   it('should add content type if formdata field contains a content-type', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'body': {
         'mode': 'formdata',
@@ -194,7 +192,7 @@ describe('nodejs-native convert function', function () {
   });
 
   it('should return snippet with ES6 features when ES6_enabled is set to true', function () {
-    var request = new sdk.Request({
+    var request = new Request({
         'method': 'POST',
         'header': [
           {
@@ -238,7 +236,7 @@ describe('nodejs-native convert function', function () {
   });
 
   it('should include JSON.stringify in the snippet for raw json bodies', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [
         {
@@ -271,7 +269,7 @@ describe('nodejs-native convert function', function () {
     });
   });
   it('should generate snippets for no files in form data', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [],
       'body': {
@@ -319,7 +317,7 @@ describe('nodejs-native convert function', function () {
     });
   });
   it('should generate valid snippet for single/double quotes in url', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'GET',
       'header': [],
       'url': {
@@ -355,7 +353,7 @@ describe('nodejs-native convert function', function () {
   });
 
   it('should generate valid snippet and should include appropriate variable name', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'GET',
       'header': [],
       'body': {},
@@ -373,7 +371,7 @@ describe('nodejs-native convert function', function () {
 
   it('should generate valid snippet paths for single/double quotes in URL', function () {
     // url = https://a"b'c.com/'d/"e
-    var request = new sdk.Request("https://a\"b'c.com/'d/\"e"); // eslint-disable-line quotes
+    var request = new Request("https://a\"b'c.com/'d/\"e"); // eslint-disable-line quotes
     convert(request, {}, function (error, snippet) {
       if (error) {
         expect.fail(null, null, error);

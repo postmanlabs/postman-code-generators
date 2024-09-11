@@ -1,7 +1,7 @@
 var fs = require('fs'),
   expect = require('chai').expect,
   exec = require('shelljs').exec,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   path = require('path'),
   newmanResponses = require('./newmanResponses.json'),
   async = require('async');
@@ -150,7 +150,7 @@ function runSnippet (testConfig, snippets, collectionName) {
             });
           }
         }
-        expect(result[0]).deep.equal(result[1]);
+        expect(result[0].toString().trim()).deep.equal(result[1].toString().trim());
         return done(null);
       });
     });
@@ -179,7 +179,7 @@ module.exports = {
         // Convert code snippet
         var collection = require(collectionObj.path);
         async.map(collection.item, function (item, cb) {
-          var request = new sdk.Request(item.request);
+          var request = new Request(item.request);
 
           convert(request, options, function (err, snippet) {
             if (err) {

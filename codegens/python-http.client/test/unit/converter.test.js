@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   convert = require('../../lib/index').convert,
   getOptions = require('../../lib/index').getOptions,
   parseBody = require('../../lib/util/parseBody'),
@@ -9,7 +9,7 @@ var expect = require('chai').expect,
 describe('Python-http.client converter', function () {
 
   describe('convert function', function () {
-    var request = new sdk.Request(mainCollection.item[0].request),
+    var request = new Request(mainCollection.item[0].request),
       snippetArray;
 
     const SINGLE_SPACE = ' ';
@@ -37,7 +37,7 @@ describe('Python-http.client converter', function () {
 
     it('should parse the url correctly even if the host and path are wrong in the url object',
       function () {
-        var request = new sdk.Request({
+        var request = new Request({
           'method': 'GET',
           'body': {
             'mode': 'raw',
@@ -65,7 +65,7 @@ describe('Python-http.client converter', function () {
       });
 
     it('should add content type if formdata field contains a content-type', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'body': {
           'mode': 'formdata',
@@ -100,7 +100,7 @@ describe('Python-http.client converter', function () {
     });
 
     it('should convert JSON tokens into appropriate python tokens', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [
           {
@@ -154,7 +154,7 @@ describe('Python-http.client converter', function () {
     });
 
     it('should generate snippet with requestTimeout option', function () {
-      var request = new sdk.Request(mainCollection.item[0].request);
+      var request = new Request(mainCollection.item[0].request);
       convert(request, { requestTimeout: 2000 }, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
@@ -165,7 +165,7 @@ describe('Python-http.client converter', function () {
     });
 
     it('should generate snippet when url is not provied', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'name': 'test',
         'request': {
           'method': 'GET',
@@ -186,7 +186,7 @@ describe('Python-http.client converter', function () {
     });
 
     it('should generate snippet with correct indent when body mode is formdata', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [
           {
@@ -220,7 +220,7 @@ describe('Python-http.client converter', function () {
     });
 
     it('should add port in the options when host has port specified', function () {
-      var request = new sdk.Request({
+      var request = new Request({
           'method': 'GET',
           'header': [],
           'url': {
@@ -246,7 +246,7 @@ describe('Python-http.client converter', function () {
     });
 
     it('should trim header keys and not trim header values', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [
           {
@@ -273,7 +273,7 @@ describe('Python-http.client converter', function () {
     });
 
     it('should generate snippets for no files in form data', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -324,7 +324,7 @@ describe('Python-http.client converter', function () {
 
     it('should generate valid snippets for single/double quotes in URL', function () {
       // url = https://a"b'c.com/'d/"e
-      var request = new sdk.Request("https://a\"b'c.com/'d/\"e"); // eslint-disable-line quotes
+      var request = new Request("https://a\"b'c.com/'d/\"e"); // eslint-disable-line quotes
       convert(request, {}, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
@@ -336,10 +336,33 @@ describe('Python-http.client converter', function () {
       });
     });
 
+    it('should generate valid snippets when url uses http protocol', function () {
+      var request = new sdk.Request({
+        'method': 'GET',
+        'header': [],
+        'url': {
+          'raw': 'http://localhost:3000',
+          'protocol': 'http',
+          'host': [
+            'localhost'
+          ],
+          'port': '3000'
+        },
+        'response': []
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('conn = http.client.HTTPConnection("localhost", 3000)');
+      });
+    });
+
   });
 
   describe('parseBody function', function () {
-    var requestEmptyFormdata = new sdk.Request({
+    var requestEmptyFormdata = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -347,7 +370,7 @@ describe('Python-http.client converter', function () {
           'formdata': []
         }
       }),
-      requestEmptyUrlencoded = new sdk.Request({
+      requestEmptyUrlencoded = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -355,7 +378,7 @@ describe('Python-http.client converter', function () {
           'urlencoded': []
         }
       }),
-      requestEmptyRaw = new sdk.Request({
+      requestEmptyRaw = new Request({
         'method': 'POST',
         'header': [],
         'body': {

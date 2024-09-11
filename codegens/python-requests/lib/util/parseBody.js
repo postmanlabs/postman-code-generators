@@ -31,7 +31,7 @@ var _ = require('../lodash'),
     'js': 'text/javascript',
     'json': 'application/json',
     'jsonld': 'application/ld+json',
-    'mid': 'audip/midi',
+    'mid': 'audio/midi',
     'midi': 'audio/midi',
     'mjs': 'text/javascript',
     'mp3': 'audio/mpeg',
@@ -156,7 +156,7 @@ module.exports = function (request, indentation, bodyTrim, contentType) {
         catch (e) {
           graphqlVariables = {};
         }
-        requestBody += `payload=${sanitize(JSON.stringify({
+        requestBody += `payload = ${sanitize(JSON.stringify({
           query: query,
           variables: graphqlVariables
         }),
@@ -169,10 +169,10 @@ module.exports = function (request, indentation, bodyTrim, contentType) {
             return `${sanitize(value.key, request.body.mode, bodyTrim)}=` +
                         `${sanitize(value.value, request.body.mode, bodyTrim)}`;
           });
-          requestBody += `payload='${bodyDataMap.join('&')}'\n`;
+          requestBody += `payload = '${bodyDataMap.join('&')}'\n`;
         }
         else {
-          requestBody = 'payload={}\n';
+          requestBody = 'payload = {}\n';
         }
         return requestBody;
       case 'formdata':
@@ -194,19 +194,19 @@ module.exports = function (request, indentation, bodyTrim, contentType) {
                     `,open('${sanitize(filesrc, request.body.mode, bodyTrim)}','rb'),` +
                     `'${contentType}'))`;
           });
-          requestBody = `payload={${bodyDataMap.join(',\n')}}\nfiles=[\n${bodyFileMap.join(',\n')}\n]\n`;
+          requestBody = `payload = {${bodyDataMap.join(',\n')}}\nfiles=[\n${bodyFileMap.join(',\n')}\n]\n`;
         }
         else {
-          requestBody = 'payload={}\nfiles={}\n';
+          requestBody = 'payload = {}\nfiles={}\n';
         }
         return requestBody;
       case 'file':
-        // return `payload={open('${request.body[request.body.mode].src}', 'rb').read()\n}`;
-        return 'payload="<file contents here>"\n';
+        // return `payload = {open('${request.body[request.body.mode].src}', 'rb').read()\n}`;
+        return 'payload = "<file contents here>"\n';
       default:
-        return 'payload={}\n';
+        return 'payload = {}\n';
     }
   }
-  return 'payload={}\n';
+  return 'payload = {}\n';
 }
 ;

@@ -64,8 +64,11 @@ typings/
 # next.js build output
 .next
 
-out/
+# Cargo
+target/
 
+# Newman test generated files
+out/
 newmanResponses.json
 dummyFile*.txt
 dummyBinaryFile

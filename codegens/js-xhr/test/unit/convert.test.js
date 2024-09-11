@@ -1,14 +1,15 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
+  { Url } = require('postman-collection/lib/collection/url'),
   sanitize = require('../../lib/util.js').sanitize,
-
+  getUrlStringfromUrlObject = require('../../lib/util').getUrlStringfromUrlObject,
   convert = require('../../index').convert,
   getOptions = require('../../index').getOptions;
 
 describe('js-xhr convert function', function () {
 
   it('should trim header keys and not trim header values', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'GET',
       'header': [
         {
@@ -36,7 +37,7 @@ describe('js-xhr convert function', function () {
   });
 
   it('should include JSON.stringify in the snippet for raw json bodies', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [
         {
@@ -70,7 +71,7 @@ describe('js-xhr convert function', function () {
   });
 
   it('should use JSON.parse if the content-type is application/vnd.api+json', function () {
-    let request = new sdk.Request({
+    let request = new Request({
       'method': 'POST',
       'header': [
         {
@@ -104,7 +105,7 @@ describe('js-xhr convert function', function () {
   });
 
   it('should generate snippets for no files in form data', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [],
       'body': {
@@ -161,6 +162,15 @@ describe('js-xhr convert function', function () {
     });
     it('should trim input string when needed', function () {
       expect(sanitize('inputString     ', true)).to.equal('inputString');
+    });
+    it('should not encode unresolved query params and ' +
+    'encode every other query param, both present together', function () {
+      let rawUrl = 'https://postman-echo.com/get?key1={{value}}&key2=\'a b+c\'',
+        urlObject = new Url(rawUrl),
+        outputUrlString = getUrlStringfromUrlObject(urlObject);
+      expect(outputUrlString).to.not.include('key1=%7B%7Bvalue%7B%7B');
+      expect(outputUrlString).to.not.include('key2=\'a b+c\'');
+      expect(outputUrlString).to.equal('https://postman-echo.com/get?key1={{value}}&key2=%27a%20b+c%27');
     });
   });
 
@@ -223,7 +233,7 @@ describe('js-xhr convert function', function () {
         'description': 'The HTTP `POST` request with formData'
       },
 
-      request = new sdk.Request(req),
+      request = new Request(req),
       options = {
         indentCount: 2,
         indentType: 'Space',
@@ -268,7 +278,7 @@ describe('js-xhr convert function', function () {
         'description': 'Request without a body'
       },
 
-      request = new sdk.Request(req),
+      request = new Request(req),
       options = {
         indentCount: 2,
         indentType: 'Space'
@@ -308,7 +318,7 @@ describe('js-xhr convert function', function () {
         'description': 'Request without a body'
       },
 
-      request = new sdk.Request(req),
+      request = new Request(req),
       options = {
         indentCount: 2,
         indentType: 'Space'

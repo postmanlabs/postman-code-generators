@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   sanitize = require('../../lib/util').sanitize,
   getOptions = require('../../index').getOptions,
   convert = require('../../index').convert,
@@ -13,7 +13,7 @@ describe('js-fetch convert function for test collection', function () {
       line_no;
 
     it('should return a Space indented snippet ', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         indentType: 'Space',
         indentCount: 2
@@ -23,11 +23,10 @@ describe('js-fetch convert function for test collection', function () {
           expect.fail(null, null, error);
           return;
         }
-
         expect(snippet).to.be.a('string');
         snippetArray = snippet.split('\n');
         for (var i = 0; i < snippetArray.length; i++) {
-          if (snippetArray[i] === 'var requestOptions = {') { line_no = i + 1; }
+          if (snippetArray[i] === 'const requestOptions = {') { line_no = i + 1; }
         }
         expect(snippetArray[line_no].charAt(0)).to.equal(' ');
         expect(snippetArray[line_no].charAt(1)).to.equal(' ');
@@ -35,7 +34,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should return snippet with no setTimeout function when timeout is set to zero', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         requestTimeout: 0
       };
@@ -50,7 +49,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should use JSON.parse if the content-type is application/vnd.api+json', function () {
-      request = new sdk.Request({
+      request = new Request({
         'method': 'POST',
         'header': [
           {
@@ -85,7 +84,7 @@ describe('js-fetch convert function for test collection', function () {
 
     it('should return snippet with redirect property set to manual for ' +
                 'no follow redirect', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         followRedirect: false
       };
@@ -95,13 +94,13 @@ describe('js-fetch convert function for test collection', function () {
           return;
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('redirect: \'manual\'');
+        expect(snippet).to.include('redirect: "manual"');
       });
     });
 
     it('should return snippet with redirect property set to follow for ' +
                 ' follow redirect', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         followRedirect: true
       };
@@ -111,12 +110,12 @@ describe('js-fetch convert function for test collection', function () {
           return;
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('redirect: \'follow\'');
+        expect(snippet).to.include('redirect: "follow"');
       });
     });
 
     it('should default to mode raw body mode is some random value', function () {
-      request = new sdk.Request(mainCollection.item[2].request);
+      request = new Request(mainCollection.item[2].request);
       request.body.mode = 'random';
       request.body[request.body.mode] = {};
       options = {};
@@ -131,14 +130,14 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should generate snippet for no body provided', function () {
-      request = new sdk.Request({
+      request = new Request({
         'method': 'GET',
         'url': {
-          'raw': 'https://mockbin.org/request',
+          'raw': 'https://postman-echo.com/request',
           'protocol': 'https',
           'host': [
-            'mockbin',
-            'org'
+            'postman-echo',
+            'com'
           ],
           'path': [
             'request'
@@ -154,7 +153,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should trim header keys and not trim header values', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [
           {
@@ -182,7 +181,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should include JSON.stringify in the snippet for raw json bodies', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [
           {
@@ -216,7 +215,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should generate snippets for no files in form data', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -265,7 +264,7 @@ describe('js-fetch convert function for test collection', function () {
     });
 
     it('should generate valid snippet for single/double quotes in url', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [],
         'url': {
@@ -298,6 +297,62 @@ describe('js-fetch convert function for test collection', function () {
         expect(snippet).to.include('fetch("https://postman-echo.com/get?query1=b\'b&query2=c\\"c"');
       });
     });
+
+    it('should return snippet with promise based code when async_await is disabled', function () {
+      const request = new Request(mainCollection.item[0].request);
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('fetch(');
+        expect(snippet).to.include('.then((response) => ');
+        expect(snippet).to.include('.catch((error) => ');
+      });
+    });
+
+    it('should return snippet with async/await based code when option is enabled', function () {
+      const request = new Request(mainCollection.item[0].request);
+
+      convert(request, { asyncAwaitEnabled: true }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('const response = await fetch(');
+        expect(snippet).to.include('const result = await response.text()');
+        expect(snippet).to.include('catch (error) {');
+      });
+    });
+
+    it('should return timeout snippet with promise based code when async_await is disabled', function () {
+      const request = new Request(mainCollection.item[0].request);
+
+      convert(request, { requestTimeout: 3000 }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('const controller');
+        expect(snippet).to.include('const timerId');
+        expect(snippet).to.include('.finally(() => clearTimeout(timerId))');
+      });
+    });
+
+    it('should return timeout snippet with promise based code when async_await is enabled', function () {
+      const request = new Request(mainCollection.item[0].request);
+
+      convert(request, { requestTimeout: 3000, asyncAwaitEnabled: true }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('const controller');
+        expect(snippet).to.include('const timerId');
+        expect(snippet).to.include('} finally {');
+      });
+    });
   });
 
   describe('getOptions function', function () {
@@ -312,6 +367,7 @@ describe('js-fetch convert function for test collection', function () {
       expect(getOptions()[2]).to.have.property('id', 'requestTimeout');
       expect(getOptions()[3]).to.have.property('id', 'followRedirect');
       expect(getOptions()[4]).to.have.property('id', 'trimRequestBody');
+      expect(getOptions()[5]).to.have.property('id', 'asyncAwaitEnabled');
     });
   });
 

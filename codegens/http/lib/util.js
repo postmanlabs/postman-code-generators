@@ -36,7 +36,7 @@ var contentTypeHeaderMap = {
   'js': 'text/javascript',
   'json': 'application/json',
   'jsonld': 'application/ld+json',
-  'mid': 'audip/midi',
+  'mid': 'audio/midi',
   'midi': 'audio/midi',
   'mjs': 'text/javascript',
   'mp3': 'audio/mpeg',

@@ -1,5 +1,5 @@
 var _ = require('./lodash'),
-  sdk = require('postman-collection'),
+  { Url } = require('postman-collection/lib/collection/url'),
   sanitize = require('./util/sanitize').sanitize,
   sanitizeOptions = require('./util/sanitize').sanitizeOptions,
   addFormParam = require('./util/sanitize').addFormParam,
@@ -113,7 +113,7 @@ self = module.exports = {
     identity = options.indentType === 'Tab' ? '\t' : ' ';
     indentation = identity.repeat(options.indentCount);
 
-    url = sdk.Url.parse(request.url.toString());
+    url = Url.parse(request.url.toString());
     host = url.host ? url.host.join('.') : '';
     path = url.path ? '/' + url.path.join('/') : '/';
     query = url.query ? _.reduce(url.query, (accum, q) => {
@@ -140,7 +140,12 @@ self = module.exports = {
       snippet += 'from codecs import encode\n';
     }
     snippet += '\n';
-    snippet += `conn = http.client.HTTPSConnection("${sanitize(host)}"`;
+    if (request.url.protocol === 'http') {
+      snippet += `conn = http.client.HTTPConnection("${sanitize(host)}"`;
+    }
+    else {
+      snippet += `conn = http.client.HTTPSConnection("${sanitize(host)}"`;
+    }
     snippet += url.port ? `, ${request.url.port}` : '';
     snippet += options.requestTimeout !== 0 ? `, timeout = ${options.requestTimeout})\n` : ')\n';
 

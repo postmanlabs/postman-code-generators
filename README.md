@@ -5,9 +5,9 @@ _Manage all of your organization's APIs in Postman, with the industry's most com
 *Supercharge your API workflow.*  
 *Modern software is built on APIs. Postman helps you develop APIs faster.*
 
-# postman-code-generators [![Build Status](https://travis-ci.com/postmanlabs/postman-code-generators.svg?branch=master)](https://travis-ci.com/postmanlabs/postman-code-generators)
+# postman-code-generators
 
-This module converts a [Postman SDK](https://github.com/postmanlabs/postman-collection) Request Object into a code snippet of chosen language.
+This module converts a [Postman SDK](https://github.com/postmanlabs/postman-collection) Request [Object](https://www.postmanlabs.com/postman-collection/Request.html) into a code snippet of chosen language.
 
 Every code generator has two identifiers: `language` and `variant`.
 * `language` of a code generator is the programming language in which the code snippet is generated.
@@ -18,6 +18,7 @@ List of supported code generators:
 | Language | Variant        |
 |-----------|---------------|
 | C | libcurl |
+| C# | HttpClient |
 | C# | RestSharp | 
 | cURL | cURL | 
 | Dart | http | 
@@ -28,37 +29,47 @@ List of supported code generators:
 | JavaScript | Fetch | 
 | JavaScript | jQuery | 
 | JavaScript | XHR |
+| Kotlin | OkHttp |
 | NodeJs | Axios | 
 | NodeJs | Native |
 | NodeJs | Request |
 | NodeJs | Unirest |
 | Objective-C| NSURLSession|
 | OCaml | Cohttp | 
-|PHP | cURL |
-|PHP | Guzzle |
-|PHP | pecl_http |
-|PHP | HTTP_Request2 |
+| PHP | cURL |
+| PHP | Guzzle |
+| PHP | pecl_http |
+| PHP | HTTP_Request2 |
 | PowerShell | RestMethod | 
 | Python | http.client |
 | Python | Requests |
 | R | httr |
 | R | RCurl |
+| Rust | Reqwest |
 | Ruby | Net:HTTP |
 | Shell | Httpie |
 | Shell | wget |
 | Swift | URLSession | 
 ## Table of contents 
 
-1. [Getting Started](#getting-started)
-2. [Prerequisite](#prerequisite)
-3. [Usage](#usage)
-    1. [Using postman code generators as a Library](#using-postman-code-generators-as-a-library)
-4. [Development](#development)
-    1. [Installing Dependencies](#installing-dependencies)
-    2. [Testing](#testing)
-    3. [Packaging](#packaging)
-7. [Contributing](#contributing)
-8. [License](#license)
+- [postman-code-generators
+  - [Table of contents](#table-of-contents)
+  - [Getting Started](#getting-started)
+  - [Prerequisite](#prerequisite)
+  - [Usage](#usage)
+    - [Using postman-code-generators as a Library](#using-postman-code-generators-as-a-library)
+      - [getLanguageList](#getlanguagelist)
+        - [Example:](#example)
+      - [getOptions](#getoptions)
+        - [Example:](#example-1)
+      - [convert](#convert)
+        - [Example:](#example-2)
+  - [Development](#development)
+    - [Installing dependencies](#installing-dependencies)
+    - [Testing](#testing)
+    - [Packaging](#packaging)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ## Getting Started
 To install postman-code-generators as your dependency
@@ -160,7 +171,7 @@ var codegen = require('postman-code-generators'), // require postman-code-genera
 This function takes in five parameters and returns a callback with error and generated code snippet
 * `language` - lang key from the language list returned from getLanguageList function
 * `variant` - variant key provided by getLanguageList function
-* `request` - [Postman-SDK](https://github.com/postmanlabs/postman-collection) Request Object
+* `request` - [Postman-SDK](https://github.com/postmanlabs/postman-collection) Request [Object](https://www.postmanlabs.com/postman-collection/Request.html)
 * `options` - Options that can be used to configure generated code snippet. Defaults will be used for the unspecified attributes  
 * `callback` - callback function with first parameter as error and second parameter as string for code snippet
 

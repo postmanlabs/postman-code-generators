@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   exec = require('shelljs').exec,
   newman = require('newman'),
   parallel = require('async').parallel,
@@ -116,7 +116,7 @@ describe('Powershell-restmethod converter', function () {
     mainCollection.item.forEach(function (item) {
       // Skipping tests for Travis CI, till powershell dependency issue is sorted on travis
       it.skip(item.name, function (done) {
-        var request = new sdk.Request(item.request),
+        var request = new Request(item.request),
           collection = {
             item: [
               {
@@ -156,11 +156,11 @@ describe('Powershell-restmethod converter', function () {
             'raw': 'Hello world'
           },
           'url': {
-            'raw': 'https://mockbin.org/request',
+            'raw': 'https://postman-echo.com/request',
             'protocol': 'https',
             'host': [
-              'mockbin',
-              'org'
+              'postman-echo',
+              'com'
             ],
             'path': [
               'request'
@@ -168,7 +168,7 @@ describe('Powershell-restmethod converter', function () {
           },
           'description': 'Description'
         },
-        pmRequest = new sdk.Request(request),
+        pmRequest = new Request(request),
         options = {
           requestTimeout: 10000,
           multiLine: true,
@@ -180,13 +180,16 @@ describe('Powershell-restmethod converter', function () {
           expect.fail(null, null, error);
           return;
         }
+
         const lines = snippet.split('\n');
         expect(lines[0]).to
           .eql('$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"');
         expect(lines[1]).to.eql('$headers.Add("Content-Type", "text/plain")');
-        expect(lines[3]).to.eql('$body = "Hello world"');
-        expect(lines[5]).to.eql('$response = Invoke-RestMethod \'https://mockbin.org/request\' -Method \'POST\' -Headers $headers -Body $body -TimeoutSec 10'); // eslint-disable-line max-len
-        expect(lines[6]).to.eql('$response | ConvertTo-Json');
+        expect(lines[3]).to.eql('$body = @"');
+        expect(lines[4]).to.eql('Hello world');
+        expect(lines[5]).to.eql('"@');
+        expect(lines[7]).to.eql('$response = Invoke-RestMethod \'https://postman-echo.com/request\' -Method \'POST\' -Headers $headers -Body $body -TimeoutSec 10'); // eslint-disable-line max-len
+        expect(lines[8]).to.eql('$response | ConvertTo-Json');
       });
     });
   });
@@ -195,7 +198,7 @@ describe('Powershell-restmethod converter', function () {
     var request,
       options;
     it('should add a TimeoutSec argument when timeout is set to non zero value', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         requestTimeout: 1000
       };
@@ -210,7 +213,7 @@ describe('Powershell-restmethod converter', function () {
     });
 
     it('should not add a TimeoutSec argument when timeout is set to 0', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         requestTimeout: 0
       };
@@ -225,7 +228,7 @@ describe('Powershell-restmethod converter', function () {
     });
 
     it('should add a MaximumRedirection set to 0 argument when followRedirect is not allowed', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         followRedirect: false
       };
@@ -240,7 +243,7 @@ describe('Powershell-restmethod converter', function () {
     });
 
     it('should not add a MaximumRedirection argument when followRedirect is allowed', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         followRedirect: true
       };
@@ -255,7 +258,7 @@ describe('Powershell-restmethod converter', function () {
     });
 
     it('should default to mode raw when body mode is some random value', function () {
-      request = new sdk.Request(mainCollection.item[2].request);
+      request = new Request(mainCollection.item[2].request);
       request.body.mode = 'random';
       request.body[request.body.mode] = {};
       options = {};
@@ -269,7 +272,7 @@ describe('Powershell-restmethod converter', function () {
     });
 
     it('should generate snippet for file body mode', function () {
-      request = new sdk.Request({
+      request = new Request({
         'url': 'https://echo.getpostman.com/post',
         'method': 'POST',
         'body': {
@@ -294,7 +297,7 @@ describe('Powershell-restmethod converter', function () {
     });
 
     it('should trim header keys and not trim header values', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [
           {
@@ -321,7 +324,7 @@ describe('Powershell-restmethod converter', function () {
     });
 
     it('should include graphql body in the snippet', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -354,7 +357,7 @@ describe('Powershell-restmethod converter', function () {
     });
 
     it('should generate snippets(not error out) for requests with multiple/no file in formdata', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -423,7 +426,7 @@ describe('Powershell-restmethod converter', function () {
     });
 
     it('should add content type if formdata field contains a content-type', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'body': {
           'mode': 'formdata',
@@ -459,7 +462,7 @@ describe('Powershell-restmethod converter', function () {
     });
 
     it('should generate valid snippet for single/double quotes in url', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [],
         'url': {
@@ -495,8 +498,47 @@ describe('Powershell-restmethod converter', function () {
       });
     });
 
+    it('should generate valid snippet when single quotes in custom request method', function () {
+      var request = new Request({
+        // eslint-disable-next-line quotes
+        'method': "TEST';DIR;#'",
+        'header': [],
+        'url': {
+          'raw': 'https://postman-echo.com/get?query1=b\'b&query2=c"c',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'get'
+          ],
+          'query': [
+            {
+              'key': 'query1',
+              'value': "b'b" // eslint-disable-line quotes
+            },
+            {
+              'key': 'query2',
+              'value': 'c"c'
+            }
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        // An extra single quote is placed before a single quote to escape a single quote inside a single quoted string
+        // eslint-disable-next-line quotes
+        expect(snippet).to.include("-CustomMethod 'TEST'';DIR;#'''");
+      });
+    });
+
+
     it('should generate snippet for form data params with no type key present', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         method: 'POST',
         header: [],
         url: {

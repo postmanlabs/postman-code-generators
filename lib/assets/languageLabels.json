@@ -6,6 +6,7 @@
   "python": "Python",
   "ruby": "Ruby",
   "java": "Java",
+  "kotlin": "Kotlin",
   "c": "C",
   "php": "PHP",
   "objective-c": "Objective-C",
@@ -19,5 +20,6 @@
   "ocaml": "OCaml",
   "shell": "Shell",
   "dart": "Dart",
-  "r": "R"
+  "r": "R",
+  "rust": "Rust"
 }

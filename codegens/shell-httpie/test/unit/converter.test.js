@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   runNewmanTest = require('../../../../test/codegen/newman/newmanTestUtil').runNewmanTest,
   convert = require('../../index').convert,
   sanitize = require('../../lib/util/sanitize').quote;
@@ -18,7 +18,7 @@ describe('Shell-Httpie convert function', function () {
   });
 
   it('should add a timeout of 1 hour (3600 seconds) for RequestTimeout set to 0', function () {
-    var request = new sdk.Request({
+    var request = new Request({
         'method': 'GET',
         'header': [],
         'url': {
@@ -43,7 +43,7 @@ describe('Shell-Httpie convert function', function () {
   });
 
   it('should add port in the url when host has port specified', function () {
-    var request = new sdk.Request({
+    var request = new Request({
         'method': 'GET',
         'header': [],
         'url': {
@@ -69,7 +69,7 @@ describe('Shell-Httpie convert function', function () {
   });
 
   it('should trim header keys and not trim header values', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'GET',
       'header': [
         {
@@ -96,7 +96,7 @@ describe('Shell-Httpie convert function', function () {
   });
 
   it('should generate snippets for no files in form data', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [],
       'body': {
@@ -145,7 +145,7 @@ describe('Shell-Httpie convert function', function () {
   });
 
   it('should generate valid snippet and should include appropriate variable name', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'GET',
       'header': [],
       'body': {},

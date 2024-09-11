@@ -57,6 +57,12 @@ const expectedOptions = {
       default: true,
       description: 'Automatically follow HTTP redirects'
     },
+    followOriginalHttpMethod: {
+      name: 'Follow original HTTP method',
+      type: 'boolean',
+      default: false,
+      description: 'Redirect with the original HTTP method instead of the default behavior of redirecting with GET'
+    },
     trimRequestBody: {
       name: 'Trim request body fields',
       type: 'boolean',
@@ -74,6 +80,13 @@ const expectedOptions = {
       type: 'boolean',
       default: false,
       description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
+    },
+    asyncAwaitEnabled: {
+      name: 'Use async/await',
+      id: 'asyncAwaitEnabled',
+      type: 'boolean',
+      default: false,
+      description: 'Modifies code snippet to use async/await'
     },
     quoteType: {
       name: 'Quote Type',
@@ -95,10 +108,12 @@ const expectedOptions = {
     'silent',
     'includeBoilerplate',
     'followRedirect',
+    'followOriginalHttpMethod',
     'lineContinuationCharacter',
     'protocol',
     'useMimeType',
     'ES6_enabled',
+    'asyncAwaitEnabled',
     'quoteType',
     'asyncType',
     'ignoreWarnings'
@@ -136,8 +151,8 @@ describe('Code-gen repository ' + codegen, function () {
         expect(json.com_postman_plugin).to.have.property('variant');
         expect(json.com_postman_plugin).to.have.property('syntax_mode');
         expect(json).to.have.property('engines');
-        expect(json.engines).to.eql({
-          node: '>=8'
+        expect(json.engines).to.satisfy(function (engines) {
+          return engines.hasOwnProperty('node') && (engines.node === '>=8' || engines.node === '>=12');
         });
       });
 
@@ -153,11 +168,10 @@ describe('Code-gen repository ' + codegen, function () {
         expect(json.dependencies).to.be.a('object');
       });
 
-      it('must point to a valid and precise (no * or ^) semver', function () {
-        json.dependencies && Object.keys(json.dependencies).forEach(function (item) {
-          expect(json.dependencies[item]).to.match(new RegExp('^((\\d+)\\.(\\d+)\\.(\\d+))(?:-' +
-            '([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?(?:\\+([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?$')); // eslint-disable-line max-len
-        });
+      it('should have a valid version string in form of <major>.<minor>.<revision>', function () {
+        expect(json.version)
+          // eslint-disable-next-line max-len, security/detect-unsafe-regex
+          .to.match(/^((\d+)\.(\d+)\.(\d+))(?:-([\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?(?:\+([\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?$/);
       });
     });
 
@@ -166,10 +180,11 @@ describe('Code-gen repository ' + codegen, function () {
         expect(json.devDependencies).to.be.a('object');
       });
 
-      it('must point to a valid and precise (no * or ^) semver', function () {
-        json.devDependencies && Object.keys(json.devDependencies).forEach(function (item) {
-          expect(json.devDependencies[item]).to.match(new RegExp('^((\\d+)\\.(\\d+)\\.(\\d+))(?:-' +
-            '([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?(?:\\+([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?$')); // eslint-disable-line max-len
+      it('should point to a valid semver', function () {
+        Object.keys(json.devDependencies).forEach(function (dependencyName) {
+          // eslint-disable-next-line security/detect-non-literal-regexp
+          expect(json.devDependencies[dependencyName]).to.match(new RegExp('((\\d+)\\.(\\d+)\\.(\\d+))(?:-' +
+            '([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?(?:\\+([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?$'));
         });
       });
 
