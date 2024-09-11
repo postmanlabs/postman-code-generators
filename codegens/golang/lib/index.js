@@ -238,11 +238,11 @@ self = module.exports = {
     }
     if (isFile) {
       codeSnippet += `${indent}"os"\n${indent}"path/filepath"\n`;
-      codeSnippet += `${indent}"io"\n`;
+
       // Setting isFile as false for further calls to this function
       isFile = false;
     }
-    codeSnippet += `${indent}"net/http"\n${indent}"io/ioutil"\n)\n\n`;
+    codeSnippet += `${indent}"net/http"\n${indent}"io"\n)\n\n`;
 
     codeSnippet += `func main() {\n\n${indent}url := "${getUrlStringfromUrlObject(request.url)}"\n`;
     codeSnippet += `${indent}method := "${request.method}"\n\n`;
@@ -297,7 +297,7 @@ self = module.exports = {
     responseSnippet = `${indent}res, err := client.Do(req)\n`;
     responseSnippet += `${indent}if err != nil {\n${indent.repeat(2)}fmt.Println(err)\n`;
     responseSnippet += `${indent.repeat(2)}return\n${indent}}\n`;
-    responseSnippet += `${indent}defer res.Body.Close()\n\n${indent}body, err := ioutil.ReadAll(res.Body)\n`;
+    responseSnippet += `${indent}defer res.Body.Close()\n\n${indent}body, err := io.ReadAll(res.Body)\n`;
     responseSnippet += `${indent}if err != nil {\n${indent.repeat(2)}fmt.Println(err)\n`;
     responseSnippet += `${indent.repeat(2)}return\n${indent}}\n`;
     responseSnippet += `${indent}fmt.Println(string(body))\n}`;

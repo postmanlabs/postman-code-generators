@@ -1,9 +1,10 @@
 var shell = require('shelljs'),
   path = require('path'),
   async = require('async'),
-  { detect } = require('detect-package-manager'),
+  { detect, getNpmVersion } = require('detect-package-manager'),
   pm,
-  PRODUCTION_FLAG = '',
+  ver,
+  command,
   getSubfolders,
   fs = require('fs'),
   pwd = shell.pwd();
@@ -25,11 +26,33 @@ async.series([
     });
   },
   function (next) {
+    getNpmVersion(pm).then((res) => {
+      ver = res;
+      console.log('Detected ' + pm + ' version: ' + ver);
+      return next();
+    });
+  },
+  function (next) {
     if (args[2] && args[2] === 'dev') {
       console.log('Dev flag detected running ' + pm + ' install');
+      command = pm + ' install';
     }
     else {
-      PRODUCTION_FLAG = '--no-audit --production';
+      switch (pm) {
+        case 'yarn':
+          if (ver.startsWith('1')) {
+            command = 'yarn install --production --frozen-lockfile';
+          }
+          else {
+            command = 'touch yarn.lock && yarn workspaces focus --all --production'
+          }
+          break;
+        case 'pnpm':
+          command = 'pnpm install --prod';
+          break;
+        default:
+          command = pm + ' install --no-audit --production';
+      }
     }
 
     console.log('Running pre-package script');
@@ -51,8 +74,8 @@ async.series([
 
       var commandOut;
 
-      console.log(codegen.name + ': ' + pm + ' install ' + PRODUCTION_FLAG);
-      commandOut = shell.exec(pm + ' install ' + PRODUCTION_FLAG, { silent: true });
+      console.log(codegen.name + ': ' + command);
+      commandOut = shell.exec(command, { silent: true });
 
       if (commandOut.code !== 0) {
         console.error('Failed to run ' + pm + ' install on codegen ' + codegen.name + ', here is the error:');
