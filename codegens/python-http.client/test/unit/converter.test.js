@@ -337,7 +337,7 @@ describe('Python-http.client converter', function () {
     });
 
     it('should generate valid snippets when url uses http protocol', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [],
         'url': {
