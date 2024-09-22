@@ -94,6 +94,20 @@ const expectedOptions = {
       default: 'single',
       description: 'String denoting the quote type to use (single or double) for URL ' +
           '(Use double quotes when running curl in cmd.exe and single quotes for the rest)'
+    },
+    style: {
+      name: 'Snippet output type',
+      type: 'enum',
+      default: 'plain',
+      description:
+      'Control the flavor ("style") of generated snippets'
+    },
+    commentary: {
+      name: 'Additional commentary',
+      type: 'enum',
+      default: 'all',
+      description:
+      'Enables output of errors and tips'
     }
   },
   // Standard array of ids that should be used for options ids. Any new option should be updated here.
@@ -116,7 +130,8 @@ const expectedOptions = {
     'asyncAwaitEnabled',
     'quoteType',
     'asyncType',
-    'ignoreWarnings'
+    'style',
+    'commentary'
   ],
   CODEGEN_ABS_PATH = `./codegens/${codegen}`;
 describe('Code-gen repository ' + codegen, function () {
@@ -260,7 +275,7 @@ describe('Code-gen repository ' + codegen, function () {
     });
 
   });
-  describe.skip('.eslintrc', function () {
+  describe('.eslintrc', function () {
     it('must exist', function (done) {
       fs.stat(`${CODEGEN_ABS_PATH}/.eslintrc`, done);
     });

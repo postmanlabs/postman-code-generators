@@ -1,0 +1,333 @@
+{
+  "info": {
+    "_postman_id": "eadbe479-f684-475d-958a-9c174fa43919",
+    "name": "Code-Gen Test Cases HTTP",
+    "description": "This collection contains requests that will be used to test validity of plugin created to convert postman request into code snippet of particular language.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+  },
+  "item": [{
+    "name": "Error with Request Headers (With special Characters)",
+    "event": [
+      {
+        "listen": "test",
+        "script": {
+          "type": "text/javascript",
+          "exec": [
+            "var responseJSON;",
+            "try {",
+            "    tests[\"Body contains headers\"] = responseBody.has(\"headers\");",
+            "    responseJSON = JSON.parse(responseBody);",
+            "    tests[\"Header contains host\"] = \"host\" in responseJSON.headers;",
+            "    tests[\"Header contains test parameter sent as part of request header\"] = \"my-sample-header\" in responseJSON.headers;",
+            "}",
+            "catch (e) { }",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      }
+    ],
+    "request": {
+      "method": "GET",
+      "header": [
+        {
+          "key": "my-sample-header",
+          "value": "Lorem ipsum dolor sit amet"
+        },
+        {
+          "key": "TEST",
+          "value": "@#$%^&*()"
+        },
+        {
+          "key": "more",
+          "value": ",./';[]}{\":?><|\\\\"
+        }
+      ],
+      "body": {
+        "mode": "raw",
+        "raw": ""
+      },
+      "url": "https://postman-echo.com/headers",
+      "description": "A `GET` request to this endpoint returns the list of all request headers as part of the response JSON.\nIn Postman, sending your own set of headers through the [Headers tab](https://www.getpostman.com/docs/requests#headers?source=echo-collection-app-onboarding) will reveal the headers as part of the response."
+    },
+    "response": []
+  },
+    {
+      "name": "Error with OPTIONS to postman echo",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "var responseJSON;",
+              "",
+              "try { ",
+              "    responseJSON = JSON.parse(responseBody); ",
+              "    tests['response is valid JSON'] = true;",
+              "}",
+              "catch (e) { ",
+              "    responseJSON = {}; ",
+              "    tests['response is valid JSON'] = false;",
+              "}",
+              "",
+              "",
+              "tests['response has post data'] = _.has(responseJSON, 'data');",
+              "tests['response matches the data posted'] = (responseJSON.data && responseJSON.data.length === 256);",
+              "",
+              "tests[\"content-type equals text/plain\"] = responseJSON && responseJSON.headers && (responseJSON.headers[\"content-type\"] === 'text/plain');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "OPTIONS",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "text/plain"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
+        },
+        "url": "https://postman-echo.com/post",
+        "description": "The HTTP `POST` request method is meant to transfer data to a server \n(and elicit a response). What data is returned depends on the implementation\nof the server.\n\nA `POST` request can pass parameters to the server using \"Query String \nParameters\", as well as the Request Body. For example, in the following request,\n\n> POST /hi/there?hand=wave\n>\n> <request-body>\n\nThe parameter \"hand\" has the value \"wave\". The request body can be in multiple\nformats. These formats are defined by the MIME type of the request. The MIME \nType can be set using the ``Content-Type`` HTTP header. The most commonly used \nMIME types are:\n\n* `multipart/form-data`\n* `application/x-www-form-urlencoded`\n* `application/json`\n\nThis endpoint echoes the HTTP headers, request parameters, the contents of\nthe request body and the complete URI requested."
+      },
+      "response": []
+    },
+    {
+      "name": "LINK request",
+      "request": {
+        "method": "LINK",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "text/plain"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
+        },
+        "url": "https://postman-echo.com/request"
+      },
+      "response": []
+    },
+    {
+      "name": "UNLINK request",
+      "request": {
+        "method": "UNLINK",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "text/plain"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
+        },
+        "url": "https://postman-echo.com/request"
+      },
+      "response": []
+    },
+    {
+      "name": "LOCK request",
+      "request": {
+        "method": "LOCK",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "text/plain"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
+        },
+        "url": "https://postman-echo.com/request"
+      },
+      "response": []
+    },
+    {
+      "name": "UNLOCK request",
+      "request": {
+        "method": "UNLOCK",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": "https://postman-echo.com/request"
+      },
+      "response": []
+    },
+    {
+      "name": "PROPFIND request",
+      "request": {
+        "method": "PROPFIND",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "text/plain"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
+        },
+        "url": "https://postman-echo.com/request"
+      },
+      "response": []
+    },
+    {
+      "name": "VIEW request",
+      "request": {
+        "method": "VIEW",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "text/plain"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
+        },
+        "url": "https://postman-echo.com/request"
+      },
+      "response": []
+    },
+    {
+      "name": "PURGE Request",
+      "request": {
+        "method": "PURGE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": "https://postman-echo.com"
+      },
+      "response": []
+    },
+    {
+      "name": "COPY Request",
+      "request": {
+        "method": "COPY",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": "https://postman-echo.com"
+      },
+      "response": [
+        {
+          "name": "COPY Request",
+          "originalRequest": {
+            "method": "COPY",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": "https://postman-echo.com"
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Access-Control-Allow-Credentials",
+              "value": "",
+              "name": "Access-Control-Allow-Credentials",
+              "description": "Indicates whether or not the response to the request can be exposed when the credentials flag is true. When used as part of a response to a preflight request, this indicates whether or not the actual request can be made using credentials."
+            },
+            {
+              "key": "Access-Control-Allow-Headers",
+              "value": "",
+              "name": "Access-Control-Allow-Headers",
+              "description": "Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request."
+            },
+            {
+              "key": "Access-Control-Allow-Methods",
+              "value": "",
+              "name": "Access-Control-Allow-Methods",
+              "description": "Specifies the method or methods allowed when accessing the resource. This is used in response to a preflight request."
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*",
+              "name": "Access-Control-Allow-Origin",
+              "description": "Specifies a URI that may access the resource. For requests without credentials, the server may specify '*' as a wildcard, thereby allowing any origin to access the resource."
+            },
+            {
+              "key": "Access-Control-Expose-Headers",
+              "value": "",
+              "name": "Access-Control-Expose-Headers",
+              "description": "Lets a server whitelist headers that browsers are allowed to access."
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "name": "Connection",
+              "description": "Options that are desired for the connection"
+            },
+            {
+              "key": "Content-Encoding",
+              "value": "gzip",
+              "name": "Content-Encoding",
+              "description": "The type of encoding used on the data."
+            },
+            {
+              "key": "Content-Length",
+              "value": "59",
+              "name": "Content-Length",
+              "description": "The length of the response body in octets (8-bit bytes)"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8",
+              "name": "Content-Type",
+              "description": "The mime type of this content"
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 05 Feb 2018 07:48:41 GMT",
+              "name": "Date",
+              "description": "The date and time that the message was sent"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"af-MmpVeTvfnSW88c4riXD0uw\"",
+              "name": "ETag",
+              "description": "An identifier for a specific version of a resource, often a message digest"
+            },
+            {
+              "key": "Server",
+              "value": "nginx",
+              "name": "Server",
+              "description": "A name for the server"
+            },
+            {
+              "key": "Vary",
+              "value": "Accept-Encoding",
+              "name": "Vary",
+              "description": "Tells downstream proxies how to match future request headers to decide whether the cached response can be used rather than requesting a fresh one from the origin server."
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"status\": 200,\n    \"method\": \"COPY\"\n}"
+        }
+      ]
+    }
+  ]
+}
