@@ -144,13 +144,14 @@
                 request to
                 <code>/tool/fetch</code>
             </h3>
-            <div hx-post="https://curl2rsc.glitch.me/curl" hx-target="#tafetchcmd" hx-swap="innerHTML" hx-include="this" hx-trigger="change">
+            <div hx-post="https://curl2rsc.glitch.me/curl" hx-target="#tafetchcmd" hx-swap="innerHTML" hx-include="this"
+                hx-trigger="change">
                 <fieldset id="curl2rscfields">
                     <label>
                         <code>curl</code>
                         command line to convert from:
-                        <input name="cmd" hx-post="https://curl2rsc.glitch.me/curl" hx-target="#tafetchcmd" hx-swap="innerHTML"
-                            hx-trigger="keyup changed delay:1s" id="inputcurl" required
+                        <input name="cmd" hx-post="https://curl2rsc.glitch.me/curl" hx-target="#tafetchcmd"
+                            hx-swap="innerHTML" hx-trigger="keyup changed delay:1s" id="inputcurl" required
                             value="curl -X GET -G https://wttr.in/@mikrotik.com/ -d 'format=4'" />
                         <small>
                             <a href="" onclick="pasteClipboadText('inputcurl'); return false;">Paste from
@@ -175,8 +176,9 @@
                     <div class="curloutputstyle">
                         <label>
                             Customize code generation:
-                            <select name="style" id="selectfetchoutput" required hx-post="https://curl2rsc.glitch.me/curl" hx-target="#tafetchcmd"
-                                hx-swap="innerHTML" hx-trigger="change">
+                            <select name="style" id="selectfetchoutput" required
+                                hx-post="https://curl2rsc.glitch.me/curl" hx-target="#tafetchcmd" hx-swap="innerHTML"
+                                hx-trigger="change">
                                 <option selected disabled value="">
                                     Select style for use case...
                                 </option>
@@ -211,7 +213,10 @@
     </main>
 
     <script>
-        htmx.config.selfRequestsOnly = false
+        document.addEventListener("DOMContentLoaded", (event) => {
+            console.log("DOM fully loaded and parsed");
+            htmx.config.selfRequestsOnly = false
+        });
     </script>
 
     <script>
@@ -221,9 +226,8 @@
                     document.getElementById("inputcurl").removeAttribute("aria-invalid");
                     document.getElementById("curlresults").hidden = false;
                 } else {
-                    htmx.config.selfRequestsOnly = false
                     document.getElementById("inputcurl").setAttribute("aria-invalid", "true");
-                    document.getElementById("curlresults").hidden = true; 
+                    document.getElementById("curlresults").hidden = true;
                     console.error(evt)
                 }
             })
