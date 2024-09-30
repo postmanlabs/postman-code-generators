@@ -19,7 +19,7 @@
         rel="stylesheet" />
 
     <!-- HTMX -->
-    <meta name="htmx-config" content='{"selfRequestsOnly":"false"}' /> <!-- add FQDN for CORS -->
+    <meta name="htmx-config" content='{"selfRequestsOnly":false}' /> <!-- add FQDN for CORS -->
     <script src="https://unpkg.com/htmx.org@2.0.2"></script>
 
     <!-- Plausable -->
@@ -129,7 +129,7 @@
             <article>
                 <b>URL may change in future.</b>
                 Check out
-                <a href="https://github.com/tikoci/restraml">tikoci/restraml</a>
+                <a href="https://github.com/tikoci/postman-code-generators">tikoci/postman-code-generators</a>
                 on GitHub for updates.
             </article>
 
@@ -151,8 +151,8 @@
                         <code>curl</code>
                         command line to convert from:
                         <input name="cmd" hx-post="https://curl2rsc.glitch.me/curl" hx-target="#tafetchcmd"
-                            hx-swap="innerHTML" hx-trigger="keyup changed delay:1s" id="inputcurl" required
-                            value="curl -X GET -G https://wttr.in/@mikrotik.com/ -d 'format=4'" />
+                            hx-swap="innerHTML" hx-trigger="keyup changed delay:2s" id="inputcurl" required
+                            value="curl -X GET -G https://wttr.in/@mikrotik.com -d 'format=4'" />
                         <small>
                             <a href="" onclick="pasteClipboadText('inputcurl'); return false;">Paste from
                                 &#128203;</a></small>
