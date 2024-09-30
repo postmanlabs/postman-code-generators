@@ -143,12 +143,12 @@
                 request to
                 <code>/tool/fetch</code>
             </h3>
-            <div hx-post="/curl" hx-target="#tafetchcmd" hx-swap="innerHTML" hx-include="this" hx-trigger="change">
+            <div hx-post="https://curl2rsc.glitch.me/curl" hx-target="#tafetchcmd" hx-swap="innerHTML" hx-include="this" hx-trigger="change">
                 <fieldset id="curl2rscfields">
                     <label>
                         <code>curl</code>
                         command line to convert from:
-                        <input name="cmd" hx-post="/curl" hx-target="#tafetchcmd" hx-swap="innerHTML"
+                        <input name="cmd" hx-post="https://curl2rsc.glitch.me/curl" hx-target="#tafetchcmd" hx-swap="innerHTML"
                             hx-trigger="keyup changed delay:1s" id="inputcurl" required
                             value="curl -X GET -G https://wttr.in/@mikrotik.com/ -d 'format=4'" />
                         <small>
@@ -174,7 +174,7 @@
                     <div class="curloutputstyle">
                         <label>
                             Customize code generation:
-                            <select name="style" id="selectfetchoutput" required hx-post="/curl" hx-target="#tafetchcmd"
+                            <select name="style" id="selectfetchoutput" required hx-post="https://curl2rsc.glitch.me/curl" hx-target="#tafetchcmd"
                                 hx-swap="innerHTML" hx-trigger="click">
                                 <option selected disabled value="">
                                     Select style for use case...
