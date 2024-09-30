@@ -20,6 +20,7 @@
 
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+    <meta name="htmx-config" content='{"selfRequestsOnly":"false"}'> <!-- add FQDN for CORS -->
 
     <!-- Plausable -->
     <script defer data-domain="tikoci.github.io/restraml"
@@ -143,7 +144,7 @@
                 request to
                 <code>/tool/fetch</code>
             </h3>
-            <div hx-post="https://curl2rsc.glitch.me/curl" hx-target="#tafetchcmd" hx-swap="innerHTML" hx-include="this" hx-trigger="change" hx-request='{"noHeaders": true}'>
+            <div hx-post="https://curl2rsc.glitch.me/curl" hx-target="#tafetchcmd" hx-swap="innerHTML" hx-include="this" hx-trigger="change">
                 <fieldset id="curl2rscfields">
                     <label>
                         <code>curl</code>
