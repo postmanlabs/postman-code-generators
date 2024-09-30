@@ -211,12 +211,17 @@
     </main>
 
     <script>
+        htmx.config.selfRequestsOnly = false
+    </script>
+
+    <script>
         document.getElementById("curl2rscfields").addEventListener("htmx:afterRequest",
             function (evt) {
                 if (evt.detail.successful) {
                     document.getElementById("inputcurl").removeAttribute("aria-invalid");
                     document.getElementById("curlresults").hidden = false;
                 } else {
+                    htmx.config.selfRequestsOnly = false
                     document.getElementById("inputcurl").setAttribute("aria-invalid", "true");
                     document.getElementById("curlresults").hidden = true; 
                     console.error(evt)
