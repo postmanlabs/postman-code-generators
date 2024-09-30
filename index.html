@@ -1,0 +1,227 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>curl2rsc</title>
+
+    <!-- Pico CCS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+
+    <!-- Mikrotik Fonts/Graphics -->
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Manrope:wght@200..800&display=swap"
+        rel="stylesheet" />
+
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+
+    <!-- Plausable -->
+    <script defer data-domain="tikoci.github.io/restraml"
+        src="https://plausible.io/js/script.tagged-events.js"></script>
+    <script>window.plausible = window.plausible || function () {
+            (window.plausible.q = window.plausible.q || []).push(arguments)
+        }</script>
+
+    <!-- Highlight.JS (for diff) -->
+    <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/styles/default.min.css" />
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/languages/diff.min.js"></script>
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/languages/json.min.js"></script>
+
+    <!-- Override CSS to use Mikrotik fonts-->
+    <style>
+        :root {
+            --pico-font-family-sans-serif: Manrope, system-ui, "Segoe UI",
+                Roboto, Oxygen, Ubuntu, Cantarell, Helvetica, Arial, "Helvetica Neue",
+                sans-serif, var(--pico-font-family-emoji);
+            --pico-font-family-monospace:
+                "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
+                Consolas, "Liberation Mono", monospace, var(--pico-font-family-emoji);
+            --pico-font-family: "JetBrains Mono", var(--pico-font-family-sans-serif);
+        }
+    </style>
+
+    <!-- Dark Mode Support -->
+    <style>
+        header nav li a svg {
+            width: var(--font-size);
+            height: var(--font-size);
+            color: var(--contrast);
+        }
+    </style>
+
+    <!-- Clipboard -->
+    <script>
+        async function writeClipboardText(id) {
+            try {
+                await
+                    navigator.clipboard.writeText(document.getElementById(id).value);
+            } catch
+            (error) { console.error(error.message); }
+        };
+    </script>
+    <script>
+        const pasteClipboadText = (id) => {
+            navigator.clipboard.readText().then((clipText) =>
+                document.getElementById(id).value = clipText).error((error) => {
+                    console.error(error.message);
+                })
+        };
+    </script>
+
+</head>
+
+<body>
+
+    <header class="container">
+        <!-- Hide Curl Resuls -->
+        <style>
+            .curlresults:has(.fetchoutput:placeholder-shown) {
+                display: none;
+            }
+
+            #selectfetchoutput[value=""] {
+                display: node;
+            }
+        </style>
+        <nav>
+            <ul>
+                <h1><small><mark>Experimental!</mark></small>
+                    <code>curl2rsc</code>
+                </h1>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section>
+            <h5>
+                Converts
+                <code>curl</code>
+                to a web service call on Mikrotik's RouterOS, via Postman's codegens.
+            </h5>
+            <p>
+                Most curl commands line options should work, and be converted to
+                RouterOS scripting commands. But not everything can be converted, such
+                as file operations. But a lot can! The tool will attempt to convert as
+                much as it can, even if not in complete fidelity with curl. So use
+                this page as guide, not a reference.
+
+            <h4>Known Issues:</h4>
+            <ul>
+                <li>While
+                    <code>--json</code>
+                    is valid in [modern] curl, it is not known the parser, so the content type
+                    must be set using
+                    <code>-H 'Content-Type: application/json'</code>
+                    manually.
+                </li>
+            </ul>
+            </p>
+
+            <article>
+                <b>URL may change in future.</b>
+                Check out
+                <a href="https://github.com/tikoci/restraml">tikoci/restraml</a>
+                on GitHub for updates.
+            </article>
+
+        </section>
+        <br /><br />
+
+        <section>
+            <h3>
+                <kbd>NEW</kbd>
+                Convert
+                <code>curl</code>
+                request to
+                <code>/tool/fetch</code>
+            </h3>
+            <div hx-post="/curl" hx-target="#tafetchcmd" hx-swap="innerHTML" hx-include="this" hx-trigger="change">
+                <fieldset id="curl2rscfields">
+                    <label>
+                        <code>curl</code>
+                        command line to convert from:
+                        <input name="cmd" hx-post="/curl" hx-target="#tafetchcmd" hx-swap="innerHTML"
+                            hx-trigger="keyup changed delay:1s" id="inputcurl" required
+                            value="curl -X GET -G https://wttr.in/@mikrotik.com/ -d 'format=4'" />
+                        <small>
+                            <a href="" onclick="pasteClipboadText('inputcurl'); return false;">Paste from
+                                &#128203;</a></small>
+                    </label>
+
+                    <div class="curlresults" id="curlresults">
+                        <label>
+                            <mark>Generated</mark>
+                            RouterOS
+                            <code>/tool/fetch</code>
+                            command:
+                            <textarea class="fetchoutput" name="tafetchcmd" id="tafetchcmd" spellcheck="false"
+                                placeholder="/tool/fetch url=http://example.com method=get output=user"
+                                readonly></textarea>
+                            <small>
+                                <a href="" onclick="writeClipboardText('tafetchcmd'); return false;">Copy to
+                                    &#128203;</a></small>
+                        </label>
+                    </div>
+
+                    <div class="curloutputstyle">
+                        <label>
+                            Customize code generation:
+                            <select name="style" id="selectfetchoutput" required hx-post="/curl" hx-target="#tafetchcmd"
+                                hx-swap="innerHTML" hx-trigger="click">
+                                <option selected disabled value="">
+                                    Select style for use case...
+                                </option>
+                                <option value="plain">Simple</option>
+                                <option value="outputToConsole">Output to terminal</option>
+                                <option value="outputToVariable">Save to global variable</option>
+                                <option value="outputToVariableWithHeaders">Save to variable,
+                                    with response headers</option>
+                                <option value="outputToFile">Send output to file</option>
+                            </select>
+                        </label>
+                    </div>
+                </fieldset>
+            </div>
+
+            <section>
+            </section>
+        </section>
+
+        <section>
+            <blockquote>
+                <h5>* Disclaimer</h5>
+                <small>This site is not affiliated, associated, authorized, endorsed
+                    by, or in any way officially connected with
+                    <a href="https://mikrotik.com">Mikrotik</a>. All product and company
+                    names are trademarks™ or registered® trademarks of their respective
+                    holders. Use of them does not imply any affiliation with or
+                    endorsement by them.</small>
+            </blockquote>
+        </section>
+
+    </main>
+
+    <script>
+        document.getElementById("curl2rscfields").addEventListener("htmx:afterRequest",
+            function (evt) {
+                if (evt.detail.successful) {
+                    document.getElementById("inputcurl").removeAttribute("aria-invalid");
+                    document.getElementById("curlresults").hidden = false;
+                } else {
+                    document.getElementById("inputcurl").setAttribute("aria-invalid", "true");
+                    document.getElementById("curlresults").hidden = true; 
+                    console.error(evt)
+                }
+            })
+    </script>
+</body>
+
+</html>
