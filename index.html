@@ -19,8 +19,8 @@
         rel="stylesheet" />
 
     <!-- HTMX -->
+    <meta name="htmx-config" content='{"selfRequestsOnly":"false"}' /> <!-- add FQDN for CORS -->
     <script src="https://unpkg.com/htmx.org@2.0.2"></script>
-    <meta name="htmx-config" content='{"selfRequestsOnly":"false"}'> <!-- add FQDN for CORS -->
 
     <!-- Plausable -->
     <script defer data-domain="tikoci.github.io/restraml"
@@ -176,7 +176,7 @@
                         <label>
                             Customize code generation:
                             <select name="style" id="selectfetchoutput" required hx-post="https://curl2rsc.glitch.me/curl" hx-target="#tafetchcmd"
-                                hx-swap="innerHTML" hx-trigger="click">
+                                hx-swap="innerHTML" hx-trigger="change">
                                 <option selected disabled value="">
                                     Select style for use case...
                                 </option>
