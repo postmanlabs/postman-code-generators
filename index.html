@@ -147,7 +147,7 @@
                                 &#128203;</a></small>
                     </label>
 
-                    <div class="curlresults" id="curlresults">
+                    <div class="curlresults" id="curlresults" aria-busy="false">
                         <label>
                             <mark>Generated</mark>
                             RouterOS
@@ -182,9 +182,6 @@
                     </div>
                 </fieldset>
             </div>
-
-            <section>
-            </section>
         </section>
         <br /><br />
 
@@ -232,7 +229,16 @@
     </script>
 
     <script>
-
+        const selectfetchoutput = document.getElementById('selectfetchoutput')
+        selectfetchoutput.addEventListener("change", (e) => {
+            console.log(e)
+            if (e.target.value === "") {
+                document.getElementById("inputcurl").setAttribute("aria-invalid", "true");
+            }
+            else {
+                document.getElementById('selectfetchoutput').removeAttribute("aria-invalid");
+            }
+        })
         /* 
         // TODO: if output style is not selected, it should set to invalid
         // but should refactor events first...
@@ -247,9 +253,15 @@
         }
         else { document.getElementById('selectfetchoutput').removeAttribute("aria-invalid") }
         */
+        document.getElementById("curl2rscfields").addEventListener("htmx:beforeRequest",
+            function (evt) {
+                document.getElementById("curlresults").setAttribute("aria-busy", true)
+                document.getElementById("curlresults").hidden = false;
+            })
 
         document.getElementById("curl2rscfields").addEventListener("htmx:afterRequest",
             function (evt) {
+                document.getElementById("curlresults").setAttribute("aria-busy", false)
                 if (evt.detail.successful) {
                     document.getElementById("inputcurl").removeAttribute("aria-invalid");
                     document.getElementById("curlresults").hidden = false;
