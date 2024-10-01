@@ -253,7 +253,7 @@
 
         document.getElementById("curl2rscfields").addEventListener("htmx:afterRequest",
             function (evt) {
-                document.getElementById("tafetchcmd").setAttribute("aria-busy", false)
+                document.getElementById("htmxinflight").setAttribute("aria-busy", false)
                 document.getElementById("htmxinflight").hidden = true
                 if (evt.detail.successful) {
                     document.getElementById("inputcurl").removeAttribute("aria-invalid");
@@ -261,8 +261,6 @@
                 } else {
                     document.getElementById("inputcurl").setAttribute("aria-invalid", "true");
                     document.getElementById("curlresults").hidden = true;
-                    document.getElementById("htmxinflight").hidden = false
-                    document.getElementById("msghtmxinflight").innerHTML = JSON.stringify(evt, null, 2)
                     console.error(evt)
                 }
             })
