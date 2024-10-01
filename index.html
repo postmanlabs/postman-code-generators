@@ -148,7 +148,7 @@
                     </label>
 
                     <div id="htmxinflight" hidden aria-busy="true">
-                        <pre>Generating...</pre>
+                        <pre id="msghtmxinflight">generating code...</pre>
                     </div>
 
                     <div class="curlresults" id="curlresults" >
@@ -246,6 +246,7 @@
         
         document.getElementById("curl2rscfields").addEventListener("htmx:beforeRequest",
             function (evt) {
+                document.getElementById("msghtmxinflight").innerHTML = "generating code..."
                 document.getElementById("htmxinflight").hidden = false
                 document.getElementById("htmxinflight").setAttribute("aria-busy", true)
             })
@@ -260,6 +261,8 @@
                 } else {
                     document.getElementById("inputcurl").setAttribute("aria-invalid", "true");
                     document.getElementById("curlresults").hidden = true;
+                    document.getElementById("htmxinflight").hidden = false
+                    document.getElementById("msghtmxinflight").innerHTML = JSON.stringify(evt, null, 2)
                     console.error(evt)
                 }
             })
