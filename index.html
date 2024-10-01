@@ -147,13 +147,13 @@
                                 &#128203;</a></small>
                     </label>
 
-                    <div class="curlresults" id="curlresults" aria-busy="false">
+                    <div class="curlresults" id="curlresults" >
                         <label>
                             <mark>Generated</mark>
                             RouterOS
                             <code>/tool/fetch</code>
                             command:
-                            <textarea class="fetchoutput" name="tafetchcmd" id="tafetchcmd" spellcheck="false"
+                            <textarea class="fetchoutput" aria-busy="false" name="tafetchcmd" id="tafetchcmd" spellcheck="false"
                                 placeholder="/tool/fetch url=http://example.com method=get output=user"
                                 readonly></textarea>
                             <small>
@@ -165,7 +165,7 @@
                     <div class="curloutputstyle">
                         <label>
                             Customize code generation:
-                            <select name="style" id="selectfetchoutput" required
+                            <select name="style" id="selectfetchoutput" required aria-invalid="true"
                                 hx-post="https://curl2rsc.glitch.me/curl" hx-target="#tafetchcmd" hx-swap="innerHTML"
                                 hx-trigger="change">
                                 <option selected disabled value="">
@@ -239,29 +239,16 @@
                 document.getElementById('selectfetchoutput').removeAttribute("aria-invalid");
             }
         })
-        /* 
-        // TODO: if output style is not selected, it should set to invalid
-        // but should refactor events first...
-        if (document.getElementById("curlresults").hidden) {
-            if(document.getElementById('selectfetchoutput').value === "") {
-                document.getElementById("inputcurl").setAttribute("aria-invalid", "true");
-            }
-            else {
-                document.getElementById('selectfetchoutput').removeAttribute("aria-invalid") 
-            }
-
-        }
-        else { document.getElementById('selectfetchoutput').removeAttribute("aria-invalid") }
-        */
+        
         document.getElementById("curl2rscfields").addEventListener("htmx:beforeRequest",
             function (evt) {
-                document.getElementById("curlresults").setAttribute("aria-busy", true)
                 document.getElementById("curlresults").hidden = false;
+                document.getElementById("tafetchcmd").setAttribute("aria-busy", true)
             })
 
         document.getElementById("curl2rscfields").addEventListener("htmx:afterRequest",
             function (evt) {
-                document.getElementById("curlresults").setAttribute("aria-busy", false)
+                document.getElementById("tafetchcmd").setAttribute("aria-busy", false)
                 if (evt.detail.successful) {
                     document.getElementById("inputcurl").removeAttribute("aria-invalid");
                     document.getElementById("curlresults").hidden = false;
