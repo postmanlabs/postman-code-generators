@@ -201,7 +201,7 @@ self = module.exports = {
             });
             break;
           case 'file':
-            snippet += indent + form('-d', format);
+            snippet += indent + (format ? '--data-binary' : '-d');
             snippet += ` ${quoteType}@${sanitize(body[body.mode].src, trim)}${quoteType}`;
             break;
           default:

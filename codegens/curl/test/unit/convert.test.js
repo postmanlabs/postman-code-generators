@@ -1144,5 +1144,37 @@ describe('curl convert function', function () {
         });
       });
     });
+
+    it('should use --data-binary when request body type is binary', function () {
+      var request = new Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'file',
+          'file': {
+            'src': 'file-path/collection123.json'
+          }
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/get',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'get'
+          ]
+        }
+      });
+
+      convert(request, { longFormat: true }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('--data-binary \'@file-path/collection123.json\'');
+      });
+    });
   });
 });
