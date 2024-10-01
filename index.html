@@ -116,12 +116,19 @@
 
             <h4>Known Issues:</h4>
             <ul>
+                <li>
+                    The backend service may go to "sleep", so an initial request may take up to 30 seconds to appear.
+                    Future conversion requests should happen within a few seconds, as you type.
+                </li>
                 <li>While
                     <code>--json</code>
                     is valid in [modern] curl, it is not known the parser, so the content type
                     must be set using
                     <code>-H 'Content-Type: application/json'</code>
                     manually.
+                </li>
+                <li>RouterOS does not support handling 3xx redirects, so
+                    <code>-L</code> and <code>--location</code> are ignored.
                 </li>
             </ul>
             </p>
@@ -216,10 +223,28 @@
         document.addEventListener("DOMContentLoaded", (event) => {
             console.log("DOM fully loaded and parsed");
             htmx.config.selfRequestsOnly = false
+            // preload glitch.me to "wakeup"
+            fetch("https://curl2rsc.glitch.me/")
         });
     </script>
 
     <script>
+
+        /* 
+        // TODO: if output style is not selected, it should set to invalid
+        // but should refactor events first...
+        if (document.getElementById("curlresults").hidden) {
+            if(document.getElementById('selectfetchoutput').value === "") {
+                document.getElementById("inputcurl").setAttribute("aria-invalid", "true");
+            }
+            else {
+                document.getElementById('selectfetchoutput').removeAttribute("aria-invalid") 
+            }
+
+        }
+        else { document.getElementById('selectfetchoutput').removeAttribute("aria-invalid") }
+        */
+
         document.getElementById("curl2rscfields").addEventListener("htmx:afterRequest",
             function (evt) {
                 if (evt.detail.successful) {
