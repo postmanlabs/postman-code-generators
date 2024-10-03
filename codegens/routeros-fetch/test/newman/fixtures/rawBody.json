@@ -1,0 +1,39 @@
+{
+	"info": {
+		"_postman_id": "f52ee07d-6345-4220-89af-e6696b3c0122",
+		"name": "Basic Collection",
+		"description": "This collection contains requests that will be used to test validity of plugin created to convert postman request into code snippet of particular language.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST raw with quoted text",
+			"event": [],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Hello\": \"{\\\"hello_world\\\": true}\"\n}"
+				},
+				"url": {
+					"raw": "https://postman-echo.com/post",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"post"
+					]
+				}
+			},
+			"response": []
+		}
+  ]
+}
