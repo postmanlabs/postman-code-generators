@@ -2,6 +2,7 @@
 > [!TIP]
 > ### For `curl` to `/tool/fetch` conversion, see this repo's webpage:
 > #### https://tikoci.github.io/postman-code-generators
+> Source code lives at: https://github.com/tikoci/postman-code-generators/blob/develop/index.html
 
 > [!IMPORTANT]
 > ### Fork of `postman-code-generators`
