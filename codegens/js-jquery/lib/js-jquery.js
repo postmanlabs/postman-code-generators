@@ -141,7 +141,7 @@ self = module.exports = {
     if (request.body && request.body.mode === 'formdata') {
       let formdata = request.body.formdata,
         formdataArray = [];
-      formdata.members.forEach((param) => {
+        _.forEach(formdata.members, (param) => {
         let key = param.key,
           type = param.type,
           disabled = param.disabled,
@@ -149,7 +149,7 @@ self = module.exports = {
         if (type === 'file') {
           if (typeof param.src !== 'string') {
             if (Array.isArray(param.src) && param.src.length) {
-              param.src.forEach((filePath) => {
+              _.forEach(param.src, (param) => {
                 addFormParam(formdataArray, key, param.type, filePath, disabled, contentType);
               });
             }

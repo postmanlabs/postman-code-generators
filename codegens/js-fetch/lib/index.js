@@ -262,7 +262,7 @@ function convert (request, options, callback) {
   if (request.body && request.body.mode === 'formdata') {
     let formdata = request.body.formdata,
       formdataArray = [];
-    formdata.members.forEach((param) => {
+    _.forEach(formdata.members, (param) => {
       let key = param.key,
         type = param.type,
         disabled = param.disabled,
@@ -273,7 +273,7 @@ function convert (request, options, callback) {
         if (typeof param.src !== 'string') {
           // if src is an array(not empty), iterate over it and add files as separate form fields
           if (Array.isArray(param.src) && param.src.length) {
-            param.src.forEach((filePath) => {
+            _.forEach(param.src, (filePath) =>{
               addFormParam(formdataArray, key, param.type, filePath, disabled, contentType);
             });
           }
