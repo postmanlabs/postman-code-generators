@@ -289,6 +289,50 @@ describe('curl convert function', function () {
       });
     });
 
+    it('should return snippet with JSON body in single line if multiline option is false', function () {
+      request = new Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'raw',
+          'raw': '{\n  "name": "John",\n  "type": "names",\n  "id": "123sdaw"\n}',
+          'options': {
+            'raw': {
+              'language': 'json'
+            }
+          }
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+      options = {
+        multiLine: false,
+        longFormat: false,
+        lineContinuationCharacter: '\\',
+        quoteType: 'single',
+        requestTimeoutInSeconds: 0,
+        followRedirect: true,
+        followOriginalHttpMethod: false
+      };
+
+      convert(request, options, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('-d \'{"name":"John","type":"names","id":"123sdaw"}\'');
+      });
+    });
+
     it('should return snippet with backslash(\\) character as line continuation ' +
          'character for multiline code generation', function () {
       request = new Request({
@@ -1142,6 +1186,38 @@ describe('curl convert function', function () {
           expect(snippet).to.equal('curl --ntlm --user \'radio\\joh\'\\\'\'n:tennesse"e\' --location' +
             ' --request POST \'https://postman-echo.com/post\'');
         });
+      });
+    });
+
+    it('should use --data-binary when request body type is binary', function () {
+      var request = new Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'file',
+          'file': {
+            'src': 'file-path/collection123.json'
+          }
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/get',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'get'
+          ]
+        }
+      });
+
+      convert(request, { longFormat: true }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('--data-binary \'@file-path/collection123.json\'');
       });
     });
   });

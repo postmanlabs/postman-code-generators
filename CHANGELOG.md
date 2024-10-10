@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [v1.14.0] - 2024-10-10
+
+### Fixed
+
+-   Fix for - [#5330](https://github.com/postmanlabs/postman-app-support/issues/5330) Added support for usage of --data-binary flag when using long format option for body type binary.
+
+-   Fix for - [#540](https://github.com/postmanlabs/postman-code-generators/issues/540) Curl codesnippet's JSON body must follow multiLine option's configuration.
+
 ## [v1.13.0] - 2024-09-11
 
 ### Fixed
@@ -176,7 +184,9 @@ v1.0.0 (May 29, 2020)
 -   Add ES6 syntax support for NodeJS Request, NodeJS Native and NodeJS Unirest
 -   Fix snippet generation for powershell and jquery, where form data params had no type field
 
-[Unreleased]: https://github.com/postmanlabs/postman-code-generators/compare/v1.13.0...HEAD
+[Unreleased]: https://github.com/postmanlabs/postman-code-generators/compare/v1.14.0...HEAD
+
+[v1.14.0]: https://github.com/postmanlabs/postman-code-generators/compare/v1.13.0...v1.14.0
 
 [v1.13.0]: https://github.com/postmanlabs/postman-code-generators/compare/v1.12.0...v1.13.0
 

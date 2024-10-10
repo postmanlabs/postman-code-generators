@@ -336,6 +336,29 @@ describe('Python-http.client converter', function () {
       });
     });
 
+    it('should generate valid snippets when url uses http protocol', function () {
+      var request = new Request({
+        'method': 'GET',
+        'header': [],
+        'url': {
+          'raw': 'http://localhost:3000',
+          'protocol': 'http',
+          'host': [
+            'localhost'
+          ],
+          'port': '3000'
+        },
+        'response': []
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('conn = http.client.HTTPConnection("localhost", 3000)');
+      });
+    });
+
   });
 
   describe('parseBody function', function () {
