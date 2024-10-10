@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix for - [#5330](https://github.com/postmanlabs/postman-app-support/issues/5330) Added support for usage of --data-binary flag when using long format option for body type binary.
+
+- Fix for - [#540](https://github.com/postmanlabs/postman-code-generators/issues/540) Curl codesnippet's JSON body must follow multiLine option's configuration.
+
 ## [v1.13.0] - 2024-09-11
 
 ### Fixed
