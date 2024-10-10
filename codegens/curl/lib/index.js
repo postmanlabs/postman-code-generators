@@ -151,9 +151,20 @@ self = module.exports = {
             let rawBody = body.raw.toString(),
               isAsperandPresent = _.includes(rawBody, '@'),
               // Use the long option if `@` is present in the request body otherwise follow user setting
-              optionName = isAsperandPresent ? '--data-raw' : form('-d', format);
-            // eslint-disable-next-line max-len
-            snippet += indent + `${optionName} ${quoteType}${sanitize(rawBody, trim, quoteType)}${quoteType}`;
+              optionName = isAsperandPresent ? '--data-raw' : form('-d', format),
+              sanitizedBody = sanitize(rawBody, trim, quoteType);
+
+            if (!multiLine) {
+              try {
+                sanitizedBody = JSON.stringify(JSON.parse(sanitizedBody));
+              }
+              catch (e) {
+                // Do nothing
+              }
+            }
+
+            snippet += indent + `${optionName} ${quoteType}${sanitizedBody}${quoteType}`;
+
             break;
           }
 
