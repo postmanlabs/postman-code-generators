@@ -152,8 +152,14 @@ self = module.exports = {
               isAsperandPresent = _.includes(rawBody, '@'),
               // Use the long option if `@` is present in the request body otherwise follow user setting
               optionName = isAsperandPresent ? '--data-raw' : form('-d', format);
-            // eslint-disable-next-line max-len
-            snippet += indent + `${optionName} ${quoteType}${sanitize(rawBody, trim, quoteType)}${quoteType}`;
+
+            if (!multiLine && body.options.raw && body.options.raw.language === 'json') {
+              // eslint-disable-next-line max-len
+              snippet += indent + `${optionName} ${quoteType}${JSON.stringify(JSON.parse(sanitize(rawBody, trim, quoteType)))}${quoteType}`;
+            }
+            else {
+              snippet += indent + `${optionName} ${quoteType}${sanitize(rawBody, trim, quoteType)}${quoteType}`;
+            }
             break;
           }
 
