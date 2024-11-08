@@ -1,0 +1,1 @@
+:put ([/tool/fetch http-method=get url="https://postman-echo.com/get" http-header-field=("key: value1","key: value2") as-value output=user]->"data")
