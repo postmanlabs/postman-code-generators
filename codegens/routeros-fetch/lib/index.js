@@ -138,12 +138,12 @@ function convert (request, options, callback) {
     if (header.includes('%') || header.includes(',')) {
       errors.push(`* Special characters in headers have many interpretations, check escaping - ${header} `);
     }
-    if (header.includes(',')) {
-      header = header.replace(/[,]/g, '\\,');
-    }
     return utils.escapeRouterOSString(header);
   });
   if (headers.length === 1) {
+    if (headers[0].includes(',')) {
+      headers[0] = headers[0].replace(/[,]/g, '\\\\,');
+    }
     attrs.set('http-header-field', headers[0]);
   }
   else if (headers.length > 1) {

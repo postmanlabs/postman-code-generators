@@ -91,7 +91,7 @@ describe('Converter test', function () {
     );
   });
 
-  it('should escape commas in headers', function () {
+  it('should escape commas in one header', function () {
     var request = new Request({
       method: 'GET',
       header: [
@@ -116,6 +116,41 @@ describe('Converter test', function () {
         }
         console.log(snippet);
         expect(snippet).to.contain('a\\\\,1\\\\,2');
+      }
+    );
+  });
+
+  it('should NOT escape commas in one header', function () {
+    var request = new Request({
+      method: 'GET',
+      header: [
+        {
+          key: 'Commas',
+          value: 'a,1,2'
+        },
+        {
+          key: 'More',
+          value: 'x,y,z'
+
+        }
+      ],
+      url: {
+        raw: 'https://postman-echo.com/get',
+        protocol: 'https',
+        host: ['postman-echo', 'com'],
+        path: ['get']
+      }
+    });
+    convert(
+      request,
+      { style: 'plain', commentary: 'none' },
+      function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        console.log(snippet);
+        expect(snippet).to.contain('a,1,2');
+        expect(snippet).to.contain('x,y,z');
       }
     );
   });
