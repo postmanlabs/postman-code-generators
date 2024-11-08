@@ -135,15 +135,15 @@ function convert (request, options, callback) {
   // http-header-field=
   let headers = utils.getHeadersArray(request);
   headers = headers.map((header) => {
-    if (header.includes('%')) {
-      errors.push(`Special characters can be interpreted in many ways: ${header} `);
+    if (header.includes('%') || header.includes(',')) {
+      errors.push(`Special characters in headers can be interpreted in many ways, verify escaping for: ${header} `);
+    }
+    if (header.includes(',')) {
+      header = header.replaceAll(',', '\\\\,');
     }
     return utils.escapeRouterOSString(header);
   });
   if (headers.length === 1) {
-    if (headers[0].includes(',')) {
-      headers[0] = headers[0].replaceAll(',', '\\\\,');
-    }
     attrs.set('http-header-field', headers[0]);
   }
   else if (headers.length > 1) {
