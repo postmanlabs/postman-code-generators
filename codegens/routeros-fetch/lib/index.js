@@ -136,7 +136,7 @@ function convert (request, options, callback) {
   let headers = utils.getHeadersArray(request);
   headers = headers.map((header) => {
     if (header.includes(',')) {
-      header.replace(",", "\\,")
+      header.replace(",", "\\\\,")
     }
     return utils.escapeRouterOSString(header);
   });
