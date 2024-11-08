@@ -136,7 +136,7 @@ function convert (request, options, callback) {
   let headers = utils.getHeadersArray(request);
   headers = headers.map((header) => {
     if (header.includes(',')) {
-      errors.push(`* Commas in a header may not parse: ${header}`);
+      header.replace(",", "\\,")
     }
     return utils.escapeRouterOSString(header);
   });
