@@ -136,7 +136,7 @@ function convert (request, options, callback) {
   let headers = utils.getHeadersArray(request);
   headers = headers.map((header) => {
     if (header.includes('%') || header.includes(',')) {
-      errors.push(`Special characters in headers can be interpreted in many ways, verify escaping for: ${header} `);
+      errors.push(`* Special characters in headers have many interpretations, check escaping - ${header} `);
     }
     if (header.includes(',')) {
       header = header.replace(/[,]/g, '\\,');
