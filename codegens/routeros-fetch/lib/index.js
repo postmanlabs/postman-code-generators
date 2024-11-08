@@ -139,7 +139,7 @@ function convert (request, options, callback) {
       errors.push(`Special characters in headers can be interpreted in many ways, verify escaping for: ${header} `);
     }
     if (header.includes(',')) {
-      header = header.toString().replaceAll(',', '\\\\,');
+      header = header.replace(/[,]/g, '\\,');
     }
     return utils.escapeRouterOSString(header);
   });

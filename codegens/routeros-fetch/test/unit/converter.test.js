@@ -115,7 +115,7 @@ describe('Converter test', function () {
           expect.fail(null, null, error);
         }
         console.log(snippet);
-        expect(snippet).to.contain('\\\\,');
+        expect(snippet).to.contain('a\\\\,1\\\\,2');
       }
     );
   });
