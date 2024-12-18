@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-## Fixed
+### Fixed
 
 - Fix for - [#780](https://github.com/postmanlabs/postman-code-generators/issues/780) Made the codegens package manager agnostic by removing lock files.
 
