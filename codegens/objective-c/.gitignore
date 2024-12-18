@@ -12,6 +12,12 @@ yarn-error.log*
 # Coverage directory used by tools like istanbul
 .coverage
 
+# Package manager lock files
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+bun.lockb
+
 # node-waf configuration
 .lock-wscript
 
