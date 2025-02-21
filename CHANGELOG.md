@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [v1.14.2] - 2025-02-21
+
+### Fixed
+
+-   Fix for - [#772](https://github.com/postmanlabs/postman-code-generators/issues/772) Ignore workspace dependencies while deepinstall for pnpm.
+
 ## [v1.14.1] - 2024-12-18
 
 ### Fixed
@@ -190,7 +196,9 @@ v1.0.0 (May 29, 2020)
 -   Add ES6 syntax support for NodeJS Request, NodeJS Native and NodeJS Unirest
 -   Fix snippet generation for powershell and jquery, where form data params had no type field
 
-[Unreleased]: https://github.com/postmanlabs/postman-code-generators/compare/v1.14.1...HEAD
+[Unreleased]: https://github.com/postmanlabs/postman-code-generators/compare/v1.14.2...HEAD
+
+[v1.14.2]: https://github.com/postmanlabs/postman-code-generators/compare/v1.14.1...v1.14.2
 
 [v1.14.1]: https://github.com/postmanlabs/postman-code-generators/compare/v1.14.0...v1.14.1
 
