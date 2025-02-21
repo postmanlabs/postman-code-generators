@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+-   Fix for - [#772](https://github.com/postmanlabs/postman-code-generators/issues/772) Ignore workspace dependencies while deepinstall for pnpm.
+
 ## [v1.14.1] - 2024-12-18
 
 ### Fixed
