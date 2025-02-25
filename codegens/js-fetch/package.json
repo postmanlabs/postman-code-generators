@@ -28,7 +28,7 @@
   "homepage": "https://github.com/postmanlabs/code-generators/tree/master/codegens/js-fetch",
   "dependencies": {},
   "devDependencies": {
-    "form-data": "2.5.1",
+    "form-data": "2.5.3",
     "node-fetch": "2.6.7"
   },
   "engines": {
