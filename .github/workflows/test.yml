@@ -10,13 +10,16 @@ on:
 jobs:
   Unit-Tests:
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [ 18.x, 20.x, 22.x ]
     steps:
       - name: Get Code
         uses: actions/checkout@v3
-      - name: Setup Node JS
+      - name: Use Node JS ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: ${{ matrix.node-version }}
       - name: Install system dependencies
         run: npm run cirequirements
       - name: Install package dependencies
