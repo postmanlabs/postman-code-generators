@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "NODE_OPTIONS='--trace-deprecation' npm/test.sh",
+    "test": "npm/test.sh",
     "package": "node npm/package.js",
     "zip": "node npm/zip.js",
     "prepack": "node npm/pre-package.js",
