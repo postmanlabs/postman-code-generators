@@ -11,7 +11,7 @@ jobs:
   Unit-Tests:
     runs-on: ubuntu-20.04
     strategy:
-      max-parallel: 4
+      max-parallel: 10
       matrix:
         node-version: [ 18.x, 20.x ]
         language-variant: [ 'csharp-httpclient', 'csharp-restsharp', 'curl', 'dart-dio', 'dart-http', 'golang', 'http',
