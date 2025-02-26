@@ -33,4 +33,4 @@ jobs:
       - name: Install dependencies for individual codegens
         run: npm run deepinstall dev
       - name: Run tests
-        run: npm run test
+        run: npm run test ${{ matrix.language-variant }}
