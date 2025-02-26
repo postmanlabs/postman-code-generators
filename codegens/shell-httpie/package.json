@@ -15,7 +15,7 @@
   },
   "scripts": {
     "test": "./scripts/test.sh",
-    "test-lint": "./scripts/test-lint.sh",
+    "test-lint": "node npm/test-lint.js",
     "test-unit": "./scripts/test-unit.sh",
     "coverage": "nyc report --reporter=html --reporter=text mocha"
   },
