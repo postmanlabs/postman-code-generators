@@ -1,6 +1,6 @@
 {
   "name": "postman-code-generators",
-  "version": "1.14.2",
+  "version": "2.0.0",
   "description": "Generates code snippets for a postman collection",
   "main": "index.js",
   "directories": {
@@ -14,7 +14,7 @@
     "postinstall": "node npm/deepinstall.js",
     "deepinstall": "node npm/deepinstall.js",
     "boilerplate": "node npm/boilerplate.js",
-    "cirequirements": "npm/ci-requirements.sh",
+    "cirequirements": "node npm/cirequirements.js",
     "test-lint": "node npm/test-lint.js"
   },
   "repository": {
@@ -29,7 +29,7 @@
     "detect-package-manager": "3.0.2",
     "lodash": "4.17.21",
     "path": "0.12.7",
-    "postman-collection": "^4.4.0",
+    "postman-collection": "^5.0.0",
     "shelljs": "0.8.5"
   },
   "devDependencies": {
@@ -55,6 +55,6 @@
     "watchify": "3.11.1"
   },
   "engines": {
-    "node": ">=12"
+    "node": ">=18"
   }
 }
