@@ -126,6 +126,14 @@
         <br /><br />
 
         <section>
+
+            <h1>Retired</h5>
+            <h3>At least the web interface for "curl2rsc" is being retired.  The web-based conversion used a microservice hosted by Glitch.
+            However Glitch has closed its doors in July 2025, so TIKOCI's cURL to /tool/fetch converter does not work.  Code remains, just no backend.</h3>
+         
+        </section>
+        
+        <section>
             <h3>
                 <kbd>NEW</kbd>
                 Convert
@@ -133,6 +141,7 @@
                 request to
                 <code>/tool/fetch</code>
             </h3>
+            
             <div hx-post="https://curl2rsc.glitch.me/curl" hx-target="#tafetchcmd" hx-swap="innerHTML" hx-include="this"
                 hx-trigger="change">
                 <fieldset id="curl2rscfields">
