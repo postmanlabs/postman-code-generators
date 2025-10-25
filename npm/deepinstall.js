@@ -44,7 +44,7 @@ async.series([
             command = 'yarn install --production --frozen-lockfile';
           }
           else {
-            command = 'touch yarn.lock && yarn workspaces focus --all --production'
+            command = 'yarn workspaces focus --all --production'
           }
           break;
         case 'pnpm':
