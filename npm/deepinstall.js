@@ -7,7 +7,9 @@ var shell = require('shelljs'),
   command,
   getSubfolders,
   fs = require('fs'),
-  pwd = shell.pwd();
+  pwd = shell.pwd(),
+  // eslint-disable-next-line no-process-env
+  initPwd = process.env.INIT_CWD;
 const args = process.argv,
   PATH_TO_CODEGENS_FOLDER = path.resolve(__dirname, '../codegens');
 
@@ -19,7 +21,7 @@ getSubfolders = (folder) => {
 
 async.series([
   function (next) {
-    detect().then((res) => {
+    detect({ cwd: initPwd }).then((res) => {
       pm = res;
       console.log('Detected package manager: ' + pm);
       return next();
