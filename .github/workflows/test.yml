@@ -9,11 +9,12 @@ on:
 
 jobs:
   Unit-Tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
+      fail-fast: false
       max-parallel: 10
       matrix:
-        node-version: [ 18.x, 20.x ]
+        node-version: [ 20.x ]
         language-variant: [ 'csharp-httpclient', 'csharp-restsharp', 'curl', 'dart-dio', 'dart-http', 'golang', 'http',
                    'java-okhttp', 'java-unirest', 'js-fetch', 'js-jquery', 'js-xhr', 'kotlin-okhttp', 'libcurl',
                    'nodejs-axios', 'nodejs-native', 'nodejs-request', 'nodejs-unirest', 'objective-c', 'ocaml-cohttp',
