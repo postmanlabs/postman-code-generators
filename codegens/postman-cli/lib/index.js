@@ -217,16 +217,15 @@ function addFormDataBody (snippet, body, opts) {
     }
 
     if (data.type === 'file') {
-      const sanitizedSrc = sanitize(data.src, opts.trim, '"', true),
-        wrappedSrc = `@"${sanitizedSrc}"`,
-        finalSrc = sanitize(wrappedSrc, opts.trim, opts.quoteType, opts.quoteType === '"');
-      snippet += ` ${opts.quoteType}${sanitize(data.key, opts.trim, opts.quoteType)}=${finalSrc}`;
+      const sanitizedSrc = sanitize(data.src, opts.trim, opts.quoteType);
+      snippet += `${opts.indent}${form('-f', opts.format)} ` +
+        `${opts.quoteType}${sanitize(data.key, opts.trim, opts.quoteType)}=@${sanitizedSrc}`;
       snippet += opts.quoteType;
     }
     else {
       const sanitizedValue = sanitize(data.value, opts.trim, '"', true),
         finalValue = sanitize(sanitizedValue, opts.trim, opts.quoteType, opts.quoteType === '"');
-      snippet += `${opts.indent} ${form('-f', opts.format)} ` +
+      snippet += `${opts.indent}${form('-f', opts.format)} ` +
         `${opts.quoteType}${sanitize(data.key, opts.trim, opts.quoteType)}=${finalValue}`;
       snippet += opts.quoteType;
     }

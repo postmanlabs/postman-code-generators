@@ -479,9 +479,54 @@ describe('postman-cli convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('\'no file=@"/path/to/file"\'');
-        expect(snippet).to.include('\'no src=@"/path/to/file"\'');
-        expect(snippet).to.include('\'invalid src=@"/path/to/file"\'');
+        expect(snippet).to.include('--form \'no file=@/path/to/file\'');
+        expect(snippet).to.include('--form \'no src=@/path/to/file\'');
+        expect(snippet).to.include('--form \'invalid src=@/path/to/file\'');
+      });
+    });
+
+    it('should generate correct --form flag for each field in multipart/form-data with text and file', function () {
+      var request = new Request({
+        'method': 'POST',
+        'header': [],
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'textField',
+              'value': '123',
+              'type': 'text'
+            },
+            {
+              'key': 'fileField',
+              'value': '',
+              'type': 'file',
+              'src': '/path/to/document.pdf'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/post',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        // Each field should have its own --form flag
+        expect(snippet).to.include('--form \'textField=');
+        expect(snippet).to.include('--form \'fileField=@/path/to/document.pdf\'');
+        // File path should NOT have inner double quotes
+        expect(snippet).to.not.include('@"/path/to/document.pdf"');
       });
     });
 
