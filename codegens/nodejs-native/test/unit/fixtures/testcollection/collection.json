@@ -163,13 +163,11 @@
         "header": [],
         "body": {},
         "url": {
-          "raw": "https://89c918b1-f4f8-4812-8e6c-69ecbeeb8409.mock.pstmn.io?query1=1&query2=2",
+          "raw": "https://postman-echo.com?query1=1&query2=2",
           "protocol": "https",
           "host": [
-            "89c918b1-f4f8-4812-8e6c-69ecbeeb8409",
-            "mock",
-            "pstmn",
-            "io"
+            "postman-echo",
+            "com"
           ],
           "path": [],
           "query": [
@@ -1051,14 +1049,12 @@
         ],
         "body": {},
         "url": {
-          "raw": "https://bf1621bb-f962-46b8-bf28-459e03b513ff.mock.pstmn.io/head",
+          "raw": "https://postman-echo.com/head",
           "protocol": "https",
           "host": [
-            "bf1621bb-f962-46b8-bf28-459e03b513ff",
-            "mock",
-            "pstmn",
-            "io"
-          ],
+						"postman-echo",
+						"com"
+					],
           "path": [
             "head"
           ]
@@ -1082,11 +1078,11 @@
           "raw": ""
         },
         "url": {
-          "raw": "https://mockbin.org/request",
+          "raw": "https://postman-echo.com/request",
           "protocol": "https",
           "host": [
-            "mockbin",
-            "org"
+            "postman-echo",
+            "com"
           ],
           "path": [
             "request"
@@ -1111,11 +1107,11 @@
           "raw": ""
         },
         "url": {
-          "raw": "https://mockbin.org/request",
+          "raw": "https://postman-echo.com/request",
           "protocol": "https",
           "host": [
-            "mockbin",
-            "org"
+            "postman-echo",
+            "com"
           ],
           "path": [
             "request"
@@ -1140,11 +1136,11 @@
           "raw": ""
         },
         "url": {
-          "raw": "https://mockbin.org/request",
+          "raw": "https://postman-echo.com/request",
           "protocol": "https",
           "host": [
-            "mockbin",
-            "org"
+            "postman-echo",
+            "com"
           ],
           "path": [
             "request"
@@ -1161,11 +1157,11 @@
         "header": [],
         "body": {},
         "url": {
-          "raw": "https://mockbin.org/request",
+          "raw": "https://postman-echo.com/request",
           "protocol": "https",
           "host": [
-            "mockbin",
-            "org"
+            "postman-echo",
+            "com"
           ],
           "path": [
             "request"
@@ -1176,7 +1172,7 @@
       "response": []
     },
     {
-      "name": "PROFIND request",
+      "name": "PROPFIND request",
       "request": {
         "method": "PROPFIND",
         "header": [
@@ -1190,11 +1186,11 @@
           "raw": ""
         },
         "url": {
-          "raw": "https://mockbin.org/request",
+          "raw": "https://postman-echo.com/request",
           "protocol": "https",
           "host": [
-            "mockbin",
-            "org"
+            "postman-echo",
+            "com"
           ],
           "path": [
             "request"
@@ -1219,11 +1215,11 @@
           "raw": ""
         },
         "url": {
-          "raw": "https://mockbin.org/request",
+          "raw": "https://postman-echo.com/request",
           "protocol": "https",
           "host": [
-            "mockbin",
-            "org"
+            "postman-echo",
+            "com"
           ],
           "path": [
             "request"
@@ -1240,13 +1236,11 @@
         "header": [],
         "body": {},
         "url": {
-          "raw": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io",
+          "raw": "https://postman-echo.com",
           "protocol": "https",
           "host": [
-            "9c76407d-5b8d-4b22-99fb-8c47a85d9848",
-            "mock",
-            "pstmn",
-            "io"
+            "postman-echo",
+            "com"
           ]
         },
         "description": null
@@ -1260,13 +1254,11 @@
             "header": [],
             "body": {},
             "url": {
-              "raw": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io",
+              "raw": "https://postman-echo.com",
               "protocol": "https",
               "host": [
-                "9c76407d-5b8d-4b22-99fb-8c47a85d9848",
-                "mock",
-                "pstmn",
-                "io"
+               "postman-echo",
+                "com"
               ]
             }
           },
@@ -1355,7 +1347,7 @@
           ],
           "cookie": [],
           "responseTime": "375",
-          "body": "{\n    \"args\": {},\n    \"data\": \"Curabitur auctor, elit nec pulvinar porttitor, ex augue condimentum enim, eget suscipit urna felis quis neque.\\nSuspendisse sit amet luctus massa, nec venenatis mi. Suspendisse tincidunt massa at nibh efficitur fringilla. Nam quis congue mi. Etiam volutpat.\",\n    \"files\": {},\n    \"form\": {},\n    \"headers\": {\n        \"host\": \"postman-echo.com\",\n        \"content-length\": \"256\",\n        \"accept\": \"*/*\",\n        \"accept-encoding\": \"gzip, deflate\",\n        \"content-type\": \"text/plain\",\n        \"cookie\": \"sails.sid=s%3A1wOi4AdoZEbqBjGi6oSUC5Vlfje8wJvs.DHQfRLXfIBvZ%2Bv0KhLAThMDz%2FXvxh9gyxWYa0u1EZOU\",\n        \"user-agent\": \"PostmanRuntime/7.1.1\",\n        \"x-forwarded-port\": \"443\",\n        \"x-forwarded-proto\": \"https\"\n    },\n    \"json\": null,\n    \"url\": \"https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io\"\n}"
+          "body": "{\n    \"args\": {},\n    \"data\": \"Curabitur auctor, elit nec pulvinar porttitor, ex augue condimentum enim, eget suscipit urna felis quis neque.\\nSuspendisse sit amet luctus massa, nec venenatis mi. Suspendisse tincidunt massa at nibh efficitur fringilla. Nam quis congue mi. Etiam volutpat.\",\n    \"files\": {},\n    \"form\": {},\n    \"headers\": {\n        \"host\": \"postman-echo.com\",\n        \"content-length\": \"256\",\n        \"accept\": \"*/*\",\n        \"accept-encoding\": \"gzip, deflate\",\n        \"content-type\": \"text/plain\",\n        \"cookie\": \"sails.sid=s%3A1wOi4AdoZEbqBjGi6oSUC5Vlfje8wJvs.DHQfRLXfIBvZ%2Bv0KhLAThMDz%2FXvxh9gyxWYa0u1EZOU\",\n        \"user-agent\": \"PostmanRuntime/7.1.1\",\n        \"x-forwarded-port\": \"443\",\n        \"x-forwarded-proto\": \"https\"\n    },\n    \"json\": null,\n    \"url\": \"https://postman-echo.com\"\n}"
         }
       ]
     },
@@ -1366,13 +1358,11 @@
         "header": [],
         "body": {},
         "url": {
-          "raw": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io",
+          "raw": "https://postman-echo.com",
           "protocol": "https",
           "host": [
-            "9c76407d-5b8d-4b22-99fb-8c47a85d9848",
-            "mock",
-            "pstmn",
-            "io"
+            "postman-echo",
+            "com"
           ]
         }
       },
@@ -1385,13 +1375,11 @@
             "header": [],
             "body": {},
             "url": {
-              "raw": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io",
+              "raw": "https://postman-echo.com",
               "protocol": "https",
               "host": [
-                "9c76407d-5b8d-4b22-99fb-8c47a85d9848",
-                "mock",
-                "pstmn",
-                "io"
+               "postman-echo",
+                "com"
               ]
             }
           },
@@ -1401,7 +1389,7 @@
           "header": [],
           "cookie": [],
           "responseTime": "0",
-          "body": "{\n    \"args\": {},\n    \"data\": \"Curabitur auctor, elit nec pulvinar porttitor, ex augue condimentum enim, eget suscipit urna felis quis neque.\\nSuspendisse sit amet luctus massa, nec venenatis mi. Suspendisse tincidunt massa at nibh efficitur fringilla. Nam quis congue mi. Etiam volutpat.\",\n    \"files\": {},\n    \"form\": {},\n    \"headers\": {\n        \"host\": \"postman-echo.com\",\n        \"content-length\": \"256\",\n        \"accept\": \"*/*\",\n        \"accept-encoding\": \"gzip, deflate\",\n        \"content-type\": \"text/plain\",\n        \"cookie\": \"sails.sid=s%3A1wOi4AdoZEbqBjGi6oSUC5Vlfje8wJvs.DHQfRLXfIBvZ%2Bv0KhLAThMDz%2FXvxh9gyxWYa0u1EZOU\",\n        \"user-agent\": \"PostmanRuntime/7.1.1\",\n        \"x-forwarded-port\": \"443\",\n        \"x-forwarded-proto\": \"https\"\n    },\n    \"json\": null,\n    \"url\": \"https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io\"\n}"
+          "body": "{\n    \"args\": {},\n    \"data\": \"Curabitur auctor, elit nec pulvinar porttitor, ex augue condimentum enim, eget suscipit urna felis quis neque.\\nSuspendisse sit amet luctus massa, nec venenatis mi. Suspendisse tincidunt massa at nibh efficitur fringilla. Nam quis congue mi. Etiam volutpat.\",\n    \"files\": {},\n    \"form\": {},\n    \"headers\": {\n        \"host\": \"postman-echo.com\",\n        \"content-length\": \"256\",\n        \"accept\": \"*/*\",\n        \"accept-encoding\": \"gzip, deflate\",\n        \"content-type\": \"text/plain\",\n        \"cookie\": \"sails.sid=s%3A1wOi4AdoZEbqBjGi6oSUC5Vlfje8wJvs.DHQfRLXfIBvZ%2Bv0KhLAThMDz%2FXvxh9gyxWYa0u1EZOU\",\n        \"user-agent\": \"PostmanRuntime/7.1.1\",\n        \"x-forwarded-port\": \"443\",\n        \"x-forwarded-proto\": \"https\"\n    },\n    \"json\": null,\n    \"url\": \"https://postman-echo.com\"\n}"
         }
       ]
     }

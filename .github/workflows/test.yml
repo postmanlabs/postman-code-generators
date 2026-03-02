@@ -1,0 +1,38 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+  pull_request:
+
+jobs:
+  Unit-Tests:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        node-version: [ 20.x ]
+        language-variant: [ 'csharp-httpclient', 'csharp-restsharp', 'curl', 'dart-dio', 'dart-http', 'golang', 'http',
+                   'java-okhttp', 'java-unirest', 'js-fetch', 'js-jquery', 'js-xhr', 'kotlin-okhttp', 'libcurl',
+                   'nodejs-axios', 'nodejs-native', 'nodejs-request', 'nodejs-unirest', 'objective-c', 'ocaml-cohttp',
+                   'php-curl', 'php-guzzle', 'php-httprequest2', 'php-pecl-http', 'powershell-restmethod',
+                   'python-http.client', 'python-requests', 'r-httr', 'r-rcurl', 'ruby', 'rust-reqwest',
+                   'shell-httpie', 'shell-wget', 'swift' ]
+    steps:
+      - name: Get Code
+        uses: actions/checkout@v3
+      - name: Use Node JS ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install package dependencies
+        run: npm install
+      - name: Install system dependencies
+        run: npm run cirequirements ${{ matrix.language-variant }}
+      - name: Install dependencies for individual codegens
+        run: npm run deepinstall dev
+      - name: Run tests
+        run: npm run test ${{ matrix.language-variant }}

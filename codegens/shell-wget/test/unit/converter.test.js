@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   sanitize = require('../../lib/util/sanitize').sanitize,
   convert = require('../../lib/index').convert,
   getOptions = require('../../lib/index').getOptions,
@@ -9,7 +9,7 @@ describe('Shell-Wget converter', function () {
 
 
   describe('convert function', function () {
-    var request = new sdk.Request(mainCollection.item[0].request),
+    var request = new Request(mainCollection.item[0].request),
       snippetArray,
       options = {
         indentType: 'Tab',
@@ -82,7 +82,7 @@ describe('Shell-Wget converter', function () {
     });
 
     it('should trim header keys and not trim header values', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [
           {
@@ -110,7 +110,7 @@ describe('Shell-Wget converter', function () {
     });
 
     it('should generate snippet for formdata body mode', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -153,7 +153,7 @@ describe('Shell-Wget converter', function () {
     });
 
     it('should generate valid snippet for single/double quotes in url', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [],
         'url': {

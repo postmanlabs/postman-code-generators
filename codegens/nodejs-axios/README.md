@@ -18,6 +18,7 @@ Convert function will take three parameters
     * `requestTimeout` : Integer denoting time after which the request will bail out in milli-seconds
     * `trimRequestBody` : Trim request body fields
     * `followRedirect` : Boolean denoting whether to redirect a request
+    * `asyncAwaitEnabled` : Boolean denoting whether to use async/await syntax
 
 * `callback`- callback function with first parameter as error and second parameter as string for code snippet
 
@@ -27,7 +28,7 @@ var request = new sdk.Request('www.google.com'),  //using postman sdk to create 
     options = {
         indentType: 'Space',
         indentCount: 2,
-        ES6_enabled: true
+        asyncAwaitEnabled: true
     };
 convert(request, options, function(error, snippet) {
     if (error) {

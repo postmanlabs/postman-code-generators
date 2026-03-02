@@ -8,6 +8,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Package manager lock files
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+bun.lockb
+
 # Runtime data
 pids
 *.pid

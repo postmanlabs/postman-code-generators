@@ -21,6 +21,36 @@ describe('Converter test', function () {
     });
   });
 
+  it('should parse the url correctly even if the host and path are wrong in the url object',
+    function () {
+      var request = new Request({
+        'method': 'GET',
+        'body': {
+          'mode': 'raw',
+          'raw': ''
+        },
+        'url': {
+          'path': [
+            'hello'
+          ],
+          'host': [
+            'https://example.com/path'
+          ],
+          'query': [],
+          'variable': []
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('GET /path/hello');
+        expect(snippet).to.include('Host: example.com');
+      });
+    });
+
+
   it('should trim header keys and not trim header values', function () {
     var request = new Request({
       'method': 'GET',
@@ -195,6 +225,110 @@ describe('Converter test', function () {
       }
       expect(snippet).to.be.a('string');
       expect(snippet).to.include(':action');
+    });
+  });
+
+  it('should generate valid snippet with Content-Length header if request has body', function () {
+    var request = new Request({
+      'method': 'POST',
+      'body': {
+        'mode': 'raw',
+        'raw': 'aaaaa'
+      },
+      'url': {
+        'raw': 'https://example.com',
+        'protocol': 'https',
+        'host': [
+          'example',
+          'com'
+        ]
+      }
+    });
+
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('Content-Length: 5');
+    });
+  });
+
+  it('should generate a valid path even if the url contains unresolved variables', function () {
+    var request = new Request({
+      'method': 'GET',
+      'url': {
+
+        'host': [
+          '{{variable}}'
+        ],
+        'path': [
+          '{{path}}'
+        ]
+      }
+    });
+
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('GET /{{path}}');
+      expect(snippet).to.include('Host: {{variable}}');
+    });
+  });
+
+  it('should add content type if formdata field contains a content-type', function () {
+    var request = new Request({
+      'method': 'POST',
+      'body': {
+        'mode': 'formdata',
+        'formdata': [
+          {
+            'key': 'json',
+            'value': '{"hello": "world"}',
+            'contentType': 'application/json',
+            'type': 'text'
+          }
+        ]
+      },
+      'url': {
+        'raw': 'http://postman-echo.com/post',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'post'
+        ]
+      }
+    });
+
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.contain('Content-Type: application/json');
+    });
+  });
+
+  it('should not add extra newlines if there is no body or header present', function () {
+    var request = new Request({
+      'method': 'GET',
+      'url': {
+        'host': [
+          'example',
+          'com'
+        ]
+      }
+    });
+
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.equal('GET / HTTP/1.1\nHost: example.com');
     });
   });
 });

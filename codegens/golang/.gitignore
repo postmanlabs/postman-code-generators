@@ -12,6 +12,12 @@ pids
 *.seed
 *.pid.lock
 
+# Package manager lock files
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+bun.lockb
+
 # Prevent IDE stuff
 .idea
 .vscode

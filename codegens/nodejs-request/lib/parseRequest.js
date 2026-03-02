@@ -84,6 +84,26 @@ function extractFormData (dataArray, indentString, trimBody) {
   return snippetString.join(',\n') + '\n';
 }
 
+/** generate graphql code snippet
+ *
+ * @param body GraphQL body
+ * @param indentString string defining indentation
+ */
+function parseGraphql (body, indentString) {
+  let query = body ? body.query : '',
+    graphqlVariables = body ? body.variables : '{}';
+  try {
+    graphqlVariables = JSON.parse(graphqlVariables || '{}');
+  }
+  catch (e) {
+    graphqlVariables = {};
+  }
+  return 'body: JSON.stringify({\n' +
+    `${indentString.repeat(2)}query: \`${query ? query.trim() : ''}\`,\n` +
+    `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
+    `${indentString}})`;
+}
+
 /**
  * Parses body object based on mode of body and returns code snippet
  *
@@ -96,30 +116,22 @@ function parseBody (requestbody, indentString, trimBody, contentType) {
   if (requestbody) {
     switch (requestbody.mode) {
       case 'raw':
-        if (contentType === 'application/json') {
+        // Match any application type whose underlying structure is json
+        // For example application/vnd.api+json
+        // All of them have +json as suffix
+        if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
           try {
             let jsonBody = JSON.parse(requestbody[requestbody.mode]);
-            return `body: JSON.stringify(${JSON.stringify(jsonBody)})\n`;
+            return `body: JSON.stringify(${JSON.stringify(jsonBody, null,
+              indentString.length).replace(/\n/g, '\n' + indentString)})\n`;
           }
           catch (error) {
-            return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
+            return `body: '${sanitize(requestbody[requestbody.mode])}'\n`;
           }
         }
-        return `body: ${JSON.stringify(requestbody[requestbody.mode])}\n`;
-      // eslint-disable-next-line no-case-declarations
+        return `body: '${sanitize(requestbody[requestbody.mode])}'\n`;
       case 'graphql':
-        let query = requestbody[requestbody.mode].query,
-          graphqlVariables;
-        try {
-          graphqlVariables = JSON.parse(requestbody[requestbody.mode].variables);
-        }
-        catch (e) {
-          graphqlVariables = {};
-        }
-        return 'body: JSON.stringify({\n' +
-          `${indentString.repeat(2)}query: '${sanitize(query, trimBody)}',\n` +
-          `${indentString.repeat(2)}variables: ${JSON.stringify(graphqlVariables)}\n` +
-          `${indentString}})`;
+        return parseGraphql(requestbody[requestbody.mode], indentString);
       case 'formdata':
         return `formData: {\n${extractFormData(requestbody[requestbody.mode], indentString, trimBody)}` +
                         indentString + '}';

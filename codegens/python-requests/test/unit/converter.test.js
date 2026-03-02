@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   mainCollection = require('./fixtures/sample_collection.json'),
   convert = require('../../lib/index').convert;
 
@@ -11,33 +11,33 @@ describe('Python- Requests converter', function () {
 
   it('should not have allow_redirects=False twice in generated snippet when' +
   ' followRedirect option is set as false', function () {
-    var request = new sdk.Request(mainCollection.item[0].request),
+    var request = new Request(mainCollection.item[0].request),
       options = { followRedirect: false, requestTimeout: 0 };
     convert(request, options, function (err, snippet) {
       if (err) {
         expect.fail(null, null, err);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.not.include('allow_redirects = False, allow_redirects = false');
+      expect(snippet).to.not.include('allow_redirects=False, allow_redirects=false');
     });
   });
 
   it('should have correct boolean value for allow_redirects(False, uppercased F) in generated snippet when' +
   ' followRedirect option is set as false', function () {
-    var request = new sdk.Request(mainCollection.item[0].request),
+    var request = new Request(mainCollection.item[0].request),
       options = { followRedirect: false };
     convert(request, options, function (err, snippet) {
       if (err) {
         expect.fail(null, null, err);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('allow_redirects = False');
-      expect(snippet).to.not.include('allow_redirects = false');
+      expect(snippet).to.include('allow_redirects=False');
+      expect(snippet).to.not.include('allow_redirects=false');
     });
   });
 
   it('should trim header keys and not trim header values', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'GET',
       'header': [
         {
@@ -63,8 +63,46 @@ describe('Python- Requests converter', function () {
     });
   });
 
+  it('should convert JSON tokens into appropriate python tokens', function () {
+    var request = new Request({
+      'method': 'POST',
+      'header': [
+        {
+          'key': 'Content-Type',
+          'value': 'application/json',
+          'type': 'text'
+        }
+      ],
+      'body': {
+        'mode': 'raw',
+        'raw': `{
+          "true": true,
+          "false": false,
+          "null": null
+        }`
+      },
+      'url': {
+        'raw': 'https://example.com',
+        'protocol': 'https',
+        'host': [
+          'example',
+          'com'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.include('"true": True');
+      expect(snippet).to.include('"false": False');
+      expect(snippet).to.include('"null": None');
+    });
+  });
+
   it('should generate snippets for no files in form data', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [],
       'body': {
@@ -106,9 +144,12 @@ describe('Python- Requests converter', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('(\'no file\', open(\'/path/to/file\',\'rb\'))');
-      expect(snippet).to.include('(\'no src\', open(\'/path/to/file\',\'rb\'))');
-      expect(snippet).to.include('(\'invalid src\', open(\'/path/to/file\',\'rb\'))');
+      // eslint-disable-next-line max-len
+      expect(snippet).to.include('(\'no file\',(\'file\',open(\'/path/to/file\',\'rb\'),\'application/octet-stream\'))');
+      // eslint-disable-next-line max-len
+      expect(snippet).to.include('(\'no src\',(\'file\',open(\'/path/to/file\',\'rb\'),\'application/octet-stream\'))');
+      // eslint-disable-next-line max-len
+      expect(snippet).to.include('(\'invalid src\',(\'file\',open(\'/path/to/file\',\'rb\'),\'application/octet-stream\'))');
     });
   });
 

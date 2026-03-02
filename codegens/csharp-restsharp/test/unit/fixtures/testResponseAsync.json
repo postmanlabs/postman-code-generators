@@ -1,0 +1,3 @@
+{
+  "result" : "var options = new RestClientOptions(\"https://postman-echo.com\")\n{\n\tMaxTimeout = -1,\n};\nvar client = new RestClient(options);\nvar request = new RestRequest(\"/post/?hardik=\\\"me\\\"\", Method.Post);\nrequest.AddHeader(\"Content-Type\", \"application/x-www-form-urlencoded\");\nrequest.AddParameter(\"1\", \"a\");\nrequest.AddParameter(\"2\", \"b\");\nrequest.AddParameter(\"\\\"\\\"12\\\"\\\"\", \"\\\"23\\\"\");\nrequest.AddParameter(\"'1\\\"2\\\\\\\"\\\"3'\", \"'1\\\"23\\\"4'\");\nRestResponse response = await client.ExecuteAsync(request);\nConsole.WriteLine(response.Content);"
+}

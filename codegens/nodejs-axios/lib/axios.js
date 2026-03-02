@@ -1,4 +1,4 @@
-const _ = require('./lodash'),
+const _ = require('lodash'),
   parseRequest = require('./parseRequest'),
   sanitize = require('./util').sanitize,
   sanitizeOptions = require('./util').sanitizeOptions,
@@ -14,7 +14,7 @@ const _ = require('./lodash'),
  */
 function makeSnippet (request, indentString, options) {
 
-  var snippet = options.ES6_enabled ? 'const' : 'var',
+  let snippet = 'const',
     configArray = [],
     dataSnippet = '',
     body,
@@ -84,11 +84,11 @@ function makeSnippet (request, indentString, options) {
   dataSnippet = !_.isEmpty(body) ? parseRequest.parseBody(body,
     options.trimRequestBody,
     indentString,
-    request.headers.get('Content-Type'),
-    options.ES6_enabled) : '';
+    request.headers.get('Content-Type')) : '';
   snippet += dataSnippet + '\n';
 
   configArray.push(indentString + `method: '${request.method.toLowerCase()}'`);
+  configArray.push(indentString + 'maxBodyLength: Infinity');
   configArray.push(indentString + `url: '${sanitize(request.url.toString())}'`);
 
   headers = parseRequest.parseHeader(request, indentString);
@@ -112,7 +112,7 @@ function makeSnippet (request, indentString, options) {
   if (options.requestTimeout) {
     configArray.push(indentString + `timeout: ${options.requestTimeout}`);
   }
-  if (options.followRedirect === false) {
+  if (_.get(request, 'protocolProfileBehavior.followRedirects', options.followRedirect) === false) {
     // setting the maxRedirects to 0 will disable any redirects.
     // by default, maxRedirects are set to 5
     configArray.push(indentString + 'maxRedirects: 0');
@@ -122,33 +122,31 @@ function makeSnippet (request, indentString, options) {
     configArray.push(indentString + 'data : data');
   }
 
-  if (options.ES6_enabled) {
-    snippet += 'let';
-  }
-  else {
-    snippet += 'var';
-  }
-
-  snippet += ' config = {\n';
+  snippet += 'let config = {\n';
   snippet += configArray.join(',\n') + '\n';
   snippet += '};\n\n';
-  snippet += 'axios(config)\n';
-  if (options.ES6_enabled) {
+
+  if (options.asyncAwaitEnabled) {
+    snippet += 'async function makeRequest() {\n';
+    snippet += indentString + 'try {\n';
+    snippet += indentString.repeat(2) + 'const response = await axios.request(config);\n';
+    snippet += indentString.repeat(2) + 'console.log(JSON.stringify(response.data));\n';
+    snippet += indentString + '}\n';
+    snippet += indentString + 'catch (error) {\n';
+    snippet += indentString.repeat(2) + 'console.log(error);\n';
+    snippet += indentString + '}\n';
+    snippet += '}\n\n';
+    snippet += 'makeRequest();\n';
+  }
+  else {
+    snippet += 'axios.request(config)\n';
     snippet += '.then((response) => {\n';
-  }
-  else {
-    snippet += '.then(function (response) {\n';
-  }
-  snippet += indentString + 'console.log(JSON.stringify(response.data));\n';
-  snippet += '})\n';
-  if (options.ES6_enabled) {
+    snippet += indentString + 'console.log(JSON.stringify(response.data));\n';
+    snippet += '})\n';
     snippet += '.catch((error) => {\n';
+    snippet += indentString + 'console.log(error);\n';
+    snippet += '});\n';
   }
-  else {
-    snippet += '.catch(function (error) {\n';
-  }
-  snippet += indentString + 'console.log(error);\n';
-  snippet += '});\n';
 
   return snippet;
 }
@@ -198,11 +196,11 @@ function getOptions () {
       description: 'Remove white space and additional lines that may affect the server\'s response'
     },
     {
-      name: 'Enable ES6 features',
-      id: 'ES6_enabled',
+      name: 'Use async/await',
+      id: 'asyncAwaitEnabled',
       type: 'boolean',
       default: false,
-      description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
+      description: 'Modifies code snippet to use async/await'
     }
   ];
 }
@@ -227,7 +225,7 @@ function convert (request, options, callback) {
   options = sanitizeOptions(options, getOptions());
 
   //  String representing value of indentation required
-  var indentString;
+  let indentString;
 
   indentString = options.indentType === 'Tab' ? '\t' : ' ';
   indentString = indentString.repeat(options.indentCount);

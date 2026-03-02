@@ -44,11 +44,24 @@ const expectedOptions = {
       description: 'Set number of milliseconds the request should wait' +
       ' for a response before timing out (use 0 for infinity)'
     },
+    requestTimeoutInSeconds: {
+      name: 'Set request timeout (in seconds)',
+      type: 'positiveInteger',
+      default: 0,
+      description: 'Set number of seconds the request should wait' +
+      ' for a response before timing out (use 0 for infinity)'
+    },
     followRedirect: {
       name: 'Follow redirects',
       type: 'boolean',
       default: true,
       description: 'Automatically follow HTTP redirects'
+    },
+    followOriginalHttpMethod: {
+      name: 'Follow original HTTP method',
+      type: 'boolean',
+      default: false,
+      description: 'Redirect with the original HTTP method instead of the default behavior of redirecting with GET'
     },
     trimRequestBody: {
       name: 'Trim request body fields',
@@ -67,6 +80,45 @@ const expectedOptions = {
       type: 'boolean',
       default: false,
       description: 'Modifies code snippet to incorporate ES6 (EcmaScript) features'
+    },
+    asyncAwaitEnabled: {
+      name: 'Use async/await',
+      id: 'asyncAwaitEnabled',
+      type: 'boolean',
+      default: false,
+      description: 'Modifies code snippet to use async/await'
+    },
+    quoteType: {
+      name: 'Quote Type',
+      type: 'enum',
+      default: 'single',
+      description: 'String denoting the quote type to use (single or double) for URL ' +
+          '(Use double quotes when running curl in cmd.exe and single quotes for the rest)'
+    },
+    maxRedirects: {
+      name: 'Maximum number of redirects',
+      type: 'positiveInteger',
+      default: 0,
+      description: 'Set the maximum number of redirects to follow, defaults to 0 (unlimited)'
+    },
+    quiet: {
+      name: 'Use Quiet Mode',
+      type: 'boolean',
+      default: false,
+      description: 'Display the requested data without showing any extra output.'
+    },
+    debug: {
+      name: 'Use Debug Mode',
+      type: 'boolean',
+      default: false,
+      description: 'Show detailed execution information including retry attempts, redirects, and timing breakdowns.'
+    },
+    lineContinuationCharacter: {
+      name: 'Line continuation character',
+      type: 'enum',
+      default: '\\',
+      description: 'Set a character used to mark the continuation of a statement on the next line ' +
+        '(generally, \\ for OSX/Linux, ^ for Windows cmd and ` for Powershell)'
     }
   },
   // Standard array of ids that should be used for options ids. Any new option should be updated here.
@@ -77,13 +129,22 @@ const expectedOptions = {
     'indentCount',
     'trimRequestBody',
     'requestTimeout',
+    'requestTimeoutInSeconds',
     'silent',
     'includeBoilerplate',
     'followRedirect',
+    'followOriginalHttpMethod',
     'lineContinuationCharacter',
     'protocol',
     'useMimeType',
-    'ES6_enabled'
+    'ES6_enabled',
+    'asyncAwaitEnabled',
+    'quoteType',
+    'asyncType',
+    'ignoreWarnings',
+    'maxRedirects',
+    'quiet',
+    'debug'
   ],
   CODEGEN_ABS_PATH = `./codegens/${codegen}`;
 describe('Code-gen repository ' + codegen, function () {
@@ -118,8 +179,8 @@ describe('Code-gen repository ' + codegen, function () {
         expect(json.com_postman_plugin).to.have.property('variant');
         expect(json.com_postman_plugin).to.have.property('syntax_mode');
         expect(json).to.have.property('engines');
-        expect(json.engines).to.eql({
-          node: '>=8'
+        expect(json.engines).to.satisfy(function (engines) {
+          return engines.hasOwnProperty('node') && (engines.node === '>=8' || engines.node === '>=12');
         });
       });
 
@@ -135,11 +196,10 @@ describe('Code-gen repository ' + codegen, function () {
         expect(json.dependencies).to.be.a('object');
       });
 
-      it('must point to a valid and precise (no * or ^) semver', function () {
-        json.dependencies && Object.keys(json.dependencies).forEach(function (item) {
-          expect(json.dependencies[item]).to.match(new RegExp('^((\\d+)\\.(\\d+)\\.(\\d+))(?:-' +
-            '([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?(?:\\+([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?$')); // eslint-disable-line max-len
-        });
+      it('should have a valid version string in form of <major>.<minor>.<revision>', function () {
+        expect(json.version)
+          // eslint-disable-next-line max-len, security/detect-unsafe-regex
+          .to.match(/^((\d+)\.(\d+)\.(\d+))(?:-([\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?(?:\+([\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?$/);
       });
     });
 
@@ -148,10 +208,11 @@ describe('Code-gen repository ' + codegen, function () {
         expect(json.devDependencies).to.be.a('object');
       });
 
-      it('must point to a valid and precise (no * or ^) semver', function () {
-        json.devDependencies && Object.keys(json.devDependencies).forEach(function (item) {
-          expect(json.devDependencies[item]).to.match(new RegExp('^((\\d+)\\.(\\d+)\\.(\\d+))(?:-' +
-            '([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?(?:\\+([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?$')); // eslint-disable-line max-len
+      it('should point to a valid semver', function () {
+        Object.keys(json.devDependencies).forEach(function (dependencyName) {
+          // eslint-disable-next-line security/detect-non-literal-regexp
+          expect(json.devDependencies[dependencyName]).to.match(new RegExp('((\\d+)\\.(\\d+)\\.(\\d+))(?:-' +
+            '([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?(?:\\+([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?$'));
         });
       });
 

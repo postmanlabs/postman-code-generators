@@ -13,14 +13,15 @@ Convert function takes three parameters
 
 * `request` - Postman-SDK Request Object
 
-* `options` - options is an object which hsa following properties
+* `options` - options is an object which has following properties
     * `indentType` - String denoting type of indentation for code snippet. eg: 'Space', 'Tab'
     * `indentCount` - The number of indentation characters to add per code level
     * `trimRequestBody` - Trim request body fields
     * `followRedirect` - Boolean denoting whether to redirect a request
-    * `requestTimeout` - Integer denoting time after which the request will bail out in milli-seconds
+    * `requestTimeoutInSeconds` - Integer denoting time after which the request will bail out in seconds
     * `multiLine` - Boolean denoting whether to output code snippet with multi line breaks
     * `longFormat` - Boolean denoting whether to use longform cURL options in snippet
+    * `quoteType` - String denoting the quote type to use (single or double) for URL
 
 * `callback` - callback function with first parameter as error and second parameter as string for code snippet
 
@@ -34,7 +35,8 @@ var request = new sdk.Request('www.google.com'),  //using postman sdk to create 
         trimRequestBody: true,
         multiLine: true,
         followRedirect: true,
-        longFormat: true
+        longFormat: true,
+        quoteType: 'single'
     };
 convert(request, options, function(error, snippet) {
     if (error) {

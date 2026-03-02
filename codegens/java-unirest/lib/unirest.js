@@ -186,7 +186,7 @@ function convert (request, options, callback) {
   if (options.includeBoilerplate) {
     headerSnippet = 'import com.mashape.unirest.http.*;\n' +
                         'import java.io.*;\n' +
-                        'public class main {\n' +
+                        'public class Main {\n' +
                         indentString + 'public static void main(String []args) throws Exception{\n';
     footerSnippet = indentString.repeat(2) + 'System.out.println(response.getBody());\n' +
                         indentString + '}\n}\n';

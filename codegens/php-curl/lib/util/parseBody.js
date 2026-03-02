@@ -20,11 +20,11 @@ module.exports = function (request, trimRequestBody, indentation) {
       case 'raw':
         if (!_.isEmpty(request.body[request.body.mode])) {
           requestBody += `${indentation}CURLOPT_POSTFIELDS =>` +
-                        `${sanitize(request.body[request.body.mode], request.body.mode, trimRequestBody)},\n`;
+                        `'${sanitize(request.body[request.body.mode], request.body.mode, trimRequestBody)}',\n`;
         }
         return requestBody;
-      // eslint-disable-next-line no-case-declarations
       case 'graphql':
+        // eslint-disable-next-line no-case-declarations
         let query = request.body[request.body.mode].query,
           graphqlVariables;
         try {
@@ -34,10 +34,10 @@ module.exports = function (request, trimRequestBody, indentation) {
           graphqlVariables = {};
         }
         requestBody += `${indentation}CURLOPT_POSTFIELDS =>` +
-          `${sanitize(JSON.stringify({
+          `'${sanitize(JSON.stringify({
             query: query,
             variables: graphqlVariables
-          }), 'raw', trimRequestBody)},\n`;
+          }), 'raw', trimRequestBody)}',\n`;
         return requestBody;
       case 'urlencoded':
         enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
@@ -46,7 +46,7 @@ module.exports = function (request, trimRequestBody, indentation) {
             return `${sanitize(value.key, request.body.mode, trimRequestBody)}=` +
                             `${sanitize(value.value, request.body.mode, trimRequestBody)}`;
           });
-          requestBody = `${indentation}CURLOPT_POSTFIELDS => "${bodyMap.join('&')}",\n`;
+          requestBody = `${indentation}CURLOPT_POSTFIELDS => '${bodyMap.join('&')}',\n`;
         }
         return requestBody;
       case 'formdata':

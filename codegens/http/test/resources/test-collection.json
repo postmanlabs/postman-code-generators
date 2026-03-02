@@ -992,7 +992,7 @@
 					"mode": "raw",
 					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
 				},
-				"url": "https://mockbin.org/request"
+				"url": "https://postman-echo.com/request"
 			},
 			"response": []
 		},
@@ -1010,7 +1010,7 @@
 					"mode": "raw",
 					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
 				},
-				"url": "https://mockbin.org/request"
+				"url": "https://postman-echo.com/request"
 			},
 			"response": []
 		},
@@ -1028,7 +1028,7 @@
 					"mode": "raw",
 					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
 				},
-				"url": "https://mockbin.org/request"
+				"url": "https://postman-echo.com/request"
 			},
 			"response": []
 		},
@@ -1041,12 +1041,12 @@
 					"mode": "raw",
 					"raw": ""
 				},
-				"url": "https://mockbin.org/request"
+				"url": "https://postman-echo.com/request"
 			},
 			"response": []
 		},
 		{
-			"name": "PROFIND request",
+			"name": "PROPFIND request",
 			"request": {
 				"method": "PROPFIND",
 				"header": [
@@ -1059,7 +1059,7 @@
 					"mode": "raw",
 					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
 				},
-				"url": "https://mockbin.org/request"
+				"url": "https://postman-echo.com/request"
 			},
 			"response": []
 		},
@@ -1077,7 +1077,7 @@
 					"mode": "raw",
 					"raw": "Duis posuere augue vel cursus pharetra. In luctus a ex nec pretium. Praesent neque quam, tincidunt nec leo eget, rutrum vehicula magna.\nMaecenas consequat elementum elit, id semper sem tristique et. Integer pulvinar enim quis consectetur interdum volutpat."
 				},
-				"url": "https://mockbin.org/request"
+				"url": "https://postman-echo.com/request"
 			},
 			"response": []
 		},
@@ -1090,7 +1090,7 @@
 					"mode": "raw",
 					"raw": ""
 				},
-				"url": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io"
+				"url": "https://postman-echo.com"
 			},
 			"response": []
 		},
@@ -1103,7 +1103,7 @@
 					"mode": "raw",
 					"raw": ""
 				},
-				"url": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io"
+				"url": "https://postman-echo.com"
 			},
 			"response": [
 				{
@@ -1115,7 +1115,7 @@
 							"mode": "raw",
 							"raw": ""
 						},
-						"url": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io"
+						"url": "https://postman-echo.com"
 					},
 					"status": "OK",
 					"code": 200,

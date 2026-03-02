@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   convert = require('../../lib/index').convert,
   getOptions = require('../../lib/index').getOptions,
   parseBody = require('../../lib/util/parseBody'),
@@ -9,7 +9,7 @@ var expect = require('chai').expect,
 describe('Python-http.client converter', function () {
 
   describe('convert function', function () {
-    var request = new sdk.Request(mainCollection.item[0].request),
+    var request = new Request(mainCollection.item[0].request),
       snippetArray;
 
     const SINGLE_SPACE = ' ';
@@ -35,6 +35,108 @@ describe('Python-http.client converter', function () {
       });
     });
 
+    it('should parse the url correctly even if the host and path are wrong in the url object',
+      function () {
+        var request = new Request({
+          'method': 'GET',
+          'body': {
+            'mode': 'raw',
+            'raw': ''
+          },
+          'url': {
+            'path': [
+              'hello'
+            ],
+            'host': [
+              'https://example.com/path'
+            ],
+            'query': [],
+            'variable': []
+          }
+        });
+        convert(request, {}, function (error, snippet) {
+          if (error) {
+            expect.fail(null, null, error);
+          }
+          expect(snippet).to.be.a('string');
+          expect(snippet).to.include('http.client.HTTPSConnection("example.com")');
+          expect(snippet).to.include('conn.request("GET", "/path/hello", payload, headers');
+        });
+      });
+
+    it('should add content type if formdata field contains a content-type', function () {
+      var request = new Request({
+        'method': 'POST',
+        'body': {
+          'mode': 'formdata',
+          'formdata': [
+            {
+              'key': 'json',
+              'value': '{"hello": "world"}',
+              'contentType': 'application/json',
+              'type': 'text'
+            }
+          ]
+        },
+        'url': {
+          'raw': 'http://postman-echo.com/post',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'post'
+          ]
+        }
+      });
+
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('dataList.append(encode(\'Content-Type: {}\'.format(\'application/json\')))'); // eslint-disable-line max-len
+      });
+    });
+
+    it('should convert JSON tokens into appropriate python tokens', function () {
+      var request = new Request({
+        'method': 'POST',
+        'header': [
+          {
+            'key': 'Content-Type',
+            'value': 'application/json',
+            'type': 'text'
+          }
+        ],
+        'body': {
+          'mode': 'raw',
+          'raw': `{
+            "true": true,
+            "false": false,
+            "null": null
+          }`
+        },
+        'url': {
+          'raw': 'https://example.com',
+          'protocol': 'https',
+          'host': [
+            'example',
+            'com'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('"true": True');
+        expect(snippet).to.include('"false": False');
+        expect(snippet).to.include('"null": None');
+      });
+    });
+
     it('should generate snippet with Tab as an indent type', function () {
       convert(request, { indentType: 'Tab', indentCount: 1 }, function (error, snippet) {
         if (error) {
@@ -52,7 +154,7 @@ describe('Python-http.client converter', function () {
     });
 
     it('should generate snippet with requestTimeout option', function () {
-      var request = new sdk.Request(mainCollection.item[0].request);
+      var request = new Request(mainCollection.item[0].request);
       convert(request, { requestTimeout: 2000 }, function (error, snippet) {
         if (error) {
           expect.fail(null, null, error);
@@ -63,7 +165,7 @@ describe('Python-http.client converter', function () {
     });
 
     it('should generate snippet when url is not provied', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'name': 'test',
         'request': {
           'method': 'GET',
@@ -84,7 +186,7 @@ describe('Python-http.client converter', function () {
     });
 
     it('should generate snippet with correct indent when body mode is formdata', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [
           {
@@ -118,7 +220,7 @@ describe('Python-http.client converter', function () {
     });
 
     it('should add port in the options when host has port specified', function () {
-      var request = new sdk.Request({
+      var request = new Request({
           'method': 'GET',
           'header': [],
           'url': {
@@ -144,7 +246,7 @@ describe('Python-http.client converter', function () {
     });
 
     it('should trim header keys and not trim header values', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [
           {
@@ -171,7 +273,7 @@ describe('Python-http.client converter', function () {
     });
 
     it('should generate snippets for no files in form data', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -216,14 +318,51 @@ describe('Python-http.client converter', function () {
         expect(snippet).to.include('name=no file');
         expect(snippet).to.include('name=no src');
         expect(snippet).to.include('name=invalid src');
-        expect(snippet).to.include('with open(\'/path/to/file\')');
+        expect(snippet).to.include('with open(\'/path/to/file\', \'rb\')');
+      });
+    });
+
+    it('should generate valid snippets for single/double quotes in URL', function () {
+      // url = https://a"b'c.com/'d/"e
+      var request = new Request("https://a\"b'c.com/'d/\"e"); // eslint-disable-line quotes
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        // expect => http.client.HTTPSConnection("a\"b'c.com"")
+        expect(snippet).to.include('http.client.HTTPSConnection("a\\"b\'c.com")');
+        // expect conn.request("GET", "/'d/\"e", payload, headers)
+        expect(snippet).to.include('conn.request("GET", "/\'d/\\"e", payload, headers)');
+      });
+    });
+
+    it('should generate valid snippets when url uses http protocol', function () {
+      var request = new Request({
+        'method': 'GET',
+        'header': [],
+        'url': {
+          'raw': 'http://localhost:3000',
+          'protocol': 'http',
+          'host': [
+            'localhost'
+          ],
+          'port': '3000'
+        },
+        'response': []
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.include('conn = http.client.HTTPConnection("localhost", 3000)');
       });
     });
 
   });
 
   describe('parseBody function', function () {
-    var requestEmptyFormdata = new sdk.Request({
+    var requestEmptyFormdata = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -231,7 +370,7 @@ describe('Python-http.client converter', function () {
           'formdata': []
         }
       }),
-      requestEmptyUrlencoded = new sdk.Request({
+      requestEmptyUrlencoded = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -239,7 +378,7 @@ describe('Python-http.client converter', function () {
           'urlencoded': []
         }
       }),
-      requestEmptyRaw = new sdk.Request({
+      requestEmptyRaw = new Request({
         'method': 'POST',
         'header': [],
         'body': {

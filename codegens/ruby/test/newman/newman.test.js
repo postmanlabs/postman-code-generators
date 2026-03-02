@@ -10,7 +10,7 @@ describe('Convert for different types of request', function () {
       fileName: 'codesnippet.rb',
       runScript: 'ruby codesnippet.rb',
       compileScript: null,
-      skipCollections: ['redirectCollection']
+      skipCollections: ['redirectCollection', 'unsupportedMethods']
     };
 
   runNewmanTest(convert, options, testConfig);

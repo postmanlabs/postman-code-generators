@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   fs = require('fs'),
 
   convert = require('../../lib/index').convert,
@@ -25,7 +25,7 @@ describe('jQuery converter', function () {
 
   mainCollection.item.forEach(function (item) {
     it(item.name, function (done) {
-      var request = new sdk.Request(item.request);
+      var request = new Request(item.request);
       convert(request, {indentType: 'Space',
         indentCount: 4,
         requestTimeout: 100,
@@ -42,7 +42,7 @@ describe('jQuery converter', function () {
   });
 
   it('should return snippet without errors when request object has no body property', function () {
-    var request = new sdk.Request({
+    var request = new Request({
         'method': 'GET',
         'header': [],
         'url': {
@@ -73,8 +73,42 @@ describe('jQuery converter', function () {
     });
   });
 
+  it('should use JSON.parse if the content-type is application/vnd.api+json', function () {
+    let request = new Request({
+      'method': 'POST',
+      'header': [
+        {
+          'key': 'Content-Type',
+          'value': 'application/vnd.api+json'
+        }
+      ],
+      'body': {
+        'mode': 'raw',
+        'raw': '{"data": {"hello": "world"} }'
+      },
+      'url': {
+        'raw': 'https://postman-echo.com/get',
+        'protocol': 'https',
+        'host': [
+          'postman-echo',
+          'com'
+        ],
+        'path': [
+          'get'
+        ]
+      }
+    });
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      expect(snippet).to.contain('JSON.stringify({\n    "data": {\n      "hello": "world"\n    }\n  })');
+    });
+  });
+
   it('should trim header keys and not trim header values', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'GET',
       'header': [
         {
@@ -100,7 +134,7 @@ describe('jQuery converter', function () {
     });
   });
   it('should include JSON.stringify in the snippet for raw json bodies', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [
         {
@@ -129,12 +163,12 @@ describe('jQuery converter', function () {
         expect.fail(null, null, error);
       }
       expect(snippet).to.be.a('string');
-      expect(snippet).to.include('"data": JSON.stringify({"json":"Test-Test"})');
+      expect(snippet).to.include('"data": JSON.stringify({\n    "json": "Test-Test"\n  }');
     });
   });
 
   it('should include graphql body in the snippet', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [],
       'body': {
@@ -167,7 +201,7 @@ describe('jQuery converter', function () {
   });
 
   it('should generate snippets(not error out) for requests with multiple/no file in formdata', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [],
       'body': {
@@ -233,7 +267,7 @@ describe('jQuery converter', function () {
   });
 
   it('should generate valid snippet for multiple headers with same name', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [
         {
@@ -270,7 +304,7 @@ describe('jQuery converter', function () {
   });
 
   it('should generate snippet for form data params with no type key present', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       method: 'POST',
       header: [],
       url: {

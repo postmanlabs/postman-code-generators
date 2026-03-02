@@ -7,7 +7,8 @@ describe('Convert for different types of request', function () {
       compileScript: null,
       runScript: 'node run.js',
       fileName: 'run.js',
-      headerSnippet: '/* eslint-disable */\n'
+      headerSnippet: '/* eslint-disable */\n',
+      skipCollections: ['unsupportedMethods']
     };
 
   runNewmanTest(convert, options, testConfig);
@@ -18,7 +19,8 @@ describe('Convert for different types of request', function () {
         compileScript: null,
         runScript: 'node run.js',
         fileName: 'run.js',
-        headerSnippet: '/* eslint-disable */\n'
+        headerSnippet: '/* eslint-disable */\n',
+        skipCollections: ['unsupportedMethods']
       };
 
     runNewmanTest(convert, options, testConfig);

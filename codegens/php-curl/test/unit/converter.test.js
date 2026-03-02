@@ -1,6 +1,8 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
-  convert = require('../../lib/index').convert;
+  { Request } = require('postman-collection/lib/collection/request'),
+  { Url } = require('postman-collection/lib/collection/url'),
+  convert = require('../../lib/index').convert,
+  getUrlStringfromUrlObject = require('../../lib/util/sanitize').getUrlStringfromUrlObject;
 
 describe('php-curl converter', function () {
   it('should throw an error when callback is not function', function () {
@@ -9,7 +11,7 @@ describe('php-curl converter', function () {
   });
 
   it('should trim header keys and not trim header values', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'GET',
       'header': [
         {
@@ -32,12 +34,12 @@ describe('php-curl converter', function () {
       }
       expect(snippet).to.be.a('string');
       // one extra space in matching the output because we add key:<space>value in the snippet
-      expect(snippet).to.include('"key_containing_whitespaces:   value_containing_whitespaces  "');
+      expect(snippet).to.include('\'key_containing_whitespaces:   value_containing_whitespaces  \'');
     });
   });
 
   it('should generate snippets for no files in form data', function () {
-    var request = new sdk.Request({
+    var request = new Request({
       'method': 'POST',
       'header': [],
       'body': {
@@ -85,4 +87,13 @@ describe('php-curl converter', function () {
     });
   });
 
+  it('should not encode unresolved query params and ' +
+  'encode every other query param, both present together', function () {
+    let rawUrl = 'https://postman-echo.com/get?key1={{value}}&key2=\'a b+c\'',
+      urlObject = new Url(rawUrl),
+      outputUrlString = getUrlStringfromUrlObject(urlObject);
+    expect(outputUrlString).to.not.include('key1=%7B%7Bvalue%7B%7B');
+    expect(outputUrlString).to.not.include('key2=\'a b+c\'');
+    expect(outputUrlString).to.equal('https://postman-echo.com/get?key1={{value}}&key2=%27a%20b+c%27');
+  });
 });

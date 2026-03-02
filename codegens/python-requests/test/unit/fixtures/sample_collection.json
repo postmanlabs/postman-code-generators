@@ -1421,13 +1421,11 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io",
+					"raw": "https://postman-echo.com",
 					"protocol": "https",
 					"host": [
-						"9c76407d-5b8d-4b22-99fb-8c47a85d9848",
-						"mock",
-						"pstmn",
-						"io"
+						"postman-echo",
+						"com"
 					]
 				},
 				"description": ""
@@ -1441,13 +1439,11 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io",
+					"raw": "https://postman-echo.com",
 					"protocol": "https",
 					"host": [
-						"9c76407d-5b8d-4b22-99fb-8c47a85d9848",
-						"mock",
-						"pstmn",
-						"io"
+						"postman-echo",
+						"com"
 					]
 				},
 				"description": ""
@@ -1461,13 +1457,11 @@
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "https://9c76407d-5b8d-4b22-99fb-8c47a85d9848.mock.pstmn.io",
+							"raw": "https://postman-echo.com",
 							"protocol": "https",
 							"host": [
-								"9c76407d-5b8d-4b22-99fb-8c47a85d9848",
-								"mock",
-								"pstmn",
-								"io"
+								"postman-echo",
+								"com"
 							]
 						}
 					},

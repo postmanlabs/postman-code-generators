@@ -12,8 +12,8 @@ module.exports = function (request, indentString, trim) {
     case 'raw':
       bodySnippet += `$request->setBody('${sanitize(request.body[request.body.mode], trim)}');\n`;
       break;
-    // eslint-disable-next-line no-case-declarations
     case 'graphql':
+      // eslint-disable-next-line no-case-declarations
       let query = request.body[request.body.mode].query,
         graphqlVariables;
       try {

@@ -1,5 +1,6 @@
 var _ = require('./lodash'),
   sanitize = require('./util').sanitize,
+  sanitizeSingleQuotes = require('./util').sanitizeSingleQuotes,
   sanitizeOptions = require('./util').sanitizeOptions,
   addFormParam = require('./util').addFormParam,
   path = require('path');
@@ -20,14 +21,16 @@ const VALID_METHODS = ['DEFAULT',
  * @param {Object} body URLEncoded Body
  */
 function parseURLEncodedBody (body) {
-  var bodySnippet = '$body = "',
+  var bodySnippet = '',
     urlencodedArray = [];
   _.forEach(body, function (data) {
     if (!data.disabled) {
-      urlencodedArray.push(`${escape(data.key)}=${escape(data.value)}`);
+      urlencodedArray.push(`${encodeURIComponent(data.key)}=${encodeURIComponent(data.value)}`);
     }
   });
-  bodySnippet += urlencodedArray.join('&') + '"\n';
+  if (urlencodedArray.length > 0) {
+    bodySnippet = '$body = "' + urlencodedArray.join('&') + '"\n';
+  }
   return bodySnippet;
 }
 
@@ -39,7 +42,7 @@ function parseURLEncodedBody (body) {
  */
 function parseFormData (body, trim) {
   if (_.isEmpty(body)) {
-    return '$body = $null\n';
+    return '';
   }
 
   var bodySnippet = '$multipartContent = [System.Net.Http.MultipartFormDataContent]::new()\n';
@@ -61,8 +64,10 @@ function parseFormData (body, trim) {
         bodySnippet += '$stringHeader = ' +
           '[System.Net.Http.Headers.ContentDispositionHeaderValue]::new("form-data")\n' +
           `$stringHeader.Name = "${sanitize(data.key, trim)}"\n` +
-          `$StringContent = [System.Net.Http.StringContent]::new("${sanitize(data.value, trim)}")\n` +
-          '$StringContent.Headers.ContentDisposition = $stringHeader\n' +
+          `$stringContent = [System.Net.Http.StringContent]::new("${sanitize(data.value, trim)}")\n` +
+          '$stringContent.Headers.ContentDisposition = $stringHeader\n' +
+          (data.contentType ? '$contentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::new("' +
+            data.contentType + '")\n$stringContent.Headers.ContentType = $contentType\n' : '') +
           '$multipartContent.Add($stringContent)\n\n';
       }
     }
@@ -78,7 +83,7 @@ function parseFormData (body, trim) {
  * @param {boolean} trim trim body option
  */
 function parseRawBody (body, trim) {
-  return `$body = "${sanitize(body.toString(), trim)}"\n`;
+  return `$body = @"\n${sanitize(body.toString(), trim, false)}\n"@\n`;
 }
 
 /**
@@ -285,12 +290,15 @@ function convert (request, options, callback) {
   }
 
   if (_.includes(VALID_METHODS, request.method)) {
-    codeSnippet += `$response = Invoke-RestMethod '${request.url.toString().replace(/'/g, '\'\'')}' -Method '` +
-                        `${request.method}' -Headers $headers -Body $body`;
+    codeSnippet += `$response = Invoke-RestMethod '${sanitizeSingleQuotes(request.url.toString())}' -Method '` +
+                        `${request.method}' -Headers $headers`;
   }
   else {
-    codeSnippet += `$response = Invoke-RestMethod '${request.url.toString()}' -CustomMethod ` +
-                        `'${request.method}' -Headers $headers -Body $body`;
+    codeSnippet += `$response = Invoke-RestMethod '${sanitizeSingleQuotes(request.url.toString())}' -CustomMethod ` +
+                        `'${sanitizeSingleQuotes(request.method)}' -Headers $headers`;
+  }
+  if (bodySnippet !== '') {
+    codeSnippet += ' -Body $body';
   }
   if (options.requestTimeout > 0) {
     // Powershell rest method accepts timeout in seconds

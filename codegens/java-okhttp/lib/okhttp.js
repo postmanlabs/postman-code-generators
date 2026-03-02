@@ -6,7 +6,7 @@ var _ = require('./lodash'),
   sanitizeOptions = require('./util').sanitizeOptions;
 
 //  Since Java OkHttp requires to add extralines of code to handle methods with body
-const METHODS_WITHOUT_BODY = ['GET', 'HEAD', 'COPY', 'UNLOCK', 'UNLINK', 'PURGE', 'LINK', 'VIEW'];
+const METHODS_WITHOUT_BODY = ['HEAD', 'COPY', 'UNLOCK', 'UNLINK', 'PURGE', 'LINK', 'VIEW'];
 
 /**
  * returns snippet of java okhttp by parsing data from Postman-SDK request object
@@ -189,7 +189,7 @@ function convert (request, options, callback) {
   if (options.includeBoilerplate) {
     headerSnippet = 'import java.io.*;\n' +
                         'import okhttp3.*;\n' +
-                        'public class main {\n' +
+                        'public class Main {\n' +
                         indentString + 'public static void main(String []args) throws IOException{\n';
     footerSnippet = indentString.repeat(2) + 'System.out.println(response.body().string());\n' +
                         indentString + '}\n}\n';

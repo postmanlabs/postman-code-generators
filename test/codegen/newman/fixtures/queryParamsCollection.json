@@ -1,0 +1,31 @@
+{
+	"info": {
+		"_postman_id": "0bb73926-93f7-4ad4-a191-6a5d9e3460ef",
+		"name": "Query Params Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Query Param with encoded value",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://postman-echo.com/query=urn%3Ali%3Afoo%3A62324",
+					"host": [
+						"https://postman-echo.com"
+					],
+					"path": [
+						"get"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "urn%3Ali%3Afoo%3A62324"
+						}
+					]
+				}
+			}
+		}
+  ]
+}

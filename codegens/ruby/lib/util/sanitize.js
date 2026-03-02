@@ -13,12 +13,17 @@ module.exports = {
       return '';
     }
     inputString = inputTrim && typeof inputTrim === 'boolean' ? inputString.trim() : inputString;
+    inputString = inputString
+      .replace(/`/g, '\\`')
+      .replace(/#/g, '\\#')
+      .replace(/\$/g, '\\$')
+      .replace(/!/g, '\\!');
     if (escapeCharFor && typeof escapeCharFor === 'string') {
       switch (escapeCharFor) {
         case 'raw':
           return JSON.stringify(inputString);
         case 'urlencoded':
-          return escape(inputString);
+          return encodeURIComponent(inputString);
         case 'formdata':
           return inputString.replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
         case 'file':

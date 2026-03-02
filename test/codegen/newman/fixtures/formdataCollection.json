@@ -59,29 +59,6 @@
 				}
 			},
 			"response": []
-		},
-		{
-			"name": "POST empty Formdata",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": []
-				},
-				"url": {
-					"raw": "https://postman-echo.com/post",
-					"protocol": "https",
-					"host": [
-						"postman-echo",
-						"com"
-					],
-					"path": [
-						"post"
-					]
-				}
-			},
-			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}

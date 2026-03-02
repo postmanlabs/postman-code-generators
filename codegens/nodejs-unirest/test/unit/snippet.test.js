@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-  sdk = require('postman-collection'),
+  { Request } = require('postman-collection/lib/collection/request'),
   convert = require('../../lib/index').convert,
   getOptions = require('../../lib/index').getOptions,
   sanitize = require('../../lib/util').sanitize,
@@ -12,7 +12,7 @@ describe('nodejs unirest convert function', function () {
     var request, reqObject, options, snippetArray, line_no;
 
     it('should return a Tab indented snippet ', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         indentType: 'Tab',
         indentCount: 1
@@ -34,7 +34,7 @@ describe('nodejs unirest convert function', function () {
     });
 
     it('should return snippet with timeout function when timeout is set to non zero', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         requestTimeout: 1000
       };
@@ -48,8 +48,42 @@ describe('nodejs unirest convert function', function () {
       });
     });
 
+    it('should use JSON.parse if the content-type is application/vnd.api+json', function () {
+      request = new Request({
+        'method': 'POST',
+        'header': [
+          {
+            'key': 'Content-Type',
+            'value': 'application/vnd.api+json'
+          }
+        ],
+        'body': {
+          'mode': 'raw',
+          'raw': '{"data": {"hello": "world"} }'
+        },
+        'url': {
+          'raw': 'https://postman-echo.com/get',
+          'protocol': 'https',
+          'host': [
+            'postman-echo',
+            'com'
+          ],
+          'path': [
+            'get'
+          ]
+        }
+      });
+      convert(request, {}, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+        expect(snippet).to.be.a('string');
+        expect(snippet).to.contain('JSON.stringify({\n    "data": {\n      "hello": "world"\n    }\n  })');
+      });
+    });
+
     it('should return snippet with ES6 features', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         ES6_enabled: true
       };
@@ -69,7 +103,7 @@ describe('nodejs unirest convert function', function () {
 
     it('should return snippet with followRedirect function having ' +
         'parameter false for no follow redirect', function () {
-      request = new sdk.Request(mainCollection.item[0].request);
+      request = new Request(mainCollection.item[0].request);
       options = {
         followRedirect: false
       };
@@ -89,7 +123,7 @@ describe('nodejs unirest convert function', function () {
         'url': 'https://echo.getpostman.com/post',
         'method': 'POST'
       };
-      request = new sdk.Request(reqObject);
+      request = new Request(reqObject);
       options = {};
       convert(request, options, function (error, snippet) {
         if (error) {
@@ -103,7 +137,7 @@ describe('nodejs unirest convert function', function () {
     });
 
     it('should trim header keys and not trim header values', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [
           {
@@ -130,7 +164,7 @@ describe('nodejs unirest convert function', function () {
     });
 
     it('should include JSON.stringify in the snippet for raw json bodies', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [
           {
@@ -159,12 +193,12 @@ describe('nodejs unirest convert function', function () {
           expect.fail(null, null, error);
         }
         expect(snippet).to.be.a('string');
-        expect(snippet).to.include('.send(JSON.stringify({"json":"Test-Test"}))');
+        expect(snippet).to.include('.send(JSON.stringify({\n    "json": "Test-Test"\n  }))');
       });
     });
 
     it('should generate snippets for no files in form data', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'POST',
         'header': [],
         'body': {
@@ -211,7 +245,7 @@ describe('nodejs unirest convert function', function () {
     });
 
     it('should generate valid snippet for single/double quotes in url', function () {
-      var request = new sdk.Request({
+      var request = new Request({
         'method': 'GET',
         'header': [],
         'url': {

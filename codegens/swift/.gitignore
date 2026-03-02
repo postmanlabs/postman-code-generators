@@ -6,6 +6,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Package manager lock files
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+bun.lockb
+
 # Runtime data
 pids
 *.pid
@@ -66,3 +72,4 @@ typings/
 snippet.swift
 
 out/
+swift-5.7.3-RELEASE-ubuntu20.04/

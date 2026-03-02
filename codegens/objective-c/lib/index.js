@@ -278,6 +278,7 @@ self = module.exports = {
     codeSnippet += 'completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {\n';
     codeSnippet += `${indent}if (error) {\n`;
     codeSnippet += `${indent.repeat(2)}NSLog(@"%@", error);\n`;
+    codeSnippet += `${indent.repeat(2)}dispatch_semaphore_signal(sema);\n`;
     codeSnippet += `${indent}} else {\n`;
     codeSnippet += `${indent.repeat(2)}NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;\n`;
     codeSnippet += `${indent.repeat(2)}NSError *parseError = nil;\n`;
