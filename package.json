@@ -25,12 +25,11 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/postmanlabs/code-generators",
   "dependencies": {
-    "async": "3.2.2",
-    "detect-package-manager": "3.0.2",
-    "lodash": "4.17.21",
-    "path": "0.12.7",
+    "async": "^3.2.2",
+    "detect-package-manager": "^3.0.2",
+    "lodash": "^4.17.21",
     "postman-collection": "^5.0.0",
-    "shelljs": "0.8.5"
+    "shelljs": "^0.8.5"
   },
   "devDependencies": {
     "browserify": "14.5.0",
