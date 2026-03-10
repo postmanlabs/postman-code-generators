@@ -4,6 +4,10 @@
 
 ## [v2.1.1] - 2026-03-10
 
+### Chore
+
+-   Removed "path" as a dependency and upgraded package-lock version to v3.
+
 ## [v2.1.0] - 2025-11-12
 
 ### Feature
