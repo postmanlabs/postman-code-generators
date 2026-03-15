@@ -156,11 +156,14 @@ module.exports = function (request, indentation, bodyTrim, contentType) {
         catch (e) {
           graphqlVariables = {};
         }
-        requestBody += `payload = ${sanitize(JSON.stringify({
-          query: query,
-          variables: graphqlVariables
-        }),
-        'raw', bodyTrim)}\n`;
+        requestBody += `query = """${query}"""\n`;
+        requestBody += `variables = ${pythonify(graphqlVariables, indentation.length)}\n`;
+        requestBody += 'payload = json.dumps({\n\t"query" : query,\n\t"variables" : variables\n})\n';
+        // requestBody += `payload = ${sanitize(JSON.stringify({
+        //   query: query,
+        //   variables: graphqlVariables
+        // }),
+        // 'raw', bodyTrim)}\n`;
         return requestBody;
       case 'urlencoded':
         enabledBodyList = _.reject(request.body[request.body.mode], 'disabled');
