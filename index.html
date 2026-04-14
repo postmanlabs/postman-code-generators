@@ -3,7 +3,21 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>curl2rsc</title>
+    <title>curl2rsc moved</title>
+    <meta name="description" content="The curl2rsc web app moved to https://tikoci.github.io/curl2rsc.html" />
+    <link rel="canonical" href="https://tikoci.github.io/curl2rsc.html" />
+    <meta http-equiv="refresh" content="0; url=https://tikoci.github.io/curl2rsc.html" />
+    <script>
+        (() => {
+            const target = new URL("https://tikoci.github.io/curl2rsc.html");
+            const params = new URLSearchParams(window.location.search);
+            const cmd = params.get("cmd");
+            const style = params.get("style");
+            if (cmd) target.searchParams.set("cmd", cmd);
+            if (style) target.searchParams.set("style", style);
+            window.location.replace(target.toString());
+        })();
+    </script>
 
     <!-- Pico CCS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
@@ -103,12 +117,11 @@
     <main class="container">
 
         <section>
-            <h1>Retired</h1>
+            <h1>Moved</h1>
             <br/>
-            <h3>At least the web interface for "curl2rsc" is being retired.  The web-based conversion used a microservice hosted by Glitch.
-            However Glitch has closed its doors in July 2025, so TIKOCI's cURL to /tool/fetch converter does not work.  Code remains, just no backend.</h3>
+            <h3>The active <code>curl2rsc</code> tool now lives at <a href="https://tikoci.github.io/curl2rsc.html">tikoci.github.io/curl2rsc.html</a>.</h3>
             <br/>
-            <h3>This page will render, however, no conversion is possible.</h3>
+            <h3>This legacy page should redirect automatically. If it does not, use the link above.</h3>
             <hr/>
         </section>
 
