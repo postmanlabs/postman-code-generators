@@ -197,6 +197,9 @@ self = module.exports = {
                   snippet += indent + `${form('-F', format)}`;
                   snippet += ` ${quoteType}${sanitize(data.key, trim, quoteType)}=` +
                     `${sanitize(`@"${sanitize(data.src, trim, '"', true)}"`, trim, quoteType, quoteType === '"')}`;
+                  if (data.contentType) {
+                    snippet += `;type=${data.contentType}`;
+                  }
                   snippet += quoteType;
                 }
                 else {
