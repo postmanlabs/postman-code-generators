@@ -1,0 +1,43 @@
+---
+# postman.yaml
+# Library that publishes one or more npm packages. Filed under PLAT-1265.
+#
+# Sources used to populate this file:
+#  - description: GitHub repo description
+#  - npmPackages: package-to-repo verification at HIGH confidence (commit ae350d2
+#    in postman-eng/cloud9-claude, audit dated 2026-05-19)
+name: "postman-code-generators"
+friendlyName: "Postman Code Generators"
+description: "Common repository for all code generators shipped with Postman"
+type: "LIB"
+owner: "umesh.pathak@getpostman.com"
+dataClass: "Public"
+containsCustomerData: false
+requiredInSelfHosted: false
+npmPackages:
+- name: "@postman/codegen-golang"
+  path: "codegens/golang/package.json"
+- name: "@postman/codegen-java-okhttp"
+  path: "codegens/java-okhttp/package.json"
+- name: "@postman/codegen-java-unirest"
+  path: "codegens/java-unirest/package.json"
+- name: "@postman/codegen-js-fetch"
+  path: "codegens/js-fetch/package.json"
+- name: "@postman/codegen-js-jquery"
+  path: "codegens/js-jquery/package.json"
+- name: "@postman/codegen-js-xhr"
+  path: "codegens/js-xhr/package.json"
+- name: "@postman/codegen-nodejs-native"
+  path: "codegens/nodejs-native/package.json"
+- name: "@postman/codegen-nodejs-request"
+  path: "codegens/nodejs-request/package.json"
+- name: "@postman/codegen-nodejs-unirest"
+  path: "codegens/nodejs-unirest/package.json"
+- name: "@postman/codegen-php-curl"
+  path: "codegens/php-curl/package.json"
+- name: "@postman/codegen-python-requests"
+  path: "codegens/python-requests/package.json"
+- name: "@postman/codegen-ruby"
+  path: "codegens/ruby/package.json"
+- name: "@postman/codegen-shell-wget"
+  path: "codegens/shell-wget/package.json"
