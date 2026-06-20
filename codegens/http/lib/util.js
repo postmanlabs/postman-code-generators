@@ -213,7 +213,8 @@ function getBody (request, trimRequestBody) {
         return trimRequestBody ? requestBody.trim() : requestBody;
 
       case FORM_DATA:
-        requestBody += `--${FORM_DATA_BOUNDARY}\n`;
+        // multipart/form-data bodies must use CRLF line endings as per RFC 2046 / RFC 7578
+        requestBody += `--${FORM_DATA_BOUNDARY}\r\n`;
         /* istanbul ignore else */
         if (!_.isEmpty(request.body[request.body.mode])) {
           let properties = getMembersOfPropertyList(request.body[request.body.mode]),
@@ -222,11 +223,11 @@ function getBody (request, trimRequestBody) {
             /* istanbul ignore else */
             if (property.type === 'text') {
               requestBody += 'Content-Disposition: form-data; name="';
-              requestBody += `${(trimRequestBody ? property.key.trim() : property.key)}"\n`;
+              requestBody += `${(trimRequestBody ? property.key.trim() : property.key)}"\r\n`;
               if (property.contentType) {
-                requestBody += `Content-Type: ${property.contentType}\n`;
+                requestBody += `Content-Type: ${property.contentType}\r\n`;
               }
-              requestBody += `\n${(trimRequestBody ? property.value.trim() : property.value)}\n`;
+              requestBody += `\r\n${(trimRequestBody ? property.value.trim() : property.value)}\r\n`;
             }
             else if (property.type === 'file') {
               var pathArray = property.src.split(path.sep),
@@ -234,20 +235,20 @@ function getBody (request, trimRequestBody) {
                 fileExtension = fileName.split('.')[1];
               requestBody += 'Content-Disposition: form-data; name="';
               requestBody += `${(trimRequestBody ? property.key.trim() : property.key)}"; filename="`;
-              requestBody += `${fileName}"\n`;
+              requestBody += `${fileName}"\r\n`;
               if (contentTypeHeaderMap[fileExtension]) {
-                requestBody += `Content-Type: ${contentTypeHeaderMap[fileExtension]}\n\n`;
+                requestBody += `Content-Type: ${contentTypeHeaderMap[fileExtension]}\r\n\r\n`;
               }
               else {
-                requestBody += 'Content-Type: <Content-Type header here>\n\n';
+                requestBody += 'Content-Type: <Content-Type header here>\r\n\r\n';
               }
-              requestBody += '(data)\n';
+              requestBody += '(data)\r\n';
             }
             if (index === numberOfProperties - 1) {
-              requestBody += `--${FORM_DATA_BOUNDARY}--\n`;
+              requestBody += `--${FORM_DATA_BOUNDARY}--\r\n`;
             }
             else {
-              requestBody += `--${FORM_DATA_BOUNDARY}\n`;
+              requestBody += `--${FORM_DATA_BOUNDARY}\r\n`;
             }
           });
         }
