@@ -29,8 +29,10 @@
   "dependencies": {
     "postman-collection": "5.0.0"
   },
-  "devDependencies": {},
   "engines": {
     "node": ">=8"
+  },
+  "overrides": {
+    "lodash": "4.18.1"
   }
 }

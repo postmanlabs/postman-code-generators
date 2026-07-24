@@ -28,8 +28,10 @@
     "test-lint": "node npm/test-lint.js",
     "test-unit": "node npm/test-unit.js"
   },
-  "devDependencies": {},
   "engines": {
     "node": ">=8"
+  },
+  "overrides": {
+    "lodash": "4.18.1"
   }
 }
