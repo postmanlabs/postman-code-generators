@@ -44,7 +44,7 @@ async.series([
             command = 'yarn install --production --frozen-lockfile';
           }
           else {
-            command = 'touch yarn.lock && yarn workspaces focus --all --production'
+            command = 'yarn workspaces focus --all --production'
           }
           break;
         case 'pnpm':
@@ -68,8 +68,7 @@ async.series([
   },
   function (next) {
     var codegens = getSubfolders(PATH_TO_CODEGENS_FOLDER);
-    codegens.forEach((codegen) => {
-
+    for (var codegen of codegens) {
       shell.cd(codegen.path);
 
       var commandOut;
@@ -82,7 +81,7 @@ async.series([
         return next(commandOut.stderr);
       }
       console.log(commandOut.stdout);
-    });
+    };
   }], (err) => {
   if (err) {
     console.error(err);
