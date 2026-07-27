@@ -111,6 +111,11 @@ self = module.exports = {
     if (contentType && (contentType === 'application/json' || contentType.match(/\+json$/))) {
       snippet += 'import json\n';
     }
+    // For GraphQL requests, the payload is always JSON-encoded in the generated snippet,
+    // so ensure the json module is imported even if the Content-Type header was not set.
+    else if (request.body && request.body.mode === 'graphql') {
+      snippet += 'import json\n';
+    }
 
     snippet += '\n';
     snippet += `url = "${sanitize(request.url.toString(), 'url')}"\n\n`;
