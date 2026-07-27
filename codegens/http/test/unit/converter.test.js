@@ -313,6 +313,38 @@ describe('Converter test', function () {
     });
   });
 
+  it('should use CRLF line endings within the multipart/form-data body (RFC 2046 / RFC 7578)', function () {
+    var request = new Request({
+      'method': 'POST',
+      'body': {
+        'mode': 'formdata',
+        'formdata': [
+          { 'key': 'foo', 'value': 'bar', 'type': 'text' }
+        ]
+      },
+      'url': {
+        'raw': 'http://postman-echo.com/post',
+        'host': ['postman-echo', 'com'],
+        'path': ['post']
+      }
+    });
+
+    convert(request, {}, function (error, snippet) {
+      if (error) {
+        expect.fail(null, null, error);
+      }
+      expect(snippet).to.be.a('string');
+      // boundary delimiters and field lines must be terminated by CRLF, not bare LF
+      expect(snippet).to.contain('------WebKitFormBoundary7MA4YWxkTrZu0gW\r\n');
+      expect(snippet).to.contain('Content-Disposition: form-data; name="foo"\r\n');
+      expect(snippet).to.contain('\r\nbar\r\n');
+      expect(snippet).to.contain('------WebKitFormBoundary7MA4YWxkTrZu0gW--\r\n');
+      // the multipart body (everything after the header block) must not contain bare LF line endings
+      var body = snippet.slice(snippet.indexOf('\n\n') + 2);
+      expect((/[^\r]\n/).test(body)).to.equal(false);
+    });
+  });
+
   it('should not add extra newlines if there is no body or header present', function () {
     var request = new Request({
       'method': 'GET',
