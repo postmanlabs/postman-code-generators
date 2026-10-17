@@ -94,6 +94,31 @@ const expectedOptions = {
       default: 'single',
       description: 'String denoting the quote type to use (single or double) for URL ' +
           '(Use double quotes when running curl in cmd.exe and single quotes for the rest)'
+    },
+    maxRedirects: {
+      name: 'Maximum number of redirects',
+      type: 'positiveInteger',
+      default: 0,
+      description: 'Set the maximum number of redirects to follow, defaults to 0 (unlimited)'
+    },
+    quiet: {
+      name: 'Use Quiet Mode',
+      type: 'boolean',
+      default: false,
+      description: 'Display the requested data without showing any extra output.'
+    },
+    debug: {
+      name: 'Use Debug Mode',
+      type: 'boolean',
+      default: false,
+      description: 'Show detailed execution information including retry attempts, redirects, and timing breakdowns.'
+    },
+    lineContinuationCharacter: {
+      name: 'Line continuation character',
+      type: 'enum',
+      default: '\\',
+      description: 'Set a character used to mark the continuation of a statement on the next line ' +
+        '(generally, \\ for OSX/Linux, ^ for Windows cmd and ` for Powershell)'
     }
   },
   // Standard array of ids that should be used for options ids. Any new option should be updated here.
@@ -116,7 +141,10 @@ const expectedOptions = {
     'asyncAwaitEnabled',
     'quoteType',
     'asyncType',
-    'ignoreWarnings'
+    'ignoreWarnings',
+    'maxRedirects',
+    'quiet',
+    'debug'
   ],
   CODEGEN_ABS_PATH = `./codegens/${codegen}`;
 describe('Code-gen repository ' + codegen, function () {
