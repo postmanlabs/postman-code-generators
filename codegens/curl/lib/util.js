@@ -33,7 +33,6 @@ var self = module.exports = {
       // Escape special characters to preserve their literal meaning within double quotes
       inputString = inputString
         .replace(/`/g, '\\`')
-        .replace(/#/g, '\\#')
         .replace(/\$/g, '\\$')
         .replace(/!/g, '\\!');
     }
