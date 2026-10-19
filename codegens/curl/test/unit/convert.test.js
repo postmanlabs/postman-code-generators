@@ -617,6 +617,32 @@ describe('curl convert function', function () {
       });
     });
 
+    it('should not escape # character when quoteType is "double"', function () {
+      var request = new Request({
+        'method': 'POST',
+        'header': [
+          {
+            'key': 'X-Color',
+            'value': '#fff'
+          }
+        ],
+        'body': {
+          'mode': 'raw',
+          'raw': '{"color": "#fff"}'
+        },
+        'url': 'https://postman-echo.com/post#section'
+      });
+      convert(request, { quoteType: 'double' }, function (error, snippet) {
+        if (error) {
+          expect.fail(null, null, error);
+        }
+
+        expect(snippet).to.include('"https://postman-echo.com/post#section"');
+        expect(snippet).to.include('"X-Color: #fff"');
+        expect(snippet).to.include('"{\\"color\\": \\"#fff\\"}"');
+      });
+    });
+
     it('should longer option for body even if longFormat is disabled if @ character is present', function () {
       let request = new Request({
         'method': 'POST',
