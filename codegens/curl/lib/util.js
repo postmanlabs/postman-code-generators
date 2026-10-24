@@ -31,9 +31,10 @@ var self = module.exports = {
       inputString = inputString.replace(/(?<!\\)\\\\"/g, '\\\\\\"');
 
       // Escape special characters to preserve their literal meaning within double quotes
+      // In POSIX shells, inside double quotes only $, `, ", \, and newline are special.
+      // # does not start a comment inside double quotes and must not be escaped.
       inputString = inputString
         .replace(/`/g, '\\`')
-        .replace(/#/g, '\\#')
         .replace(/\$/g, '\\$')
         .replace(/!/g, '\\!');
     }
