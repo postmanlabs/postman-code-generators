@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+-   Skip the codegen installs in `postinstall` when installed as a dependency (#825).
+
 ## [v2.1.1] - 2026-03-10
 
 ### Chore
