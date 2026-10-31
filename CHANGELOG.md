@@ -5,6 +5,7 @@
 ### Fixed
 
 -   Skip the codegen installs in `postinstall` when installed as a dependency (#825).
+-   Move `async`, `detect-package-manager` and `shelljs` to `devDependencies`; only the repository's `npm/` scripts use them.
 
 ## [v2.1.1] - 2026-03-10
 

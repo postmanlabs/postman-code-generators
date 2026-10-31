@@ -1,15 +1,5 @@
-var shell = require('shelljs'),
-  path = require('path'),
-  async = require('async'),
-  { detect, getNpmVersion } = require('detect-package-manager'),
-  pm,
-  ver,
-  command,
-  getSubfolders,
-  fs = require('fs'),
-  pwd = shell.pwd();
-const args = process.argv,
-  PATH_TO_CODEGENS_FOLDER = path.resolve(__dirname, '../codegens');
+const path = require('path'),
+  args = process.argv;
 
 // Installed as a dependency, the codegens resolve their runtime dependencies (lodash, postman-collection)
 // from this package's own dependencies, and lib/assets/languages.js is already packed by `prepack`.
@@ -18,6 +8,17 @@ if (args[2] !== 'dev' && path.resolve(__dirname, '..').split(path.sep).includes(
   console.log('postman-code-generators: installed as a dependency, skipping codegen installs');
   process.exit(0);
 }
+
+var shell = require('shelljs'),
+  async = require('async'),
+  { detect, getNpmVersion } = require('detect-package-manager'),
+  pm,
+  ver,
+  command,
+  getSubfolders,
+  fs = require('fs'),
+  pwd = shell.pwd();
+const PATH_TO_CODEGENS_FOLDER = path.resolve(__dirname, '../codegens');
 
 getSubfolders = (folder) => {
   return fs.readdirSync(folder)
